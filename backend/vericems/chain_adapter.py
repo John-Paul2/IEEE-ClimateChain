@@ -19,6 +19,7 @@ import json
 import logging
 import os
 from pathlib import Path
+import shutil
 import socket
 import subprocess
 import time
@@ -1235,6 +1236,22 @@ def find_free_port() -> int:
         return int(s.getsockname()[1])
 
 
+def _resolve_foundry_binary(name: str) -> str:
+    local_path = REPO_ROOT / ".venv" / "Scripts" / f"{name}.exe"
+    if local_path.exists():
+        return str(local_path)
+    which_path = shutil.which(name)
+    if which_path:
+        return which_path
+    parent_path = REPO_ROOT.parent / ".venv" / "Scripts" / f"{name}.exe"
+    if parent_path.exists():
+        return str(parent_path)
+    home_path = Path.home() / ".foundry" / "bin" / f"{name}.exe"
+    if home_path.exists():
+        return str(home_path)
+    return name
+
+
 @dataclass
 class AnvilProcess:
     """Manages a local `anvil` subprocess for integration tests and `make demo-backend`."""
@@ -1252,8 +1269,7 @@ class AnvilProcess:
         if self.is_listening():
             return self.rpc_url
 
-        anvil_exe = REPO_ROOT / ".venv" / "Scripts" / "anvil.exe"
-        cmd_bin = str(anvil_exe) if anvil_exe.exists() else "anvil"
+        cmd_bin = _resolve_foundry_binary("anvil")
 
         self.process = subprocess.Popen(
             [cmd_bin, "--host", self.host, "--port", str(self.port), "--accounts", "10", "--balance", "10000"],
@@ -1283,8 +1299,7 @@ class AnvilProcess:
 
     def run_forge_deploy(self, *, profile: str = "demo") -> None:
         """Run `forge script script/Deploy.s.sol:Deploy --broadcast --unlocked` against this Anvil."""
-        forge_exe = REPO_ROOT / ".venv" / "Scripts" / "forge.exe"
-        cmd_bin = str(forge_exe) if forge_exe.exists() else "forge"
+        cmd_bin = _resolve_foundry_binary("forge")
         env = dict(os.environ)
         env["VERICEMS_PROFILE"] = profile
         proc = subprocess.run(

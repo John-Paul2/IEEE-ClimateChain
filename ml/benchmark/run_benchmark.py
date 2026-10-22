@@ -65,6 +65,8 @@ from ml.data.yaml_loader import load_yaml_file
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 DEFAULT_PROCESSED_PARQUET = REPO_ROOT / "data" / "processed" / "campd_hourly_processed.parquet"
+if not DEFAULT_PROCESSED_PARQUET.exists() and (REPO_ROOT.parent / "data" / "processed" / "campd_hourly_processed.parquet").exists():
+    DEFAULT_PROCESSED_PARQUET = REPO_ROOT.parent / "data" / "processed" / "campd_hourly_processed.parquet"
 DEFAULT_SPLITS_PATH = REPO_ROOT / "results" / "splits.json"
 DEFAULT_PARAMS_PATH = REPO_ROOT / "config" / "params.yaml"
 DEFAULT_RESULTS_DIR = REPO_ROOT / "results"
