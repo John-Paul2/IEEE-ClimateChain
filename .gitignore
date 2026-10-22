@@ -31,6 +31,8 @@ data/processed/
 results/tmp/
 test-results/
 *.db
+clean_clone/
+temp_clone/
 
 # Node / Web
 node_modules/
