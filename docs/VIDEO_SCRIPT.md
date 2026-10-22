@@ -65,10 +65,10 @@
   1. Click **`Step 5`**. Observe the clean reporting period receiving an immutable on-chain Attestation.
   2. Click **`Step 6`**. Click **`Verify Report & Calculate Savings`**.
   3. The Merkle verification modal flashes green (`Verified in 3.4ms`).
-  4. The CBAM Certificate Cost Calculator displays: Verified Specific Embedded Emissions (SEE) of `1.850 tCO2/t` vs. EU Default with markup of `2.310 tCO2/t`, calculating exact certificate savings of **€25,930.80** with the official Commission formula displayed.
-- **On-Screen Caption:** `STEP 5 & 6: Browser verifies Merkle proof in <5ms. Importer saves €25,930.80 vs punitive EU default penalty.`
+  4. The CBAM Certificate Cost Calculator displays: Verified Specific Embedded Emissions (SEE) vs. marked-up EU Default benchmark, calculating exact certificate savings of €25,930.80 [ILLUSTRATIVE worked example] with the CBAM-aligned formula displayed.
+- **On-Screen Caption:** `STEP 5 & 6: Browser verifies Merkle proof in <5ms. Importer saves €25,930.80 vs punitive EU default penalty [ILLUSTRATIVE].`
 - **Voiceover (Key Sentence):**  
-  > *"On the European importer side, customs agents upload the exporter's digital attestation. In under 5 milliseconds, the browser verifies the Merkle inclusion proof directly against the Arbitrum Sepolia contract. Our CBAM cost calculator instantly evaluates the verified emissions against EU Commission default penalty values—proving a verified saving of €25,930 for this single shipment while guaranteeing full regulatory integrity."*
+  > *"On the European importer side, customs agents upload the exporter's digital attestation. In under 5 milliseconds, the browser verifies the Merkle inclusion proof directly against the Arbitrum Sepolia contract. Our CBAM cost calculator instantly evaluates the verified emissions against EU Commission default penalty values—proving a verified saving of €25,930 for this single shipment while designed to preserve regulatory integrity."*
 
 ---
 
