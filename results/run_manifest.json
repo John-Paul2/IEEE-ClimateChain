@@ -5,7 +5,7 @@
     "preprocessing_manifest_json_sha256": "0xd9cebfa0494ed0261362e768a337ee285db5cbc1b21f93f3628b6106e1bbd1c1",
     "splits_json_sha256": "0xbebaf68ba76a5ced208068d5d0526b191f7bc79507ee319e521b59c9391aebb0"
   },
-  "git_commit_hash": "uncommitted",
+  "git_commit_hash": "9cad8a0f9f67057df5179863b307d3649de7d243",
   "library_versions": {
     "cryptography": "unknown",
     "matplotlib": "3.10.8",
@@ -32,7 +32,7 @@
     "series_hours_per_unit": 720,
     "target_fpr": 0.02
   },
-  "runtime_seconds": 1179.853,
+  "runtime_seconds": 7368.025,
   "schema_version": "1.0.0",
   "split_onnx_model_hashes": {
     "split_0": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",

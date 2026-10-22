@@ -1,7 +1,7 @@
 # What Still Gets Through (`WHAT_STILL_GETS_THROUGH.md`)
 
 > **Generated automatically by:** [`ml/benchmark/report.py`](file:///c:/Users/LENOVO/Documents/Hackathons/IEEE%20Climate%20Change/ml/benchmark/report.py) from [`results/benchmark_summary.json`](file:///c:/Users/LENOVO/Documents/Hackathons/IEEE%20Climate%20Change/results/benchmark_summary.json) and [`results/run_manifest.json`](file:///c:/Users/LENOVO/Documents/Hackathons/IEEE%20Climate%20Change/results/run_manifest.json).
-> **Git Commit:** `uncommitted` · **Splits:** `5` facility-grouped splits (`base_seed = 42`) · **Validation Target FPR:** `2.00%`
+> **Git Commit:** `9cad8a0f9f67057df5179863b307d3649de7d243` · **Splits:** `5` facility-grouped splits (`base_seed = 42`) · **Validation Target FPR:** `2.00%`
 
 ## 1. Prominent Disclosure: Attacks Where Proposed Detector Recall Is Below 50%
 
