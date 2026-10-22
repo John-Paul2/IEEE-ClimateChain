@@ -1,0 +1,88 @@
+{
+  "channel_scaler": {
+    "active": [
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "channels": [
+      "gross_load_mw",
+      "steam_load_1000_lb_hr",
+      "heat_input_mmbtu",
+      "co2_mass_short_tons",
+      "co2_rate_short_tons_mmbtu",
+      "so2_mass_lbs",
+      "nox_mass_lbs",
+      "op_time_fraction"
+    ],
+    "mean": [
+      200.59388190023796,
+      0.0,
+      1866.660836428633,
+      167.92063899897417,
+      0.08326934460074377,
+      154.46359120304405,
+      271.67884963431015,
+      0.9820966873334557
+    ],
+    "std": [
+      166.1531684175288,
+      1.0,
+      1550.0941815504257,
+      168.20667695744564,
+      0.02273456640730136,
+      239.50028707389362,
+      405.77053369434765,
+      0.11189854578005054
+    ]
+  },
+  "fuel_ledger_synthetic": {
+    "channel_name": "fuel_ledger_synthetic",
+    "description": "Synthetic fuel ledger cross-check channel derived from true heat input plus calibrated meter noise.",
+    "noise_std_fraction": 0.0015,
+    "source": "synthetic"
+  },
+  "fuel_ratios": {
+    "Coal": 0.10487127713276123,
+    "Natural Gas": 0.05927970910663087,
+    "Pipeline Natural Gas": 0.05942891736454444
+  },
+  "global_ratio": 0.10259215364512111,
+  "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+  "physics_penalty_weight": 0.5,
+  "schema_version": "1.0.0",
+  "seed": 42,
+  "split_index": 0,
+  "trained_facility_ids": [
+    1082,
+    1122,
+    1167,
+    3648,
+    4158,
+    4162,
+    6101,
+    6481,
+    7985,
+    8031,
+    8069,
+    55479,
+    56013,
+    56177,
+    56237,
+    56319,
+    58236
+  ],
+  "val_facility_ids": [
+    1073,
+    6664,
+    7504,
+    55477,
+    55622,
+    56253
+  ]
+}

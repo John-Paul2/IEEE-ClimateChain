@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vericems.org/schemas/verdict.schema.json",
+  "title": "VeriCEMS Verifier Verdict and Vote",
+  "description": "Off-chain verifier evaluation payload and commit-reveal vote commitment for a telemetry batch.",
+  "type": "object",
+  "required": [
+    "batch_id",
+    "verifier_address",
+    "model_hash",
+    "input_hash",
+    "score_bp",
+    "verdict",
+    "reason_codes",
+    "salt",
+    "vote_commitment"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "batch_id": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Batch identifier being evaluated (uint256 on-chain)."
+    },
+    "verifier_address": {
+      "type": "string",
+      "pattern": "^0x[0-9a-fA-F]{40}$",
+      "description": "20-byte EVM address of the verifier node."
+    },
+    "model_hash": {
+      "type": "string",
+      "pattern": "^0x[0-9a-f]{64}$",
+      "description": "0x-prefixed lowercase 32-byte SHA-256 hash of the ONNX detector weights and physics rule config."
+    },
+    "input_hash": {
+      "type": "string",
+      "pattern": "^0x[0-9a-f]{64}$",
+      "description": "0x-prefixed lowercase 32-byte hash of the batch input (equals batch merkle_root)."
+    },
+    "score_bp": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 10000,
+      "description": "Quantized anomaly score in integer basis points (0..10000)."
+    },
+    "verdict": {
+      "type": "integer",
+      "enum": [0, 1],
+      "description": "Discretized verdict: 0 = clean, 1 = fraud."
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "CHAIN_BREAK",
+          "SEQ_GAP",
+          "SIG_INVALID",
+          "PHYSICS_RESIDUAL",
+          "AE_RESIDUAL",
+          "SPECTRAL_FLAT",
+          "SPECTRAL_REPEAT",
+          "CROSS_SOURCE_MISMATCH"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Ordered list of triggered detection reason codes (empty array when verdict == 0)."
+    },
+    "salt": {
+      "type": "string",
+      "pattern": "^0x[0-9a-f]{64}$",
+      "description": "0x-prefixed lowercase 32-byte random salt used in the commit phase."
+    },
+    "vote_commitment": {
+      "type": "string",
+      "pattern": "^0x[0-9a-f]{64}$",
+      "description": "keccak256(abi.encode(batch_id, model_hash, input_hash, score_bp, verdict, salt))."
+    }
+  }
+}

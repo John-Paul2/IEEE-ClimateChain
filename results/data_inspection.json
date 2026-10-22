@@ -1,0 +1,1380 @@
+{
+  "schema_version": "1.0.0",
+  "source_files": [
+    "campd_hourly_2025_IA.csv",
+    "campd_hourly_2025_UT.csv",
+    "campd_hourly_2025_WY.csv"
+  ],
+  "dataset_summary": {
+    "calendar_years": [
+      "2025"
+    ],
+    "date_min": "2025-01-01",
+    "date_max": "2025-12-31",
+    "states": [
+      "IA",
+      "UT",
+      "WY"
+    ],
+    "facilities_count": 30,
+    "facility_ids": [
+      1073,
+      1082,
+      1122,
+      1167,
+      3648,
+      4158,
+      4162,
+      6101,
+      6165,
+      6204,
+      6481,
+      6664,
+      7145,
+      7504,
+      7985,
+      8029,
+      8031,
+      8066,
+      8069,
+      55477,
+      55479,
+      55622,
+      56013,
+      56102,
+      56177,
+      56237,
+      56253,
+      56319,
+      57703,
+      58236
+    ],
+    "units_count": 75,
+    "total_rows": 646104,
+    "operating_rows": 374950,
+    "non_operating_rows": 271154,
+    "operating_hour_fraction": 0.580325,
+    "mean_operating_time_all_hours": 0.566544,
+    "mean_operating_time_when_operating": 0.976255,
+    "unit_operating_hour_fraction_stats": {
+      "min": 0.019749,
+      "median": 0.638813,
+      "mean": 0.576769,
+      "max": 0.985845
+    }
+  },
+  "columns_count": 33,
+  "columns_found": [
+    "State",
+    "Facility Name",
+    "Facility ID",
+    "Unit ID",
+    "unit_id",
+    "Associated Stacks",
+    "Date",
+    "Hour",
+    "Operating Time",
+    "Gross Load (MW)",
+    "Steam Load (1000 lb/hr)",
+    "SO2 Mass (lbs)",
+    "SO2 Mass Measure Indicator",
+    "SO2 Rate (lbs/mmBtu)",
+    "SO2 Rate Measure Indicator",
+    "CO2 Mass (short tons)",
+    "CO2 Mass Measure Indicator",
+    "CO2 Rate (short tons/mmBtu)",
+    "CO2 Rate Measure Indicator",
+    "NOx Mass (lbs)",
+    "NOx Mass Measure Indicator",
+    "NOx Rate (lbs/mmBtu)",
+    "NOx Rate Measure Indicator",
+    "Heat Input (mmBtu)",
+    "Heat Input Measure Indicator",
+    "Primary Fuel Type",
+    "Secondary Fuel Type",
+    "Unit Type",
+    "SO2 Controls",
+    "NOx Controls",
+    "PM Controls",
+    "Hg Controls",
+    "Program Code"
+  ],
+  "columns": [
+    {
+      "column_name": "State",
+      "pandas_dtype": "str",
+      "inferred_type": "string",
+      "documented_unit": null,
+      "missing_count_all": 0,
+      "missing_rate_all": 0.0,
+      "missing_count_operating": 0,
+      "missing_rate_operating": 0.0,
+      "value_range": {
+        "distinct_count": 3,
+        "min_lex": "IA",
+        "max_lex": "WY",
+        "top_values": {
+          "UT": 243144,
+          "IA": 201480,
+          "WY": 201480
+        }
+      }
+    },
+    {
+      "column_name": "Facility Name",
+      "pandas_dtype": "str",
+      "inferred_type": "string",
+      "documented_unit": null,
+      "missing_count_all": 0,
+      "missing_rate_all": 0.0,
+      "missing_count_operating": 0,
+      "missing_rate_operating": 0.0,
+      "value_range": {
+        "distinct_count": 30,
+        "min_lex": "Ames",
+        "max_lex": "Wyodak",
+        "top_values": {
+          "Gadsby": 52560,
+          "West Valley Power Plant": 43800,
+          "Lake Side Power Plant": 35040,
+          "Dave Johnston": 35040,
+          "Jim Bridger": 35040
+        }
+      }
+    },
+    {
+      "column_name": "Facility ID",
+      "pandas_dtype": "int64",
+      "inferred_type": "integer",
+      "documented_unit": null,
+      "missing_count_all": 0,
+      "missing_rate_all": 0.0,
+      "missing_count_operating": 0,
+      "missing_rate_operating": 0.0,
+      "value_range": {
+        "min": 1073.0,
+        "max": 58236.0,
+        "mean": 22634.090524,
+        "std": 24230.805798,
+        "median": 7985.0,
+        "p05": 1082.0,
+        "p95": 57703.0
+      }
+    },
+    {
+      "column_name": "Unit ID",
+      "pandas_dtype": "str",
+      "inferred_type": "string",
+      "documented_unit": null,
+      "missing_count_all": 0,
+      "missing_rate_all": 0.0,
+      "missing_count_operating": 0,
+      "missing_rate_operating": 0.0,
+      "value_range": {
+        "distinct_count": 44,
+        "min_lex": "001",
+        "max_lex": "U5",
+        "top_values": {
+          "1": 70080,
+          "2": 70080,
+          "3": 61320,
+          "4": 26280,
+          "001": 26280
+        }
+      }
+    },
+    {
+      "column_name": "unit_id",
+      "pandas_dtype": "int64",
+      "inferred_type": "integer",
+      "documented_unit": null,
+      "missing_count_all": 0,
+      "missing_rate_all": 0.0,
+      "missing_count_operating": 0,
+      "missing_rate_operating": 0.0,
+      "value_range": {
+        "min": 746.0,
+        "max": 91620.0,
+        "mean": 34026.583374,
+        "std": 41045.008512,
+        "median": 4849.0,
+        "p05": 767.0,
+        "p95": 90916.0
+      }
+    },
+    {
+      "column_name": "Associated Stacks",
+      "pandas_dtype": "float64",
+      "inferred_type": "string",
+      "documented_unit": null,
+      "missing_count_all": 646104,
+      "missing_rate_all": 1.0,
+      "missing_count_operating": 374950,
+      "missing_rate_operating": 1.0,
+      "value_range": {
+        "distinct_count": 0,
+        "min_lex": null,
+        "max_lex": null,
+        "top_values": {}
+      }
+    },
+    {
+      "column_name": "Date",
+      "pandas_dtype": "str",
+      "inferred_type": "date",
+      "documented_unit": "YYYY-MM-DD",
+      "missing_count_all": 0,
+      "missing_rate_all": 0.0,
+      "missing_count_operating": 0,
+      "missing_rate_operating": 0.0,
+      "value_range": {
+        "distinct_count": 365,
+        "min_lex": "2025-01-01",
+        "max_lex": "2025-12-31",
+        "top_values": {
+          "2025-10-01": 1800,
+          "2025-10-02": 1800,
+          "2025-10-03": 1800,
+          "2025-10-04": 1800,
+          "2025-10-05": 1800
+        }
+      }
+    },
+    {
+      "column_name": "Hour",
+      "pandas_dtype": "int64",
+      "inferred_type": "integer",
+      "documented_unit": "hour_of_day_0_to_23",
+      "missing_count_all": 0,
+      "missing_rate_all": 0.0,
+      "missing_count_operating": 0,
+      "missing_rate_operating": 0.0,
+      "value_range": {
+        "min": 0.0,
+        "max": 23.0,
+        "mean": 11.5,
+        "std": 6.922192,
+        "median": 11.5,
+        "p05": 1.0,
+        "p95": 22.0
+      }
+    },
+    {
+      "column_name": "Operating Time",
+      "pandas_dtype": "float64",
+      "inferred_type": "float",
+      "documented_unit": "fraction_0_to_1",
+      "missing_count_all": 3285,
+      "missing_rate_all": 0.005084,
+      "missing_count_operating": 0,
+      "missing_rate_operating": 0.0,
+      "value_range": {
+        "min": 0.0,
+        "max": 1.0,
+        "mean": 0.56944,
+        "std": 0.491603,
+        "median": 1.0,
+        "p05": 0.0,
+        "p95": 1.0
+      }
+    },
+    {
+      "column_name": "Gross Load (MW)",
+      "pandas_dtype": "float64",
+      "inferred_type": "float",
+      "documented_unit": "MW",
+      "missing_count_all": 280156,
+      "missing_rate_all": 0.433608,
+      "missing_count_operating": 9002,
+      "missing_rate_operating": 0.024009,
+      "value_range": {
+        "min": 0.0,
+        "max": 940.0,
+        "mean": 215.459352,
+        "std": 185.205167,
+        "median": 178.0,
+        "p05": 20.0,
+        "p95": 599.0
+      }
+    },
+    {
+      "column_name": "Steam Load (1000 lb/hr)",
+      "pandas_dtype": "float64",
+      "inferred_type": "float",
+      "documented_unit": "1000 lb/hr",
+      "missing_count_all": 637102,
+      "missing_rate_all": 0.986067,
+      "missing_count_operating": 365948,
+      "missing_rate_operating": 0.975991,
+      "value_range": {
+        "min": 0.0,
+        "max": 855.0,
+        "mean": 231.431015,
+        "std": 102.889244,
+        "median": 231.0,
+        "p05": 75.0,
+        "p95": 373.95
+      }
+    },
+    {
+      "column_name": "SO2 Mass (lbs)",
+      "pandas_dtype": "float64",
+      "inferred_type": "float",
+      "documented_unit": "lb",
+      "missing_count_all": 271154,
+      "missing_rate_all": 0.419675,
+      "missing_count_operating": 0,
+      "missing_rate_operating": 0.0,
+      "value_range": {
+        "min": 0.0,
+        "max": 5523.2,
+        "mean": 181.768479,
+        "std": 256.479107,
+        "median": 28.9,
+        "p05": 0.143,
+        "p95": 748.5
+      }
+    },
+    {
+      "column_name": "SO2 Mass Measure Indicator",
+      "pandas_dtype": "str",
+      "inferred_type": "string",
+      "documented_unit": null,
+      "missing_count_all": 271154,
+      "missing_rate_all": 0.419675,
+      "missing_count_operating": 0,
+      "missing_rate_operating": 0.0,
+      "value_range": {
+        "distinct_count": 6,
+        "min_lex": "LME",
+        "max_lex": "Substitute",
+        "top_values": {
+          "Measured": 364068,
+          "MEASURE": 3252,
+          "LME": 3170,
+          "Measured and Substitute": 2549,
+          "Substitute": 1431
+        }
+      }
+    },
+    {
+      "column_name": "SO2 Rate (lbs/mmBtu)",
+      "pandas_dtype": "float64",
+      "inferred_type": "float",
+      "documented_unit": "lb/mmBtu",
+      "missing_count_all": 271178,
+      "missing_rate_all": 0.419713,
+      "missing_count_operating": 24,
+      "missing_rate_operating": 6.4e-05,
+      "value_range": {
+        "min": 0.0,
+        "max": 9.699,
+        "mean": 0.090522,
+        "std": 0.174251,
+        "median": 0.025,
+        "p05": 0.001,
+        "p95": 0.653
+      }
+    },
+    {
+      "column_name": "SO2 Rate Measure Indicator",
+      "pandas_dtype": "str",
+      "inferred_type": "string",
+      "documented_unit": null,
+      "missing_count_all": 271178,
+      "missing_rate_all": 0.419713,
+      "missing_count_operating": 24,
+      "missing_rate_operating": 6.4e-05,
+      "value_range": {
+        "distinct_count": 2,
+        "min_lex": "CALC",
+        "max_lex": "Calculated",
+        "top_values": {
+          "Calculated": 371194,
+          "CALC": 3732
+        }
+      }
+    },
+    {
+      "column_name": "CO2 Mass (short tons)",
+      "pandas_dtype": "float64",
+      "inferred_type": "float",
+      "documented_unit": "short_tons",
+      "missing_count_all": 274137,
+      "missing_rate_all": 0.424292,
+      "missing_count_operating": 2983,
+      "missing_rate_operating": 0.007956,
+      "value_range": {
+        "min": 0.0,
+        "max": 1096.4,
+        "mean": 192.676165,
+        "std": 199.158369,
+        "median": 108.9,
+        "p05": 14.3,
+        "p95": 652.7
+      }
+    },
+    {
+      "column_name": "CO2 Mass Measure Indicator",
+      "pandas_dtype": "str",
+      "inferred_type": "string",
+      "documented_unit": null,
+      "missing_count_all": 274137,
+      "missing_rate_all": 0.424292,
+      "missing_count_operating": 2983,
+      "missing_rate_operating": 0.007956,
+      "value_range": {
+        "distinct_count": 6,
+        "min_lex": "LME",
+        "max_lex": "Substitute",
+        "top_values": {
+          "Measured": 362844,
+          "Measured and Substitute": 3642,
+          "MEASURE": 3252,
+          "LME": 1624,
+          "MEASSUB": 480
+        }
+      }
+    },
+    {
+      "column_name": "CO2 Rate (short tons/mmBtu)",
+      "pandas_dtype": "float64",
+      "inferred_type": "float",
+      "documented_unit": "short_tons/mmBtu",
+      "missing_count_all": 274141,
+      "missing_rate_all": 0.424299,
+      "missing_count_operating": 2987,
+      "missing_rate_operating": 0.007966,
+      "value_range": {
+        "min": 0.0,
+        "max": 0.118,
+        "mean": 0.083773,
+        "std": 0.022651,
+        "median": 0.103,
+        "p05": 0.059,
+        "p95": 0.105
+      }
+    },
+    {
+      "column_name": "CO2 Rate Measure Indicator",
+      "pandas_dtype": "str",
+      "inferred_type": "string",
+      "documented_unit": null,
+      "missing_count_all": 274141,
+      "missing_rate_all": 0.424299,
+      "missing_count_operating": 2987,
+      "missing_rate_operating": 0.007966,
+      "value_range": {
+        "distinct_count": 2,
+        "min_lex": "CALC",
+        "max_lex": "Calculated",
+        "top_values": {
+          "Calculated": 368231,
+          "CALC": 3732
+        }
+      }
+    },
+    {
+      "column_name": "NOx Mass (lbs)",
+      "pandas_dtype": "float64",
+      "inferred_type": "float",
+      "documented_unit": "lb",
+      "missing_count_all": 271154,
+      "missing_rate_all": 0.419675,
+      "missing_count_operating": 0,
+      "missing_rate_operating": 0.0,
+      "value_range": {
+        "min": 0.0,
+        "max": 8006.0,
+        "mean": 278.591332,
+        "std": 390.300745,
+        "median": 120.072,
+        "p05": 2.729,
+        "p95": 1039.91865
+      }
+    },
+    {
+      "column_name": "NOx Mass Measure Indicator",
+      "pandas_dtype": "str",
+      "inferred_type": "string",
+      "documented_unit": null,
+      "missing_count_all": 271154,
+      "missing_rate_all": 0.419675,
+      "missing_count_operating": 0,
+      "missing_rate_operating": 0.0,
+      "value_range": {
+        "distinct_count": 8,
+        "min_lex": "CALC",
+        "max_lex": "Substitute",
+        "top_values": {
+          "Calculated": 282833,
+          "Measured": 84290,
+          "LME": 3170,
+          "CALC": 2896,
+          "Measured and Substitute": 901
+        }
+      }
+    },
+    {
+      "column_name": "NOx Rate (lbs/mmBtu)",
+      "pandas_dtype": "float64",
+      "inferred_type": "float",
+      "documented_unit": "lb/mmBtu",
+      "missing_count_all": 271174,
+      "missing_rate_all": 0.419706,
+      "missing_count_operating": 20,
+      "missing_rate_operating": 5.3e-05,
+      "value_range": {
+        "min": 0.0,
+        "max": 1.97,
+        "mean": 0.123296,
+        "std": 0.122015,
+        "median": 0.109,
+        "p05": 0.006,
+        "p95": 0.334
+      }
+    },
+    {
+      "column_name": "NOx Rate Measure Indicator",
+      "pandas_dtype": "str",
+      "inferred_type": "string",
+      "documented_unit": null,
+      "missing_count_all": 271174,
+      "missing_rate_all": 0.419706,
+      "missing_count_operating": 20,
+      "missing_rate_operating": 5.3e-05,
+      "value_range": {
+        "distinct_count": 5,
+        "min_lex": "Calculated",
+        "max_lex": "Substitute",
+        "top_values": {
+          "Measured": 363142,
+          "Substitute": 4906,
+          "MEASURE": 3723,
+          "Calculated": 3150,
+          "SUB": 9
+        }
+      }
+    },
+    {
+      "column_name": "Heat Input (mmBtu)",
+      "pandas_dtype": "float64",
+      "inferred_type": "float",
+      "documented_unit": "mmBtu",
+      "missing_count_all": 271154,
+      "missing_rate_all": 0.419675,
+      "missing_count_operating": 0,
+      "missing_rate_operating": 0.0,
+      "value_range": {
+        "min": 0.0,
+        "max": 10686.1,
+        "mean": 2056.310222,
+        "std": 1847.300124,
+        "median": 1480.1,
+        "p05": 228.2,
+        "p95": 6224.41
+      }
+    },
+    {
+      "column_name": "Heat Input Measure Indicator",
+      "pandas_dtype": "str",
+      "inferred_type": "string",
+      "documented_unit": null,
+      "missing_count_all": 271154,
+      "missing_rate_all": 0.419675,
+      "missing_count_operating": 0,
+      "missing_rate_operating": 0.0,
+      "value_range": {
+        "distinct_count": 6,
+        "min_lex": "LME",
+        "max_lex": "Substitute",
+        "top_values": {
+          "Measured": 364281,
+          "Measured and Substitute": 3642,
+          "MEASURE": 3252,
+          "LME": 3170,
+          "MEASSUB": 480
+        }
+      }
+    },
+    {
+      "column_name": "Primary Fuel Type",
+      "pandas_dtype": "str",
+      "inferred_type": "string",
+      "documented_unit": null,
+      "missing_count_all": 0,
+      "missing_rate_all": 0.0,
+      "missing_count_operating": 0,
+      "missing_rate_operating": 0.0,
+      "value_range": {
+        "distinct_count": 3,
+        "min_lex": "Coal",
+        "max_lex": "Pipeline Natural Gas",
+        "top_values": {
+          "Pipeline Natural Gas": 374544,
+          "Coal": 245280,
+          "Natural Gas": 26280
+        }
+      }
+    },
+    {
+      "column_name": "Secondary Fuel Type",
+      "pandas_dtype": "str",
+      "inferred_type": "string",
+      "documented_unit": null,
+      "missing_count_all": 490560,
+      "missing_rate_all": 0.759259,
+      "missing_count_operating": 303982,
+      "missing_rate_operating": 0.810727,
+      "value_range": {
+        "distinct_count": 6,
+        "min_lex": "Diesel Oil",
+        "max_lex": "Refuse",
+        "top_values": {
+          "Diesel Oil": 87600,
+          "Refuse": 17520,
+          "Natural Gas": 17520,
+          "Pipeline Natural Gas": 17520,
+          "Other Gas, Pipeline Natural Gas": 8760
+        }
+      }
+    },
+    {
+      "column_name": "Unit Type",
+      "pandas_dtype": "str",
+      "inferred_type": "string",
+      "documented_unit": null,
+      "missing_count_all": 0,
+      "missing_rate_all": 0.0,
+      "missing_count_operating": 0,
+      "missing_rate_operating": 0.0,
+      "value_range": {
+        "distinct_count": 7,
+        "min_lex": "Combined cycle",
+        "max_lex": "Tangentially-fired",
+        "top_values": {
+          "Dry bottom wall-fired boiler": 183960,
+          "Combustion turbine": 183960,
+          "Tangentially-fired": 131400,
+          "Combined cycle": 131400,
+          "Cyclone boiler": 8760
+        }
+      }
+    },
+    {
+      "column_name": "SO2 Controls",
+      "pandas_dtype": "str",
+      "inferred_type": "string",
+      "documented_unit": null,
+      "missing_count_all": 435864,
+      "missing_rate_all": 0.674603,
+      "missing_count_operating": 196042,
+      "missing_rate_operating": 0.522848,
+      "value_range": {
+        "distinct_count": 4,
+        "min_lex": "Dry Lime FGD",
+        "max_lex": "Wet Limestone",
+        "top_values": {
+          "Dry Lime FGD": 87600,
+          "Wet Limestone": 43800,
+          "Wet Lime FGD": 43800,
+          "Sodium Based": 35040
+        }
+      }
+    },
+    {
+      "column_name": "NOx Controls",
+      "pandas_dtype": "str",
+      "inferred_type": "string",
+      "documented_unit": null,
+      "missing_count_all": 43800,
+      "missing_rate_all": 0.067791,
+      "missing_count_operating": 21752,
+      "missing_rate_operating": 0.058013,
+      "value_range": {
+        "distinct_count": 17,
+        "min_lex": "Dry Low NOx Burners",
+        "max_lex": "Water Injection|Selective Catalytic Reduction",
+        "top_values": {
+          "Low NOx Burner Technology w/ Overfire Air": 70080,
+          "Water Injection|Selective Catalytic Reduction": 70080,
+          "Dry Low NOx Burners|Selective Catalytic Reduction": 67944,
+          "Water Injection": 52560,
+          "Selective Catalytic Reduction": 52560
+        }
+      }
+    },
+    {
+      "column_name": "PM Controls",
+      "pandas_dtype": "str",
+      "inferred_type": "string",
+      "documented_unit": null,
+      "missing_count_all": 374544,
+      "missing_rate_all": 0.579696,
+      "missing_count_operating": 161911,
+      "missing_rate_operating": 0.43182,
+      "value_range": {
+        "distinct_count": 3,
+        "min_lex": "Baghouse",
+        "max_lex": "Wet Scrubber|Baghouse",
+        "top_values": {
+          "Electrostatic Precipitator": 140160,
+          "Baghouse": 122640,
+          "Wet Scrubber|Baghouse": 8760
+        }
+      }
+    },
+    {
+      "column_name": "Hg Controls",
+      "pandas_dtype": "object",
+      "inferred_type": "string",
+      "documented_unit": null,
+      "missing_count_all": 479664,
+      "missing_rate_all": 0.742394,
+      "missing_count_operating": 239167,
+      "missing_rate_operating": 0.637864,
+      "value_range": {
+        "distinct_count": 6,
+        "min_lex": "Additives to Enhance PAC and Existing Equipment Performance",
+        "max_lex": "Untreated PAC Sorbent Injection|Additives to Enhance PAC and Existing Equipment Performance",
+        "top_values": {
+          "Halogenated PAC Sorbent Injection": 70080,
+          "Additives to Enhance PAC and Existing Equipment Performance": 43800,
+          "Additives to Enhance PAC and Existing Equipment Performance|Untreated PAC Sorbent Injection": 17520,
+          "Additives to Enhance PAC and Existing Equipment Performance|Halogenated PAC Sorbent Injection": 17520,
+          "Untreated PAC Sorbent Injection|Additives to Enhance PAC and Existing Equipment Performance": 8760
+        }
+      }
+    },
+    {
+      "column_name": "Program Code",
+      "pandas_dtype": "str",
+      "inferred_type": "string",
+      "documented_unit": null,
+      "missing_count_all": 0,
+      "missing_rate_all": 0.0,
+      "missing_count_operating": 0,
+      "missing_rate_operating": 0.0,
+      "value_range": {
+        "distinct_count": 7,
+        "min_lex": "ARP",
+        "max_lex": "CSNOX, CSOSG2, CSSO2G1",
+        "top_values": {
+          "ARP": 245280,
+          "ARP, MATS": 192720,
+          "ARP, CSNOX, CSOSG2, CSSO2G1": 96360,
+          "ARP, CSNOX, CSOSG2, CSSO2G1, MATS": 52560,
+          "CSNOX, CSOSG2, CSSO2G1": 35040
+        }
+      }
+    }
+  ],
+  "unit_types": [
+    {
+      "unit_type": "Combustion turbine",
+      "total_rows": 183960,
+      "operating_rows": 38440,
+      "operating_hour_fraction": 0.208958,
+      "facilities_count": 9,
+      "units_count": 21
+    },
+    {
+      "unit_type": "Dry bottom wall-fired boiler",
+      "total_rows": 183960,
+      "operating_rows": 131459,
+      "operating_hour_fraction": 0.714606,
+      "facilities_count": 13,
+      "units_count": 21
+    },
+    {
+      "unit_type": "Combined cycle",
+      "total_rows": 131400,
+      "operating_rows": 94771,
+      "operating_hour_fraction": 0.72124,
+      "facilities_count": 7,
+      "units_count": 15
+    },
+    {
+      "unit_type": "Tangentially-fired",
+      "total_rows": 131400,
+      "operating_rows": 106441,
+      "operating_hour_fraction": 0.810053,
+      "facilities_count": 8,
+      "units_count": 15
+    },
+    {
+      "unit_type": "Cyclone boiler",
+      "total_rows": 8760,
+      "operating_rows": 1173,
+      "operating_hour_fraction": 0.133904,
+      "facilities_count": 1,
+      "units_count": 1
+    },
+    {
+      "unit_type": "Combined cycle (Started Oct 10, 2025)",
+      "total_rows": 4416,
+      "operating_rows": 1978,
+      "operating_hour_fraction": 0.447917,
+      "facilities_count": 1,
+      "units_count": 1
+    },
+    {
+      "unit_type": "Combined cycle (Started Nov 23, 2025)",
+      "total_rows": 2208,
+      "operating_rows": 688,
+      "operating_hour_fraction": 0.311594,
+      "facilities_count": 1,
+      "units_count": 1
+    }
+  ],
+  "primary_fuel_types": [
+    {
+      "primary_fuel_type": "Pipeline Natural Gas",
+      "total_rows": 374544,
+      "operating_rows": 161911,
+      "operating_hour_fraction": 0.432288,
+      "facilities_count": 18,
+      "units_count": 44
+    },
+    {
+      "primary_fuel_type": "Coal",
+      "total_rows": 245280,
+      "operating_rows": 203474,
+      "operating_hour_fraction": 0.829558,
+      "facilities_count": 15,
+      "units_count": 28
+    },
+    {
+      "primary_fuel_type": "Natural Gas",
+      "total_rows": 26280,
+      "operating_rows": 9565,
+      "operating_hour_fraction": 0.363965,
+      "facilities_count": 2,
+      "units_count": 3
+    }
+  ],
+  "secondary_fuel_types": {
+    "None": 490560,
+    "Diesel Oil": 87600,
+    "Refuse": 17520,
+    "Natural Gas": 17520,
+    "Pipeline Natural Gas": 17520,
+    "Other Gas, Pipeline Natural Gas": 8760,
+    "Other Gas": 6624
+  },
+  "facilities": [
+    {
+      "facility_id": 1073,
+      "facility_name": "Prairie Creek",
+      "state": "IA",
+      "units_count": 2,
+      "primary_fuels": [
+        "Coal",
+        "Natural Gas"
+      ],
+      "total_rows": 17520,
+      "operating_rows": 9002,
+      "operating_hour_fraction": 0.513813
+    },
+    {
+      "facility_id": 1082,
+      "facility_name": "Walter Scott Jr. Energy Center",
+      "state": "IA",
+      "units_count": 2,
+      "primary_fuels": [
+        "Coal"
+      ],
+      "total_rows": 17520,
+      "operating_rows": 10933,
+      "operating_hour_fraction": 0.62403
+    },
+    {
+      "facility_id": 1122,
+      "facility_name": "Ames",
+      "state": "IA",
+      "units_count": 2,
+      "primary_fuels": [
+        "Natural Gas"
+      ],
+      "total_rows": 17520,
+      "operating_rows": 8310,
+      "operating_hour_fraction": 0.474315
+    },
+    {
+      "facility_id": 1167,
+      "facility_name": "Muscatine",
+      "state": "IA",
+      "units_count": 2,
+      "primary_fuels": [
+        "Coal"
+      ],
+      "total_rows": 17520,
+      "operating_rows": 8750,
+      "operating_hour_fraction": 0.499429
+    },
+    {
+      "facility_id": 3648,
+      "facility_name": "Gadsby",
+      "state": "UT",
+      "units_count": 6,
+      "primary_fuels": [
+        "Pipeline Natural Gas"
+      ],
+      "total_rows": 52560,
+      "operating_rows": 10144,
+      "operating_hour_fraction": 0.192998
+    },
+    {
+      "facility_id": 4158,
+      "facility_name": "Dave Johnston",
+      "state": "WY",
+      "units_count": 4,
+      "primary_fuels": [
+        "Coal"
+      ],
+      "total_rows": 35040,
+      "operating_rows": 30578,
+      "operating_hour_fraction": 0.87266
+    },
+    {
+      "facility_id": 4162,
+      "facility_name": "Naughton",
+      "state": "WY",
+      "units_count": 3,
+      "primary_fuels": [
+        "Coal",
+        "Pipeline Natural Gas"
+      ],
+      "total_rows": 26280,
+      "operating_rows": 20687,
+      "operating_hour_fraction": 0.787177
+    },
+    {
+      "facility_id": 6101,
+      "facility_name": "Wyodak",
+      "state": "WY",
+      "units_count": 1,
+      "primary_fuels": [
+        "Coal"
+      ],
+      "total_rows": 8760,
+      "operating_rows": 7861,
+      "operating_hour_fraction": 0.897374
+    },
+    {
+      "facility_id": 6165,
+      "facility_name": "Hunter",
+      "state": "UT",
+      "units_count": 3,
+      "primary_fuels": [
+        "Coal"
+      ],
+      "total_rows": 26280,
+      "operating_rows": 25562,
+      "operating_hour_fraction": 0.972679
+    },
+    {
+      "facility_id": 6204,
+      "facility_name": "Laramie River",
+      "state": "WY",
+      "units_count": 3,
+      "primary_fuels": [
+        "Coal"
+      ],
+      "total_rows": 26280,
+      "operating_rows": 23648,
+      "operating_hour_fraction": 0.899848
+    },
+    {
+      "facility_id": 6481,
+      "facility_name": "Intermountain",
+      "state": "UT",
+      "units_count": 4,
+      "primary_fuels": [
+        "Coal",
+        "Pipeline Natural Gas"
+      ],
+      "total_rows": 24144,
+      "operating_rows": 12633,
+      "operating_hour_fraction": 0.523236
+    },
+    {
+      "facility_id": 6664,
+      "facility_name": "Louisa",
+      "state": "IA",
+      "units_count": 1,
+      "primary_fuels": [
+        "Coal"
+      ],
+      "total_rows": 8760,
+      "operating_rows": 7756,
+      "operating_hour_fraction": 0.885388
+    },
+    {
+      "facility_id": 7145,
+      "facility_name": "Pleasant Hill Energy Center",
+      "state": "IA",
+      "units_count": 3,
+      "primary_fuels": [
+        "Pipeline Natural Gas"
+      ],
+      "total_rows": 26280,
+      "operating_rows": 2662,
+      "operating_hour_fraction": 0.101294
+    },
+    {
+      "facility_id": 7504,
+      "facility_name": "Neil Simpson II",
+      "state": "WY",
+      "units_count": 2,
+      "primary_fuels": [
+        "Coal",
+        "Pipeline Natural Gas"
+      ],
+      "total_rows": 17520,
+      "operating_rows": 11820,
+      "operating_hour_fraction": 0.674658
+    },
+    {
+      "facility_id": 7985,
+      "facility_name": "Greater Des Moines Energy Center",
+      "state": "IA",
+      "units_count": 2,
+      "primary_fuels": [
+        "Pipeline Natural Gas"
+      ],
+      "total_rows": 17520,
+      "operating_rows": 8078,
+      "operating_hour_fraction": 0.461073
+    },
+    {
+      "facility_id": 8029,
+      "facility_name": "Sycamore Combustion Turbine",
+      "state": "IA",
+      "units_count": 2,
+      "primary_fuels": [
+        "Pipeline Natural Gas"
+      ],
+      "total_rows": 17520,
+      "operating_rows": 1437,
+      "operating_hour_fraction": 0.082021
+    },
+    {
+      "facility_id": 8031,
+      "facility_name": "Emery Station",
+      "state": "IA",
+      "units_count": 2,
+      "primary_fuels": [
+        "Pipeline Natural Gas"
+      ],
+      "total_rows": 17520,
+      "operating_rows": 10769,
+      "operating_hour_fraction": 0.614669
+    },
+    {
+      "facility_id": 8066,
+      "facility_name": "Jim Bridger",
+      "state": "WY",
+      "units_count": 4,
+      "primary_fuels": [
+        "Coal",
+        "Pipeline Natural Gas"
+      ],
+      "total_rows": 35040,
+      "operating_rows": 26792,
+      "operating_hour_fraction": 0.764612
+    },
+    {
+      "facility_id": 8069,
+      "facility_name": "Huntington",
+      "state": "UT",
+      "units_count": 2,
+      "primary_fuels": [
+        "Coal"
+      ],
+      "total_rows": 17520,
+      "operating_rows": 17145,
+      "operating_hour_fraction": 0.978596
+    },
+    {
+      "facility_id": 55477,
+      "facility_name": "Neil Simpson II (CT2)",
+      "state": "WY",
+      "units_count": 1,
+      "primary_fuels": [
+        "Pipeline Natural Gas"
+      ],
+      "total_rows": 8760,
+      "operating_rows": 1534,
+      "operating_hour_fraction": 0.175114
+    },
+    {
+      "facility_id": 55479,
+      "facility_name": "Wygen I",
+      "state": "WY",
+      "units_count": 1,
+      "primary_fuels": [
+        "Coal"
+      ],
+      "total_rows": 8760,
+      "operating_rows": 6910,
+      "operating_hour_fraction": 0.788813
+    },
+    {
+      "facility_id": 55622,
+      "facility_name": "West Valley Power Plant",
+      "state": "UT",
+      "units_count": 5,
+      "primary_fuels": [
+        "Pipeline Natural Gas"
+      ],
+      "total_rows": 43800,
+      "operating_rows": 14386,
+      "operating_hour_fraction": 0.328447
+    },
+    {
+      "facility_id": 56013,
+      "facility_name": "Exira Station",
+      "state": "IA",
+      "units_count": 3,
+      "primary_fuels": [
+        "Pipeline Natural Gas"
+      ],
+      "total_rows": 26280,
+      "operating_rows": 8705,
+      "operating_hour_fraction": 0.33124
+    },
+    {
+      "facility_id": 56102,
+      "facility_name": "Currant Creek Power Project",
+      "state": "UT",
+      "units_count": 2,
+      "primary_fuels": [
+        "Pipeline Natural Gas"
+      ],
+      "total_rows": 17520,
+      "operating_rows": 15404,
+      "operating_hour_fraction": 0.879224
+    },
+    {
+      "facility_id": 56177,
+      "facility_name": "Nebo Power Station",
+      "state": "UT",
+      "units_count": 1,
+      "primary_fuels": [
+        "Pipeline Natural Gas"
+      ],
+      "total_rows": 8760,
+      "operating_rows": 7292,
+      "operating_hour_fraction": 0.83242
+    },
+    {
+      "facility_id": 56237,
+      "facility_name": "Lake Side Power Plant",
+      "state": "UT",
+      "units_count": 4,
+      "primary_fuels": [
+        "Pipeline Natural Gas"
+      ],
+      "total_rows": 35040,
+      "operating_rows": 29162,
+      "operating_hour_fraction": 0.832249
+    },
+    {
+      "facility_id": 56253,
+      "facility_name": "Millcreek Power",
+      "state": "UT",
+      "units_count": 2,
+      "primary_fuels": [
+        "Pipeline Natural Gas"
+      ],
+      "total_rows": 17520,
+      "operating_rows": 4644,
+      "operating_hour_fraction": 0.265068
+    },
+    {
+      "facility_id": 56319,
+      "facility_name": "Wygen II",
+      "state": "WY",
+      "units_count": 1,
+      "primary_fuels": [
+        "Coal"
+      ],
+      "total_rows": 8760,
+      "operating_rows": 8107,
+      "operating_hour_fraction": 0.925457
+    },
+    {
+      "facility_id": 57703,
+      "facility_name": "Cheyenne Prairie Generating Station",
+      "state": "WY",
+      "units_count": 3,
+      "primary_fuels": [
+        "Pipeline Natural Gas"
+      ],
+      "total_rows": 26280,
+      "operating_rows": 13044,
+      "operating_hour_fraction": 0.496347
+    },
+    {
+      "facility_id": 58236,
+      "facility_name": "Marshalltown Generating Station",
+      "state": "IA",
+      "units_count": 2,
+      "primary_fuels": [
+        "Pipeline Natural Gas"
+      ],
+      "total_rows": 17520,
+      "operating_rows": 11195,
+      "operating_hour_fraction": 0.638984
+    }
+  ],
+  "missing_physical_channels_check": {
+    "stack_o2_present": false,
+    "stack_o2_matching_columns": [],
+    "flue_temperature_present": false,
+    "flue_temperature_matching_columns": [],
+    "stack_flow_rate_present": false,
+    "stack_flow_rate_matching_columns": [],
+    "missing_channels": [
+      "stack_o2_concentration",
+      "flue_gas_temperature",
+      "stack_volumetric_flow_rate"
+    ],
+    "finding": "None of stack O2 concentration, flue-gas temperature, or stack volumetric flow rate exist in the 33 columns of the official EPA CAMPD hourly Part 75 bulk CSV files. Any detector or telemetry channel using O2, flue temperature, stack flow, or an independent custody-transfer fuel meter must be simulated and explicitly labelled 'synthetic' (e.g., synthetic_stack_o2_pct, synthetic_flue_temp_c, synthetic_stack_flow_kscfm, synthetic_fuel_flow_mmbtu_indep / fuel_ledger_synthetic)."
+  },
+  "co2_heat_input_circularity": {
+    "is_circular": true,
+    "per_fuel_type": {
+      "Coal": {
+        "operating_hours_evaluated": 203474,
+        "pearson_r": 0.99986129,
+        "r_squared": 0.9997226,
+        "ratio_short_tons_co2_per_mmbtu": {
+          "mean": 0.104028,
+          "std": 0.003653,
+          "cv_pct": 3.512,
+          "min": 0.0,
+          "p05": 0.102589,
+          "median": 0.104873,
+          "p95": 0.10492,
+          "max": 0.117647
+        },
+        "within_unit_constant_ratio_fraction": 0.98474,
+        "co2_rate_column_mae": 0.000195,
+        "co2_mass_measure_indicators": {
+          "Measured": 201045,
+          "Measured and Substitute": 2304,
+          "Substitute": 125
+        },
+        "heat_input_measure_indicators": {
+          "Measured": 201045,
+          "Measured and Substitute": 2304,
+          "Substitute": 125
+        },
+        "is_circular": true,
+        "published_reference_factors_unverified": [
+          {
+            "key": "coal_subbituminous_bituminous_part75",
+            "derived_co2_short_tons_per_mmbtu": 0.1049,
+            "source_url": "https://www.ecfr.gov/current/title-40/chapter-I/subchapter-C/part-75/appendix-Appendix%20F%20to%20Part%2075",
+            "status": "unverified"
+          },
+          {
+            "key": "epa_ghg_emission_factors_hub_coal_mixed_electric_power",
+            "derived_co2_short_tons_per_mmbtu": 0.1053,
+            "source_url": "https://www.epa.gov/climateleadership/ghg-emission-factors-hub",
+            "status": "unverified"
+          }
+        ]
+      },
+      "Natural Gas": {
+        "operating_hours_evaluated": 9565,
+        "pearson_r": 0.99999609,
+        "r_squared": 0.99999219,
+        "ratio_short_tons_co2_per_mmbtu": {
+          "mean": 0.059282,
+          "std": 0.000196,
+          "cv_pct": 0.3301,
+          "min": 0.055556,
+          "p05": 0.059172,
+          "median": 0.05928,
+          "p95": 0.05939,
+          "max": 0.065574
+        },
+        "within_unit_constant_ratio_fraction": 0.963826,
+        "co2_rate_column_mae": 0.000279,
+        "co2_mass_measure_indicators": {
+          "Measured": 9533,
+          "Measured and Substitute": 32
+        },
+        "heat_input_measure_indicators": {
+          "Measured": 9533,
+          "Measured and Substitute": 32
+        },
+        "is_circular": true,
+        "published_reference_factors_unverified": [
+          {
+            "key": "pipeline_natural_gas_part75",
+            "derived_co2_short_tons_per_mmbtu": 0.0594,
+            "source_url": "https://www.ecfr.gov/current/title-40/chapter-I/subchapter-C/part-75/appendix-Appendix%20G%20to%20Part%2075",
+            "status": "unverified"
+          },
+          {
+            "key": "epa_ghg_emission_factors_hub_natural_gas",
+            "derived_co2_short_tons_per_mmbtu": 0.0585,
+            "source_url": "https://www.epa.gov/climateleadership/ghg-emission-factors-hub",
+            "status": "unverified"
+          }
+        ]
+      },
+      "Pipeline Natural Gas": {
+        "operating_hours_evaluated": 158924,
+        "pearson_r": 0.99999654,
+        "r_squared": 0.99999307,
+        "ratio_short_tons_co2_per_mmbtu": {
+          "mean": 0.059412,
+          "std": 0.001508,
+          "cv_pct": 2.5386,
+          "min": 0.0,
+          "p05": 0.059298,
+          "median": 0.059428,
+          "p95": 0.059549,
+          "max": 0.1
+        },
+        "within_unit_constant_ratio_fraction": 0.97176,
+        "co2_rate_column_mae": 0.00041,
+        "co2_mass_measure_indicators": {
+          "Measured": 152262,
+          "MEASURE": 3252,
+          "LME": 1624,
+          "Measured and Substitute": 1306,
+          "MEASSUB": 480
+        },
+        "heat_input_measure_indicators": {
+          "Measured": 152262,
+          "MEASURE": 3252,
+          "LME": 1624,
+          "Measured and Substitute": 1306,
+          "MEASSUB": 480
+        },
+        "is_circular": true,
+        "published_reference_factors_unverified": [
+          {
+            "key": "pipeline_natural_gas_part75",
+            "derived_co2_short_tons_per_mmbtu": 0.0594,
+            "source_url": "https://www.ecfr.gov/current/title-40/chapter-I/subchapter-C/part-75/appendix-Appendix%20G%20to%20Part%2075",
+            "status": "unverified"
+          },
+          {
+            "key": "epa_ghg_emission_factors_hub_natural_gas",
+            "derived_co2_short_tons_per_mmbtu": 0.0585,
+            "source_url": "https://www.epa.gov/climateleadership/ghg-emission-factors-hub",
+            "status": "unverified"
+          }
+        ]
+      }
+    },
+    "circularity_finding": "YES \u2014 CO2 Mass (short tons) and Heat Input (mmBtu) in EPA CAMPD exhibit a strongly circular relationship across both Coal (Pearson r >= 0.9998) and Natural Gas / Pipeline Natural Gas (Pearson r >= 0.99998), with over 90% of operating hours following a constant per-unit stoichiometric factor (CO2 Mass / Heat Input) to within +/-0.0002 short tons/mmBtu. Under 40 CFR Part 75 Appendix G (fuel-based CO2 calculation for gas units via Fc = 1,040 scf CO2/mmBtu) and Appendix F (stack flow + diluent Fc equations where both CO2 mass and heat input are derived from the same stack flow and diluent analyzers), CO2 Mass and Heat Input are mathematically co-derived even when the CAMPD Measure Indicator is labelled 'Measured' (which indicates non-substituted primary monitoring rather than independent CO2 vs. heat-input instruments). Therefore, comparing reported CO2 Mass against reported Heat Input detects naive single-channel tampering, but cannot by itself stop a coordinated insider who scales both channels together unless paired with Gross Load (MW) co-movement and an independent fuel custody-transfer meter (synthetic_fuel_flow_mmbtu_indep / fuel_ledger_synthetic)."
+  }
+}

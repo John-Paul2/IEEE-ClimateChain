@@ -1,0 +1,123 @@
+Compiling 28 files with Solc 0.8.24
+Solc 0.8.24 finished in 12.02s
+Compiler run successful!
+
+Ran 4 tests for test/GoldenVectors.t.sol:GoldenVectorsTest
+[PASS] test_Golden_Keccak256EmptySelfTest() (gas: 4308479)
+[PASS] test_Golden_MerkleProofs_BaselineCleanAndTamperedAndReplayed() (gas: 83888328)
+[PASS] test_Golden_MerkleProofs_SeqGapOddNodePromotion() (gas: 18260688)
+[PASS] test_Golden_VoteCommitmentAndRevealVector() (gas: 9533622)
+Suite result: ok. 4 passed; 0 failed; 0 skipped; finished in 272.63ms (408.43ms CPU time)
+
+Ran 16 tests for test/UnitAndScenario.t.sol:UnitAndScenarioTest
+[PASS] test_AdditionalRevertEdgesForFullLineCoverage() (gas: 1815793)
+[PASS] test_BatchAnchor_RevertPaths() (gas: 759021)
+[PASS] test_BondVault_ConstructorAndRevertPaths() (gas: 476923)
+[PASS] test_BondVault_TransferFailedReverts() (gas: 306954)
+[PASS] test_ChallengeAndAttestation_RevertPaths() (gas: 874441)
+[PASS] test_DeployScript_LoadsDemoAndRealProfiles() (gas: 63575019)
+Logs:
+  Deployment JSON written to: ../deployments/anvil.json
+
+[PASS] test_DeviceRegistry_ConstructorZeroAddressReverts() (gas: 39407)
+[PASS] test_DeviceRegistry_RegisterRotateRevokeLifecycle() (gas: 281913)
+[PASS] test_DeviceRegistry_RevertPaths() (gas: 372787)
+[PASS] test_ScenarioA_CleanPathToAttestation() (gas: 1827190)
+[PASS] test_ScenarioB_FraudFlaggedUpheldAndSlashed() (gas: 2041865)
+[PASS] test_ScenarioC_OverturnedPathWithMerkleProof() (gas: 1753719)
+[PASS] test_ScenarioD_OperatorCannotWithdrawDuringChallenge() (gas: 1528953)
+[PASS] test_ScenarioE_RevokedDeviceCannotAnchor() (gas: 513472)
+[PASS] test_ScenarioF_VerifierFailsToRevealPenalized() (gas: 1534799)
+[PASS] test_VerifierQuorum_RevertPaths() (gas: 1041861)
+Suite result: ok. 16 passed; 0 failed; 0 skipped; finished in 308.07ms (344.08ms CPU time)
+
+Ran 7 tests for test/FuzzAndInvariants.t.sol:FuzzAndInvariantsTest
+[PASS] invariant_batchFinalizedAtMostOnce() (runs: 64, calls: 2048, reverts: 0)
+Logs:
+  Bound result 16
+  Bound result 613844654474832031
+  Bound result 1
+  Bound result 22
+  Bound result 1131772681231223038
+  Bound result 186
+  Bound result 14296725656507105845
+  Bound result 8503209316935507383
+
+[PASS] invariant_ethHeldEqualsRecordedBalances() (runs: 64, calls: 2048, reverts: 0)
+Logs:
+  Bound result 25
+  Bound result 263026609
+  Bound result 55
+  Bound result 228
+  Bound result 1
+  Bound result 1947365037601318441
+  Bound result 7577
+  Bound result 10466716711900921902
+  Bound result 9900000000000008313
+  Bound result 7224203076435428261
+  Bound result 9900002963608968819
+  Bound result 170
+  Bound result 9900000000000000399
+  Bound result 121
+
+[PASS] invariant_onlyRegisteredNonRevokedCanAnchor() (runs: 64, calls: 2048, reverts: 0)
+Logs:
+  Bound result 9900000000000011775
+  Bound result 47
+  Bound result 9900000000000004651
+  Bound result 9900000000000111916
+  Bound result 216505
+  Bound result 128
+  Bound result 9900000000000002514
+  Bound result 143
+  Bound result 9689715675464719708
+  Bound result 9900000000000003972
+  Bound result 9900000000000011339
+  Bound result 7287
+  Bound result 12008283982656
+  Bound result 9900000000952403646
+  Bound result 9900001808647609688
+  Bound result 11997412724521297893
+  Bound result 710518998992141376
+
+[PASS] invariant_sequenceNumbersOnlyIncrease() (runs: 64, calls: 2048, reverts: 0)
+Logs:
+  Bound result 16
+  Bound result 184
+  Bound result 23312276048666577293
+  Bound result 55
+  Bound result 24900000000000007828
+  Bound result 232
+  Bound result 24714574720128330707
+  Bound result 9637303436292802276
+  Bound result 1
+  Bound result 9900000000000005099
+  Bound result 9900000000000006073
+  Bound result 23095047413316458753
+  Bound result 14520
+
+[PASS] invariant_slashedNeverExceedsBond() (runs: 64, calls: 2048, reverts: 0)
+Logs:
+  Bound result 100000000000000000
+  Bound result 85
+  Bound result 1418569716741534142
+  Bound result 115
+  Bound result 81
+  Bound result 287339539075964336
+  Bound result 100000000000000003
+  Bound result 1
+  Bound result 6921
+  Bound result 9900000000000011064
+  Bound result 9900000004102309909
+  Bound result 9900000001317905307
+  Bound result 97
+  Bound result 1576
+  Bound result 17
+  Bound result 227
+  Bound result 5761
+
+[PASS] testFuzz_BondSlashAndRewardConservation(uint96,uint16,uint8) (runs: 256, ╬╝: 325928, ~: 322575)
+[PASS] testFuzz_SequenceRangesContiguousAndNonOverlapping(uint16,uint16,uint16,uint64) (runs: 256, ╬╝: 463745, ~: 463621)
+Suite result: ok. 7 passed; 0 failed; 0 skipped; finished in 870.98ms (4.16s CPU time)
+
+Ran 3 test suites in 876.13ms (1.45s CPU time): 27 tests passed, 0 failed, 0 skipped (27 total tests)

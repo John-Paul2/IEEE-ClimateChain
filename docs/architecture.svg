@@ -1,0 +1,317 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 950" width="1400" height="950" style="background:#0B1220; font-family:'Segoe UI', Inter, -apple-system, sans-serif;">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1220" />
+      <stop offset="100%" stop-color="#070D18" />
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#152038" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+    <linearGradient id="contractGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+    <linearGradient id="tealGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2DD4BF" />
+      <stop offset="100%" stop-color="#0D9488" />
+    </linearGradient>
+    
+    <!-- Drop Shadow Filter -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+
+    <!-- Arrow Marker -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#2DD4BF" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38BDF8" />
+    </marker>
+    <marker id="arrow-rose" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F43F5E" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F59E0B" />
+    </marker>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="1400" height="950" fill="url(#bgGrad)" />
+
+  <!-- Title Header Block -->
+  <rect x="40" y="24" width="1320" height="64" rx="8" fill="#111A2E" stroke="#1F2A44" stroke-width="1.5" />
+  <text x="65" y="54" fill="#E6EDF7" font-size="20" font-weight="700" letter-spacing="0.5">VeriCEMS: Tamper-Evident Industrial Telemetry Verification Architecture</text>
+  <text x="65" y="73" fill="#8FA0BF" font-size="12">IEEE Global ClimateChain Hackathon 2026 (Track 4) • Arbitrum Sepolia EVM Testnet (Chain ID: 421614)</text>
+  
+  <rect x="1150" y="40" width="185" height="30" rx="6" fill="#0B1220" stroke="#2DD4BF" stroke-width="1" />
+  <circle cx="1165" cy="55" r="5" fill="#2DD4BF" />
+  <text x="1178" y="59" fill="#2DD4BF" font-size="11" font-weight="600">PRODUCTION ARCHITECTURE</text>
+
+  <!-- ========================================== -->
+  <!-- 1. PLANT EDGE LAYER                        -->
+  <!-- ========================================== -->
+  <g id="edge-layer" filter="url(#shadow)">
+    <rect x="40" y="110" width="370" height="470" rx="10" fill="url(#cardGrad)" stroke="#1F2A44" stroke-width="1.5" />
+    <path d="M 40 120 Q 40 110 50 110 L 400 110 Q 410 110 410 120 L 410 150 L 40 150 Z" fill="#16223B" />
+    <text x="60" y="136" fill="#38BDF8" font-size="14" font-weight="700">1. PLANT EDGE LAYER (OFF-CHAIN)</text>
+    <text x="350" y="136" fill="#8FA0BF" font-size="10">SOURCE</text>
+
+    <!-- Field Sensors Box -->
+    <rect x="60" y="165" width="330" height="135" rx="6" fill="#0B1220" stroke="#1F2A44" stroke-width="1" />
+    <text x="75" y="187" fill="#E6EDF7" font-size="12" font-weight="600">Industrial Monitoring Field Sensors</text>
+    
+    <rect x="75" y="198" width="300" height="26" rx="4" fill="#152038" stroke="#1E293B" stroke-width="1" />
+    <circle cx="88" cy="211" r="3" fill="#2DD4BF" />
+    <text x="98" y="215" fill="#8FA0BF" font-size="11">CEMS Analyzers: CO2, SO2, NOx (EPA CAMPD)</text>
+
+    <rect x="75" y="230" width="300" height="26" rx="4" fill="#152038" stroke="#1E293B" stroke-width="1" />
+    <circle cx="88" cy="243" r="3" fill="#2DD4BF" />
+    <text x="98" y="247" fill="#8FA0BF" font-size="11">Stack Flue Gas: Flow (kscfm), Temp (°C)</text>
+
+    <rect x="75" y="262" width="300" height="26" rx="4" fill="#152038" stroke="#1E293B" stroke-width="1" />
+    <circle cx="88" cy="275" r="3" fill="#F59E0B" />
+    <text x="98" y="279" fill="#8FA0BF" font-size="11">Custody Fuel Ledger &amp; Substation Gross Load (MW)</text>
+
+    <!-- Sensor to Gateway Arrow -->
+    <path d="M 225 300 L 225 325" stroke="#38BDF8" stroke-width="2" marker-end="url(#arrow-blue)" />
+
+    <!-- Edge Gateway Box -->
+    <rect x="60" y="330" width="330" height="225" rx="6" fill="#0B1220" stroke="#38BDF8" stroke-width="1.5" />
+    <text x="75" y="354" fill="#38BDF8" font-size="13" font-weight="700">VeriCEMS Industrial Edge Gateway</text>
+    
+    <!-- Feature items inside gateway -->
+    <rect x="75" y="366" width="300" height="34" rx="4" fill="#152038" />
+    <text x="88" y="382" fill="#E6EDF7" font-size="11" font-weight="600">Hardware Root of Trust / Secure Element</text>
+    <text x="88" y="394" fill="#8FA0BF" font-size="9.5">Unexported Private Key (NIST P-256 / secp256r1)</text>
+
+    <rect x="75" y="406" width="300" height="34" rx="4" fill="#152038" />
+    <text x="88" y="422" fill="#E6EDF7" font-size="11" font-weight="600">Cryptographic SHA-256 Hash Chain</text>
+    <text x="88" y="434" fill="#8FA0BF" font-size="9.5">PrevHash chaining prevents packet drops &amp; replay</text>
+
+    <rect x="75" y="446" width="300" height="34" rx="4" fill="#152038" />
+    <text x="88" y="462" fill="#E6EDF7" font-size="11" font-weight="600">Canonical JSON Normalization</text>
+    <text x="88" y="474" fill="#8FA0BF" font-size="9.5">Strict half-to-even 6-decimal ASCII float formatting</text>
+
+    <rect x="75" y="486" width="300" height="52" rx="4" fill="#111A2E" stroke="#1F2A44" stroke-width="1" />
+    <text x="88" y="504" fill="#2DD4BF" font-size="10" font-weight="700">OUTGOING PACKET SEAL:</text>
+    <text x="88" y="519" fill="#8FA0BF" font-size="9.5">packet_hash = SHA256(canonical_preimage)</text>
+    <text x="88" y="531" fill="#8FA0BF" font-size="9.5">sig = ECDSA_P256_Sign(packet_hash, privKey)</text>
+  </g>
+
+  <!-- ========================================== -->
+  <!-- 2. OPERATOR INGESTION & BATCH MERKLE TREE  -->
+  <!-- ========================================== -->
+  <g id="operator-layer" filter="url(#shadow)">
+    <rect x="40" y="605" width="370" height="315" rx="10" fill="url(#cardGrad)" stroke="#1F2A44" stroke-width="1.5" />
+    <path d="M 40 615 Q 40 605 50 605 L 400 605 Q 410 605 410 615 L 410 645 L 40 645 Z" fill="#16223B" />
+    <text x="60" y="631" fill="#38BDF8" font-size="14" font-weight="700">2. OPERATOR AGENT (OFF-CHAIN)</text>
+    <text x="330" y="631" fill="#8FA0BF" font-size="10">AGGREGATION</text>
+
+    <rect x="60" y="660" width="330" height="240" rx="6" fill="#0B1220" stroke="#1F2A44" stroke-width="1" />
+    
+    <text x="75" y="682" fill="#E6EDF7" font-size="12" font-weight="600">Sequence Verification &amp; Merkle Builder</text>
+    <text x="75" y="698" fill="#8FA0BF" font-size="10.5">• Validates contiguous sequence numbers (seq = prev + 1)</text>
+    <text x="75" y="713" fill="#8FA0BF" font-size="10.5">• Assembles batches (Profile: demo=8, benchmark=24)</text>
+    <text x="75" y="728" fill="#8FA0BF" font-size="10.5">• Computes binary commutative Keccak-256 Merkle Tree</text>
+
+    <!-- Mini Merkle diagram visual -->
+    <rect x="75" y="742" width="300" height="98" rx="4" fill="#152038" stroke="#1E293B" stroke-width="1" />
+    <circle cx="225" cy="762" r="12" fill="#0B1220" stroke="#2DD4BF" stroke-width="1.5" />
+    <text x="216" y="766" fill="#2DD4BF" font-size="9" font-weight="700">ROOT</text>
+
+    <path d="M 170 788 L 215 768" stroke="#2DD4BF" stroke-width="1" />
+    <path d="M 280 788 L 235 768" stroke="#2DD4BF" stroke-width="1" />
+
+    <rect x="135" y="788" width="65" height="18" rx="3" fill="#0B1220" stroke="#8FA0BF" stroke-width="1" />
+    <text x="145" y="801" fill="#8FA0BF" font-size="8.5">H(0) = H(P0,P1)</text>
+
+    <rect x="250" y="788" width="65" height="18" rx="3" fill="#0B1220" stroke="#8FA0BF" stroke-width="1" />
+    <text x="260" y="801" fill="#8FA0BF" font-size="8.5">H(1) = H(P2,P3)</text>
+
+    <text x="88" y="828" fill="#38BDF8" font-size="9.5">Odd-Node Rule: Unpaired leaf promoted unchanged (DECISION-04)</text>
+
+    <text x="75" y="865" fill="#2DD4BF" font-size="11" font-weight="600">Outputs: Merkle Root (bytes32) &amp; Proof Arrays</text>
+    <text x="75" y="882" fill="#8FA0BF" font-size="9.5">Stores complete raw telemetry in local immutable archive</text>
+  </g>
+
+  <!-- Flow 1: Gateway to Operator -->
+  <path d="M 225 555 L 225 600" stroke="#2DD4BF" stroke-width="2.5" marker-end="url(#arrow)" />
+  <rect x="150" y="570" width="150" height="20" rx="4" fill="#111A2E" stroke="#1F2A44" stroke-width="1" />
+  <text x="158" y="584" fill="#2DD4BF" font-size="10" font-weight="600">[1] Signed Packet Stream</text>
+
+  <!-- ========================================== -->
+  <!-- 3. SMART CONTRACTS LAYER (ON-CHAIN)        -->
+  <!-- ========================================== -->
+  <g id="contract-layer" filter="url(#shadow)">
+    <rect x="460" y="110" width="480" height="810" rx="10" fill="url(#cardGrad)" stroke="#2DD4BF" stroke-width="1.5" />
+    <path d="M 460 120 Q 460 110 470 110 L 930 110 Q 940 110 940 120 L 940 150 L 460 150 Z" fill="#16223B" />
+    <text x="480" y="136" fill="#2DD4BF" font-size="14" font-weight="700">3. SMART CONTRACTS LAYER (ARBITRUM SEPOLIA)</text>
+    <text x="880" y="136" fill="#2DD4BF" font-size="10">ON-CHAIN</text>
+
+    <!-- Contract 1: DeviceRegistry -->
+    <rect x="485" y="165" width="430" height="90" rx="6" fill="url(#contractGrad)" stroke="#1F2A44" stroke-width="1.2" />
+    <rect x="495" y="175" width="125" height="20" rx="3" fill="#111A2E" stroke="#38BDF8" stroke-width="1" />
+    <text x="502" y="189" fill="#38BDF8" font-size="10" font-weight="700">DeviceRegistry.sol</text>
+    <text x="750" y="188" fill="#8FA0BF" font-size="9">0x10B6...3471</text>
+    <text x="495" y="212" fill="#E6EDF7" font-size="11">• Authorizes CEMS gateway public keys (65-byte SEC1 uncompressed)</text>
+    <text x="495" y="228" fill="#8FA0BF" font-size="10">• Handles cryptographic key rotation and emergency compromise revocation</text>
+    <text x="495" y="244" fill="#8FA0BF" font-size="10">• Enforces strict owner authentication and operator mapping</text>
+
+    <!-- Contract 2: BondVault -->
+    <rect x="485" y="265" width="430" height="98" rx="6" fill="url(#contractGrad)" stroke="#1F2A44" stroke-width="1.2" />
+    <rect x="495" y="275" width="105" height="20" rx="3" fill="#111A2E" stroke="#F59E0B" stroke-width="1" />
+    <text x="502" y="289" fill="#F59E0B" font-size="10" font-weight="700">BondVault.sol</text>
+    <text x="750" y="288" fill="#8FA0BF" font-size="9">0x7FFB...7C36</text>
+    <text x="495" y="312" fill="#E6EDF7" font-size="11">• Custodies Operator Bonds (min: 1.0 ETH) and Verifier Stakes (0.5 ETH)</text>
+    <text x="495" y="327" fill="#8FA0BF" font-size="10">• Enforces 7-day withdrawal lock delay preventing exit during disputes</text>
+    <text x="495" y="342" fill="#8FA0BF" font-size="10">• Slashing: 50% operator bond on fraud; 70% to verifiers, 30% treasury</text>
+    <text x="495" y="355" fill="#8FA0BF" font-size="10">• Conservation of funds invariant: totalDeposited == totalWithdrawable + slashed</text>
+
+    <!-- Contract 3: BatchAnchor -->
+    <rect x="485" y="373" width="430" height="90" rx="6" fill="url(#contractGrad)" stroke="#2DD4BF" stroke-width="1.2" />
+    <rect x="495" y="383" width="115" height="20" rx="3" fill="#111A2E" stroke="#2DD4BF" stroke-width="1" />
+    <text x="502" y="397" fill="#2DD4BF" font-size="10" font-weight="700">BatchAnchor.sol</text>
+    <text x="750" y="396" fill="#8FA0BF" font-size="9">0x8Bf1...638B</text>
+    <text x="495" y="420" fill="#E6EDF7" font-size="11">• Records 32-byte Merkle root + sequence bounds (startSeq, endSeq)</text>
+    <text x="495" y="435" fill="#8FA0BF" font-size="10">• Enforces strict sequence continuity (startSeq == lastEndSeq + 1)</text>
+    <text x="495" y="450" fill="#8FA0BF" font-size="10">• Measured gas: 179,843 gas median per anchorBatch transaction</text>
+
+    <!-- Contract 4: VerifierQuorum -->
+    <rect x="485" y="473" width="430" height="110" rx="6" fill="url(#contractGrad)" stroke="#38BDF8" stroke-width="1.2" />
+    <rect x="495" y="483" width="135" height="20" rx="3" fill="#111A2E" stroke="#38BDF8" stroke-width="1" />
+    <text x="502" y="497" fill="#38BDF8" font-size="10" font-weight="700">VerifierQuorum.sol</text>
+    <text x="750" y="496" fill="#8FA0BF" font-size="9">0x7348...BfB9</text>
+    <text x="495" y="520" fill="#E6EDF7" font-size="11">• Two-Phase Commit-Reveal Quorum (5 independent committee slots)</text>
+    <text x="495" y="535" fill="#8FA0BF" font-size="10">• Phase 1: commitVote(keccak256(batchId, modelHash, inputHash, score, verdict, salt))</text>
+    <text x="495" y="550" fill="#8FA0BF" font-size="10">• Phase 2: revealVote(...) validates salt and checks modelHash match</text>
+    <text x="495" y="565" fill="#8FA0BF" font-size="10">• 3-of-5 matching verdicts required for quorum finality (0=Clean, 1=Fraud)</text>
+
+    <!-- Contract 5: Challenge -->
+    <rect x="485" y="593" width="430" height="98" rx="6" fill="url(#contractGrad)" stroke="#F43F5E" stroke-width="1.2" />
+    <rect x="495" y="603" width="105" height="20" rx="3" fill="#111A2E" stroke="#F43F5E" stroke-width="1" />
+    <text x="502" y="617" fill="#F43F5E" font-size="10" font-weight="700">Challenge.sol</text>
+    <text x="750" y="616" fill="#8FA0BF" font-size="9">0x80f5...6A34</text>
+    <text x="495" y="640" fill="#E6EDF7" font-size="11">• Optimistic challenge window (24h prod, 60s testnet) upon Fraud quorum</text>
+    <text x="495" y="655" fill="#8FA0BF" font-size="10">• Operator submits Merkle counter-proof or dispute explanation</text>
+    <text x="495" y="670" fill="#8FA0BF" font-size="10">• Arbiter resolves dispute; triggers automated BondVault pull slashing</text>
+
+    <!-- Contract 6: Attestation -->
+    <rect x="485" y="701" width="430" height="102" rx="6" fill="url(#contractGrad)" stroke="#2DD4BF" stroke-width="1.2" />
+    <rect x="495" y="711" width="115" height="20" rx="3" fill="#111A2E" stroke="#2DD4BF" stroke-width="1" />
+    <text x="502" y="725" fill="#2DD4BF" font-size="10" font-weight="700">Attestation.sol</text>
+    <text x="750" y="724" fill="#8FA0BF" font-size="9">0x872D...63B0</text>
+    <text x="495" y="748" fill="#E6EDF7" font-size="11">• Issues permanent CBAM Compliance Certificate upon Clean finalization</text>
+    <text x="495" y="763" fill="#8FA0BF" font-size="10">• Stores: totalEmissionsKgCo2e, operatingHours, verifiedBatchIds, reportHash</text>
+    <text x="495" y="778" fill="#8FA0BF" font-size="10">• Binds off-chain verification pack to on-chain Merkle roots</text>
+    <text x="495" y="793" fill="#8FA0BF" font-size="10">• One-click verification query for EU customs and authorised declarants</text>
+  </g>
+
+  <!-- Flow 2: Operator to BatchAnchor -->
+  <path d="M 410 740 L 480 430" stroke="#2DD4BF" stroke-width="2.5" marker-end="url(#arrow)" />
+  <rect x="365" y="530" width="135" height="20" rx="4" fill="#111A2E" stroke="#2DD4BF" stroke-width="1" />
+  <text x="372" y="544" fill="#2DD4BF" font-size="9.5" font-weight="600">[2] anchorBatch(root)</text>
+
+  <!-- ========================================== -->
+  <!-- 4. VERIFIER COMMITTEE (OFF-CHAIN)         -->
+  <!-- ========================================== -->
+  <g id="verifier-layer" filter="url(#shadow)">
+    <rect x="990" y="110" width="370" height="470" rx="10" fill="url(#cardGrad)" stroke="#1F2A44" stroke-width="1.5" />
+    <path d="M 990 120 Q 990 110 1000 110 L 1350 110 Q 1360 110 1360 120 L 1360 150 L 990 150 Z" fill="#16223B" />
+    <text x="1010" y="136" fill="#38BDF8" font-size="14" font-weight="700">4. VERIFIER COMMITTEE (5 NODES)</text>
+    <text x="1300" y="136" fill="#8FA0BF" font-size="10">AUDIT</text>
+
+    <rect x="1010" y="165" width="330" height="395" rx="6" fill="#0B1220" stroke="#1F2A44" stroke-width="1" />
+    <text x="1025" y="187" fill="#E6EDF7" font-size="12" font-weight="600">Deterministic Off-Chain Evaluation Pipeline</text>
+    
+    <!-- 4 check categories -->
+    <rect x="1025" y="198" width="300" height="46" rx="4" fill="#152038" stroke="#1E293B" stroke-width="1" />
+    <text x="1037" y="214" fill="#38BDF8" font-size="11" font-weight="600">A. Multi-Source Fuel Cross-Check</text>
+    <text x="1037" y="228" fill="#8FA0BF" font-size="9.5">Checks Heat Input vs Independent Custody Fuel Ledger</text>
+    <text x="1037" y="239" fill="#2DD4BF" font-size="9">Catches Variant A Adaptive Attacker (85.7% Recall)</text>
+
+    <rect x="1025" y="250" width="300" height="46" rx="4" fill="#152038" stroke="#1E293B" stroke-width="1" />
+    <text x="1037" y="266" fill="#38BDF8" font-size="11" font-weight="600">B. Combustion Mass-Balance Physics</text>
+    <text x="1037" y="280" fill="#8FA0BF" font-size="9.5">Stoichiometric CO2 vs Heat Input ratio (R = CO2/Heat)</text>
+    <text x="1037" y="291" fill="#8FA0BF" font-size="9">Gross Load MW vs Heat Input combustion envelope</text>
+
+    <rect x="1025" y="302" width="300" height="46" rx="4" fill="#152038" stroke="#1E293B" stroke-width="1" />
+    <text x="1037" y="318" fill="#38BDF8" font-size="11" font-weight="600">C. Spectral Flatness &amp; Autocorrelation</text>
+    <text x="1037" y="332" fill="#8FA0BF" font-size="9.5">Wiener spectral entropy (W=8) flags flatlining &amp; noise injection</text>
+    <text x="1037" y="343" fill="#8FA0BF" font-size="9">Lag-1 to Lag-4 autocorrelation catches synthetic loops</text>
+
+    <rect x="1025" y="354" width="300" height="46" rx="4" fill="#152038" stroke="#1E293B" stroke-width="1" />
+    <text x="1037" y="370" fill="#38BDF8" font-size="11" font-weight="600">D. Deterministic CPU ONNX Autoencoder</text>
+    <text x="1037" y="384" fill="#8FA0BF" font-size="9.5">Bottleneck latent manifold (16-dim hidden, 3-dim latent)</text>
+    <text x="1037" y="395" fill="#8FA0BF" font-size="9">Physics reconstruction penalty; committed ONNX modelHash</text>
+
+    <!-- Verifier Node Slots -->
+    <text x="1025" y="418" fill="#E6EDF7" font-size="11" font-weight="600">5 Registered Verifier Keypairs (V0..V4):</text>
+    <g transform="translate(1025, 426)">
+      <rect x="0" y="0" width="55" height="24" rx="3" fill="#111A2E" stroke="#2DD4BF" stroke-width="1"/>
+      <text x="12" y="16" fill="#2DD4BF" font-size="10" font-weight="600">Node 0</text>
+      <rect x="61" y="0" width="55" height="24" rx="3" fill="#111A2E" stroke="#2DD4BF" stroke-width="1"/>
+      <text x="73" y="16" fill="#2DD4BF" font-size="10" font-weight="600">Node 1</text>
+      <rect x="122" y="0" width="55" height="24" rx="3" fill="#111A2E" stroke="#2DD4BF" stroke-width="1"/>
+      <text x="134" y="16" fill="#2DD4BF" font-size="10" font-weight="600">Node 2</text>
+      <rect x="183" y="0" width="55" height="24" rx="3" fill="#111A2E" stroke="#2DD4BF" stroke-width="1"/>
+      <text x="195" y="16" fill="#2DD4BF" font-size="10" font-weight="600">Node 3</text>
+      <rect x="244" y="0" width="55" height="24" rx="3" fill="#111A2E" stroke="#2DD4BF" stroke-width="1"/>
+      <text x="256" y="16" fill="#2DD4BF" font-size="10" font-weight="600">Node 4</text>
+    </g>
+
+    <rect x="1025" y="460" width="300" height="85" rx="4" fill="#152038" stroke="#1E293B" stroke-width="1" />
+    <text x="1037" y="478" fill="#38BDF8" font-size="10.5" font-weight="600">Quantized Anomaly Score &amp; Verdict:</text>
+    <text x="1037" y="495" fill="#8FA0BF" font-size="9.5">• score_bp = integer basis points (0..10,000)</text>
+    <text x="1037" y="510" fill="#8FA0BF" font-size="9.5">• verdict = (score_bp &gt;= threshold_bp) ? 1 (Fraud) : 0 (Clean)</text>
+    <text x="1037" y="525" fill="#2DD4BF" font-size="9.5">Target FPR: 2.0% on clean validation split</text>
+  </g>
+
+  <!-- Flow 3: Operator to Verifiers -->
+  <path d="M 410 780 Q 970 880 1010 540" stroke="#38BDF8" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrow-blue)" fill="none" />
+  <rect x="680" y="855" width="220" height="20" rx="4" fill="#111A2E" stroke="#38BDF8" stroke-width="1" />
+  <text x="688" y="869" fill="#38BDF8" font-size="10" font-weight="600">[3] Broadcast Telemetry + Merkle Proofs</text>
+
+  <!-- Flow 4 & 5: Verifiers to VerifierQuorum -->
+  <path d="M 1010 490 L 915 505" stroke="#38BDF8" stroke-width="2" marker-end="url(#arrow-blue)" />
+  <text x="925" y="480" fill="#38BDF8" font-size="9" font-weight="600">[4] commitVote()</text>
+
+  <path d="M 1010 535 L 915 535" stroke="#2DD4BF" stroke-width="2" marker-end="url(#arrow)" />
+  <text x="925" y="555" fill="#2DD4BF" font-size="9" font-weight="600">[5] revealVote()</text>
+
+  <!-- ========================================== -->
+  <!-- 5. IMPORTER PORTAL & CBAM CALCULATOR       -->
+  <!-- ========================================== -->
+  <g id="portal-layer" filter="url(#shadow)">
+    <rect x="990" y="605" width="370" height="315" rx="10" fill="url(#cardGrad)" stroke="#1F2A44" stroke-width="1.5" />
+    <path d="M 990 615 Q 990 605 1000 605 L 1350 605 Q 1360 605 1360 615 L 1360 645 L 990 645 Z" fill="#16223B" />
+    <text x="1010" y="631" fill="#38BDF8" font-size="14" font-weight="700">5. IMPORTER PORTAL &amp; CBAM ENGINE</text>
+    <text x="1310" y="631" fill="#8FA0BF" font-size="10">USER</text>
+
+    <rect x="1010" y="660" width="330" height="240" rx="6" fill="#0B1220" stroke="#1F2A44" stroke-width="1" />
+    <text x="1025" y="682" fill="#E6EDF7" font-size="12" font-weight="600">Client-Side Verification &amp; Cost Model</text>
+    
+    <rect x="1025" y="694" width="300" height="42" rx="4" fill="#152038" />
+    <text x="1037" y="710" fill="#2DD4BF" font-size="10.5" font-weight="600">Browser Merkle Proof Validation</text>
+    <text x="1037" y="724" fill="#8FA0BF" font-size="9">Re-hashes packet; folds siblings against on-chain root in &lt;5ms</text>
+
+    <rect x="1025" y="742" width="300" height="42" rx="4" fill="#152038" />
+    <text x="1037" y="758" fill="#38BDF8" font-size="10.5" font-weight="600">On-Chain Attestation Verification</text>
+    <text x="1037" y="772" fill="#8FA0BF" font-size="9">Queries Attestation.sol to verify Clean 3-of-5 quorum status</text>
+
+    <rect x="1025" y="790" width="300" height="98" rx="4" fill="#152038" stroke="#1E293B" stroke-width="1" />
+    <text x="1037" y="808" fill="#F59E0B" font-size="10.5" font-weight="700">EU CBAM Net Cost Formula (Reg 2023/956):</text>
+    <text x="1037" y="825" fill="#E6EDF7" font-size="9">Payable = max(0, SEE - Benchmark * SEFA_Factor)</text>
+    <text x="1037" y="840" fill="#E6EDF7" font-size="9">Cost_Verified = Tonnes * Payable_Verified * Price_EUR</text>
+    <text x="1037" y="855" fill="#F43F5E" font-size="9">Cost_Default = Tonnes * Payable_Default * (1 + Markup) * Price</text>
+    <text x="1037" y="873" fill="#2DD4BF" font-size="10" font-weight="700">Savings = Cost_Default - Cost_Verified (Real EUR ROI)</text>
+  </g>
+
+  <!-- Flow 6: Attestation to Importer Portal -->
+  <path d="M 915 750 L 990 750" stroke="#2DD4BF" stroke-width="2.5" marker-end="url(#arrow)" />
+  <rect x="918" y="725" width="70" height="18" rx="3" fill="#111A2E" stroke="#2DD4BF" stroke-width="1" />
+  <text x="923" y="738" fill="#2DD4BF" font-size="8.5" font-weight="600">[6] Attestation</text>
+
+</svg>

@@ -1,0 +1,67 @@
+Compiling 43 files with Solc 0.8.24
+Solc 0.8.24 finished in 4.91s
+Compiler run successful!
+Analysing contracts...
+Running tests...
+
+Ran 4 tests for test/GoldenVectors.t.sol:GoldenVectorsTest
+[PASS] test_Golden_Keccak256EmptySelfTest() (gas: 4324512)
+[PASS] test_Golden_MerkleProofs_BaselineCleanAndTamperedAndReplayed() (gas: 85361275)
+[PASS] test_Golden_MerkleProofs_SeqGapOddNodePromotion() (gas: 18694661)
+[PASS] test_Golden_VoteCommitmentAndRevealVector() (gas: 9724841)
+Suite result: ok. 4 passed; 0 failed; 0 skipped; finished in 138.90ms (182.41ms CPU time)
+
+Ran 16 tests for test/UnitAndScenario.t.sol:UnitAndScenarioTest
+[PASS] test_AdditionalRevertEdgesForFullLineCoverage() (gas: 1943276)
+[PASS] test_BatchAnchor_RevertPaths() (gas: 823780)
+[PASS] test_BondVault_ConstructorAndRevertPaths() (gas: 519617)
+[PASS] test_BondVault_TransferFailedReverts() (gas: 336808)
+[PASS] test_ChallengeAndAttestation_RevertPaths() (gas: 944625)
+[PASS] test_DeployScript_LoadsDemoAndRealProfiles() (gas: 104302042)
+[PASS] test_DeviceRegistry_ConstructorZeroAddressReverts() (gas: 41215)
+[PASS] test_DeviceRegistry_RegisterRotateRevokeLifecycle() (gas: 298043)
+[PASS] test_DeviceRegistry_RevertPaths() (gas: 401322)
+[PASS] test_ScenarioA_CleanPathToAttestation() (gas: 1937307)
+[PASS] test_ScenarioB_FraudFlaggedUpheldAndSlashed() (gas: 2188405)
+[PASS] test_ScenarioC_OverturnedPathWithMerkleProof() (gas: 1865386)
+[PASS] test_ScenarioD_OperatorCannotWithdrawDuringChallenge() (gas: 1613929)
+[PASS] test_ScenarioE_RevokedDeviceCannotAnchor() (gas: 528110)
+[PASS] test_ScenarioF_VerifierFailsToRevealPenalized() (gas: 1628507)
+[PASS] test_VerifierQuorum_RevertPaths() (gas: 1096913)
+Suite result: ok. 16 passed; 0 failed; 0 skipped; finished in 257.21ms (309.64ms CPU time)
+
+Ran 7 tests for test/FuzzAndInvariants.t.sol:FuzzAndInvariantsTest
+[PASS] invariant_batchFinalizedAtMostOnce() (runs: 64, calls: 2048, reverts: 0)
+[PASS] invariant_ethHeldEqualsRecordedBalances() (runs: 64, calls: 2048, reverts: 0)
+[PASS] invariant_onlyRegisteredNonRevokedCanAnchor() (runs: 64, calls: 2048, reverts: 0)
+[PASS] invariant_sequenceNumbersOnlyIncrease() (runs: 64, calls: 2048, reverts: 0)
+[PASS] invariant_slashedNeverExceedsBond() (runs: 64, calls: 2048, reverts: 0)
+[PASS] testFuzz_BondSlashAndRewardConservation(uint96,uint16,uint8) (runs: 256, ╬╝: 341364, ~: 337817)
+[PASS] testFuzz_SequenceRangesContiguousAndNonOverlapping(uint16,uint16,uint16,uint64) (runs: 256, ╬╝: 501144, ~: 500884)
+Suite result: ok. 7 passed; 0 failed; 0 skipped; finished in 751.89ms (3.33s CPU time)
+
+Ran 3 test suites in 753.87ms (1.15s CPU time): 27 tests passed, 0 failed, 0 skipped (27 total tests)
+
+Γò¡------------------------------+-------------------+-------------------+------------------+-----------------Γò«
+| File                         | % Lines           | % Statements      | % Branches       | % Funcs         |
++===========================================================================================================+
+| script/Deploy.s.sol          | 99.15% (117/118)  | 99.31% (143/144)  | 60.00% (3/5)     | 100.00% (7/7)   |
+|------------------------------+-------------------+-------------------+------------------+-----------------|
+| src/Attestation.sol          | 100.00% (40/40)   | 100.00% (51/51)   | 100.00% (10/10)  | 100.00% (6/6)   |
+|------------------------------+-------------------+-------------------+------------------+-----------------|
+| src/BatchAnchor.sol          | 100.00% (56/56)   | 100.00% (65/65)   | 100.00% (15/15)  | 100.00% (7/7)   |
+|------------------------------+-------------------+-------------------+------------------+-----------------|
+| src/BondVault.sol            | 98.18% (162/165)  | 97.85% (182/186)  | 90.00% (36/40)   | 100.00% (20/20) |
+|------------------------------+-------------------+-------------------+------------------+-----------------|
+| src/Challenge.sol            | 100.00% (145/145) | 100.00% (163/163) | 100.00% (30/30)  | 100.00% (12/12) |
+|------------------------------+-------------------+-------------------+------------------+-----------------|
+| src/DeviceRegistry.sol       | 100.00% (66/66)   | 100.00% (85/85)   | 100.00% (17/17)  | 100.00% (11/11) |
+|------------------------------+-------------------+-------------------+------------------+-----------------|
+| src/VerifierQuorum.sol       | 100.00% (137/137) | 100.00% (163/163) | 100.00% (32/32)  | 100.00% (14/14) |
+|------------------------------+-------------------+-------------------+------------------+-----------------|
+| test/FuzzAndInvariants.t.sol | 91.23% (104/114)  | 90.60% (135/149)  | 92.31% (12/13)   | 83.33% (10/12)  |
+|------------------------------+-------------------+-------------------+------------------+-----------------|
+| test/UnitAndScenario.t.sol   | 100.00% (2/2)     | 100.00% (1/1)     | 100.00% (0/0)    | 100.00% (1/1)   |
+|------------------------------+-------------------+-------------------+------------------+-----------------|
+| Total                        | 98.34% (829/843)  | 98.11% (988/1007) | 95.68% (155/162) | 97.78% (88/90)  |
+Γò░------------------------------+-------------------+-------------------+------------------+-----------------Γò»

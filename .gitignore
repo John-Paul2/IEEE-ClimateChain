@@ -1,0 +1,49 @@
+# Python & Virtual Environment
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.hypothesis/
+.mypy_cache/
+.ruff_cache/
+
+# Environment & Secrets (NEVER commit)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.keystore
+keystores/
+*password*
+*.pass
+
+# Data files (git-ignored per AGENTS.md & Milestone P03)
+data/raw/
+data/processed/
+*.parquet
+*.csv
+!results/*.csv
+
+# Temporary results & test artifacts
+results/tmp/
+test-results/
+*.db
+
+# Node / Web
+node_modules/
+web/node_modules/
+web/dist/
+web/playwright-report/
+web/test-results/
+
+# Foundry / Solidity
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+
+# OS / Editor
+.DS_Store
+Thumbs.db

@@ -1,0 +1,213 @@
+# VeriCEMS Reproducible EPA CAMPD Facility Selection Manifest
+# Source: Official US EPA Clean Air Markets Program Data (CAMPD) 40 CFR Part 75 Bulk Data Files
+# Portal: https://campd.epa.gov/data/bulk-data-files
+# Bulk File Base URL: https://api.epa.gov/easey/bulk-files
+#
+# Deterministic Selection Methodology:
+# 1. Calendar Year: 2025 (2025-01-01 through 2025-12-31, most recent complete calendar year in EPA CAMPD).
+# 2. Geographic Scope: Three compact US states with mixed coal and natural-gas Part 75 fleets:
+#    Iowa (IA), Utah (UT), and Wyoming (WY). This keeps raw bulk downloads minimal (only 3 state CSVs)
+#    while providing a rich pool of baseload and cycling coal and natural-gas units.
+# 3. Fuel Filter: Units reporting Primary Fuel Type in ["Coal", "Pipeline Natural Gas", "Natural Gas"].
+# 4. Activity Filter & Balanced Ranking: Across IA, UT, and WY, each facility is classified by its dominant
+#    fuel category (Coal vs. Natural Gas) based on 2025 operating unit-hours (Operating Time > 0), restricted
+#    to facilities with >= 1,000 operating unit-hours in 2025. We deterministically select the top 15 Coal
+#    facilities and top 15 Natural Gas facilities ranked by 2025 operating unit-hours descending (tie-broken
+#    by Facility ID ascending), yielding 30 facilities total.
+
+schema_version: "1.0.0"
+calendar_year: 2025
+source_portal_url: "https://campd.epa.gov/data/bulk-data-files"
+bulk_files_base_url: "https://api.epa.gov/easey/bulk-files"
+bulk_manifest_url: "https://api.epa.gov/easey/camd-services/bulk-files"
+states:
+  - "IA"
+  - "UT"
+  - "WY"
+allowed_primary_fuels:
+  - "Coal"
+  - "Pipeline Natural Gas"
+  - "Natural Gas"
+selection_rule: "Top 15 Coal-dominant and top 15 Natural-Gas-dominant Part 75 facilities across IA, UT, and WY ranked by 2025 operating unit-hours (Operating Time > 0, minimum 1,000 operating unit-hours)."
+facility_count: 30
+facilities:
+  - facility_id: 4158
+    facility_name: "Dave Johnston"
+    state: "WY"
+    primary_fuel_category: "Coal"
+    campd_primary_fuel: "Coal"
+    operating_unit_hours_2025: 30578
+  - facility_id: 6165
+    facility_name: "Hunter"
+    state: "UT"
+    primary_fuel_category: "Coal"
+    campd_primary_fuel: "Coal"
+    operating_unit_hours_2025: 25562
+  - facility_id: 6204
+    facility_name: "Laramie River"
+    state: "WY"
+    primary_fuel_category: "Coal"
+    campd_primary_fuel: "Coal"
+    operating_unit_hours_2025: 23648
+  - facility_id: 8069
+    facility_name: "Huntington"
+    state: "UT"
+    primary_fuel_category: "Coal"
+    campd_primary_fuel: "Coal"
+    operating_unit_hours_2025: 17145
+  - facility_id: 4162
+    facility_name: "Naughton"
+    state: "WY"
+    primary_fuel_category: "Coal"
+    campd_primary_fuel: "Coal"
+    operating_unit_hours_2025: 16225
+  - facility_id: 8066
+    facility_name: "Jim Bridger"
+    state: "WY"
+    primary_fuel_category: "Coal"
+    campd_primary_fuel: "Coal"
+    operating_unit_hours_2025: 14782
+  - facility_id: 1082
+    facility_name: "Walter Scott Jr. Energy Center"
+    state: "IA"
+    primary_fuel_category: "Coal"
+    campd_primary_fuel: "Coal"
+    operating_unit_hours_2025: 10933
+  - facility_id: 6481
+    facility_name: "Intermountain"
+    state: "UT"
+    primary_fuel_category: "Coal"
+    campd_primary_fuel: "Coal"
+    operating_unit_hours_2025: 9967
+  - facility_id: 1167
+    facility_name: "Muscatine"
+    state: "IA"
+    primary_fuel_category: "Coal"
+    campd_primary_fuel: "Coal"
+    operating_unit_hours_2025: 8750
+  - facility_id: 56319
+    facility_name: "Wygen II"
+    state: "WY"
+    primary_fuel_category: "Coal"
+    campd_primary_fuel: "Coal"
+    operating_unit_hours_2025: 8107
+  - facility_id: 6101
+    facility_name: "Wyodak"
+    state: "WY"
+    primary_fuel_category: "Coal"
+    campd_primary_fuel: "Coal"
+    operating_unit_hours_2025: 7861
+  - facility_id: 6664
+    facility_name: "Louisa"
+    state: "IA"
+    primary_fuel_category: "Coal"
+    campd_primary_fuel: "Coal"
+    operating_unit_hours_2025: 7756
+  - facility_id: 1073
+    facility_name: "Prairie Creek"
+    state: "IA"
+    primary_fuel_category: "Coal"
+    campd_primary_fuel: "Coal"
+    operating_unit_hours_2025: 7747
+  - facility_id: 7504
+    facility_name: "Neil Simpson II"
+    state: "WY"
+    primary_fuel_category: "Coal"
+    campd_primary_fuel: "Coal"
+    operating_unit_hours_2025: 7503
+  - facility_id: 55479
+    facility_name: "Wygen I"
+    state: "WY"
+    primary_fuel_category: "Coal"
+    campd_primary_fuel: "Coal"
+    operating_unit_hours_2025: 6910
+  - facility_id: 56237
+    facility_name: "Lake Side Power Plant"
+    state: "UT"
+    primary_fuel_category: "Natural Gas"
+    campd_primary_fuel: "Pipeline Natural Gas"
+    operating_unit_hours_2025: 29162
+  - facility_id: 56102
+    facility_name: "Currant Creek Power Project"
+    state: "UT"
+    primary_fuel_category: "Natural Gas"
+    campd_primary_fuel: "Pipeline Natural Gas"
+    operating_unit_hours_2025: 15404
+  - facility_id: 55622
+    facility_name: "West Valley Power Plant"
+    state: "UT"
+    primary_fuel_category: "Natural Gas"
+    campd_primary_fuel: "Pipeline Natural Gas"
+    operating_unit_hours_2025: 14386
+  - facility_id: 57703
+    facility_name: "Cheyenne Prairie Generating Station"
+    state: "WY"
+    primary_fuel_category: "Natural Gas"
+    campd_primary_fuel: "Pipeline Natural Gas"
+    operating_unit_hours_2025: 13044
+  - facility_id: 58236
+    facility_name: "Marshalltown Generating Station"
+    state: "IA"
+    primary_fuel_category: "Natural Gas"
+    campd_primary_fuel: "Pipeline Natural Gas"
+    operating_unit_hours_2025: 11195
+  - facility_id: 8031
+    facility_name: "Emery Station"
+    state: "IA"
+    primary_fuel_category: "Natural Gas"
+    campd_primary_fuel: "Pipeline Natural Gas"
+    operating_unit_hours_2025: 10769
+  - facility_id: 3648
+    facility_name: "Gadsby"
+    state: "UT"
+    primary_fuel_category: "Natural Gas"
+    campd_primary_fuel: "Pipeline Natural Gas"
+    operating_unit_hours_2025: 10144
+  - facility_id: 56013
+    facility_name: "Exira Station"
+    state: "IA"
+    primary_fuel_category: "Natural Gas"
+    campd_primary_fuel: "Pipeline Natural Gas"
+    operating_unit_hours_2025: 8705
+  - facility_id: 1122
+    facility_name: "Ames"
+    state: "IA"
+    primary_fuel_category: "Natural Gas"
+    campd_primary_fuel: "Natural Gas"
+    operating_unit_hours_2025: 8310
+  - facility_id: 7985
+    facility_name: "Greater Des Moines Energy Center"
+    state: "IA"
+    primary_fuel_category: "Natural Gas"
+    campd_primary_fuel: "Pipeline Natural Gas"
+    operating_unit_hours_2025: 8078
+  - facility_id: 56177
+    facility_name: "Nebo Power Station"
+    state: "UT"
+    primary_fuel_category: "Natural Gas"
+    campd_primary_fuel: "Pipeline Natural Gas"
+    operating_unit_hours_2025: 7292
+  - facility_id: 56253
+    facility_name: "Millcreek Power"
+    state: "UT"
+    primary_fuel_category: "Natural Gas"
+    campd_primary_fuel: "Pipeline Natural Gas"
+    operating_unit_hours_2025: 4644
+  - facility_id: 7145
+    facility_name: "Pleasant Hill Energy Center"
+    state: "IA"
+    primary_fuel_category: "Natural Gas"
+    campd_primary_fuel: "Pipeline Natural Gas"
+    operating_unit_hours_2025: 2662
+  - facility_id: 55477
+    facility_name: "Neil Simpson II (CT2)"
+    state: "WY"
+    primary_fuel_category: "Natural Gas"
+    campd_primary_fuel: "Pipeline Natural Gas"
+    operating_unit_hours_2025: 1534
+  - facility_id: 8029
+    facility_name: "Sycamore Combustion Turbine"
+    state: "IA"
+    primary_fuel_category: "Natural Gas"
+    campd_primary_fuel: "Pipeline Natural Gas"
+    operating_unit_hours_2025: 1437

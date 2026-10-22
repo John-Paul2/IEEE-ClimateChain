@@ -1,0 +1,70 @@
+{
+  "attestations": {
+    "1": {
+      "attestationId": "1",
+      "attestedAt": "1792595978",
+      "attestedBy": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      "batchIds": [
+        "1"
+      ],
+      "coverageBp": 5000,
+      "installationId": "0xbacd7e89cdf1b1474f222f7cc0d24ad35b6666325da3405d6952b8a70a3b0bed",
+      "periodLabel": "2026-Q3",
+      "periodMerkleRoot": "0x6e9980bb14ac41ec3be5ff1010cd5392c8b3c937021a151e3ef039faf4f56721",
+      "productionKg": "500000",
+      "totalEmissionsKgCo2e": "275331"
+    }
+  },
+  "batches": {
+    "1": {
+      "anchoredAt": "1792595915",
+      "batchId": "1",
+      "count": 8,
+      "deviceId": "0xe62866e00a502327340e849b08d46cdd443d2f04acfa3e710a3e7a345a5ad2eb",
+      "firstSeq": "0",
+      "installationId": "0xbacd7e89cdf1b1474f222f7cc0d24ad35b6666325da3405d6952b8a70a3b0bed",
+      "lastSeq": "7",
+      "merkleRoot": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+      "status": "Verified"
+    },
+    "2": {
+      "anchoredAt": "1792595946",
+      "batchId": "2",
+      "count": 8,
+      "deviceId": "0xe62866e00a502327340e849b08d46cdd443d2f04acfa3e710a3e7a345a5ad2eb",
+      "firstSeq": "8",
+      "installationId": "0xbacd7e89cdf1b1474f222f7cc0d24ad35b6666325da3405d6952b8a70a3b0bed",
+      "lastSeq": "15",
+      "merkleRoot": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+      "status": "Slashed"
+    }
+  },
+  "block_number": 60,
+  "chain_id": 31337,
+  "contracts": {
+    "Attestation": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
+    "BatchAnchor": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
+  },
+  "data_origin": {
+    "production_tonnes": "synthetic: operator-supplied input, not measured",
+    "signing": "synthetic: software-simulated secure element, not hardware",
+    "synthetic_channels": "synthetic: synthetic_* channels are simulated",
+    "telemetry": "real: US EPA CAMPD hourly data (facility 1073, unit 3), replayed"
+  },
+  "label": "OFFLINE SNAPSHOT (recorded from a local anvil node; not live chain data)",
+  "network": "local-anvil",
+  "packet_inclusion": [
+    {
+      "batchId": "1",
+      "packetHash": "0x60eb203cd612f46008e208c1e026acd39e04f644900a7c3ddff4a161f7d84ab9",
+      "result": true,
+      "siblings": [
+        "0xf3108a7df6d7fc66b6c7234fc59d75a880184cb0d7cab7c90c85ccb64c3843e2",
+        "0x384052126a7c1a9fd9b74af0f8b3fe61db249b4dc537a9a0713fb2318e286bcd",
+        "0x9ca07550dc471b6a8f1abd47c106bfc356de58f4a207b81b7c2a12d3f368ef1c"
+      ]
+    }
+  ],
+  "recorded_at_utc": "2026-10-21T15:18:36Z",
+  "snapshot_version": "1.0.0"
+}

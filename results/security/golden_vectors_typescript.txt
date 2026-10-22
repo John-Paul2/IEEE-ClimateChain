@@ -1,0 +1,18 @@
+Γû╢ VeriCEMS Browser-Side Merkle & Verification Tests
+  Γ£ö computes empty Keccak-256 matching golden self-test (0.9615ms)
+  Γ£ö reproduces Merkle roots and proofs for all 4 golden chains (4.0832ms)
+  Γ£ö rejects invalid or tampered Merkle proofs (0.9654ms)
+  Γ£ö computes deterministic identifier byte32 hashes (0.2698ms)
+  Γ£ö validates golden report against report.schema.json (1.8511ms)
+  Γ£ö strictly enforces AGENTS.md Rule 5: rejects any report containing the word 'official' (0.2095ms)
+  Γ£ö verifies the recorded valid fixture via offline snapshot (0.7247ms)
+  Γ£ö detects and flags tampered reports in offline verification (0.48ms)
+Γ£ö VeriCEMS Browser-Side Merkle & Verification Tests (10.4908ms)
+Γä╣ tests 8
+Γä╣ suites 1
+Γä╣ pass 8
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 944.9898

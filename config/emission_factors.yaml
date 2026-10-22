@@ -1,0 +1,57 @@
+# VeriCEMS Reference Fuel Emission Factors Configuration
+# Rule (AGENTS.md & Milestone P03 Task 5):
+# - Never hardcode emission factors in detector or analysis code; estimate empirical ratios from training-split facilities.
+# - Any cited published emission factor below includes its official EPA source URL and is explicitly marked
+#   status: "unverified" (with last_verified: null) until confirmed by a human against the primary regulatory text.
+
+schema_version: "1.0.0"
+policy: "Empirical CO2-to-heat-input ratios must be estimated from training-split facilities only. Published factors below are reference benchmarks and remain marked unverified until human review."
+published_reference_factors:
+  coal_subbituminous_bituminous_part75:
+    fuel_category: "Coal"
+    campd_primary_fuel_types:
+      - "Coal"
+    fc_factor_scf_co2_per_mmbtu: 1800.0
+    derived_co2_short_tons_per_mmbtu: 0.1049
+    derived_co2_kg_per_mmbtu: 95.16
+    unit: "short_tons_co2_per_mmbtu"
+    regulation_reference: "40 CFR Part 75 Appendix F Table 1 & Appendix G Equation G-4 (Fc = 1,800 scf CO2/mmBtu for bituminous/subbituminous coal)"
+    source_url: "https://www.ecfr.gov/current/title-40/chapter-I/subchapter-C/part-75/appendix-Appendix%20F%20to%20Part%2075"
+    status: "unverified"
+    last_verified: null
+  pipeline_natural_gas_part75:
+    fuel_category: "Natural Gas"
+    campd_primary_fuel_types:
+      - "Pipeline Natural Gas"
+      - "Natural Gas"
+    fc_factor_scf_co2_per_mmbtu: 1040.0
+    derived_co2_short_tons_per_mmbtu: 0.0594
+    derived_co2_kg_per_mmbtu: 53.89
+    unit: "short_tons_co2_per_mmbtu"
+    regulation_reference: "40 CFR Part 75 Appendix F Table 1 & Appendix G Equation G-4 (Fc = 1,040 scf CO2/mmBtu for natural gas)"
+    source_url: "https://www.ecfr.gov/current/title-40/chapter-I/subchapter-C/part-75/appendix-Appendix%20G%20to%20Part%2075"
+    status: "unverified"
+    last_verified: null
+  epa_ghg_emission_factors_hub_coal_mixed_electric_power:
+    fuel_category: "Coal"
+    campd_primary_fuel_types:
+      - "Coal"
+    derived_co2_kg_per_mmbtu: 95.52
+    derived_co2_short_tons_per_mmbtu: 0.1053
+    unit: "short_tons_co2_per_mmbtu"
+    regulation_reference: "US EPA GHG Emission Factors Hub (Stationary Combustion - Coal, Electric Power Sector)"
+    source_url: "https://www.epa.gov/climateleadership/ghg-emission-factors-hub"
+    status: "unverified"
+    last_verified: null
+  epa_ghg_emission_factors_hub_natural_gas:
+    fuel_category: "Natural Gas"
+    campd_primary_fuel_types:
+      - "Pipeline Natural Gas"
+      - "Natural Gas"
+    derived_co2_kg_per_mmbtu: 53.06
+    derived_co2_short_tons_per_mmbtu: 0.0585
+    unit: "short_tons_co2_per_mmbtu"
+    regulation_reference: "US EPA GHG Emission Factors Hub (Stationary Combustion - Natural Gas)"
+    source_url: "https://www.epa.gov/climateleadership/ghg-emission-factors-hub"
+    status: "unverified"
+    last_verified: null

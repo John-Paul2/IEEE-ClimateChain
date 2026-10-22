@@ -1,0 +1,80 @@
+{
+  "network": "arbitrum-sepolia",
+  "chain_id": 421614,
+  "sample_timestamp_utc": "2026-10-22T02:32:00Z",
+  "gas_price_gwei_input": null,
+  "token_price_usd_input": null,
+  "cost_formula": "Cost_EUR = (Gas_Used * Gas_Price_Gwei * 1e-9) * ETH_EUR_Exchange_Rate",
+  "measurements": {
+    "anchorBatch": {
+      "count": 20,
+      "min": 179831,
+      "median": 179843,
+      "max": 179855
+    },
+    "commitVote": {
+      "count": 6,
+      "min": 103410,
+      "median": 103410,
+      "max": 120510
+    },
+    "revealVote": {
+      "count": 6,
+      "min": 176983,
+      "median": 177505,
+      "max": 194605
+    },
+    "finalize": {
+      "count": 2,
+      "min": 127850,
+      "median": 188177,
+      "max": 248504
+    },
+    "openChallenge": {
+      "count": 1,
+      "min": 120654,
+      "median": 120654,
+      "max": 120654
+    },
+    "submitOperatorDispute": {
+      "count": 1,
+      "min": 82020,
+      "median": 82020,
+      "max": 82020
+    },
+    "resolve": {
+      "count": 2,
+      "min": 77704,
+      "median": 198309,
+      "max": 318914
+    },
+    "recordAttestation": {
+      "count": 1,
+      "min": 281626,
+      "median": 281626,
+      "max": 281626
+    }
+  },
+  "all_anchorBatch_samples": [
+    179831,
+    179843,
+    179843,
+    179843,
+    179843,
+    179843,
+    179843,
+    179843,
+    179843,
+    179843,
+    179843,
+    179843,
+    179843,
+    179843,
+    179843,
+    179831,
+    179843,
+    179843,
+    179843,
+    179855
+  ]
+}

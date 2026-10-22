@@ -1,0 +1,26 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.3, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+hypothesis profile 'default'
+rootdir: C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change
+plugins: hypothesis-6.170.5, anyio-4.15.1, Faker-40.38.0
+collecting ... collected 16 items
+
+backend/tests/test_crypto_golden_and_unit.py::test_secure_element_interface_and_private_key_isolation PASSED [  6%]
+backend/tests/test_crypto_golden_and_unit.py::test_golden_vectors_packet_creation_and_signing PASSED [ 12%]
+backend/tests/test_crypto_golden_and_unit.py::test_golden_vectors_chain_verifier PASSED [ 18%]
+backend/tests/test_crypto_golden_and_unit.py::test_chain_verifier_returns_all_problems_without_short_circuiting PASSED [ 25%]
+backend/tests/test_crypto_golden_and_unit.py::test_golden_vectors_merkle_tree_proofs_and_batch_builder PASSED [ 31%]
+backend/tests/test_crypto_golden_and_unit.py::test_single_leaf_merkle_tree_and_float_formatting_edge_cases PASSED [ 37%]
+backend/tests/test_crypto_golden_and_unit.py::test_crypto_notes_doc_exists_and_states_limitations_plainly PASSED [ 43%]
+backend/tests/test_crypto_properties.py::test_prop_untouched_chain_always_verifies PASSED [ 50%]
+backend/tests/test_crypto_properties.py::test_prop_changing_any_single_field_is_detected PASSED [ 56%]
+backend/tests/test_crypto_properties.py::test_prop_deleting_any_packet_is_detected PASSED [ 62%]
+backend/tests/test_crypto_properties.py::test_prop_duplicating_any_packet_is_detected PASSED [ 68%]
+backend/tests/test_crypto_properties.py::test_prop_reordering_packets_is_detected PASSED [ 75%]
+backend/tests/test_crypto_properties.py::test_prop_replaying_historical_packets_is_detected PASSED [ 81%]
+backend/tests/test_crypto_properties.py::test_prop_timestamp_regression_with_valid_signatures_is_detected PASSED [ 87%]
+backend/tests/test_crypto_properties.py::test_prop_merkle_proofs_verify_and_reject_any_tamper PASSED [ 93%]
+backend/tests/test_crypto_properties.py::test_total_property_examples_summary PASSED [100%]
+
+======================== 16 passed in 71.84s (0:01:11) ========================

@@ -1,0 +1,147 @@
+{
+  "schema_version": "1.0.0",
+  "commission_cbam_legislation_url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
+  "policy_note": "Article numbers are provided only where explicitly verified in the project guide; unknown article numbers are set to null per AGENTS.md honesty rules.",
+  "regulations": {
+    "2023/956": {
+      "id": "2023/956",
+      "citation": "Regulation (EU) 2023/956 of the European Parliament and of the Council establishing a carbon border adjustment mechanism (CBAM)",
+      "role": "Primary CBAM founding regulation defining scope, authorised declarants, certificate surrender, free allocation adjustment, and penalties",
+      "commission_url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
+      "status": "VERIFIED_SECONDARY",
+      "last_verified": "2026-10-20"
+    },
+    "2025/2083": {
+      "id": "2025/2083",
+      "citation": "Regulation (EU) 2025/2083 amending Regulation (EU) 2023/956 (CBAM Omnibus simplification)",
+      "role": "Omnibus simplification amendments (including small-importer mass threshold exemption and compliance timeline updates)",
+      "commission_url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
+      "status": "VERIFIED_SECONDARY",
+      "last_verified": "2026-10-20"
+    },
+    "2025/2546": {
+      "id": "2025/2546",
+      "citation": "Commission Implementing Regulation (EU) 2025/2546",
+      "role": "Verification principles and rules for accredited verifiers checking declared embedded emissions",
+      "commission_url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
+      "status": "VERIFIED_SECONDARY",
+      "last_verified": "2026-10-20"
+    },
+    "2025/2547": {
+      "id": "2025/2547",
+      "citation": "Commission Implementing Regulation (EU) 2025/2547",
+      "role": "Methodology for calculating and monitoring embedded emissions of CBAM goods in the definitive period",
+      "commission_url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
+      "status": "VERIFIED_SECONDARY",
+      "last_verified": "2026-10-20"
+    },
+    "2025/2548": {
+      "id": "2025/2548",
+      "citation": "Commission Implementing Regulation (EU) 2025/2548",
+      "role": "Rules on CBAM certificate pricing and quarterly/weekly EU ETS allowance average calculation",
+      "commission_url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
+      "status": "VERIFIED_SECONDARY",
+      "last_verified": "2026-10-20"
+    },
+    "2025/2620": {
+      "id": "2025/2620",
+      "citation": "Commission Implementing Regulation (EU) 2025/2620",
+      "role": "Rules for the free allocation adjustment (SEFA), production-route CBAM benchmarks, and cross-sectoral correction factor application",
+      "commission_url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
+      "status": "VERIFIED_SECONDARY",
+      "last_verified": "2026-10-20"
+    },
+    "2025/2621 (as corrected by 2026/1740)": {
+      "id": "2025/2621 (as corrected by 2026/1740)",
+      "citation": "Commission Implementing Regulation (EU) 2025/2621 as corrected by Commission Implementing Regulation (EU) 2026/1740",
+      "role": "Default values by CN code and country of origin and proportionate markups applied when actual verified emissions data are unavailable",
+      "commission_url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
+      "status": "VERIFIED_SECONDARY",
+      "last_verified": "2026-10-20"
+    }
+  },
+  "variables": {
+    "price_eur_per_tco2e": {
+      "parameter": "price_eur_per_tco2e",
+      "description": "CBAM certificate price in EUR per tonne of CO2e based on EU ETS allowance auction averages",
+      "regulations": ["2023/956", "2025/2548"],
+      "article": null,
+      "commission_url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
+      "secondary_url": "https://cbamguide.com/news/2026-10-05-q3-2026-cbam-certificate-price/",
+      "status": "VERIFIED_SECONDARY",
+      "last_verified": "2026-10-20"
+    },
+    "free_allocation_factor_by_year": {
+      "parameter": "free_allocation_factor_by_year",
+      "description": "Annual free-allocation factor phasing out from 0.975 (97.5% free / 2.5% payable) in 2026 to 0.0 (100% payable) in 2034",
+      "regulations": ["2023/956", "2025/2620"],
+      "article": "Article 31 (Regulation 2023/956)",
+      "commission_url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
+      "status": "VERIFIED_SECONDARY",
+      "last_verified": "2026-10-20"
+    },
+    "cscf_by_year": {
+      "parameter": "cscf_by_year",
+      "description": "Cross-Sectoral Correction Factor (CSCF) applied in the SEFA calculation",
+      "regulations": ["2023/956", "2025/2620"],
+      "article": null,
+      "commission_url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
+      "status": "NEEDS_SOURCE",
+      "last_verified": null
+    },
+    "benchmark_tco2e_per_t": {
+      "parameter": "benchmark_tco2e_per_t",
+      "description": "CBAM product benchmark (tCO2e per tonne of product) for the installation's production route",
+      "regulations": ["2023/956", "2025/2620"],
+      "article": null,
+      "commission_url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
+      "status": "NEEDS_SOURCE",
+      "last_verified": null
+    },
+    "default_benchmark_tco2e_per_t": {
+      "parameter": "default_benchmark_tco2e_per_t",
+      "description": "CBAM benchmark applicable when default SEE values are used (may differ from actual route benchmark [VERIFY])",
+      "regulations": ["2025/2620", "2025/2621 (as corrected by 2026/1740)"],
+      "article": null,
+      "commission_url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
+      "status": "NEEDS_SOURCE",
+      "last_verified": null
+    },
+    "default_value_base_tco2e_per_t": {
+      "parameter": "default_value_base_tco2e_per_t",
+      "description": "Base default Specific Embedded Emissions (tCO2e per tonne of product) by CN code and country of origin before markup",
+      "regulations": ["2023/956", "2025/2621 (as corrected by 2026/1740)"],
+      "article": null,
+      "commission_url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
+      "status": "NEEDS_SOURCE",
+      "last_verified": null
+    },
+    "default_markup_by_year": {
+      "parameter": "default_markup_by_year",
+      "description": "Proportionate markup added to base default values (10% in 2026, 20% in 2027, 30% from 2028)",
+      "regulations": ["2025/2621 (as corrected by 2026/1740)"],
+      "article": null,
+      "commission_url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
+      "status": "VERIFIED_SECONDARY",
+      "last_verified": "2026-10-20"
+    },
+    "verified_see_tco2e_per_t": {
+      "parameter": "verified_see_tco2e_per_t",
+      "description": "Actual installation Specific Embedded Emissions (tCO2e per tonne of product) determined per CBAM monitoring and verification rules",
+      "regulations": ["2023/956", "2025/2546", "2025/2547"],
+      "article": null,
+      "commission_url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
+      "status": "VERIFIED_SECONDARY",
+      "last_verified": "2026-10-20"
+    },
+    "tonnes_shipped": {
+      "parameter": "tonnes_shipped",
+      "description": "Total mass of imported CBAM-covered goods in tonnes (subject to the 50-tonne annual small-importer mass threshold in 2025/2083)",
+      "regulations": ["2023/956", "2025/2083"],
+      "article": null,
+      "commission_url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
+      "status": "VERIFIED_SECONDARY",
+      "last_verified": "2026-10-20"
+    }
+  }
+}

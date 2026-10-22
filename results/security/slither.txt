@@ -1,0 +1,171 @@
+'forge clean' running (wd: C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\contracts)
+'forge config --json' running
+'forge build --build-info --skip ./test/** ./script/** --force' running (wd: C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\contracts)
+INFO:Detectors:
+Detector: arbitrary-send-eth
+BondVault._safeTransferETH(address,uint256) (src/BondVault.sol#421-424) sends eth to arbitrary user
+	Dangerous calls:
+	- (ok,None) = to.call{value: amount}() (src/BondVault.sol#422)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#functions-that-send-ether-to-arbitrary-destinations
+INFO:Detectors:
+Detector: divide-before-multiply
+BondVault.slashOperator(bytes32,uint256,address[],address) (src/BondVault.sol#239-290) performs a multiplication on the result of a division:
+	- perVerifier = verifierRewardPool / count (src/BondVault.sol#269)
+	- distributedVerifierShare = perVerifier * count (src/BondVault.sol#276)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#divide-before-multiply
+INFO:Detectors:
+Detector: incorrect-equality
+Attestation.getAttestation(uint256) (src/Attestation.sol#146-150) uses a dangerous strict equality:
+	- att.attestationId == 0 (src/Attestation.sol#148)
+Attestation.getAttestationBatchIds(uint256) (src/Attestation.sol#155-158) uses a dangerous strict equality:
+	- _attestations[attestationId].attestationId == 0 (src/Attestation.sol#156)
+BatchAnchor.getBatch(uint256) (src/BatchAnchor.sol#171-175) uses a dangerous strict equality:
+	- b.status == BatchStatus.None (src/BatchAnchor.sol#173)
+BatchAnchor.verifyPacketInclusion(uint256,bytes32,bytes32[]) (src/BatchAnchor.sol#182-191) uses a dangerous strict equality:
+	- b.status == BatchStatus.None (src/BatchAnchor.sol#188)
+Challenge.getChallenge(uint256) (src/Challenge.sol#291-295) uses a dangerous strict equality:
+	- c.status == ChallengeStatus.None (src/Challenge.sol#293)
+DeviceRegistry.isDeviceActive(bytes32) (src/DeviceRegistry.sol#171-173) uses a dangerous strict equality:
+	- _devices[deviceId].status == DeviceStatus.Active (src/DeviceRegistry.sol#172)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#dangerous-strict-equalities
+INFO:Detectors:
+Detector: reentrancy-no-eth
+Reentrancy in VerifierQuorum.finalize(uint256) (src/VerifierQuorum.sol#265-310):
+	External calls:
+	- bondVault.slashVerifier(v,penalty,treasury) (src/VerifierQuorum.sol#296)
+	State variables written after the call(s):
+	- unrevealedPenalized[batchId][v] = true (src/VerifierQuorum.sol#291)
+	VerifierQuorum.unrevealedPenalized (src/VerifierQuorum.sol#93) can be used in cross function reentrancies:
+	- VerifierQuorum.unrevealedPenalized (src/VerifierQuorum.sol#93)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-2
+INFO:Detectors:
+Detector: calls-loop
+Attestation.recordAttestation(bytes32,string,uint256,uint256,uint16,bytes32,uint256[]) (src/Attestation.sol#82-141) has external calls inside a loop: b = batchAnchor.getBatch(bId) (src/Attestation.sol#106)
+Challenge._executeOverturned(Challenge.ChallengeRecord,address,string) (src/Challenge.sol#369-399) has external calls inside a loop: vStake = bondVault.verifierStakeOf(v) (src/Challenge.sol#388)
+	Calls stack containing the loop:
+		Challenge.resolve(uint256,bool,string)
+Challenge._executeOverturned(Challenge.ChallengeRecord,address,string) (src/Challenge.sol#369-399) has external calls inside a loop: bondVault.slashVerifier(v,penalty,operator) (src/Challenge.sol#391)
+	Calls stack containing the loop:
+		Challenge.resolve(uint256,bool,string)
+VerifierQuorum.finalize(uint256) (src/VerifierQuorum.sol#265-310) has external calls inside a loop: stake = bondVault.verifierStakeOf(v) (src/VerifierQuorum.sol#292)
+VerifierQuorum.finalize(uint256) (src/VerifierQuorum.sol#265-310) has external calls inside a loop: bondVault.slashVerifier(v,penalty,treasury) (src/VerifierQuorum.sol#296)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation/#calls-inside-a-loop
+INFO:Detectors:
+Detector: reentrancy-events
+Reentrancy in Challenge._executeOverturned(Challenge.ChallengeRecord,address,string) (src/Challenge.sol#369-399):
+	External calls:
+	- bondVault.setChallengeStatus(instId,false) (src/Challenge.sol#378)
+	- batchAnchor.updateBatchStatus(batchId,BatchAnchor.BatchStatus.Cleared) (src/Challenge.sol#379)
+	- bondVault.slashVerifier(v,penalty,operator) (src/Challenge.sol#391)
+	Event emitted after the call(s):
+	- ChallengeResolved(batchId,false,decider,notes) (src/Challenge.sol#397)
+	- ChallengeSettled(batchId,ChallengeStatus.OverturnedCleared,totalSlashed) (src/Challenge.sol#398)
+Reentrancy in Challenge._executeUpheld(Challenge.ChallengeRecord,Challenge.ChallengeStatus,address,string,bool) (src/Challenge.sol#341-367):
+	External calls:
+	- bondVault.setChallengeStatus(instId,false) (src/Challenge.sol#352)
+	- batchAnchor.updateBatchStatus(batchId,BatchAnchor.BatchStatus.Slashed) (src/Challenge.sol#353)
+	- bondVault.slashOperator(instId,slashAmount,honestVerifiers,treasury) (src/Challenge.sol#360)
+	Event emitted after the call(s):
+	- ChallengeResolved(batchId,true,decider,notes) (src/Challenge.sol#364)
+	- ChallengeSettled(batchId,finalStatus,slashAmount) (src/Challenge.sol#366)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-4
+INFO:Detectors:
+Detector: timestamp
+Attestation.getAttestation(uint256) (src/Attestation.sol#146-150) uses timestamp for comparisons
+	Dangerous comparisons:
+	- att.attestationId == 0 (src/Attestation.sol#148)
+Attestation.getAttestationBatchIds(uint256) (src/Attestation.sol#155-158) uses timestamp for comparisons
+	Dangerous comparisons:
+	- _attestations[attestationId].attestationId == 0 (src/Attestation.sol#156)
+BatchAnchor.getBatch(uint256) (src/BatchAnchor.sol#171-175) uses timestamp for comparisons
+	Dangerous comparisons:
+	- b.status == BatchStatus.None (src/BatchAnchor.sol#173)
+BatchAnchor.verifyPacketInclusion(uint256,bytes32,bytes32[]) (src/BatchAnchor.sol#182-191) uses timestamp for comparisons
+	Dangerous comparisons:
+	- b.status == BatchStatus.None (src/BatchAnchor.sol#188)
+BondVault.executeOperatorWithdraw(bytes32) (src/BondVault.sol#166-191) uses timestamp for comparisons
+	Dangerous comparisons:
+	- uint64(block.timestamp) < pending.unlockTimestamp (src/BondVault.sol#175)
+BondVault.executeVerifierWithdraw() (src/BondVault.sol#212-231) uses timestamp for comparisons
+	Dangerous comparisons:
+	- uint64(block.timestamp) < pending.unlockTimestamp (src/BondVault.sol#215)
+Challenge.openChallenge(uint256,bytes32) (src/Challenge.sol#159-189) uses timestamp for comparisons
+	Dangerous comparisons:
+	- _challenges[batchId].status != ChallengeStatus.None (src/Challenge.sol#168)
+Challenge.settleExpired(uint256) (src/Challenge.sol#268-286) uses timestamp for comparisons
+	Dangerous comparisons:
+	- uint64(block.timestamp) < c.windowClosesAt (src/Challenge.sol#281)
+Challenge.getChallenge(uint256) (src/Challenge.sol#291-295) uses timestamp for comparisons
+	Dangerous comparisons:
+	- c.status == ChallengeStatus.None (src/Challenge.sol#293)
+Challenge._recordDispute(uint256,bytes32,string) (src/Challenge.sol#307-339) uses timestamp for comparisons
+	Dangerous comparisons:
+	- uint64(block.timestamp) >= c.windowClosesAt (src/Challenge.sol#331)
+DeviceRegistry.isDeviceActive(bytes32) (src/DeviceRegistry.sol#171-173) uses timestamp for comparisons
+	Dangerous comparisons:
+	- _devices[deviceId].status == DeviceStatus.Active (src/DeviceRegistry.sol#172)
+VerifierQuorum.commitVote(uint256,bytes32) (src/VerifierQuorum.sol#165-186) uses timestamp for comparisons
+	Dangerous comparisons:
+	- uint64(block.timestamp) > commitEnd (src/VerifierQuorum.sol#175)
+VerifierQuorum._validateReveal(uint256,bytes32,bytes32,uint16,VerifierQuorum.Verdict,bytes32) (src/VerifierQuorum.sol#226-260) uses timestamp for comparisons
+	Dangerous comparisons:
+	- nowTs <= commitEnd (src/VerifierQuorum.sol#238)
+	- nowTs > commitEnd + revealWindowSeconds (src/VerifierQuorum.sol#241)
+VerifierQuorum.finalize(uint256) (src/VerifierQuorum.sol#265-310) uses timestamp for comparisons
+	Dangerous comparisons:
+	- uint64(block.timestamp) > revealEnd && unrevealedPenaltyBps > 0 (src/VerifierQuorum.sol#287)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#block-timestamp
+INFO:Detectors:
+Detector: assembly
+Hashes._efficientKeccak256(bytes32,bytes32) (lib/openzeppelin-contracts/contracts/utils/cryptography/Hashes.sol#22-28) uses assembly
+	- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/cryptography/Hashes.sol#24-28)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#assembly-usage
+INFO:Detectors:
+Detector: pragma
+2 different versions of Solidity are used:
+	- Version constraint ^0.8.20 is used by:
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/access/AccessControl.sol#2-4)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/access/IAccessControl.sol#2-4)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Context.sol#2-4)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Pausable.sol#2-4)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol#2-4)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/cryptography/Hashes.sol#2-4)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/cryptography/MerkleProof.sol#3-5)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol#2-4)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol#2-4)
+	- Version constraint 0.8.24 is used by:
+		-0.8.24 (src/Attestation.sol#2)
+		-0.8.24 (src/BatchAnchor.sol#2)
+		-0.8.24 (src/BondVault.sol#2)
+		-0.8.24 (src/Challenge.sol#2)
+		-0.8.24 (src/DeviceRegistry.sol#2)
+		-0.8.24 (src/VerifierQuorum.sol#2)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#different-pragma-directives-are-used
+INFO:Detectors:
+Detector: solc-version
+Version constraint ^0.8.20 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)
+	- VerbatimInvalidDeduplication
+	- FullInlinerNonExpressionSplitArgumentEvaluationOrder
+	- MissingSideEffectsOnSelectorAccess.
+It is used by:
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/access/AccessControl.sol#2-4)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/access/IAccessControl.sol#2-4)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Context.sol#2-4)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Pausable.sol#2-4)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol#2-4)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/cryptography/Hashes.sol#2-4)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/cryptography/MerkleProof.sol#3-5)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol#2-4)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol#2-4)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity
+INFO:Detectors:
+Detector: low-level-calls
+Low level call in BondVault._safeTransferETH(address,uint256) (src/BondVault.sol#421-424):
+	- (ok,None) = to.call{value: amount}() (src/BondVault.sol#422)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#low-level-calls
+INFO:Detectors:
+Detector: unindexed-event-address
+Event Pausable.Paused(address) (lib/openzeppelin-contracts/contracts/utils/Pausable.sol#21-23) has address parameters but no indexed parameters
+Event Pausable.Unpaused(address) (lib/openzeppelin-contracts/contracts/utils/Pausable.sol#26-28) has address parameters but no indexed parameters
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#unindexed-event-address-parameters
+INFO:Slither:. analyzed (16 contracts with 102 detectors), 36 result(s) found

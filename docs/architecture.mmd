@@ -1,0 +1,64 @@
+flowchart TD
+    subgraph Edge["1. Plant Edge Layer (Field & Gateway)"]
+        S1["CEMS Stack Analyzers<br/>(CO2, SO2, NOx Concentrations)"]
+        S2["Stack Flow & Temperature<br/>(Volumetric Flow Sensor)"]
+        S3["Custody Fuel Meter<br/>(Independent Fuel Ledger)"]
+        
+        GW["VeriCEMS Edge Gateway<br/>• NIST P-256 Hardware Key<br/>• SHA-256 Hash-Chaining<br/>• Canonical JSON Normalization"]
+        
+        S1 -->|Analog / Modbus| GW
+        S2 -->|4-20mA / OPC UA| GW
+        S3 -->|Pulse / Modbus| GW
+    end
+
+    subgraph Operator["2. Operator Infrastructure (Off-Chain)"]
+        OP["Operator Ingestion Node<br/>• Validates Sequence Continuity<br/>• Assembles N-Packet Batches<br/>• Computes Binary Keccak-256 Merkle Tree"]
+        GW -->|Signed Packets + PrevHash| OP
+    end
+
+    subgraph EVM["3. Smart Contracts Layer (Arbitrum Sepolia L2)"]
+        direction TB
+        REG["DeviceRegistry.sol<br/>Device Key Auth & Revocation"]
+        VAULT["BondVault.sol<br/>Operator Bonds & Verifier Stakes"]
+        ANCHOR["BatchAnchor.sol<br/>Contiguous Root Anchoring"]
+        QUORUM["VerifierQuorum.sol<br/>3-of-5 Commit-Reveal Consensus"]
+        CHALLENGE["Challenge.sol<br/>Optimistic Dispute & Slashing"]
+        ATTEST["Attestation.sol<br/>CBAM Period Certificate"]
+
+        VAULT -.->|Stake Slashing| CHALLENGE
+        ANCHOR -->|Batch Registration| QUORUM
+        QUORUM -->|Fraud Flagged| CHALLENGE
+        QUORUM -->|Clean Quorum Finalized| ATTEST
+    end
+
+    subgraph Verifiers["4. Verifier Committee (5 Independent Nodes)"]
+        VCOMMITTEE["5 Independent Verifier Nodes<br/>• Multi-Source Cross-Check (Fuel vs Stack)<br/>• Stoichiometric Mass Balance (CO2 / Heat)<br/>• Spectral Flatness & Autocorrelation<br/>• Deterministic CPU ONNX Autoencoder"]
+        
+        V1["Verifier Node 1"]
+        V2["Verifier Node 2"]
+        V3["Verifier Node 3"]
+        V4["Verifier Node 4"]
+        V5["Verifier Node 5"]
+        
+        VCOMMITTEE --- V1
+        VCOMMITTEE --- V2
+        VCOMMITTEE --- V3
+        VCOMMITTEE --- V4
+        VCOMMITTEE --- V5
+    end
+
+    subgraph Portal["5. Importer Portal & CBAM Calculator"]
+        WEB["EU Importer Web Portal<br/>• Client-Side Merkle Proof Verification<br/>• On-Chain Attestation Cross-Check<br/>• Net CBAM Cost Calculator<br/>(Actual vs Default Penalties)"]
+    end
+
+    %% Data Flow Connections
+    OP -->|1. anchorBatch(batchId, root, startSeq, endSeq)| ANCHOR
+    OP -->|2. Broadcast Batch Telemetry + Merkle Tree| VCOMMITTEE
+
+    VCOMMITTEE -->|3. Phase 1: commitVote(hash)| QUORUM
+    VCOMMITTEE -->|4. Phase 2: revealVote(verdict, score, salt)| QUORUM
+
+    CHALLENGE -.->|Counter-Evidence / Merkle Proof| OP
+
+    ATTEST -->|Read Attestation & Root| WEB
+    OP -.->|Provide Batch Leaf Proofs| WEB

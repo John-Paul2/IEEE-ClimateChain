@@ -1,0 +1,246 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "metadata": {
+    "title": "VeriCEMS Machine-Readable Threat Model",
+    "version": "1.0.0",
+    "generated_at": "2026-10-21T18:22:00Z",
+    "project": "VeriCEMS (IEEE ClimateChain Hackathon 2026, Track 4)",
+    "status": "prototype_assessment",
+    "audited": false
+  },
+  "actors": [
+    {
+      "id": "ACT-01",
+      "name": "Malicious Plant Operator / Exporter",
+      "motivation": "Underreport CO2 or Specific Embedded Emissions to evade CBAM certificate liabilities or 10-30% punitive default markups",
+      "capabilities": ["Plant network control", "Edge gateway OS access", "CEMS maintenance access", "Possession of operator signing key"]
+    },
+    {
+      "id": "ACT-02",
+      "name": "Dishonest / Lazy Verifier Node",
+      "motivation": "Collect verification fees without executing compute-intensive AI/physics checks, or rubber-stamp falsified operator data",
+      "capabilities": ["Verifier private key", "VerifierQuorum committee voting rights", "Direct RPC access"]
+    },
+    {
+      "id": "ACT-03",
+      "name": "Corrupted Verifier Quorum Majority (>=3 nodes)",
+      "motivation": "Extort plant operators via fraudulent quarantine flags or censor valid batches",
+      "capabilities": ["3-of-5 threshold voting control in VerifierQuorum contract"]
+    },
+    {
+      "id": "ACT-04",
+      "name": "Network Eavesdropper / MitM",
+      "motivation": "Intercept proprietary industrial production telemetry or inject altered payload packets in transit",
+      "capabilities": ["Off-chain packet sniffing and interception between edge gateway and verifiers"]
+    },
+    {
+      "id": "ACT-05",
+      "name": "Hostile Third Party / Gas Spammer",
+      "motivation": "Disrupt protocol liveness, stall finality, or exhaust contract gas limits",
+      "capabilities": ["EVM public mempool spamming and reentrant transaction crafting"]
+    },
+    {
+      "id": "ACT-06",
+      "name": "Coordinated Plant Insider",
+      "motivation": "Falsify emissions while evading cross-source consistency checks against fuel and electricity meters",
+      "capabilities": ["Simultaneous write access to CEMS historians, fuel pipeline delivery meters, and plant accounting books"]
+    }
+  ],
+  "assets": [
+    {
+      "id": "AST-01",
+      "name": "Gateway Private Key (d_gateway)",
+      "type": "cryptographic_secret",
+      "objective": "Confidentiality & Authenticity"
+    },
+    {
+      "id": "AST-02",
+      "name": "Raw Off-Chain Sensor Telemetry",
+      "type": "industrial_data",
+      "objective": "Confidentiality & Integrity"
+    },
+    {
+      "id": "AST-03",
+      "name": "Batch Merkle Roots",
+      "type": "on_chain_state",
+      "objective": "Integrity & Authenticity"
+    },
+    {
+      "id": "AST-04",
+      "name": "Staked Operator & Verifier Bonds",
+      "type": "economic_value",
+      "objective": "Solvency & Conservation"
+    },
+    {
+      "id": "AST-05",
+      "name": "Commit-Reveal Voting Hashes",
+      "type": "consensus_state",
+      "objective": "Commitment Secrecy"
+    },
+    {
+      "id": "AST-06",
+      "name": "Period Attestation Records",
+      "type": "regulatory_compliance_record",
+      "objective": "Authenticity & Non-Repudiation"
+    }
+  ],
+  "trust_assumptions": [
+    {
+      "id": "TA-01",
+      "name": "Cryptographic Primitives",
+      "description": "NIST P-256 ECDSA and SHA-256 provide 128-bit security margin against forgery and preimage attacks."
+    },
+    {
+      "id": "TA-02",
+      "name": "Hardware Isolation",
+      "description": "Prototype software secure element models production hardware Secure Element (e.g. ATECC608/TPM) preventing key export."
+    },
+    {
+      "id": "TA-03",
+      "name": "Verifier Independence",
+      "description": "At least 3 out of 5 verifiers operate independently without collusion or common organizational ownership."
+    },
+    {
+      "id": "TA-04",
+      "name": "Multisig Arbiter Integrity",
+      "description": "The 2-of-3 arbiter council honestly reviews raw evidence during an overturned dispute."
+    },
+    {
+      "id": "TA-05",
+      "name": "L2 Network Liveness",
+      "description": "EVM Layer-2 sequencer processes transactions within commit (1h) and challenge (24h) timeframes."
+    }
+  ],
+  "attacks": [
+    {
+      "id": "ATK-01",
+      "name": "Digital Tampering",
+      "category": "Data Integrity",
+      "description": "Post-signing tampering with sensor readings, sequence numbers, or timestamps in transit or off-chain database.",
+      "threat_actors": ["ACT-01", "ACT-04"],
+      "severity": "CRITICAL",
+      "control": "RFC 8785 canonical JSON + ECDSA P-256 signature verification over SHA-256 packet hash + SHA-256 hash chaining (prev_hash).",
+      "evidence_file": "results/security/golden_vectors_python.txt",
+      "test_evidence": "test_golden_chains_cryptographic_rules, test_prop_changing_any_single_field_is_detected (120 property runs)",
+      "remaining_weakness": "Signatures prove origin, not ground truth. Key compromise allows signing arbitrary falsified values.",
+      "status": "Mitigated"
+    },
+    {
+      "id": "ATK-02",
+      "name": "Replay & Sequence Tampering",
+      "category": "Sequence Integrity",
+      "description": "Deleting high-emission records, duplicating low-emission records, reordering readings, or replaying historical telemetry batches.",
+      "threat_actors": ["ACT-01"],
+      "severity": "HIGH",
+      "control": "Monotonic sequence numbers (seq), non-decreasing UTC timestamps, unbroken prev_hash chaining, and on-chain contiguous range enforcement in BatchAnchor.anchorBatch.",
+      "evidence_file": "results/security/python_crypto_tests.txt",
+      "test_evidence": "test_prop_deleting_any_packet_is_detected, test_prop_duplicating_any_packet_is_detected, test_prop_reordering_packets_is_detected, test_prop_replaying_historical_packets_is_detected, testFuzz_SequenceRangesContiguousAndNonOverlapping (256 runs)",
+      "remaining_weakness": "An attacker with signing key could synthesize a continuous replacement sequence from scratch; requires AI/physics models to catch duplicate operating profiles.",
+      "status": "Mitigated"
+    },
+    {
+      "id": "ATK-03",
+      "name": "Physical / Analog Tampering",
+      "category": "Sensor Oracle",
+      "description": "Introducing dilution air into smokestack sampling line, probe misalignment, or sensor bypass.",
+      "threat_actors": ["ACT-01", "ACT-06"],
+      "severity": "HIGH",
+      "control": "Out of scope for software edge prototype. Partially addressed off-chain by mass-balance stoichiometry checks on stack oxygen and flue gas temperature (PHYSICS_RESIDUAL, AE_RESIDUAL).",
+      "evidence_file": "results/WHAT_STILL_GETS_THROUGH.md",
+      "test_evidence": "benchmark_summary.json scenarios 1A-7A, schemas/channels.json synthetic channel annotations",
+      "remaining_weakness": "Sensor faithfully reporting an adulterated sample stream. Tampering without stoichiometry violation requires physical CEMS tamper seals.",
+      "status": "Architectural Weakness (Documented)"
+    },
+    {
+      "id": "ATK-04",
+      "name": "Coordinated Insider Fraud",
+      "category": "Multi-System Collusion",
+      "description": "Simultaneous co-falsification of smokestack CEMS readings and primary fuel delivery accounting records.",
+      "threat_actors": ["ACT-06"],
+      "severity": "CRITICAL",
+      "control": "Cross-source consistency checks (CROSS_SOURCE_MISMATCH) comparing continuous CEMS telemetry against independent utility fuel meters and power grid gross load.",
+      "evidence_file": "results/benchmark_summary.json",
+      "test_evidence": "Adaptive Attacker 8A (100.00% recall via fuel mismatch) vs 8B (0.0% recall when fuel ledger is co-falsified)",
+      "remaining_weakness": "When an insider co-falsifies all correlated plant systems simultaneously below the noise floor, detection collapses to 0.0% recall.",
+      "status": "Partially Mitigated"
+    },
+    {
+      "id": "ATK-05",
+      "name": "Gateway Firmware Compromise",
+      "category": "Host Security",
+      "description": "Compromised edge gateway operating system injecting fake readings before cryptographic hashing and signing.",
+      "threat_actors": ["ACT-01"],
+      "severity": "CRITICAL",
+      "control": "Secure Element memory isolation; DeviceRegistry.sol on-chain revocation and key rotation; bonded operator financial liability in BondVault.sol.",
+      "evidence_file": "results/security/forge_test.txt",
+      "test_evidence": "test_DeviceRegistry_RegisterRotateRevokeLifecycle, test_ScenarioE_RevokedDeviceCannotAnchor, invariant_onlyRegisteredNonRevokedCanAnchor",
+      "remaining_weakness": "Prototype emulates secure element in software. Production requires remote hardware attestation (e.g. TPM/DICE quotes).",
+      "status": "Partially Mitigated"
+    },
+    {
+      "id": "ATK-06",
+      "name": "Verifier Collusion & Free-Riding",
+      "category": "Committee Consensus",
+      "description": "Lazy verifiers copying revealed votes without inference, or verifiers colluding to extort operators or pass fraudulent data.",
+      "threat_actors": ["ACT-02", "ACT-03"],
+      "severity": "HIGH",
+      "control": "3-of-5 threshold commit-reveal quorum in VerifierQuorum.sol; required verifier stake; unrevealed verifier slash (unrevealedPenaltyBps); careless verifier slash (carelessVerifierSlashBps) upon arbiter dispute overturn.",
+      "evidence_file": "results/security/forge_test.txt",
+      "test_evidence": "test_ScenarioB_FraudFlaggedUpheldAndSlashed, test_ScenarioC_OverturnedPathWithMerkleProof, test_ScenarioF_VerifierFailsToRevealPenalized",
+      "remaining_weakness": "If >= 3 verifiers collude off-chain, they control the quorum. Requires diverse institutional verifiers in production.",
+      "status": "Mitigated"
+    },
+    {
+      "id": "ATK-07",
+      "name": "Challenge Griefing",
+      "category": "Dispute Finality",
+      "description": "Operator filing repetitive frivolous disputes to stall attestation finality, or attacker freezing operator bond.",
+      "threat_actors": ["ACT-01", "ACT-05"],
+      "severity": "MEDIUM",
+      "control": "Time-bounded challenge window (windowClosesAt); disputes require Merkle leaf inclusion proof; 2-of-3 Arbiter council resolution; automated settlement of expired challenges (settleExpired).",
+      "evidence_file": "results/security/forge_test.txt",
+      "test_evidence": "test_ScenarioD_OperatorCannotWithdrawDuringChallenge, test_ChallengeAndAttestation_RevertPaths, invariant_batchFinalizedAtMostOnce",
+      "remaining_weakness": "Arbiter council introduces a trusted human bottleneck that can delay CBAM quarterly settlement.",
+      "status": "Mitigated"
+    },
+    {
+      "id": "ATK-08",
+      "name": "Vote Front-Running",
+      "category": "Consensus Integrity",
+      "description": "Verifiers spying on public mempool to duplicate peer votes and evade compute costs.",
+      "threat_actors": ["ACT-02"],
+      "severity": "HIGH",
+      "control": "Two-phase Commit-Reveal scheme: commitment hash keccak256(batchId, modelHash, inputHash, scoreBp, verdict, salt) submitted in Phase 1; reveals rejected before commitEnd; verified in Phase 2.",
+      "evidence_file": "results/security/golden_vectors_solidity.txt",
+      "test_evidence": "test_Golden_VoteCommitmentAndRevealVector, test_VerifierQuorum_RevertPaths, test_vote_commitment_and_verdict_rules",
+      "remaining_weakness": "Withholding attack: verifier commits but refuses to reveal, risking penalty but potentially stalling tight quorum.",
+      "status": "Mitigated"
+    },
+    {
+      "id": "ATK-09",
+      "name": "Gateway / Operator Key Compromise",
+      "category": "Key Management",
+      "description": "Attacker steals private signing key to forge stack emissions data remotely.",
+      "threat_actors": ["ACT-01", "ACT-04"],
+      "severity": "CRITICAL",
+      "control": "Immediate key revocation and rotation in DeviceRegistry.sol; 7-day withdrawal lock on operator stake bonds in BondVault.sol prevents capital flight during forensic investigation.",
+      "evidence_file": "results/security/forge_test.txt",
+      "test_evidence": "test_DeviceRegistry_RegisterRotateRevokeLifecycle, test_ScenarioE_RevokedDeviceCannotAnchor, test_ScenarioD_OperatorCannotWithdrawDuringChallenge",
+      "remaining_weakness": "Batches anchored prior to on-chain key revocation must be caught by verifier physics/ML models or disputed in an active challenge window.",
+      "status": "Mitigated"
+    },
+    {
+      "id": "ATK-10",
+      "name": "Gas Griefing & Liveness Exhaustion",
+      "category": "Denial of Service",
+      "description": "Attacker attempts to exhaust contract gas or trigger unbounded loop execution to halt settlements.",
+      "threat_actors": ["ACT-05"],
+      "severity": "MEDIUM",
+      "control": "Off-chain raw data storage (only 32-byte roots on-chain); loops strictly bounded by MAX_VERIFIERS = 5; pull-payment withdrawals in BondVault; nonReentrant guards on state-mutating payouts and finalization.",
+      "evidence_file": "results/security/gas_report.txt",
+      "test_evidence": "results/security/slither.txt, results/security/forge_test.txt (test_BondVault_TransferFailedReverts, invariant_ethHeldEqualsRecordedBalances)",
+      "remaining_weakness": "L2 sequencer downtime or extreme network gas spikes can delay batch anchoring or commit/reveal transactions within deadline windows.",
+      "status": "Mitigated"
+    }
+  ]
+}

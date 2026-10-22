@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vericems.org/schemas/report.schema.json",
+  "title": "VeriCEMS CBAM-Aligned Period Report",
+  "description": "Exported installation period emissions report with Merkle roots, on-chain transaction references, and attestation ID. Must state cbam_aligned: true and never claim to be official.",
+  "type": "object",
+  "required": [
+    "report_version",
+    "cbam_aligned",
+    "installation_id",
+    "device_id",
+    "period",
+    "totals",
+    "coverage",
+    "quarantined_batches",
+    "merkle_roots",
+    "transaction_hashes",
+    "attestation_id"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "report_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "cbam_aligned": {
+      "type": "boolean",
+      "const": true,
+      "description": "Mandatory flag indicating this report is CBAM-aligned supporting evidence (never 'official')."
+    },
+    "installation_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "description": "Unique identifier of the industrial installation."
+    },
+    "device_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "description": "Identifier of the primary CEMS gateway device."
+    },
+    "period": {
+      "type": "object",
+      "required": ["label", "start_utc", "end_utc"],
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable reporting period label (e.g., 2026-Q3)."
+        },
+        "start_utc": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "end_utc": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        }
+      }
+    },
+    "totals": {
+      "type": "object",
+      "required": [
+        "verified_emissions_tco2e",
+        "production_tonnes",
+        "specific_embedded_emissions_tco2e_per_t",
+        "heat_input_mmbtu"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "verified_emissions_tco2e": {
+          "type": "number",
+          "minimum": 0
+        },
+        "production_tonnes": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "specific_embedded_emissions_tco2e_per_t": {
+          "type": "number",
+          "minimum": 0
+        },
+        "heat_input_mmbtu": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "required": [
+        "total_batches",
+        "verified_batches",
+        "quarantined_batches_count",
+        "coverage_bp"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "total_batches": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "verified_batches": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "quarantined_batches_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "coverage_bp": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000,
+          "description": "Verified coverage ratio in integer basis points (0..10000)."
+        }
+      }
+    },
+    "quarantined_batches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "batch_id",
+          "first_seq",
+          "last_seq",
+          "merkle_root",
+          "reason_codes",
+          "challenge_status"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "batch_id": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "first_seq": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "last_seq": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "merkle_root": {
+            "type": "string",
+            "pattern": "^0x[0-9a-f]{64}$"
+          },
+          "reason_codes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "CHAIN_BREAK",
+                "SEQ_GAP",
+                "SIG_INVALID",
+                "PHYSICS_RESIDUAL",
+                "AE_RESIDUAL",
+                "SPECTRAL_FLAT",
+                "SPECTRAL_REPEAT",
+                "CROSS_SOURCE_MISMATCH"
+              ]
+            }
+          },
+          "challenge_status": {
+            "type": "string",
+            "enum": ["OPEN", "UPHELD_SLASHED", "OVERTURNED_CLEARED", "EXPIRED_SLASHED"]
+          }
+        }
+      }
+    },
+    "merkle_roots": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^0x[0-9a-f]{64}$"
+      },
+      "description": "Ordered list of 0x-prefixed 32-byte Merkle roots for all verified batches in the period."
+    },
+    "transaction_hashes": {
+      "type": "object",
+      "required": ["batch_anchors", "attestation_tx"],
+      "additionalProperties": false,
+      "properties": {
+        "batch_anchors": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^0x[0-9a-f]{64}$"
+          }
+        },
+        "attestation_tx": {
+          "type": "string",
+          "pattern": "^0x[0-9a-f]{64}$"
+        }
+      }
+    },
+    "attestation_id": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "On-chain attestation ID returned by Attestation.recordAttestation."
+    }
+  }
+}

@@ -1,0 +1,339 @@
+{
+  "admin": "0x55f1a7F7cc829C842Ce71A2552E5DD46bb7C9b89",
+  "arbiters": [
+    "0x4aaC6cF86ce60f9AB4cba842DA7F6EdaAae8a4F4",
+    "0xE5971ce461070C63406b7Fc24114555772501186",
+    "0xfFB14a85C706B05990Bf9EB3Cb090C2d03f2fcd8"
+  ],
+  "chainId": 421614,
+  "contracts": {
+    "Attestation": "0x872d5ef7c6a457d1b8ed68221350236151c763b0",
+    "BatchAnchor": "0x8bf14de651fa70feb3538852c2160d082255638b",
+    "BondVault": "0x7ffb90cdc55c6c61b961acf2a042a804f5857c36",
+    "Challenge": "0x80f58f44ca8bcbeeda72a27ec2555d26bb016a34",
+    "DeviceRegistry": "0x10b6647d48888a7c3c4dc28f0df0a2e5c23b3471",
+    "VerifierQuorum": "0x734849b029ddf31030cfae4a74c314f8e21dbfb9"
+  },
+  "parameters": {
+    "carelessVerifierSlashBps": 1000,
+    "challengeWindowSeconds": 60,
+    "commitWindowSeconds": 20,
+    "minOperatorBondWei": 1000000000000000,
+    "minVerifierStakeWei": 500000000000000,
+    "operatorSlashBps": 5000,
+    "requiredArbiterApprovals": 2,
+    "requiredMatches": 3,
+    "revealWindowSeconds": 20,
+    "unrevealedPenaltyBps": 1000,
+    "verifierCount": 5,
+    "verifierRewardShareBps": 7000,
+    "withdrawalDelaySeconds": 60
+  },
+  "profile": "testnet",
+  "treasury": "0x55f1a7F7cc829C842Ce71A2552E5DD46bb7C9b89",
+  "verifiers": [
+    "0x697DDE95b6cd905B22B20a5Fc017D2E59C9324Db",
+    "0xCE65a7AB67923Cb48Ae8854dBa4A4AE938cDE97c",
+    "0xbE454899DA83FA9e6184234CF793CA053F94E304",
+    "0xFCE1112c3EF6936d298F8d4701c0942F8748Ed58",
+    "0x2449114b0c24067C3637Ccf9fd80Cb7DEF1C8506"
+  ],
+  "contracts_detail": {
+    "DeviceRegistry": {
+      "address": "0x10b6647d48888a7c3c4dc28f0df0a2e5c23b3471",
+      "deployTxHash": "0x87b8fe9fbe1319a2015c670d8d8dd7a9d2bb268548a86ef2dbc1f5b60dc18e52",
+      "explorerUrl": "https://sepolia.arbiscan.io/address/0x10b6647d48888a7c3c4dc28f0df0a2e5c23b3471",
+      "deployTxExplorerUrl": "https://sepolia.arbiscan.io/tx/0x87b8fe9fbe1319a2015c670d8d8dd7a9d2bb268548a86ef2dbc1f5b60dc18e52"
+    },
+    "BondVault": {
+      "address": "0x7ffb90cdc55c6c61b961acf2a042a804f5857c36",
+      "deployTxHash": "0xa3d0a992adc0a1edad4e656f4119dc13ff32fa0887c171c29cef06f099c3b8bf",
+      "explorerUrl": "https://sepolia.arbiscan.io/address/0x7ffb90cdc55c6c61b961acf2a042a804f5857c36",
+      "deployTxExplorerUrl": "https://sepolia.arbiscan.io/tx/0xa3d0a992adc0a1edad4e656f4119dc13ff32fa0887c171c29cef06f099c3b8bf"
+    },
+    "BatchAnchor": {
+      "address": "0x8bf14de651fa70feb3538852c2160d082255638b",
+      "deployTxHash": "0xea50bf33d15f2463afbef5becfad7b96fa559ff19a9d48c2a6d409977f039a26",
+      "explorerUrl": "https://sepolia.arbiscan.io/address/0x8bf14de651fa70feb3538852c2160d082255638b",
+      "deployTxExplorerUrl": "https://sepolia.arbiscan.io/tx/0xea50bf33d15f2463afbef5becfad7b96fa559ff19a9d48c2a6d409977f039a26"
+    },
+    "VerifierQuorum": {
+      "address": "0x734849b029ddf31030cfae4a74c314f8e21dbfb9",
+      "deployTxHash": "0xf5696c0dbc82d81cd8280dba2fed5035b95127b1bfa9c93c74f3bd37aef6bfcb",
+      "explorerUrl": "https://sepolia.arbiscan.io/address/0x734849b029ddf31030cfae4a74c314f8e21dbfb9",
+      "deployTxExplorerUrl": "https://sepolia.arbiscan.io/tx/0xf5696c0dbc82d81cd8280dba2fed5035b95127b1bfa9c93c74f3bd37aef6bfcb"
+    },
+    "Challenge": {
+      "address": "0x80f58f44ca8bcbeeda72a27ec2555d26bb016a34",
+      "deployTxHash": "0x3eee1a33cc34d9decce0156ef0c3fb9638af0838736e3f3e9d83d5549825da7f",
+      "explorerUrl": "https://sepolia.arbiscan.io/address/0x80f58f44ca8bcbeeda72a27ec2555d26bb016a34",
+      "deployTxExplorerUrl": "https://sepolia.arbiscan.io/tx/0x3eee1a33cc34d9decce0156ef0c3fb9638af0838736e3f3e9d83d5549825da7f"
+    },
+    "Attestation": {
+      "address": "0x872d5ef7c6a457d1b8ed68221350236151c763b0",
+      "deployTxHash": "0x0810228d5f538f32830b4b6068f287e807ececeda865c9d979e2b3d2c09b2ef9",
+      "explorerUrl": "https://sepolia.arbiscan.io/address/0x872d5ef7c6a457d1b8ed68221350236151c763b0",
+      "deployTxExplorerUrl": "https://sepolia.arbiscan.io/tx/0x0810228d5f538f32830b4b6068f287e807ececeda865c9d979e2b3d2c09b2ef9"
+    }
+  },
+  "network": "arbitrum-sepolia",
+  "explorerBaseUrl": "https://sepolia.arbiscan.io",
+  "transactions": [
+    {
+      "contract": "DeviceRegistry",
+      "address": "0x10b6647d48888a7c3c4dc28f0df0a2e5c23b3471",
+      "transactionHash": "0x87b8fe9fbe1319a2015c670d8d8dd7a9d2bb268548a86ef2dbc1f5b60dc18e52",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x87b8fe9fbe1319a2015c670d8d8dd7a9d2bb268548a86ef2dbc1f5b60dc18e52",
+      "type": "CREATE",
+      "gas": 0
+    },
+    {
+      "contract": "BondVault",
+      "address": "0x7ffb90cdc55c6c61b961acf2a042a804f5857c36",
+      "transactionHash": "0xa3d0a992adc0a1edad4e656f4119dc13ff32fa0887c171c29cef06f099c3b8bf",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0xa3d0a992adc0a1edad4e656f4119dc13ff32fa0887c171c29cef06f099c3b8bf",
+      "type": "CREATE",
+      "gas": 0
+    },
+    {
+      "contract": "BatchAnchor",
+      "address": "0x8bf14de651fa70feb3538852c2160d082255638b",
+      "transactionHash": "0xea50bf33d15f2463afbef5becfad7b96fa559ff19a9d48c2a6d409977f039a26",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0xea50bf33d15f2463afbef5becfad7b96fa559ff19a9d48c2a6d409977f039a26",
+      "type": "CREATE",
+      "gas": 0
+    },
+    {
+      "contract": "VerifierQuorum",
+      "address": "0x734849b029ddf31030cfae4a74c314f8e21dbfb9",
+      "transactionHash": "0xf5696c0dbc82d81cd8280dba2fed5035b95127b1bfa9c93c74f3bd37aef6bfcb",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0xf5696c0dbc82d81cd8280dba2fed5035b95127b1bfa9c93c74f3bd37aef6bfcb",
+      "type": "CREATE",
+      "gas": 0
+    },
+    {
+      "contract": "Challenge",
+      "address": "0x80f58f44ca8bcbeeda72a27ec2555d26bb016a34",
+      "transactionHash": "0x3eee1a33cc34d9decce0156ef0c3fb9638af0838736e3f3e9d83d5549825da7f",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x3eee1a33cc34d9decce0156ef0c3fb9638af0838736e3f3e9d83d5549825da7f",
+      "type": "CREATE",
+      "gas": 0
+    },
+    {
+      "contract": "Attestation",
+      "address": "0x872d5ef7c6a457d1b8ed68221350236151c763b0",
+      "transactionHash": "0x0810228d5f538f32830b4b6068f287e807ececeda865c9d979e2b3d2c09b2ef9",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x0810228d5f538f32830b4b6068f287e807ececeda865c9d979e2b3d2c09b2ef9",
+      "type": "CREATE",
+      "gas": 0
+    },
+    {
+      "contract": "BondVault",
+      "address": "0x7ffb90cdc55c6c61b961acf2a042a804f5857c36",
+      "transactionHash": "0x3b8afdd6079360a2fac2a124e8ca51eddb8e5007f47e9568eb47562a963c83d4",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x3b8afdd6079360a2fac2a124e8ca51eddb8e5007f47e9568eb47562a963c83d4",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": "BondVault",
+      "address": "0x7ffb90cdc55c6c61b961acf2a042a804f5857c36",
+      "transactionHash": "0x59ed5aee08f9b8db3f6665adab1b2bb4be13d00623abbf0b37b6fd0a7e8402ff",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x59ed5aee08f9b8db3f6665adab1b2bb4be13d00623abbf0b37b6fd0a7e8402ff",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": "BatchAnchor",
+      "address": "0x8bf14de651fa70feb3538852c2160d082255638b",
+      "transactionHash": "0xb29cb36b6b1a309ef609fb54e9304f1e3c7441931b868a3457ea3a9b240f0926",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0xb29cb36b6b1a309ef609fb54e9304f1e3c7441931b868a3457ea3a9b240f0926",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": "BatchAnchor",
+      "address": "0x8bf14de651fa70feb3538852c2160d082255638b",
+      "transactionHash": "0xebe92124d2db111230074cc2f6cdddd34387c81f5fb0d0ce3b5855dc19326ab4",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0xebe92124d2db111230074cc2f6cdddd34387c81f5fb0d0ce3b5855dc19326ab4",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": "VerifierQuorum",
+      "address": "0x734849b029ddf31030cfae4a74c314f8e21dbfb9",
+      "transactionHash": "0xeb98db3eb6ffbcc7b4b9b77398e7975bec1488ff0d8bffb0dc313db74ecfbe38",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0xeb98db3eb6ffbcc7b4b9b77398e7975bec1488ff0d8bffb0dc313db74ecfbe38",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": "VerifierQuorum",
+      "address": "0x734849b029ddf31030cfae4a74c314f8e21dbfb9",
+      "transactionHash": "0x522323924806fdd4964a935b0b86b787b38a4a96b48f52e9328d7576ec0c1ec1",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x522323924806fdd4964a935b0b86b787b38a4a96b48f52e9328d7576ec0c1ec1",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": "Challenge",
+      "address": "0x80f58f44ca8bcbeeda72a27ec2555d26bb016a34",
+      "transactionHash": "0x880f6e0aa0b8690b8533880f91f5c6a24655771c5e2fad60402fbeaf72e2a594",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x880f6e0aa0b8690b8533880f91f5c6a24655771c5e2fad60402fbeaf72e2a594",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": "VerifierQuorum",
+      "address": "0x734849b029ddf31030cfae4a74c314f8e21dbfb9",
+      "transactionHash": "0x208cf16459093e0ef0ee604367195cdd30f5eb9a4f2035f3dfcc93468a7a5863",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x208cf16459093e0ef0ee604367195cdd30f5eb9a4f2035f3dfcc93468a7a5863",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": "Challenge",
+      "address": "0x80f58f44ca8bcbeeda72a27ec2555d26bb016a34",
+      "transactionHash": "0x14e913be86d7b1c44bd28d336be1c9a7b3eed82aa040dffae509998ad41bd736",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x14e913be86d7b1c44bd28d336be1c9a7b3eed82aa040dffae509998ad41bd736",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": "VerifierQuorum",
+      "address": "0x734849b029ddf31030cfae4a74c314f8e21dbfb9",
+      "transactionHash": "0x969d8661182d40630b3b29e14a8828953373d29b32907d5e38d2f0bf0f1b422d",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x969d8661182d40630b3b29e14a8828953373d29b32907d5e38d2f0bf0f1b422d",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": "Challenge",
+      "address": "0x80f58f44ca8bcbeeda72a27ec2555d26bb016a34",
+      "transactionHash": "0x569b13646d3aa51be23a1d949c258fbf3e2b52dff2f0458694cb854e5dd5eda0",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x569b13646d3aa51be23a1d949c258fbf3e2b52dff2f0458694cb854e5dd5eda0",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": "VerifierQuorum",
+      "address": "0x734849b029ddf31030cfae4a74c314f8e21dbfb9",
+      "transactionHash": "0x99c47e00392c4cd5c8b231a6b9e9f5122c1ce686ae9239b8da6249251c01bea0",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x99c47e00392c4cd5c8b231a6b9e9f5122c1ce686ae9239b8da6249251c01bea0",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": "Challenge",
+      "address": "0x80f58f44ca8bcbeeda72a27ec2555d26bb016a34",
+      "transactionHash": "0xd935d3735819f1c7872bed67d11410bfb4ed05e53fd5ac627d9a521655b9df21",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0xd935d3735819f1c7872bed67d11410bfb4ed05e53fd5ac627d9a521655b9df21",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": "VerifierQuorum",
+      "address": "0x734849b029ddf31030cfae4a74c314f8e21dbfb9",
+      "transactionHash": "0x343943532a67f0e7a893134a067b64134536b7b54c0e2f58a2cf4d20b5cf5a51",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x343943532a67f0e7a893134a067b64134536b7b54c0e2f58a2cf4d20b5cf5a51",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": "Challenge",
+      "address": "0x80f58f44ca8bcbeeda72a27ec2555d26bb016a34",
+      "transactionHash": "0xede2bddc27560e76148e59f42629e8bb799164bceae2fec29ac40fa19bc31a68",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0xede2bddc27560e76148e59f42629e8bb799164bceae2fec29ac40fa19bc31a68",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": "Challenge",
+      "address": "0x80f58f44ca8bcbeeda72a27ec2555d26bb016a34",
+      "transactionHash": "0x17c1cff20830e2403d5a8534ca9ae1a382c5aec5a5aa162c0289bbbb70291ec5",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x17c1cff20830e2403d5a8534ca9ae1a382c5aec5a5aa162c0289bbbb70291ec5",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": "Challenge",
+      "address": "0x80f58f44ca8bcbeeda72a27ec2555d26bb016a34",
+      "transactionHash": "0x51552d9a1a2c46c520b2c22ee5f45bd905195c43a0dc621ed2b717d3f7d621a0",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x51552d9a1a2c46c520b2c22ee5f45bd905195c43a0dc621ed2b717d3f7d621a0",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": "Challenge",
+      "address": "0x80f58f44ca8bcbeeda72a27ec2555d26bb016a34",
+      "transactionHash": "0x002723affc067d42e91779cd1f61672cf8270963532ae5e7a74be256ad5dd574",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x002723affc067d42e91779cd1f61672cf8270963532ae5e7a74be256ad5dd574",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": null,
+      "address": "0x697dde95b6cd905b22b20a5fc017d2e59c9324db",
+      "transactionHash": "0x82af8011dd9c3832248fd25783de5e19613e365fcc66f8c7117838208237e942",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x82af8011dd9c3832248fd25783de5e19613e365fcc66f8c7117838208237e942",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": null,
+      "address": "0xce65a7ab67923cb48ae8854dba4a4ae938cde97c",
+      "transactionHash": "0xdab91004feb2e7087676a68df63c839395a3d8205859f1be8038ad93ac4590e5",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0xdab91004feb2e7087676a68df63c839395a3d8205859f1be8038ad93ac4590e5",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": null,
+      "address": "0xbe454899da83fa9e6184234cf793ca053f94e304",
+      "transactionHash": "0xa7f1b6f02a2c215710932de8d7faa19ec84325f7be4f090b5cca3d91b5b0ec90",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0xa7f1b6f02a2c215710932de8d7faa19ec84325f7be4f090b5cca3d91b5b0ec90",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": null,
+      "address": "0xfce1112c3ef6936d298f8d4701c0942f8748ed58",
+      "transactionHash": "0x085a859b735019be8778746645d482f9bee394cc35caff3d2418c15d23386e2e",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x085a859b735019be8778746645d482f9bee394cc35caff3d2418c15d23386e2e",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": null,
+      "address": "0x2449114b0c24067c3637ccf9fd80cb7def1c8506",
+      "transactionHash": "0xa01e608ce70e241d404ff6ad72b9aa885cba0a472a0bba3ebada7a697a1906d5",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0xa01e608ce70e241d404ff6ad72b9aa885cba0a472a0bba3ebada7a697a1906d5",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": null,
+      "address": "0x4aac6cf86ce60f9ab4cba842da7f6edaaae8a4f4",
+      "transactionHash": "0x81400898bf0435e3a984355299cae4ab21854a45a33f174966978c4cd3e2a8a1",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x81400898bf0435e3a984355299cae4ab21854a45a33f174966978c4cd3e2a8a1",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": null,
+      "address": "0xe5971ce461070c63406b7fc24114555772501186",
+      "transactionHash": "0x05d325b3f6c318596dc890b47325052fdd7b75b8775a7276d036803e98d643d7",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x05d325b3f6c318596dc890b47325052fdd7b75b8775a7276d036803e98d643d7",
+      "type": "CALL",
+      "gas": 0
+    },
+    {
+      "contract": null,
+      "address": "0xffb14a85c706b05990bf9eb3cb090c2d03f2fcd8",
+      "transactionHash": "0x99b39cc77a6453a6b4d45288545dc582d88985feaa3e79e8380ae46bc1986ace",
+      "explorerUrl": "https://sepolia.arbiscan.io/tx/0x99b39cc77a6453a6b4d45288545dc582d88985feaa3e79e8380ae46bc1986ace",
+      "type": "CALL",
+      "gas": 0
+    }
+  ]
+}

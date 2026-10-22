@@ -1,0 +1,302 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Shared deterministic test vectors for the VeriCEMS CBAM cost calculator (tested identically in Python and TypeScript). All numerical test vectors are tagged ILLUSTRATIVE per AGENTS.md honesty rules.",
+  "valid_vectors": [
+    {
+      "name": "illustrative_example",
+      "tag": "ILLUSTRATIVE",
+      "description": "Guide Section 14 Appendix A worked example (500 t, benchmark 1.40, factor 0.975, CSCF 1.00, verified SEE 1.90, default base 2.30 with 10% markup, price 82.32).",
+      "inputs": {
+        "year": 2026,
+        "tonnes_shipped": 500.0,
+        "verified_see": 1.90,
+        "default_value_base": 2.30,
+        "benchmark": 1.40,
+        "default_benchmark": null,
+        "free_allocation_factor": 0.975,
+        "cscf": 1.00,
+        "default_markup": 0.10,
+        "certificate_price": 82.32,
+        "price_quarter": "2026-Q3"
+      },
+      "expected": {
+        "sefa_verified": 1.365,
+        "sefa_default": 1.365,
+        "default_see_with_markup": 2.53,
+        "payable_per_tonne_verified": 0.535,
+        "payable_per_tonne_default": 1.165,
+        "total_payable_tonnes_verified": 267.5,
+        "total_payable_tonnes_default": 582.5,
+        "cost_with_verified_eur": 22020.60,
+        "cost_with_default_eur": 47951.40,
+        "savings_per_tonne_tco2e": 0.63,
+        "savings_eur": 25930.80
+      }
+    },
+    {
+      "name": "payable_floors_at_zero_when_see_below_sefa",
+      "tag": "ILLUSTRATIVE",
+      "description": "When verified SEE is below SEFA, payable_per_tonne_verified floors at 0.0 and cost_with_verified_eur is 0.00.",
+      "inputs": {
+        "year": 2026,
+        "tonnes_shipped": 500.0,
+        "verified_see": 1.20,
+        "default_value_base": 2.30,
+        "benchmark": 1.40,
+        "default_benchmark": null,
+        "free_allocation_factor": 0.975,
+        "cscf": 1.00,
+        "default_markup": 0.10,
+        "certificate_price": 82.32,
+        "price_quarter": "2026-Q3"
+      },
+      "expected": {
+        "sefa_verified": 1.365,
+        "sefa_default": 1.365,
+        "default_see_with_markup": 2.53,
+        "payable_per_tonne_verified": 0.0,
+        "payable_per_tonne_default": 1.165,
+        "total_payable_tonnes_verified": 0.0,
+        "total_payable_tonnes_default": 582.5,
+        "cost_with_verified_eur": 0.00,
+        "cost_with_default_eur": 47951.40,
+        "savings_per_tonne_tco2e": 1.165,
+        "savings_eur": 47951.40
+      }
+    },
+    {
+      "name": "both_payable_floor_at_zero",
+      "tag": "ILLUSTRATIVE",
+      "description": "When both verified SEE and marked-up default SEE are below SEFA, both costs and savings are 0.00.",
+      "inputs": {
+        "year": 2026,
+        "tonnes_shipped": 250.0,
+        "verified_see": 1.00,
+        "default_value_base": 1.20,
+        "benchmark": 1.40,
+        "default_benchmark": null,
+        "free_allocation_factor": 0.975,
+        "cscf": 1.00,
+        "default_markup": 0.10,
+        "certificate_price": 82.32,
+        "price_quarter": "2026-Q3"
+      },
+      "expected": {
+        "sefa_verified": 1.365,
+        "sefa_default": 1.365,
+        "default_see_with_markup": 1.32,
+        "payable_per_tonne_verified": 0.0,
+        "payable_per_tonne_default": 0.0,
+        "total_payable_tonnes_verified": 0.0,
+        "total_payable_tonnes_default": 0.0,
+        "cost_with_verified_eur": 0.00,
+        "cost_with_default_eur": 0.00,
+        "savings_per_tonne_tco2e": 0.0,
+        "savings_eur": 0.00
+      }
+    },
+    {
+      "name": "zero_tonnes_shipped",
+      "tag": "ILLUSTRATIVE",
+      "description": "Zero tonnes shipped results in zero total cost and zero EUR savings while preserving per-tonne metrics.",
+      "inputs": {
+        "year": 2026,
+        "tonnes_shipped": 0.0,
+        "verified_see": 1.90,
+        "default_value_base": 2.30,
+        "benchmark": 1.40,
+        "default_benchmark": null,
+        "free_allocation_factor": 0.975,
+        "cscf": 1.00,
+        "default_markup": 0.10,
+        "certificate_price": 82.32,
+        "price_quarter": "2026-Q3"
+      },
+      "expected": {
+        "sefa_verified": 1.365,
+        "sefa_default": 1.365,
+        "default_see_with_markup": 2.53,
+        "payable_per_tonne_verified": 0.535,
+        "payable_per_tonne_default": 1.165,
+        "total_payable_tonnes_verified": 0.0,
+        "total_payable_tonnes_default": 0.0,
+        "cost_with_verified_eur": 0.00,
+        "cost_with_default_eur": 0.00,
+        "savings_per_tonne_tco2e": 0.63,
+        "savings_eur": 0.00
+      }
+    },
+    {
+      "name": "year_2027_markup_20_pct",
+      "tag": "ILLUSTRATIVE",
+      "description": "Year-indexed 2027 markup (20%) with illustrative factor override.",
+      "inputs": {
+        "year": 2027,
+        "tonnes_shipped": 500.0,
+        "verified_see": 1.90,
+        "default_value_base": 2.30,
+        "benchmark": 1.40,
+        "default_benchmark": null,
+        "free_allocation_factor": 0.95,
+        "cscf": 1.00,
+        "default_markup": 0.20,
+        "certificate_price": 82.32,
+        "price_quarter": "2026-Q3"
+      },
+      "expected": {
+        "sefa_verified": 1.33,
+        "sefa_default": 1.33,
+        "default_see_with_markup": 2.76,
+        "payable_per_tonne_verified": 0.57,
+        "payable_per_tonne_default": 1.43,
+        "total_payable_tonnes_verified": 285.0,
+        "total_payable_tonnes_default": 715.0,
+        "cost_with_verified_eur": 23461.20,
+        "cost_with_default_eur": 58858.80,
+        "savings_per_tonne_tco2e": 0.86,
+        "savings_eur": 35397.60
+      }
+    },
+    {
+      "name": "year_2028_markup_30_pct_and_separate_default_benchmark",
+      "tag": "ILLUSTRATIVE",
+      "description": "Year-indexed 2028 markup (30%) with a distinct default_benchmark [VERIFY].",
+      "inputs": {
+        "year": 2028,
+        "tonnes_shipped": 500.0,
+        "verified_see": 1.90,
+        "default_value_base": 2.30,
+        "benchmark": 1.40,
+        "default_benchmark": 1.30,
+        "free_allocation_factor": 0.90,
+        "cscf": 1.00,
+        "default_markup": 0.30,
+        "certificate_price": 82.32,
+        "price_quarter": "2026-Q3"
+      },
+      "expected": {
+        "sefa_verified": 1.26,
+        "sefa_default": 1.17,
+        "default_see_with_markup": 2.99,
+        "payable_per_tonne_verified": 0.64,
+        "payable_per_tonne_default": 1.82,
+        "total_payable_tonnes_verified": 320.0,
+        "total_payable_tonnes_default": 910.0,
+        "cost_with_verified_eur": 26342.40,
+        "cost_with_default_eur": 74911.20,
+        "savings_per_tonne_tco2e": 1.18,
+        "savings_eur": 48568.80
+      }
+    }
+  ],
+  "error_vectors": [
+    {
+      "name": "null_benchmark_raises_needs_source",
+      "expected_error": "NeedsSourceError",
+      "missing_parameter": "benchmark",
+      "inputs": {
+        "year": 2026,
+        "tonnes_shipped": 500.0,
+        "verified_see": 1.90,
+        "default_value_base": 2.30,
+        "benchmark": null,
+        "free_allocation_factor": 0.975,
+        "cscf": 1.00,
+        "default_markup": 0.10,
+        "certificate_price": 82.32
+      }
+    },
+    {
+      "name": "null_cscf_raises_needs_source",
+      "expected_error": "NeedsSourceError",
+      "missing_parameter": "cscf",
+      "inputs": {
+        "year": 2026,
+        "tonnes_shipped": 500.0,
+        "verified_see": 1.90,
+        "default_value_base": 2.30,
+        "benchmark": 1.40,
+        "free_allocation_factor": 0.975,
+        "cscf": null,
+        "default_markup": 0.10,
+        "certificate_price": 82.32
+      }
+    },
+    {
+      "name": "null_default_value_base_raises_needs_source",
+      "expected_error": "NeedsSourceError",
+      "missing_parameter": "default_value_base",
+      "inputs": {
+        "year": 2026,
+        "tonnes_shipped": 500.0,
+        "verified_see": 1.90,
+        "default_value_base": null,
+        "benchmark": 1.40,
+        "free_allocation_factor": 0.975,
+        "cscf": 1.00,
+        "default_markup": 0.10,
+        "certificate_price": 82.32
+      }
+    },
+    {
+      "name": "negative_tonnes_rejected",
+      "expected_error": "CBAMValidationError",
+      "inputs": {
+        "year": 2026,
+        "tonnes_shipped": -10.0,
+        "verified_see": 1.90,
+        "default_value_base": 2.30,
+        "benchmark": 1.40,
+        "free_allocation_factor": 0.975,
+        "cscf": 1.00,
+        "default_markup": 0.10,
+        "certificate_price": 82.32
+      }
+    },
+    {
+      "name": "negative_verified_see_rejected",
+      "expected_error": "CBAMValidationError",
+      "inputs": {
+        "year": 2026,
+        "tonnes_shipped": 500.0,
+        "verified_see": -0.5,
+        "default_value_base": 2.30,
+        "benchmark": 1.40,
+        "free_allocation_factor": 0.975,
+        "cscf": 1.00,
+        "default_markup": 0.10,
+        "certificate_price": 82.32
+      }
+    },
+    {
+      "name": "negative_price_rejected",
+      "expected_error": "CBAMValidationError",
+      "inputs": {
+        "year": 2026,
+        "tonnes_shipped": 500.0,
+        "verified_see": 1.90,
+        "default_value_base": 2.30,
+        "benchmark": 1.40,
+        "free_allocation_factor": 0.975,
+        "cscf": 1.00,
+        "default_markup": 0.10,
+        "certificate_price": -82.32
+      }
+    },
+    {
+      "name": "free_allocation_factor_above_one_rejected",
+      "expected_error": "CBAMValidationError",
+      "inputs": {
+        "year": 2026,
+        "tonnes_shipped": 500.0,
+        "verified_see": 1.90,
+        "default_value_base": 2.30,
+        "benchmark": 1.40,
+        "free_allocation_factor": 1.05,
+        "cscf": 1.00,
+        "default_markup": 0.10,
+        "certificate_price": 82.32
+      }
+    }
+  ]
+}

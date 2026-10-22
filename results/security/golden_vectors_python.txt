@@ -1,0 +1,27 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.3, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+hypothesis profile 'default'
+rootdir: C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change
+plugins: hypothesis-6.170.5, anyio-4.15.1, Faker-40.38.0
+collecting ... collected 17 items
+
+tests/test_golden.py::test_keccak256_reference_vectors PASSED            [  5%]
+tests/test_golden.py::test_deliverable_files_and_decisions_exist PASSED  [ 11%]
+tests/test_golden.py::test_channel_registry_structure PASSED             [ 17%]
+tests/test_golden.py::test_params_yaml_profiles PASSED                   [ 23%]
+tests/test_golden.py::test_golden_vectors_deterministic_regeneration PASSED [ 29%]
+tests/test_golden.py::test_canonical_json_and_packet_format PASSED       [ 35%]
+tests/test_golden.py::test_golden_chains_cryptographic_rules PASSED      [ 41%]
+tests/test_golden.py::test_merkle_roots_and_proofs_with_odd_promotion PASSED [ 47%]
+tests/test_golden.py::test_vote_commitment_and_verdict_rules PASSED      [ 52%]
+tests/test_golden.py::test_period_report_rules_and_honesty_constraints PASSED [ 58%]
+backend/tests/test_crypto_golden_and_unit.py::test_secure_element_interface_and_private_key_isolation PASSED [ 64%]
+backend/tests/test_crypto_golden_and_unit.py::test_golden_vectors_packet_creation_and_signing PASSED [ 70%]
+backend/tests/test_crypto_golden_and_unit.py::test_golden_vectors_chain_verifier PASSED [ 76%]
+backend/tests/test_crypto_golden_and_unit.py::test_chain_verifier_returns_all_problems_without_short_circuiting PASSED [ 82%]
+backend/tests/test_crypto_golden_and_unit.py::test_golden_vectors_merkle_tree_proofs_and_batch_builder PASSED [ 88%]
+backend/tests/test_crypto_golden_and_unit.py::test_single_leaf_merkle_tree_and_float_formatting_edge_cases PASSED [ 94%]
+backend/tests/test_crypto_golden_and_unit.py::test_crypto_notes_doc_exists_and_states_limitations_plainly PASSED [100%]
+
+============================= 17 passed in 4.31s ==============================

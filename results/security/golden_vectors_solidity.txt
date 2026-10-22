@@ -1,0 +1,12 @@
+Compiling 24 files with Solc 0.8.24
+Solc 0.8.24 finished in 2.11s
+Compiler run successful!
+
+Ran 4 tests for test/GoldenVectors.t.sol:GoldenVectorsTest
+[PASS] test_Golden_Keccak256EmptySelfTest() (gas: 4308479)
+[PASS] test_Golden_MerkleProofs_BaselineCleanAndTamperedAndReplayed() (gas: 83888328)
+[PASS] test_Golden_MerkleProofs_SeqGapOddNodePromotion() (gas: 18260688)
+[PASS] test_Golden_VoteCommitmentAndRevealVector() (gas: 9533622)
+Suite result: ok. 4 passed; 0 failed; 0 skipped; finished in 216.00ms (293.89ms CPU time)
+
+Ran 1 test suite in 220.99ms (216.00ms CPU time): 4 tests passed, 0 failed, 0 skipped (4 total tests)

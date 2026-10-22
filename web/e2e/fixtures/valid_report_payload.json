@@ -1,0 +1,167 @@
+{
+  "envelope": {
+    "merkle_proofs": [
+      {
+        "all_proofs": [
+          {
+            "leaf_hash": "0x3847be1fd98e3693bd3f8d26af2aa4f21452f798dd5915c2e4bd9aa058cdeb03",
+            "leaf_index": 0,
+            "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+            "packet_hash": "0x60eb203cd612f46008e208c1e026acd39e04f644900a7c3ddff4a161f7d84ab9",
+            "siblings": [
+              "0xf3108a7df6d7fc66b6c7234fc59d75a880184cb0d7cab7c90c85ccb64c3843e2",
+              "0x384052126a7c1a9fd9b74af0f8b3fe61db249b4dc537a9a0713fb2318e286bcd",
+              "0x9ca07550dc471b6a8f1abd47c106bfc356de58f4a207b81b7c2a12d3f368ef1c"
+            ]
+          },
+          {
+            "leaf_hash": "0xf3108a7df6d7fc66b6c7234fc59d75a880184cb0d7cab7c90c85ccb64c3843e2",
+            "leaf_index": 1,
+            "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+            "packet_hash": "0x360e9a6d052233d52ce028631cd34a3fe4cf662b70475758cc78c7adeec6a98c",
+            "siblings": [
+              "0x3847be1fd98e3693bd3f8d26af2aa4f21452f798dd5915c2e4bd9aa058cdeb03",
+              "0x384052126a7c1a9fd9b74af0f8b3fe61db249b4dc537a9a0713fb2318e286bcd",
+              "0x9ca07550dc471b6a8f1abd47c106bfc356de58f4a207b81b7c2a12d3f368ef1c"
+            ]
+          },
+          {
+            "leaf_hash": "0x1efa4cac5fa819b7e526d472b29124ed6f385b0433861b4b05d6f993ee8ca8d6",
+            "leaf_index": 2,
+            "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+            "packet_hash": "0xefe6fe23f4973ba4fecdf74d6f74f976163b79e3a5a41366ba5d3090dad24c5a",
+            "siblings": [
+              "0xc409766aa32c3edecf0c1b079319692018d3476c182e84bfa71ac75f88aa465b",
+              "0x184b2f185b0f8db5514c7849f1ca52537bef95f6317d0f8d6f9b0a8d6075be70",
+              "0x9ca07550dc471b6a8f1abd47c106bfc356de58f4a207b81b7c2a12d3f368ef1c"
+            ]
+          },
+          {
+            "leaf_hash": "0xc409766aa32c3edecf0c1b079319692018d3476c182e84bfa71ac75f88aa465b",
+            "leaf_index": 3,
+            "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+            "packet_hash": "0x1640649f30b4b1117aa6e2bdb2ea12a1557e5c55579ee6ea83744169eafa18e5",
+            "siblings": [
+              "0x1efa4cac5fa819b7e526d472b29124ed6f385b0433861b4b05d6f993ee8ca8d6",
+              "0x184b2f185b0f8db5514c7849f1ca52537bef95f6317d0f8d6f9b0a8d6075be70",
+              "0x9ca07550dc471b6a8f1abd47c106bfc356de58f4a207b81b7c2a12d3f368ef1c"
+            ]
+          },
+          {
+            "leaf_hash": "0x650d8e3133dc76b69fd71ad7b620812d079a68cb5586d84fb3d65ab88c1e3044",
+            "leaf_index": 4,
+            "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+            "packet_hash": "0x313dd612fd1bbac64ae5dc95fee9904ed576097252d0128b0abeaf1c83679536",
+            "siblings": [
+              "0x93cb9e15a1591af8485cd240e0587b98d0eac1b3dfdddfbc8bcd85291b4fd965",
+              "0x2b7371730cc6ca405dbae44ece8901b28784c5e95dd36fe9bc56a34c3c171a21",
+              "0x27f47d0aaa8119ed5512345ffdc7a9ea2c81490cd50b4cb9197eb98ea97cd52a"
+            ]
+          },
+          {
+            "leaf_hash": "0x93cb9e15a1591af8485cd240e0587b98d0eac1b3dfdddfbc8bcd85291b4fd965",
+            "leaf_index": 5,
+            "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+            "packet_hash": "0x8e82b5b18ab81669366c2ce86788ca39a4a9f8c3fc9b503e881eb8908f53bb5a",
+            "siblings": [
+              "0x650d8e3133dc76b69fd71ad7b620812d079a68cb5586d84fb3d65ab88c1e3044",
+              "0x2b7371730cc6ca405dbae44ece8901b28784c5e95dd36fe9bc56a34c3c171a21",
+              "0x27f47d0aaa8119ed5512345ffdc7a9ea2c81490cd50b4cb9197eb98ea97cd52a"
+            ]
+          },
+          {
+            "leaf_hash": "0xf2ab2ca316a5b15ca62eaa5e257f4ca2516024a1a00addcb4455f6805bf38057",
+            "leaf_index": 6,
+            "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+            "packet_hash": "0x9a11d71cb595b5ab3badb6754831a7252d7d308aaef4321273edb4f7e6f90c1c",
+            "siblings": [
+              "0xe9b3229682782fb2790d973c3cb1ca8bf6461ebe71db7dce1171b63f7ae26e43",
+              "0x992ce0756196e3d62d05dc14c48fe4ec5e93c16c59350e34bb8c60dc63c49bcc",
+              "0x27f47d0aaa8119ed5512345ffdc7a9ea2c81490cd50b4cb9197eb98ea97cd52a"
+            ]
+          },
+          {
+            "leaf_hash": "0xe9b3229682782fb2790d973c3cb1ca8bf6461ebe71db7dce1171b63f7ae26e43",
+            "leaf_index": 7,
+            "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+            "packet_hash": "0x8b0ece4445026b8d67d8e6630c8ea75e68725643dcc2f25077b065f70143bae4",
+            "siblings": [
+              "0xf2ab2ca316a5b15ca62eaa5e257f4ca2516024a1a00addcb4455f6805bf38057",
+              "0x992ce0756196e3d62d05dc14c48fe4ec5e93c16c59350e34bb8c60dc63c49bcc",
+              "0x27f47d0aaa8119ed5512345ffdc7a9ea2c81490cd50b4cb9197eb98ea97cd52a"
+            ]
+          }
+        ],
+        "batch_id": 1,
+        "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+        "sample_proof": {
+          "leaf_hash": "0x3847be1fd98e3693bd3f8d26af2aa4f21452f798dd5915c2e4bd9aa058cdeb03",
+          "leaf_index": 0,
+          "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+          "packet_hash": "0x60eb203cd612f46008e208c1e026acd39e04f644900a7c3ddff4a161f7d84ab9",
+          "siblings": [
+            "0xf3108a7df6d7fc66b6c7234fc59d75a880184cb0d7cab7c90c85ccb64c3843e2",
+            "0x384052126a7c1a9fd9b74af0f8b3fe61db249b4dc537a9a0713fb2318e286bcd",
+            "0x9ca07550dc471b6a8f1abd47c106bfc356de58f4a207b81b7c2a12d3f368ef1c"
+          ]
+        }
+      }
+    ],
+    "operator_public_key": "0x049376d22d44d39affc4b225045471ee15d30940fd90d7a0cb8dfc6d34f5db653a5c0cde00163c29e4f628a007ac2fd6d4ec7ab2c30f0b4539d3478ab05dfe683c",
+    "operator_signature": "0x5ae502d3359a50633700e2afa86789d9c3fe92651ba54e710b454e1e4558f64803381bb739bfd127c835bc33af6402d7e439371ab38b1149fc8894fa8d20b19f",
+    "period_merkle_root": "0x6e9980bb14ac41ec3be5ff1010cd5392c8b3c937021a151e3ef039faf4f56721",
+    "production_kg": 500000,
+    "report_hash": "0x411f2f17f7b847333918339d6d7a2be4cf01710d44f4a74660885319dd7476f4",
+    "total_emissions_kg_co2e": 275331,
+    "verified_batch_ids": [
+      1
+    ]
+  },
+  "report": {
+    "attestation_id": 1,
+    "cbam_aligned": true,
+    "coverage": {
+      "coverage_bp": 5000,
+      "quarantined_batches_count": 1,
+      "total_batches": 2,
+      "verified_batches": 1
+    },
+    "device_id": "DEV-CAMPD-1073-3",
+    "installation_id": "INST-CAMPD-1073",
+    "merkle_roots": [
+      "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90"
+    ],
+    "period": {
+      "end_utc": "2025-01-01T15:00:00Z",
+      "label": "2026-Q3",
+      "start_utc": "2025-01-01T00:00:00Z"
+    },
+    "quarantined_batches": [
+      {
+        "batch_id": 2,
+        "challenge_status": "UPHELD_SLASHED",
+        "first_seq": 8,
+        "last_seq": 15,
+        "merkle_root": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+        "reason_codes": [
+          "CROSS_SOURCE_MISMATCH",
+          "PHYSICS_RESIDUAL",
+          "SPECTRAL_REPEAT"
+        ]
+      }
+    ],
+    "report_version": "1.0.0",
+    "totals": {
+      "heat_input_mmbtu": 2893.2,
+      "production_tonnes": 500.0,
+      "specific_embedded_emissions_tco2e_per_t": 0.550661,
+      "verified_emissions_tco2e": 275.330569
+    },
+    "transaction_hashes": {
+      "attestation_tx": "0xa564bc6b6f8fc7462b622e15bcc8f473a90dbe11be39e3cb8ad74778d3c233fd",
+      "batch_anchors": [
+        "0xc7f012904cfade617a25475d366fdefd05e3c5d94e3dbbdc772415c67256f740"
+      ]
+    }
+  }
+}

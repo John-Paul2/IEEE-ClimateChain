@@ -1,0 +1,72 @@
+# VeriCEMS Shared System Parameters
+# Source of truth for operational and benchmark profiles (see docs/INTERFACES.md Section 9).
+# Every numeric value in this file is either an operational protocol parameter or tagged [ILLUSTRATIVE].
+
+version: "1.0.0"
+
+cryptography:
+  hash_algorithm: "sha256"
+  merkle_hash_algorithm: "keccak256"
+  signature_curve: "ECDSA_P256"         # Off-chain verifier check via Python cryptography; see DECISION-01 in docs/INTERFACES.md
+  float_format_decimals: 6              # Fixed 6 decimal places ("0.000000") in canonical JSON; see DECISION-02 in docs/INTERFACES.md
+  genesis_prev_hash: "0x0000000000000000000000000000000000000000000000000000000000000000"
+
+quorum:
+  verifier_count: 5                     # Total registered verifier nodes in the committee
+  required_matches: 3                   # 3-of-5 matching verdicts required for quorum finality
+  score_min_bp: 0                       # Minimum anomaly score in integer basis points (0.00%)
+  score_max_bp: 10000                   # Maximum anomaly score in integer basis points (100.00%)
+  fraud_threshold_bp: 5000              # Default quantized threshold in basis points [ILLUSTRATIVE default until tuned on validation split in P03/P04]
+
+detectors:
+  target_fpr: 0.02                      # Configurable validation false-positive rate target (2.0%) for threshold calibration
+  rolling_window_hours: 8               # Rolling window length (hours/packets) for spectral flatness and autocorrelation checks
+  fuel_ledger_synthetic_noise_std_fraction: 0.0015  # Relative noise std for synthetic fuel_ledger_synthetic channel
+  autoencoder:
+    hidden_dim: 16                      # Hidden layer width for CPU-trainable physics-informed autoencoder
+    latent_dim: 3                       # Bottleneck dimension
+    learning_rate: 0.002                # Adam learning rate
+    batch_size: 512                     # Mini-batch size for training
+    max_epochs: 25                      # Maximum training epochs
+    early_stopping_patience: 5          # Validation early stopping patience (epochs)
+    physics_penalty_weight: 0.50        # Weight on stoichiometric CO2 vs ratio * heat_input reconstruction penalty
+    seed: 42                            # Fixed random seed for deterministic training and ONNX export
+
+staking:
+  # Real-world production target: denominated in EUR-equivalent stablecoin or staked L2 native asset.
+  # Testnet / local anvil values below are [ILLUSTRATIVE] stakes in wei (ETH/POL).
+  min_operator_bond_wei: "1000000000000000000"    # 1.0 ETH [ILLUSTRATIVE]
+  min_verifier_stake_wei: "500000000000000000"    # 0.5 ETH [ILLUSTRATIVE]
+  operator_slash_bps: 5000                        # 50% of operator bond slashed on confirmed fraud (5000 bp)
+  verifier_Reward_share_bps: 7000                 # 70% of slashed bond distributed to honest majority verifiers; 30% to treasury
+  careless_verifier_slash_bps: 1000               # 10% of verifier stake slashed if fraud flag is overturned by arbiter
+
+profiles:
+  demo:
+    description: "Fast-moving interactive demo profile for the 3-minute hackathon video and live Operator/Verifier views."
+    batch_size_packets: 8               # Real-world production value: 60 packets (1 packet/min for 1 hour)
+    packet_interval_seconds: 1          # Real-world production value: 60 seconds (1-minute CEMS average) or 3600 seconds (hourly)
+    commit_window_seconds: 30           # Real-world production value: 900 seconds (15 minutes)
+    reveal_window_seconds: 30           # Real-world production value: 900 seconds (15 minutes)
+    challenge_window_seconds: 120       # Real-world production value: 86400 seconds (24 hours)
+    withdrawal_delay_seconds: 180       # Real-world production value: 604800 seconds (7 days)
+
+  benchmark:
+    description: "Reproducible evaluation profile for EPA CAMPD hourly records across 20+ facilities."
+    batch_size_packets: 24              # 24 hourly records = 1 full operating day per batch (real-world hourly CEMS aggregation)
+    packet_interval_seconds: 3600       # 1 record per hour (3600 seconds), matching EPA CAMPD 40 CFR Part 75 hourly reporting
+    commit_window_seconds: 900          # 15 minutes (real-world production value: 900 seconds)
+    reveal_window_seconds: 900          # 15 minutes (real-world production value: 900 seconds)
+    challenge_window_seconds: 86400     # 24 hours (86400 seconds), matching production optimistic dispute window
+    withdrawal_delay_seconds: 604800    # 7 days (604800 seconds), preventing bond withdrawal before challenge resolution
+
+  testnet:
+    description: "Live testnet profile for Arbitrum Sepolia with fast windows and low stake requirements."
+    batch_size_packets: 4
+    packet_interval_seconds: 1
+    commit_window_seconds: 20
+    reveal_window_seconds: 20
+    challenge_window_seconds: 60
+    withdrawal_delay_seconds: 60
+    min_operator_bond_wei: "1000000000000000"     # 0.001 ETH [TESTNET]
+    min_verifier_stake_wei: "500000000000000"     # 0.0005 ETH [TESTNET]

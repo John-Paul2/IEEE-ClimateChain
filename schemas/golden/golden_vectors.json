@@ -1,0 +1,1214 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "generator": "scripts/make_golden.py",
+    "test_key_name": "TEST KEY",
+    "test_key_warning": "TEST KEY ONLY \u2014 deterministic golden vector key; never reuse in any non-test context.",
+    "test_private_key_hex": "0xc177d6cfe7f2942048f10174ec1b39cf2c62507ac76cad0b02b60cf296813043",
+    "test_public_key_p256_uncompressed": "0x04758440df308461b9cc4dccfbca96be10ca28c8f3f6944c90da43de58f05b38db46383a9f357bf06d9cb74b2686822dd580150e5b16b8b6536949595ddff0ca21",
+    "keccak256_empty_self_test": "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470"
+  },
+  "chains": {
+    "baseline_clean": {
+      "description": "Valid 8-packet hash chain with unbroken prev_hash links, sequential seq 0..7, and valid P-256 signatures.",
+      "expected_verdict": 0,
+      "expected_reason_codes": [],
+      "batch": {
+        "device_id": "DEV-GOLDEN-001",
+        "batch_id": 1,
+        "first_seq": 0,
+        "last_seq": 7,
+        "count": 8,
+        "merkle_root": "0xfef6845c31a5bde0f7b6cc96792c8ec76aab269de617cf1e8c25593267b309cc",
+        "created_at": "2026-07-01T00:00:08Z"
+      },
+      "packets": [
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 0,
+          "timestamp_utc": "2026-07-01T00:00:00Z",
+          "values": {
+            "co2_mass_short_tons": 292.125,
+            "gross_load_mw": 300.0,
+            "heat_input_mmbtu": 2850.0,
+            "synthetic_flue_temp_c": 145.0,
+            "synthetic_fuel_flow_mmbtu_indep": 2849.5,
+            "synthetic_stack_flow_kscfm": 820.0,
+            "synthetic_stack_o2_pct": 4.2
+          },
+          "prev_hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "signature": "0x6576801b6d3529e8cd189bbc5058a73d7ff66f5a27b1d8860422de22468a0e346a2592d010d21a232258b04c48989bfddac8b7ed82d067a8a579c4cae9a29359"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 1,
+          "timestamp_utc": "2026-07-01T00:00:01Z",
+          "values": {
+            "co2_mass_short_tons": 294.559375,
+            "gross_load_mw": 302.5,
+            "heat_input_mmbtu": 2873.75,
+            "synthetic_flue_temp_c": 145.4,
+            "synthetic_fuel_flow_mmbtu_indep": 2873.25,
+            "synthetic_stack_flow_kscfm": 825.0,
+            "synthetic_stack_o2_pct": 4.18
+          },
+          "prev_hash": "0x60537e1310a29ced857be5d287d2158ebcca0a695d8bc72317591a5404f0176b",
+          "signature": "0x9798282b3a444ae6c210446a73f7566ce82afb038f0744c40cbbd32efc90f40671582afd63e74e6bd0cd87244388d9901855f61f7791dbe2c2172ada7a866cf0"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 2,
+          "timestamp_utc": "2026-07-01T00:00:02Z",
+          "values": {
+            "co2_mass_short_tons": 296.99375,
+            "gross_load_mw": 305.0,
+            "heat_input_mmbtu": 2897.5,
+            "synthetic_flue_temp_c": 145.8,
+            "synthetic_fuel_flow_mmbtu_indep": 2897.0,
+            "synthetic_stack_flow_kscfm": 830.0,
+            "synthetic_stack_o2_pct": 4.16
+          },
+          "prev_hash": "0xbcbe7ade68569608a3f683033867ddfb734964578efd616947a21e2c951207eb",
+          "signature": "0x8e66247fd0345e3eaa34a773b79ecb317865214c6e150fe6e3d01ee3c46a594c45936ccec7824e3aed92ac7a72afbb83254384553b1ad9ffa7d4fa452bcf29ce"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 3,
+          "timestamp_utc": "2026-07-01T00:00:03Z",
+          "values": {
+            "co2_mass_short_tons": 299.428125,
+            "gross_load_mw": 307.5,
+            "heat_input_mmbtu": 2921.25,
+            "synthetic_flue_temp_c": 146.2,
+            "synthetic_fuel_flow_mmbtu_indep": 2920.75,
+            "synthetic_stack_flow_kscfm": 835.0,
+            "synthetic_stack_o2_pct": 4.14
+          },
+          "prev_hash": "0xff52cc2677beb806c3858d5541461c5b1532465e39b75fe6acaf89aca8c91cf1",
+          "signature": "0xf77830057e8a14e9861346bce85924f7e30c37cdc05223c5cfbb7a32740f1566066624c4292beaa90cb0af60f134c216121eb26dc30a627b243ed76c83b671e4"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 4,
+          "timestamp_utc": "2026-07-01T00:00:04Z",
+          "values": {
+            "co2_mass_short_tons": 301.8625,
+            "gross_load_mw": 310.0,
+            "heat_input_mmbtu": 2945.0,
+            "synthetic_flue_temp_c": 146.6,
+            "synthetic_fuel_flow_mmbtu_indep": 2944.5,
+            "synthetic_stack_flow_kscfm": 840.0,
+            "synthetic_stack_o2_pct": 4.12
+          },
+          "prev_hash": "0x4d4c9d89bcec0361059019cc2a860c7fc25b6feb95892f966d9b54a9bcbd954d",
+          "signature": "0x96a258146d6d354409b9cba31e9b1104d444ab1846a3c96f1673562571e52b120b68abb57d0a471734255feadc9f44319c6675dfbb83810e4f32f05dd2178f2f"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 5,
+          "timestamp_utc": "2026-07-01T00:00:05Z",
+          "values": {
+            "co2_mass_short_tons": 304.296875,
+            "gross_load_mw": 312.5,
+            "heat_input_mmbtu": 2968.75,
+            "synthetic_flue_temp_c": 147.0,
+            "synthetic_fuel_flow_mmbtu_indep": 2968.25,
+            "synthetic_stack_flow_kscfm": 845.0,
+            "synthetic_stack_o2_pct": 4.1
+          },
+          "prev_hash": "0xf8843b4d9e1187825e0ac4daa29e5eae5e925a14066e7bf884a58ec79c35f05d",
+          "signature": "0xcfbb005aeb20f7b7bb32ee8b7c7db779b147eaa3fa85535461dee7a22c99abd87d4f14271d8405178851d2574a0c81dbc8ae1d59624a3a0ec41c07ba764a42a8"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 6,
+          "timestamp_utc": "2026-07-01T00:00:06Z",
+          "values": {
+            "co2_mass_short_tons": 306.73125,
+            "gross_load_mw": 315.0,
+            "heat_input_mmbtu": 2992.5,
+            "synthetic_flue_temp_c": 147.4,
+            "synthetic_fuel_flow_mmbtu_indep": 2992.0,
+            "synthetic_stack_flow_kscfm": 850.0,
+            "synthetic_stack_o2_pct": 4.08
+          },
+          "prev_hash": "0x63140c1bd63b33dd5c591689a397336fad84726e57ec1ad1df661da0e17f9c71",
+          "signature": "0x48898429d8d789370738ff60821862d3342e463826ffa9777313fd34d694f42e11dd0dab6053b1007d3441158699c6042c54dc90f288726031d5cb0bfe74fbea"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 7,
+          "timestamp_utc": "2026-07-01T00:00:07Z",
+          "values": {
+            "co2_mass_short_tons": 309.165625,
+            "gross_load_mw": 317.5,
+            "heat_input_mmbtu": 3016.25,
+            "synthetic_flue_temp_c": 147.8,
+            "synthetic_fuel_flow_mmbtu_indep": 3015.75,
+            "synthetic_stack_flow_kscfm": 855.0,
+            "synthetic_stack_o2_pct": 4.06
+          },
+          "prev_hash": "0xa47d5a765966831869800a6339d174f6174758f94ce9f1b6fc69a75d5f4ceb63",
+          "signature": "0x6a921f69c38200613e4d8b2e183c16f5cd5690c27805053c07f198857450c9bd50674b6ae33426907148ea46744a021d8aa827ac1833a0c50f17b51be7a4913f"
+        }
+      ],
+      "canonical_json_packet_0": "{\"device_id\":\"DEV-GOLDEN-001\",\"prev_hash\":\"0x0000000000000000000000000000000000000000000000000000000000000000\",\"seq\":0,\"timestamp_utc\":\"2026-07-01T00:00:00Z\",\"values\":{\"co2_mass_short_tons\":\"292.125000\",\"gross_load_mw\":\"300.000000\",\"heat_input_mmbtu\":\"2850.000000\",\"synthetic_flue_temp_c\":\"145.000000\",\"synthetic_fuel_flow_mmbtu_indep\":\"2849.500000\",\"synthetic_stack_flow_kscfm\":\"820.000000\",\"synthetic_stack_o2_pct\":\"4.200000\"}}",
+      "packet_hashes": [
+        "0x60537e1310a29ced857be5d287d2158ebcca0a695d8bc72317591a5404f0176b",
+        "0xbcbe7ade68569608a3f683033867ddfb734964578efd616947a21e2c951207eb",
+        "0xff52cc2677beb806c3858d5541461c5b1532465e39b75fe6acaf89aca8c91cf1",
+        "0x4d4c9d89bcec0361059019cc2a860c7fc25b6feb95892f966d9b54a9bcbd954d",
+        "0xf8843b4d9e1187825e0ac4daa29e5eae5e925a14066e7bf884a58ec79c35f05d",
+        "0x63140c1bd63b33dd5c591689a397336fad84726e57ec1ad1df661da0e17f9c71",
+        "0xa47d5a765966831869800a6339d174f6174758f94ce9f1b6fc69a75d5f4ceb63",
+        "0x79a0ff73be17625a523cc9a3a92fc4676d6e02b96e7ea8e97bcb7550abc10be2"
+      ],
+      "merkle": {
+        "leaves": [
+          "0xa40f3b6563e3e21ea4fb0ea3167ac43c2b2f861ad6d912e411dc76fc8e92bd99",
+          "0x7c6a595061fb2ab0e444a435831c545b8a74141a054226a124a3423cb0f4f280",
+          "0x6d00b22ad1362857b61519be43af7ecb25bf85ae92e6caa22cbad72b3afe171f",
+          "0x887ab61061ea25ad13d0d36f1a18af5a07b11198447a6aef79135aa1bad6d02b",
+          "0xfe4aaa0de74dfa19411f7e0984aeb917746993c47de917a0d9f9e1205a8e821d",
+          "0xede8d9162944ae393147f1f60cb31a40177d90abfe61e1f6b463ce9c85ee0b82",
+          "0x0b6fdd5e184b7b60dc983533c94b640654d230753f64c2791e9d39db92b8b5df",
+          "0x82e445e0dead670c70b67722d070442439dff29de02c7e7fade83a044a9432aa"
+        ],
+        "levels": [
+          [
+            "0xa40f3b6563e3e21ea4fb0ea3167ac43c2b2f861ad6d912e411dc76fc8e92bd99",
+            "0x7c6a595061fb2ab0e444a435831c545b8a74141a054226a124a3423cb0f4f280",
+            "0x6d00b22ad1362857b61519be43af7ecb25bf85ae92e6caa22cbad72b3afe171f",
+            "0x887ab61061ea25ad13d0d36f1a18af5a07b11198447a6aef79135aa1bad6d02b",
+            "0xfe4aaa0de74dfa19411f7e0984aeb917746993c47de917a0d9f9e1205a8e821d",
+            "0xede8d9162944ae393147f1f60cb31a40177d90abfe61e1f6b463ce9c85ee0b82",
+            "0x0b6fdd5e184b7b60dc983533c94b640654d230753f64c2791e9d39db92b8b5df",
+            "0x82e445e0dead670c70b67722d070442439dff29de02c7e7fade83a044a9432aa"
+          ],
+          [
+            "0x58d4d96af7e63f1201373309d632fc017b95fff27460cb46946651f0c3abc594",
+            "0xd50c30cb475b7c7741e35fadd2c8be308c93a7b8badaa90b9a3a53b7b95d6f87",
+            "0xf2714c0c62a3770ab2ba81837c56485d2ca5b28164c7e8522d4bc4a01e9b5120",
+            "0x364414987c05820cea583ad8cc97bdd684cb67d0d9dbc445a3c074a1860f85ec"
+          ],
+          [
+            "0xaa58b380cd2863c1b45adc64fafd0f5b5ccc15344f771631a3693d39b0116501",
+            "0x3d697d7ea0426badb019904deed939b764effacd8984aeb1ac3486e24097f206"
+          ],
+          [
+            "0xfef6845c31a5bde0f7b6cc96792c8ec76aab269de617cf1e8c25593267b309cc"
+          ]
+        ],
+        "merkle_root": "0xfef6845c31a5bde0f7b6cc96792c8ec76aab269de617cf1e8c25593267b309cc",
+        "proofs": [
+          {
+            "leaf_index": 0,
+            "packet_hash": "0x60537e1310a29ced857be5d287d2158ebcca0a695d8bc72317591a5404f0176b",
+            "leaf_hash": "0xa40f3b6563e3e21ea4fb0ea3167ac43c2b2f861ad6d912e411dc76fc8e92bd99",
+            "siblings": [
+              "0x7c6a595061fb2ab0e444a435831c545b8a74141a054226a124a3423cb0f4f280",
+              "0xd50c30cb475b7c7741e35fadd2c8be308c93a7b8badaa90b9a3a53b7b95d6f87",
+              "0x3d697d7ea0426badb019904deed939b764effacd8984aeb1ac3486e24097f206"
+            ],
+            "merkle_root": "0xfef6845c31a5bde0f7b6cc96792c8ec76aab269de617cf1e8c25593267b309cc"
+          },
+          {
+            "leaf_index": 1,
+            "packet_hash": "0xbcbe7ade68569608a3f683033867ddfb734964578efd616947a21e2c951207eb",
+            "leaf_hash": "0x7c6a595061fb2ab0e444a435831c545b8a74141a054226a124a3423cb0f4f280",
+            "siblings": [
+              "0xa40f3b6563e3e21ea4fb0ea3167ac43c2b2f861ad6d912e411dc76fc8e92bd99",
+              "0xd50c30cb475b7c7741e35fadd2c8be308c93a7b8badaa90b9a3a53b7b95d6f87",
+              "0x3d697d7ea0426badb019904deed939b764effacd8984aeb1ac3486e24097f206"
+            ],
+            "merkle_root": "0xfef6845c31a5bde0f7b6cc96792c8ec76aab269de617cf1e8c25593267b309cc"
+          },
+          {
+            "leaf_index": 2,
+            "packet_hash": "0xff52cc2677beb806c3858d5541461c5b1532465e39b75fe6acaf89aca8c91cf1",
+            "leaf_hash": "0x6d00b22ad1362857b61519be43af7ecb25bf85ae92e6caa22cbad72b3afe171f",
+            "siblings": [
+              "0x887ab61061ea25ad13d0d36f1a18af5a07b11198447a6aef79135aa1bad6d02b",
+              "0x58d4d96af7e63f1201373309d632fc017b95fff27460cb46946651f0c3abc594",
+              "0x3d697d7ea0426badb019904deed939b764effacd8984aeb1ac3486e24097f206"
+            ],
+            "merkle_root": "0xfef6845c31a5bde0f7b6cc96792c8ec76aab269de617cf1e8c25593267b309cc"
+          },
+          {
+            "leaf_index": 3,
+            "packet_hash": "0x4d4c9d89bcec0361059019cc2a860c7fc25b6feb95892f966d9b54a9bcbd954d",
+            "leaf_hash": "0x887ab61061ea25ad13d0d36f1a18af5a07b11198447a6aef79135aa1bad6d02b",
+            "siblings": [
+              "0x6d00b22ad1362857b61519be43af7ecb25bf85ae92e6caa22cbad72b3afe171f",
+              "0x58d4d96af7e63f1201373309d632fc017b95fff27460cb46946651f0c3abc594",
+              "0x3d697d7ea0426badb019904deed939b764effacd8984aeb1ac3486e24097f206"
+            ],
+            "merkle_root": "0xfef6845c31a5bde0f7b6cc96792c8ec76aab269de617cf1e8c25593267b309cc"
+          },
+          {
+            "leaf_index": 4,
+            "packet_hash": "0xf8843b4d9e1187825e0ac4daa29e5eae5e925a14066e7bf884a58ec79c35f05d",
+            "leaf_hash": "0xfe4aaa0de74dfa19411f7e0984aeb917746993c47de917a0d9f9e1205a8e821d",
+            "siblings": [
+              "0xede8d9162944ae393147f1f60cb31a40177d90abfe61e1f6b463ce9c85ee0b82",
+              "0x364414987c05820cea583ad8cc97bdd684cb67d0d9dbc445a3c074a1860f85ec",
+              "0xaa58b380cd2863c1b45adc64fafd0f5b5ccc15344f771631a3693d39b0116501"
+            ],
+            "merkle_root": "0xfef6845c31a5bde0f7b6cc96792c8ec76aab269de617cf1e8c25593267b309cc"
+          },
+          {
+            "leaf_index": 5,
+            "packet_hash": "0x63140c1bd63b33dd5c591689a397336fad84726e57ec1ad1df661da0e17f9c71",
+            "leaf_hash": "0xede8d9162944ae393147f1f60cb31a40177d90abfe61e1f6b463ce9c85ee0b82",
+            "siblings": [
+              "0xfe4aaa0de74dfa19411f7e0984aeb917746993c47de917a0d9f9e1205a8e821d",
+              "0x364414987c05820cea583ad8cc97bdd684cb67d0d9dbc445a3c074a1860f85ec",
+              "0xaa58b380cd2863c1b45adc64fafd0f5b5ccc15344f771631a3693d39b0116501"
+            ],
+            "merkle_root": "0xfef6845c31a5bde0f7b6cc96792c8ec76aab269de617cf1e8c25593267b309cc"
+          },
+          {
+            "leaf_index": 6,
+            "packet_hash": "0xa47d5a765966831869800a6339d174f6174758f94ce9f1b6fc69a75d5f4ceb63",
+            "leaf_hash": "0x0b6fdd5e184b7b60dc983533c94b640654d230753f64c2791e9d39db92b8b5df",
+            "siblings": [
+              "0x82e445e0dead670c70b67722d070442439dff29de02c7e7fade83a044a9432aa",
+              "0xf2714c0c62a3770ab2ba81837c56485d2ca5b28164c7e8522d4bc4a01e9b5120",
+              "0xaa58b380cd2863c1b45adc64fafd0f5b5ccc15344f771631a3693d39b0116501"
+            ],
+            "merkle_root": "0xfef6845c31a5bde0f7b6cc96792c8ec76aab269de617cf1e8c25593267b309cc"
+          },
+          {
+            "leaf_index": 7,
+            "packet_hash": "0x79a0ff73be17625a523cc9a3a92fc4676d6e02b96e7ea8e97bcb7550abc10be2",
+            "leaf_hash": "0x82e445e0dead670c70b67722d070442439dff29de02c7e7fade83a044a9432aa",
+            "siblings": [
+              "0x0b6fdd5e184b7b60dc983533c94b640654d230753f64c2791e9d39db92b8b5df",
+              "0xf2714c0c62a3770ab2ba81837c56485d2ca5b28164c7e8522d4bc4a01e9b5120",
+              "0xaa58b380cd2863c1b45adc64fafd0f5b5ccc15344f771631a3693d39b0116501"
+            ],
+            "merkle_root": "0xfef6845c31a5bde0f7b6cc96792c8ec76aab269de617cf1e8c25593267b309cc"
+          }
+        ]
+      }
+    },
+    "chain_1_tampered": {
+      "description": "Tampered packet chain: packet at index 3 (seq=3) has co2_mass_short_tons scaled by 0.70 after signing, invalidating signature on seq=3 and breaking prev_hash on seq=4.",
+      "expected_verdict": 1,
+      "expected_reason_codes": [
+        "SIG_INVALID",
+        "CHAIN_BREAK"
+      ],
+      "tampered_packet_index": 3,
+      "batch": {
+        "device_id": "DEV-GOLDEN-001",
+        "batch_id": 2,
+        "first_seq": 0,
+        "last_seq": 7,
+        "count": 8,
+        "merkle_root": "0x211f1746d301208121450e602a2450bcc2273d855ab73bd853cfa1c201280e8b",
+        "created_at": "2026-07-01T00:00:08Z"
+      },
+      "packets": [
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 0,
+          "timestamp_utc": "2026-07-01T00:00:00Z",
+          "values": {
+            "co2_mass_short_tons": 292.125,
+            "gross_load_mw": 300.0,
+            "heat_input_mmbtu": 2850.0,
+            "synthetic_flue_temp_c": 145.0,
+            "synthetic_fuel_flow_mmbtu_indep": 2849.5,
+            "synthetic_stack_flow_kscfm": 820.0,
+            "synthetic_stack_o2_pct": 4.2
+          },
+          "prev_hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "signature": "0x6576801b6d3529e8cd189bbc5058a73d7ff66f5a27b1d8860422de22468a0e346a2592d010d21a232258b04c48989bfddac8b7ed82d067a8a579c4cae9a29359"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 1,
+          "timestamp_utc": "2026-07-01T00:00:01Z",
+          "values": {
+            "co2_mass_short_tons": 294.559375,
+            "gross_load_mw": 302.5,
+            "heat_input_mmbtu": 2873.75,
+            "synthetic_flue_temp_c": 145.4,
+            "synthetic_fuel_flow_mmbtu_indep": 2873.25,
+            "synthetic_stack_flow_kscfm": 825.0,
+            "synthetic_stack_o2_pct": 4.18
+          },
+          "prev_hash": "0x60537e1310a29ced857be5d287d2158ebcca0a695d8bc72317591a5404f0176b",
+          "signature": "0x9798282b3a444ae6c210446a73f7566ce82afb038f0744c40cbbd32efc90f40671582afd63e74e6bd0cd87244388d9901855f61f7791dbe2c2172ada7a866cf0"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 2,
+          "timestamp_utc": "2026-07-01T00:00:02Z",
+          "values": {
+            "co2_mass_short_tons": 296.99375,
+            "gross_load_mw": 305.0,
+            "heat_input_mmbtu": 2897.5,
+            "synthetic_flue_temp_c": 145.8,
+            "synthetic_fuel_flow_mmbtu_indep": 2897.0,
+            "synthetic_stack_flow_kscfm": 830.0,
+            "synthetic_stack_o2_pct": 4.16
+          },
+          "prev_hash": "0xbcbe7ade68569608a3f683033867ddfb734964578efd616947a21e2c951207eb",
+          "signature": "0x8e66247fd0345e3eaa34a773b79ecb317865214c6e150fe6e3d01ee3c46a594c45936ccec7824e3aed92ac7a72afbb83254384553b1ad9ffa7d4fa452bcf29ce"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 3,
+          "timestamp_utc": "2026-07-01T00:00:03Z",
+          "values": {
+            "co2_mass_short_tons": 209.599688,
+            "gross_load_mw": 307.5,
+            "heat_input_mmbtu": 2921.25,
+            "synthetic_flue_temp_c": 146.2,
+            "synthetic_fuel_flow_mmbtu_indep": 2920.75,
+            "synthetic_stack_flow_kscfm": 835.0,
+            "synthetic_stack_o2_pct": 4.14
+          },
+          "prev_hash": "0xff52cc2677beb806c3858d5541461c5b1532465e39b75fe6acaf89aca8c91cf1",
+          "signature": "0xf77830057e8a14e9861346bce85924f7e30c37cdc05223c5cfbb7a32740f1566066624c4292beaa90cb0af60f134c216121eb26dc30a627b243ed76c83b671e4"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 4,
+          "timestamp_utc": "2026-07-01T00:00:04Z",
+          "values": {
+            "co2_mass_short_tons": 301.8625,
+            "gross_load_mw": 310.0,
+            "heat_input_mmbtu": 2945.0,
+            "synthetic_flue_temp_c": 146.6,
+            "synthetic_fuel_flow_mmbtu_indep": 2944.5,
+            "synthetic_stack_flow_kscfm": 840.0,
+            "synthetic_stack_o2_pct": 4.12
+          },
+          "prev_hash": "0x4d4c9d89bcec0361059019cc2a860c7fc25b6feb95892f966d9b54a9bcbd954d",
+          "signature": "0x96a258146d6d354409b9cba31e9b1104d444ab1846a3c96f1673562571e52b120b68abb57d0a471734255feadc9f44319c6675dfbb83810e4f32f05dd2178f2f"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 5,
+          "timestamp_utc": "2026-07-01T00:00:05Z",
+          "values": {
+            "co2_mass_short_tons": 304.296875,
+            "gross_load_mw": 312.5,
+            "heat_input_mmbtu": 2968.75,
+            "synthetic_flue_temp_c": 147.0,
+            "synthetic_fuel_flow_mmbtu_indep": 2968.25,
+            "synthetic_stack_flow_kscfm": 845.0,
+            "synthetic_stack_o2_pct": 4.1
+          },
+          "prev_hash": "0xf8843b4d9e1187825e0ac4daa29e5eae5e925a14066e7bf884a58ec79c35f05d",
+          "signature": "0xcfbb005aeb20f7b7bb32ee8b7c7db779b147eaa3fa85535461dee7a22c99abd87d4f14271d8405178851d2574a0c81dbc8ae1d59624a3a0ec41c07ba764a42a8"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 6,
+          "timestamp_utc": "2026-07-01T00:00:06Z",
+          "values": {
+            "co2_mass_short_tons": 306.73125,
+            "gross_load_mw": 315.0,
+            "heat_input_mmbtu": 2992.5,
+            "synthetic_flue_temp_c": 147.4,
+            "synthetic_fuel_flow_mmbtu_indep": 2992.0,
+            "synthetic_stack_flow_kscfm": 850.0,
+            "synthetic_stack_o2_pct": 4.08
+          },
+          "prev_hash": "0x63140c1bd63b33dd5c591689a397336fad84726e57ec1ad1df661da0e17f9c71",
+          "signature": "0x48898429d8d789370738ff60821862d3342e463826ffa9777313fd34d694f42e11dd0dab6053b1007d3441158699c6042c54dc90f288726031d5cb0bfe74fbea"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 7,
+          "timestamp_utc": "2026-07-01T00:00:07Z",
+          "values": {
+            "co2_mass_short_tons": 309.165625,
+            "gross_load_mw": 317.5,
+            "heat_input_mmbtu": 3016.25,
+            "synthetic_flue_temp_c": 147.8,
+            "synthetic_fuel_flow_mmbtu_indep": 3015.75,
+            "synthetic_stack_flow_kscfm": 855.0,
+            "synthetic_stack_o2_pct": 4.06
+          },
+          "prev_hash": "0xa47d5a765966831869800a6339d174f6174758f94ce9f1b6fc69a75d5f4ceb63",
+          "signature": "0x6a921f69c38200613e4d8b2e183c16f5cd5690c27805053c07f198857450c9bd50674b6ae33426907148ea46744a021d8aa827ac1833a0c50f17b51be7a4913f"
+        }
+      ],
+      "packet_hashes": [
+        "0x60537e1310a29ced857be5d287d2158ebcca0a695d8bc72317591a5404f0176b",
+        "0xbcbe7ade68569608a3f683033867ddfb734964578efd616947a21e2c951207eb",
+        "0xff52cc2677beb806c3858d5541461c5b1532465e39b75fe6acaf89aca8c91cf1",
+        "0x9a115e2bded6ce873a74ad073e952ec850fa1de5dc610aa7e3c105b47e617ee2",
+        "0xf8843b4d9e1187825e0ac4daa29e5eae5e925a14066e7bf884a58ec79c35f05d",
+        "0x63140c1bd63b33dd5c591689a397336fad84726e57ec1ad1df661da0e17f9c71",
+        "0xa47d5a765966831869800a6339d174f6174758f94ce9f1b6fc69a75d5f4ceb63",
+        "0x79a0ff73be17625a523cc9a3a92fc4676d6e02b96e7ea8e97bcb7550abc10be2"
+      ],
+      "merkle": {
+        "leaves": [
+          "0xa40f3b6563e3e21ea4fb0ea3167ac43c2b2f861ad6d912e411dc76fc8e92bd99",
+          "0x7c6a595061fb2ab0e444a435831c545b8a74141a054226a124a3423cb0f4f280",
+          "0x6d00b22ad1362857b61519be43af7ecb25bf85ae92e6caa22cbad72b3afe171f",
+          "0x36a20aa9aa46e1562f5f89870d619938fd3dd6384a5ba662e594b35417158d07",
+          "0xfe4aaa0de74dfa19411f7e0984aeb917746993c47de917a0d9f9e1205a8e821d",
+          "0xede8d9162944ae393147f1f60cb31a40177d90abfe61e1f6b463ce9c85ee0b82",
+          "0x0b6fdd5e184b7b60dc983533c94b640654d230753f64c2791e9d39db92b8b5df",
+          "0x82e445e0dead670c70b67722d070442439dff29de02c7e7fade83a044a9432aa"
+        ],
+        "levels": [
+          [
+            "0xa40f3b6563e3e21ea4fb0ea3167ac43c2b2f861ad6d912e411dc76fc8e92bd99",
+            "0x7c6a595061fb2ab0e444a435831c545b8a74141a054226a124a3423cb0f4f280",
+            "0x6d00b22ad1362857b61519be43af7ecb25bf85ae92e6caa22cbad72b3afe171f",
+            "0x36a20aa9aa46e1562f5f89870d619938fd3dd6384a5ba662e594b35417158d07",
+            "0xfe4aaa0de74dfa19411f7e0984aeb917746993c47de917a0d9f9e1205a8e821d",
+            "0xede8d9162944ae393147f1f60cb31a40177d90abfe61e1f6b463ce9c85ee0b82",
+            "0x0b6fdd5e184b7b60dc983533c94b640654d230753f64c2791e9d39db92b8b5df",
+            "0x82e445e0dead670c70b67722d070442439dff29de02c7e7fade83a044a9432aa"
+          ],
+          [
+            "0x58d4d96af7e63f1201373309d632fc017b95fff27460cb46946651f0c3abc594",
+            "0x72f2d68d5cf4109c54e73d311307279f2568853d8716e3e0016652e86869b7b1",
+            "0xf2714c0c62a3770ab2ba81837c56485d2ca5b28164c7e8522d4bc4a01e9b5120",
+            "0x364414987c05820cea583ad8cc97bdd684cb67d0d9dbc445a3c074a1860f85ec"
+          ],
+          [
+            "0xcc11351c55d6339b343d844d562601566b42faa769c5c3b0e7dca51709ffcb9d",
+            "0x3d697d7ea0426badb019904deed939b764effacd8984aeb1ac3486e24097f206"
+          ],
+          [
+            "0x211f1746d301208121450e602a2450bcc2273d855ab73bd853cfa1c201280e8b"
+          ]
+        ],
+        "merkle_root": "0x211f1746d301208121450e602a2450bcc2273d855ab73bd853cfa1c201280e8b",
+        "proofs": [
+          {
+            "leaf_index": 0,
+            "packet_hash": "0x60537e1310a29ced857be5d287d2158ebcca0a695d8bc72317591a5404f0176b",
+            "leaf_hash": "0xa40f3b6563e3e21ea4fb0ea3167ac43c2b2f861ad6d912e411dc76fc8e92bd99",
+            "siblings": [
+              "0x7c6a595061fb2ab0e444a435831c545b8a74141a054226a124a3423cb0f4f280",
+              "0x72f2d68d5cf4109c54e73d311307279f2568853d8716e3e0016652e86869b7b1",
+              "0x3d697d7ea0426badb019904deed939b764effacd8984aeb1ac3486e24097f206"
+            ],
+            "merkle_root": "0x211f1746d301208121450e602a2450bcc2273d855ab73bd853cfa1c201280e8b"
+          },
+          {
+            "leaf_index": 1,
+            "packet_hash": "0xbcbe7ade68569608a3f683033867ddfb734964578efd616947a21e2c951207eb",
+            "leaf_hash": "0x7c6a595061fb2ab0e444a435831c545b8a74141a054226a124a3423cb0f4f280",
+            "siblings": [
+              "0xa40f3b6563e3e21ea4fb0ea3167ac43c2b2f861ad6d912e411dc76fc8e92bd99",
+              "0x72f2d68d5cf4109c54e73d311307279f2568853d8716e3e0016652e86869b7b1",
+              "0x3d697d7ea0426badb019904deed939b764effacd8984aeb1ac3486e24097f206"
+            ],
+            "merkle_root": "0x211f1746d301208121450e602a2450bcc2273d855ab73bd853cfa1c201280e8b"
+          },
+          {
+            "leaf_index": 2,
+            "packet_hash": "0xff52cc2677beb806c3858d5541461c5b1532465e39b75fe6acaf89aca8c91cf1",
+            "leaf_hash": "0x6d00b22ad1362857b61519be43af7ecb25bf85ae92e6caa22cbad72b3afe171f",
+            "siblings": [
+              "0x36a20aa9aa46e1562f5f89870d619938fd3dd6384a5ba662e594b35417158d07",
+              "0x58d4d96af7e63f1201373309d632fc017b95fff27460cb46946651f0c3abc594",
+              "0x3d697d7ea0426badb019904deed939b764effacd8984aeb1ac3486e24097f206"
+            ],
+            "merkle_root": "0x211f1746d301208121450e602a2450bcc2273d855ab73bd853cfa1c201280e8b"
+          },
+          {
+            "leaf_index": 3,
+            "packet_hash": "0x9a115e2bded6ce873a74ad073e952ec850fa1de5dc610aa7e3c105b47e617ee2",
+            "leaf_hash": "0x36a20aa9aa46e1562f5f89870d619938fd3dd6384a5ba662e594b35417158d07",
+            "siblings": [
+              "0x6d00b22ad1362857b61519be43af7ecb25bf85ae92e6caa22cbad72b3afe171f",
+              "0x58d4d96af7e63f1201373309d632fc017b95fff27460cb46946651f0c3abc594",
+              "0x3d697d7ea0426badb019904deed939b764effacd8984aeb1ac3486e24097f206"
+            ],
+            "merkle_root": "0x211f1746d301208121450e602a2450bcc2273d855ab73bd853cfa1c201280e8b"
+          },
+          {
+            "leaf_index": 4,
+            "packet_hash": "0xf8843b4d9e1187825e0ac4daa29e5eae5e925a14066e7bf884a58ec79c35f05d",
+            "leaf_hash": "0xfe4aaa0de74dfa19411f7e0984aeb917746993c47de917a0d9f9e1205a8e821d",
+            "siblings": [
+              "0xede8d9162944ae393147f1f60cb31a40177d90abfe61e1f6b463ce9c85ee0b82",
+              "0x364414987c05820cea583ad8cc97bdd684cb67d0d9dbc445a3c074a1860f85ec",
+              "0xcc11351c55d6339b343d844d562601566b42faa769c5c3b0e7dca51709ffcb9d"
+            ],
+            "merkle_root": "0x211f1746d301208121450e602a2450bcc2273d855ab73bd853cfa1c201280e8b"
+          },
+          {
+            "leaf_index": 5,
+            "packet_hash": "0x63140c1bd63b33dd5c591689a397336fad84726e57ec1ad1df661da0e17f9c71",
+            "leaf_hash": "0xede8d9162944ae393147f1f60cb31a40177d90abfe61e1f6b463ce9c85ee0b82",
+            "siblings": [
+              "0xfe4aaa0de74dfa19411f7e0984aeb917746993c47de917a0d9f9e1205a8e821d",
+              "0x364414987c05820cea583ad8cc97bdd684cb67d0d9dbc445a3c074a1860f85ec",
+              "0xcc11351c55d6339b343d844d562601566b42faa769c5c3b0e7dca51709ffcb9d"
+            ],
+            "merkle_root": "0x211f1746d301208121450e602a2450bcc2273d855ab73bd853cfa1c201280e8b"
+          },
+          {
+            "leaf_index": 6,
+            "packet_hash": "0xa47d5a765966831869800a6339d174f6174758f94ce9f1b6fc69a75d5f4ceb63",
+            "leaf_hash": "0x0b6fdd5e184b7b60dc983533c94b640654d230753f64c2791e9d39db92b8b5df",
+            "siblings": [
+              "0x82e445e0dead670c70b67722d070442439dff29de02c7e7fade83a044a9432aa",
+              "0xf2714c0c62a3770ab2ba81837c56485d2ca5b28164c7e8522d4bc4a01e9b5120",
+              "0xcc11351c55d6339b343d844d562601566b42faa769c5c3b0e7dca51709ffcb9d"
+            ],
+            "merkle_root": "0x211f1746d301208121450e602a2450bcc2273d855ab73bd853cfa1c201280e8b"
+          },
+          {
+            "leaf_index": 7,
+            "packet_hash": "0x79a0ff73be17625a523cc9a3a92fc4676d6e02b96e7ea8e97bcb7550abc10be2",
+            "leaf_hash": "0x82e445e0dead670c70b67722d070442439dff29de02c7e7fade83a044a9432aa",
+            "siblings": [
+              "0x0b6fdd5e184b7b60dc983533c94b640654d230753f64c2791e9d39db92b8b5df",
+              "0xf2714c0c62a3770ab2ba81837c56485d2ca5b28164c7e8522d4bc4a01e9b5120",
+              "0xcc11351c55d6339b343d844d562601566b42faa769c5c3b0e7dca51709ffcb9d"
+            ],
+            "merkle_root": "0x211f1746d301208121450e602a2450bcc2273d855ab73bd853cfa1c201280e8b"
+          }
+        ]
+      }
+    },
+    "chain_2_seq_gap": {
+      "description": "Gap packet chain: packet seq=4 was selectively dropped, leaving 7 packets (seq 0,1,2,3,5,6,7). Triggers SEQ_GAP and CHAIN_BREAK at index 4 and exercises odd-node promotion in the 7-leaf Merkle tree.",
+      "expected_verdict": 1,
+      "expected_reason_codes": [
+        "SEQ_GAP",
+        "CHAIN_BREAK"
+      ],
+      "gap_at_index": 4,
+      "batch": {
+        "device_id": "DEV-GOLDEN-001",
+        "batch_id": 3,
+        "first_seq": 0,
+        "last_seq": 7,
+        "count": 7,
+        "merkle_root": "0x8c961820c0f796f1582fbca95907a4f8299d7b067d3b5c39a87f47a4b1eda54a",
+        "created_at": "2026-07-01T00:00:08Z"
+      },
+      "packets": [
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 0,
+          "timestamp_utc": "2026-07-01T00:00:00Z",
+          "values": {
+            "co2_mass_short_tons": 292.125,
+            "gross_load_mw": 300.0,
+            "heat_input_mmbtu": 2850.0,
+            "synthetic_flue_temp_c": 145.0,
+            "synthetic_fuel_flow_mmbtu_indep": 2849.5,
+            "synthetic_stack_flow_kscfm": 820.0,
+            "synthetic_stack_o2_pct": 4.2
+          },
+          "prev_hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "signature": "0x6576801b6d3529e8cd189bbc5058a73d7ff66f5a27b1d8860422de22468a0e346a2592d010d21a232258b04c48989bfddac8b7ed82d067a8a579c4cae9a29359"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 1,
+          "timestamp_utc": "2026-07-01T00:00:01Z",
+          "values": {
+            "co2_mass_short_tons": 294.559375,
+            "gross_load_mw": 302.5,
+            "heat_input_mmbtu": 2873.75,
+            "synthetic_flue_temp_c": 145.4,
+            "synthetic_fuel_flow_mmbtu_indep": 2873.25,
+            "synthetic_stack_flow_kscfm": 825.0,
+            "synthetic_stack_o2_pct": 4.18
+          },
+          "prev_hash": "0x60537e1310a29ced857be5d287d2158ebcca0a695d8bc72317591a5404f0176b",
+          "signature": "0x9798282b3a444ae6c210446a73f7566ce82afb038f0744c40cbbd32efc90f40671582afd63e74e6bd0cd87244388d9901855f61f7791dbe2c2172ada7a866cf0"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 2,
+          "timestamp_utc": "2026-07-01T00:00:02Z",
+          "values": {
+            "co2_mass_short_tons": 296.99375,
+            "gross_load_mw": 305.0,
+            "heat_input_mmbtu": 2897.5,
+            "synthetic_flue_temp_c": 145.8,
+            "synthetic_fuel_flow_mmbtu_indep": 2897.0,
+            "synthetic_stack_flow_kscfm": 830.0,
+            "synthetic_stack_o2_pct": 4.16
+          },
+          "prev_hash": "0xbcbe7ade68569608a3f683033867ddfb734964578efd616947a21e2c951207eb",
+          "signature": "0x8e66247fd0345e3eaa34a773b79ecb317865214c6e150fe6e3d01ee3c46a594c45936ccec7824e3aed92ac7a72afbb83254384553b1ad9ffa7d4fa452bcf29ce"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 3,
+          "timestamp_utc": "2026-07-01T00:00:03Z",
+          "values": {
+            "co2_mass_short_tons": 299.428125,
+            "gross_load_mw": 307.5,
+            "heat_input_mmbtu": 2921.25,
+            "synthetic_flue_temp_c": 146.2,
+            "synthetic_fuel_flow_mmbtu_indep": 2920.75,
+            "synthetic_stack_flow_kscfm": 835.0,
+            "synthetic_stack_o2_pct": 4.14
+          },
+          "prev_hash": "0xff52cc2677beb806c3858d5541461c5b1532465e39b75fe6acaf89aca8c91cf1",
+          "signature": "0xf77830057e8a14e9861346bce85924f7e30c37cdc05223c5cfbb7a32740f1566066624c4292beaa90cb0af60f134c216121eb26dc30a627b243ed76c83b671e4"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 5,
+          "timestamp_utc": "2026-07-01T00:00:05Z",
+          "values": {
+            "co2_mass_short_tons": 304.296875,
+            "gross_load_mw": 312.5,
+            "heat_input_mmbtu": 2968.75,
+            "synthetic_flue_temp_c": 147.0,
+            "synthetic_fuel_flow_mmbtu_indep": 2968.25,
+            "synthetic_stack_flow_kscfm": 845.0,
+            "synthetic_stack_o2_pct": 4.1
+          },
+          "prev_hash": "0xf8843b4d9e1187825e0ac4daa29e5eae5e925a14066e7bf884a58ec79c35f05d",
+          "signature": "0xcfbb005aeb20f7b7bb32ee8b7c7db779b147eaa3fa85535461dee7a22c99abd87d4f14271d8405178851d2574a0c81dbc8ae1d59624a3a0ec41c07ba764a42a8"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 6,
+          "timestamp_utc": "2026-07-01T00:00:06Z",
+          "values": {
+            "co2_mass_short_tons": 306.73125,
+            "gross_load_mw": 315.0,
+            "heat_input_mmbtu": 2992.5,
+            "synthetic_flue_temp_c": 147.4,
+            "synthetic_fuel_flow_mmbtu_indep": 2992.0,
+            "synthetic_stack_flow_kscfm": 850.0,
+            "synthetic_stack_o2_pct": 4.08
+          },
+          "prev_hash": "0x63140c1bd63b33dd5c591689a397336fad84726e57ec1ad1df661da0e17f9c71",
+          "signature": "0x48898429d8d789370738ff60821862d3342e463826ffa9777313fd34d694f42e11dd0dab6053b1007d3441158699c6042c54dc90f288726031d5cb0bfe74fbea"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 7,
+          "timestamp_utc": "2026-07-01T00:00:07Z",
+          "values": {
+            "co2_mass_short_tons": 309.165625,
+            "gross_load_mw": 317.5,
+            "heat_input_mmbtu": 3016.25,
+            "synthetic_flue_temp_c": 147.8,
+            "synthetic_fuel_flow_mmbtu_indep": 3015.75,
+            "synthetic_stack_flow_kscfm": 855.0,
+            "synthetic_stack_o2_pct": 4.06
+          },
+          "prev_hash": "0xa47d5a765966831869800a6339d174f6174758f94ce9f1b6fc69a75d5f4ceb63",
+          "signature": "0x6a921f69c38200613e4d8b2e183c16f5cd5690c27805053c07f198857450c9bd50674b6ae33426907148ea46744a021d8aa827ac1833a0c50f17b51be7a4913f"
+        }
+      ],
+      "packet_hashes": [
+        "0x60537e1310a29ced857be5d287d2158ebcca0a695d8bc72317591a5404f0176b",
+        "0xbcbe7ade68569608a3f683033867ddfb734964578efd616947a21e2c951207eb",
+        "0xff52cc2677beb806c3858d5541461c5b1532465e39b75fe6acaf89aca8c91cf1",
+        "0x4d4c9d89bcec0361059019cc2a860c7fc25b6feb95892f966d9b54a9bcbd954d",
+        "0x63140c1bd63b33dd5c591689a397336fad84726e57ec1ad1df661da0e17f9c71",
+        "0xa47d5a765966831869800a6339d174f6174758f94ce9f1b6fc69a75d5f4ceb63",
+        "0x79a0ff73be17625a523cc9a3a92fc4676d6e02b96e7ea8e97bcb7550abc10be2"
+      ],
+      "merkle": {
+        "leaves": [
+          "0xa40f3b6563e3e21ea4fb0ea3167ac43c2b2f861ad6d912e411dc76fc8e92bd99",
+          "0x7c6a595061fb2ab0e444a435831c545b8a74141a054226a124a3423cb0f4f280",
+          "0x6d00b22ad1362857b61519be43af7ecb25bf85ae92e6caa22cbad72b3afe171f",
+          "0x887ab61061ea25ad13d0d36f1a18af5a07b11198447a6aef79135aa1bad6d02b",
+          "0xede8d9162944ae393147f1f60cb31a40177d90abfe61e1f6b463ce9c85ee0b82",
+          "0x0b6fdd5e184b7b60dc983533c94b640654d230753f64c2791e9d39db92b8b5df",
+          "0x82e445e0dead670c70b67722d070442439dff29de02c7e7fade83a044a9432aa"
+        ],
+        "levels": [
+          [
+            "0xa40f3b6563e3e21ea4fb0ea3167ac43c2b2f861ad6d912e411dc76fc8e92bd99",
+            "0x7c6a595061fb2ab0e444a435831c545b8a74141a054226a124a3423cb0f4f280",
+            "0x6d00b22ad1362857b61519be43af7ecb25bf85ae92e6caa22cbad72b3afe171f",
+            "0x887ab61061ea25ad13d0d36f1a18af5a07b11198447a6aef79135aa1bad6d02b",
+            "0xede8d9162944ae393147f1f60cb31a40177d90abfe61e1f6b463ce9c85ee0b82",
+            "0x0b6fdd5e184b7b60dc983533c94b640654d230753f64c2791e9d39db92b8b5df",
+            "0x82e445e0dead670c70b67722d070442439dff29de02c7e7fade83a044a9432aa"
+          ],
+          [
+            "0x58d4d96af7e63f1201373309d632fc017b95fff27460cb46946651f0c3abc594",
+            "0xd50c30cb475b7c7741e35fadd2c8be308c93a7b8badaa90b9a3a53b7b95d6f87",
+            "0xf11f5f7bb3764ff33f7cf531c9a9d7a928f70f756b35a4b1792f3f40d2cd59fd",
+            "0x82e445e0dead670c70b67722d070442439dff29de02c7e7fade83a044a9432aa"
+          ],
+          [
+            "0xaa58b380cd2863c1b45adc64fafd0f5b5ccc15344f771631a3693d39b0116501",
+            "0x4cbfd0b15c8663f7b8359a247f46d3cfbcf021cc2e6b79c67a1865bdb7c19a7d"
+          ],
+          [
+            "0x8c961820c0f796f1582fbca95907a4f8299d7b067d3b5c39a87f47a4b1eda54a"
+          ]
+        ],
+        "merkle_root": "0x8c961820c0f796f1582fbca95907a4f8299d7b067d3b5c39a87f47a4b1eda54a",
+        "proofs": [
+          {
+            "leaf_index": 0,
+            "packet_hash": "0x60537e1310a29ced857be5d287d2158ebcca0a695d8bc72317591a5404f0176b",
+            "leaf_hash": "0xa40f3b6563e3e21ea4fb0ea3167ac43c2b2f861ad6d912e411dc76fc8e92bd99",
+            "siblings": [
+              "0x7c6a595061fb2ab0e444a435831c545b8a74141a054226a124a3423cb0f4f280",
+              "0xd50c30cb475b7c7741e35fadd2c8be308c93a7b8badaa90b9a3a53b7b95d6f87",
+              "0x4cbfd0b15c8663f7b8359a247f46d3cfbcf021cc2e6b79c67a1865bdb7c19a7d"
+            ],
+            "merkle_root": "0x8c961820c0f796f1582fbca95907a4f8299d7b067d3b5c39a87f47a4b1eda54a"
+          },
+          {
+            "leaf_index": 1,
+            "packet_hash": "0xbcbe7ade68569608a3f683033867ddfb734964578efd616947a21e2c951207eb",
+            "leaf_hash": "0x7c6a595061fb2ab0e444a435831c545b8a74141a054226a124a3423cb0f4f280",
+            "siblings": [
+              "0xa40f3b6563e3e21ea4fb0ea3167ac43c2b2f861ad6d912e411dc76fc8e92bd99",
+              "0xd50c30cb475b7c7741e35fadd2c8be308c93a7b8badaa90b9a3a53b7b95d6f87",
+              "0x4cbfd0b15c8663f7b8359a247f46d3cfbcf021cc2e6b79c67a1865bdb7c19a7d"
+            ],
+            "merkle_root": "0x8c961820c0f796f1582fbca95907a4f8299d7b067d3b5c39a87f47a4b1eda54a"
+          },
+          {
+            "leaf_index": 2,
+            "packet_hash": "0xff52cc2677beb806c3858d5541461c5b1532465e39b75fe6acaf89aca8c91cf1",
+            "leaf_hash": "0x6d00b22ad1362857b61519be43af7ecb25bf85ae92e6caa22cbad72b3afe171f",
+            "siblings": [
+              "0x887ab61061ea25ad13d0d36f1a18af5a07b11198447a6aef79135aa1bad6d02b",
+              "0x58d4d96af7e63f1201373309d632fc017b95fff27460cb46946651f0c3abc594",
+              "0x4cbfd0b15c8663f7b8359a247f46d3cfbcf021cc2e6b79c67a1865bdb7c19a7d"
+            ],
+            "merkle_root": "0x8c961820c0f796f1582fbca95907a4f8299d7b067d3b5c39a87f47a4b1eda54a"
+          },
+          {
+            "leaf_index": 3,
+            "packet_hash": "0x4d4c9d89bcec0361059019cc2a860c7fc25b6feb95892f966d9b54a9bcbd954d",
+            "leaf_hash": "0x887ab61061ea25ad13d0d36f1a18af5a07b11198447a6aef79135aa1bad6d02b",
+            "siblings": [
+              "0x6d00b22ad1362857b61519be43af7ecb25bf85ae92e6caa22cbad72b3afe171f",
+              "0x58d4d96af7e63f1201373309d632fc017b95fff27460cb46946651f0c3abc594",
+              "0x4cbfd0b15c8663f7b8359a247f46d3cfbcf021cc2e6b79c67a1865bdb7c19a7d"
+            ],
+            "merkle_root": "0x8c961820c0f796f1582fbca95907a4f8299d7b067d3b5c39a87f47a4b1eda54a"
+          },
+          {
+            "leaf_index": 4,
+            "packet_hash": "0x63140c1bd63b33dd5c591689a397336fad84726e57ec1ad1df661da0e17f9c71",
+            "leaf_hash": "0xede8d9162944ae393147f1f60cb31a40177d90abfe61e1f6b463ce9c85ee0b82",
+            "siblings": [
+              "0x0b6fdd5e184b7b60dc983533c94b640654d230753f64c2791e9d39db92b8b5df",
+              "0x82e445e0dead670c70b67722d070442439dff29de02c7e7fade83a044a9432aa",
+              "0xaa58b380cd2863c1b45adc64fafd0f5b5ccc15344f771631a3693d39b0116501"
+            ],
+            "merkle_root": "0x8c961820c0f796f1582fbca95907a4f8299d7b067d3b5c39a87f47a4b1eda54a"
+          },
+          {
+            "leaf_index": 5,
+            "packet_hash": "0xa47d5a765966831869800a6339d174f6174758f94ce9f1b6fc69a75d5f4ceb63",
+            "leaf_hash": "0x0b6fdd5e184b7b60dc983533c94b640654d230753f64c2791e9d39db92b8b5df",
+            "siblings": [
+              "0xede8d9162944ae393147f1f60cb31a40177d90abfe61e1f6b463ce9c85ee0b82",
+              "0x82e445e0dead670c70b67722d070442439dff29de02c7e7fade83a044a9432aa",
+              "0xaa58b380cd2863c1b45adc64fafd0f5b5ccc15344f771631a3693d39b0116501"
+            ],
+            "merkle_root": "0x8c961820c0f796f1582fbca95907a4f8299d7b067d3b5c39a87f47a4b1eda54a"
+          },
+          {
+            "leaf_index": 6,
+            "packet_hash": "0x79a0ff73be17625a523cc9a3a92fc4676d6e02b96e7ea8e97bcb7550abc10be2",
+            "leaf_hash": "0x82e445e0dead670c70b67722d070442439dff29de02c7e7fade83a044a9432aa",
+            "siblings": [
+              "0xf11f5f7bb3764ff33f7cf531c9a9d7a928f70f756b35a4b1792f3f40d2cd59fd",
+              "0xaa58b380cd2863c1b45adc64fafd0f5b5ccc15344f771631a3693d39b0116501"
+            ],
+            "merkle_root": "0x8c961820c0f796f1582fbca95907a4f8299d7b067d3b5c39a87f47a4b1eda54a"
+          }
+        ]
+      }
+    },
+    "chain_3_replayed": {
+      "description": "Replayed packet chain: packets at indices 4 and 5 are naive replays of historical packets seq=1 and seq=2. Signatures are valid for the old packets, but seq regresses (3->1) and prev_hash breaks at index 4 and index 6.",
+      "expected_verdict": 1,
+      "expected_reason_codes": [
+        "SEQ_GAP",
+        "CHAIN_BREAK"
+      ],
+      "replayed_indices": [
+        4,
+        5
+      ],
+      "batch": {
+        "device_id": "DEV-GOLDEN-001",
+        "batch_id": 4,
+        "first_seq": 0,
+        "last_seq": 7,
+        "count": 8,
+        "merkle_root": "0x3281da916ef6d5d6a4384159f0e24d3f61f31bf80e64f143afed55801e17bc4a",
+        "created_at": "2026-07-01T00:00:08Z"
+      },
+      "packets": [
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 0,
+          "timestamp_utc": "2026-07-01T00:00:00Z",
+          "values": {
+            "co2_mass_short_tons": 292.125,
+            "gross_load_mw": 300.0,
+            "heat_input_mmbtu": 2850.0,
+            "synthetic_flue_temp_c": 145.0,
+            "synthetic_fuel_flow_mmbtu_indep": 2849.5,
+            "synthetic_stack_flow_kscfm": 820.0,
+            "synthetic_stack_o2_pct": 4.2
+          },
+          "prev_hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "signature": "0x6576801b6d3529e8cd189bbc5058a73d7ff66f5a27b1d8860422de22468a0e346a2592d010d21a232258b04c48989bfddac8b7ed82d067a8a579c4cae9a29359"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 1,
+          "timestamp_utc": "2026-07-01T00:00:01Z",
+          "values": {
+            "co2_mass_short_tons": 294.559375,
+            "gross_load_mw": 302.5,
+            "heat_input_mmbtu": 2873.75,
+            "synthetic_flue_temp_c": 145.4,
+            "synthetic_fuel_flow_mmbtu_indep": 2873.25,
+            "synthetic_stack_flow_kscfm": 825.0,
+            "synthetic_stack_o2_pct": 4.18
+          },
+          "prev_hash": "0x60537e1310a29ced857be5d287d2158ebcca0a695d8bc72317591a5404f0176b",
+          "signature": "0x9798282b3a444ae6c210446a73f7566ce82afb038f0744c40cbbd32efc90f40671582afd63e74e6bd0cd87244388d9901855f61f7791dbe2c2172ada7a866cf0"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 2,
+          "timestamp_utc": "2026-07-01T00:00:02Z",
+          "values": {
+            "co2_mass_short_tons": 296.99375,
+            "gross_load_mw": 305.0,
+            "heat_input_mmbtu": 2897.5,
+            "synthetic_flue_temp_c": 145.8,
+            "synthetic_fuel_flow_mmbtu_indep": 2897.0,
+            "synthetic_stack_flow_kscfm": 830.0,
+            "synthetic_stack_o2_pct": 4.16
+          },
+          "prev_hash": "0xbcbe7ade68569608a3f683033867ddfb734964578efd616947a21e2c951207eb",
+          "signature": "0x8e66247fd0345e3eaa34a773b79ecb317865214c6e150fe6e3d01ee3c46a594c45936ccec7824e3aed92ac7a72afbb83254384553b1ad9ffa7d4fa452bcf29ce"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 3,
+          "timestamp_utc": "2026-07-01T00:00:03Z",
+          "values": {
+            "co2_mass_short_tons": 299.428125,
+            "gross_load_mw": 307.5,
+            "heat_input_mmbtu": 2921.25,
+            "synthetic_flue_temp_c": 146.2,
+            "synthetic_fuel_flow_mmbtu_indep": 2920.75,
+            "synthetic_stack_flow_kscfm": 835.0,
+            "synthetic_stack_o2_pct": 4.14
+          },
+          "prev_hash": "0xff52cc2677beb806c3858d5541461c5b1532465e39b75fe6acaf89aca8c91cf1",
+          "signature": "0xf77830057e8a14e9861346bce85924f7e30c37cdc05223c5cfbb7a32740f1566066624c4292beaa90cb0af60f134c216121eb26dc30a627b243ed76c83b671e4"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 1,
+          "timestamp_utc": "2026-07-01T00:00:01Z",
+          "values": {
+            "co2_mass_short_tons": 294.559375,
+            "gross_load_mw": 302.5,
+            "heat_input_mmbtu": 2873.75,
+            "synthetic_flue_temp_c": 145.4,
+            "synthetic_fuel_flow_mmbtu_indep": 2873.25,
+            "synthetic_stack_flow_kscfm": 825.0,
+            "synthetic_stack_o2_pct": 4.18
+          },
+          "prev_hash": "0x60537e1310a29ced857be5d287d2158ebcca0a695d8bc72317591a5404f0176b",
+          "signature": "0x9798282b3a444ae6c210446a73f7566ce82afb038f0744c40cbbd32efc90f40671582afd63e74e6bd0cd87244388d9901855f61f7791dbe2c2172ada7a866cf0"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 2,
+          "timestamp_utc": "2026-07-01T00:00:02Z",
+          "values": {
+            "co2_mass_short_tons": 296.99375,
+            "gross_load_mw": 305.0,
+            "heat_input_mmbtu": 2897.5,
+            "synthetic_flue_temp_c": 145.8,
+            "synthetic_fuel_flow_mmbtu_indep": 2897.0,
+            "synthetic_stack_flow_kscfm": 830.0,
+            "synthetic_stack_o2_pct": 4.16
+          },
+          "prev_hash": "0xbcbe7ade68569608a3f683033867ddfb734964578efd616947a21e2c951207eb",
+          "signature": "0x8e66247fd0345e3eaa34a773b79ecb317865214c6e150fe6e3d01ee3c46a594c45936ccec7824e3aed92ac7a72afbb83254384553b1ad9ffa7d4fa452bcf29ce"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 6,
+          "timestamp_utc": "2026-07-01T00:00:06Z",
+          "values": {
+            "co2_mass_short_tons": 306.73125,
+            "gross_load_mw": 315.0,
+            "heat_input_mmbtu": 2992.5,
+            "synthetic_flue_temp_c": 147.4,
+            "synthetic_fuel_flow_mmbtu_indep": 2992.0,
+            "synthetic_stack_flow_kscfm": 850.0,
+            "synthetic_stack_o2_pct": 4.08
+          },
+          "prev_hash": "0x63140c1bd63b33dd5c591689a397336fad84726e57ec1ad1df661da0e17f9c71",
+          "signature": "0x48898429d8d789370738ff60821862d3342e463826ffa9777313fd34d694f42e11dd0dab6053b1007d3441158699c6042c54dc90f288726031d5cb0bfe74fbea"
+        },
+        {
+          "device_id": "DEV-GOLDEN-001",
+          "seq": 7,
+          "timestamp_utc": "2026-07-01T00:00:07Z",
+          "values": {
+            "co2_mass_short_tons": 309.165625,
+            "gross_load_mw": 317.5,
+            "heat_input_mmbtu": 3016.25,
+            "synthetic_flue_temp_c": 147.8,
+            "synthetic_fuel_flow_mmbtu_indep": 3015.75,
+            "synthetic_stack_flow_kscfm": 855.0,
+            "synthetic_stack_o2_pct": 4.06
+          },
+          "prev_hash": "0xa47d5a765966831869800a6339d174f6174758f94ce9f1b6fc69a75d5f4ceb63",
+          "signature": "0x6a921f69c38200613e4d8b2e183c16f5cd5690c27805053c07f198857450c9bd50674b6ae33426907148ea46744a021d8aa827ac1833a0c50f17b51be7a4913f"
+        }
+      ],
+      "packet_hashes": [
+        "0x60537e1310a29ced857be5d287d2158ebcca0a695d8bc72317591a5404f0176b",
+        "0xbcbe7ade68569608a3f683033867ddfb734964578efd616947a21e2c951207eb",
+        "0xff52cc2677beb806c3858d5541461c5b1532465e39b75fe6acaf89aca8c91cf1",
+        "0x4d4c9d89bcec0361059019cc2a860c7fc25b6feb95892f966d9b54a9bcbd954d",
+        "0xbcbe7ade68569608a3f683033867ddfb734964578efd616947a21e2c951207eb",
+        "0xff52cc2677beb806c3858d5541461c5b1532465e39b75fe6acaf89aca8c91cf1",
+        "0xa47d5a765966831869800a6339d174f6174758f94ce9f1b6fc69a75d5f4ceb63",
+        "0x79a0ff73be17625a523cc9a3a92fc4676d6e02b96e7ea8e97bcb7550abc10be2"
+      ],
+      "merkle": {
+        "leaves": [
+          "0xa40f3b6563e3e21ea4fb0ea3167ac43c2b2f861ad6d912e411dc76fc8e92bd99",
+          "0x7c6a595061fb2ab0e444a435831c545b8a74141a054226a124a3423cb0f4f280",
+          "0x6d00b22ad1362857b61519be43af7ecb25bf85ae92e6caa22cbad72b3afe171f",
+          "0x887ab61061ea25ad13d0d36f1a18af5a07b11198447a6aef79135aa1bad6d02b",
+          "0x7c6a595061fb2ab0e444a435831c545b8a74141a054226a124a3423cb0f4f280",
+          "0x6d00b22ad1362857b61519be43af7ecb25bf85ae92e6caa22cbad72b3afe171f",
+          "0x0b6fdd5e184b7b60dc983533c94b640654d230753f64c2791e9d39db92b8b5df",
+          "0x82e445e0dead670c70b67722d070442439dff29de02c7e7fade83a044a9432aa"
+        ],
+        "levels": [
+          [
+            "0xa40f3b6563e3e21ea4fb0ea3167ac43c2b2f861ad6d912e411dc76fc8e92bd99",
+            "0x7c6a595061fb2ab0e444a435831c545b8a74141a054226a124a3423cb0f4f280",
+            "0x6d00b22ad1362857b61519be43af7ecb25bf85ae92e6caa22cbad72b3afe171f",
+            "0x887ab61061ea25ad13d0d36f1a18af5a07b11198447a6aef79135aa1bad6d02b",
+            "0x7c6a595061fb2ab0e444a435831c545b8a74141a054226a124a3423cb0f4f280",
+            "0x6d00b22ad1362857b61519be43af7ecb25bf85ae92e6caa22cbad72b3afe171f",
+            "0x0b6fdd5e184b7b60dc983533c94b640654d230753f64c2791e9d39db92b8b5df",
+            "0x82e445e0dead670c70b67722d070442439dff29de02c7e7fade83a044a9432aa"
+          ],
+          [
+            "0x58d4d96af7e63f1201373309d632fc017b95fff27460cb46946651f0c3abc594",
+            "0xd50c30cb475b7c7741e35fadd2c8be308c93a7b8badaa90b9a3a53b7b95d6f87",
+            "0xc8e902339410e07e6ccf631e9090a45f8c3af195fb4978237b984dfbb665dd97",
+            "0x364414987c05820cea583ad8cc97bdd684cb67d0d9dbc445a3c074a1860f85ec"
+          ],
+          [
+            "0xaa58b380cd2863c1b45adc64fafd0f5b5ccc15344f771631a3693d39b0116501",
+            "0x08619ce9561755125a9aedc2f79a4ca4f9de15811674b07d479b5b109056f8ac"
+          ],
+          [
+            "0x3281da916ef6d5d6a4384159f0e24d3f61f31bf80e64f143afed55801e17bc4a"
+          ]
+        ],
+        "merkle_root": "0x3281da916ef6d5d6a4384159f0e24d3f61f31bf80e64f143afed55801e17bc4a",
+        "proofs": [
+          {
+            "leaf_index": 0,
+            "packet_hash": "0x60537e1310a29ced857be5d287d2158ebcca0a695d8bc72317591a5404f0176b",
+            "leaf_hash": "0xa40f3b6563e3e21ea4fb0ea3167ac43c2b2f861ad6d912e411dc76fc8e92bd99",
+            "siblings": [
+              "0x7c6a595061fb2ab0e444a435831c545b8a74141a054226a124a3423cb0f4f280",
+              "0xd50c30cb475b7c7741e35fadd2c8be308c93a7b8badaa90b9a3a53b7b95d6f87",
+              "0x08619ce9561755125a9aedc2f79a4ca4f9de15811674b07d479b5b109056f8ac"
+            ],
+            "merkle_root": "0x3281da916ef6d5d6a4384159f0e24d3f61f31bf80e64f143afed55801e17bc4a"
+          },
+          {
+            "leaf_index": 1,
+            "packet_hash": "0xbcbe7ade68569608a3f683033867ddfb734964578efd616947a21e2c951207eb",
+            "leaf_hash": "0x7c6a595061fb2ab0e444a435831c545b8a74141a054226a124a3423cb0f4f280",
+            "siblings": [
+              "0xa40f3b6563e3e21ea4fb0ea3167ac43c2b2f861ad6d912e411dc76fc8e92bd99",
+              "0xd50c30cb475b7c7741e35fadd2c8be308c93a7b8badaa90b9a3a53b7b95d6f87",
+              "0x08619ce9561755125a9aedc2f79a4ca4f9de15811674b07d479b5b109056f8ac"
+            ],
+            "merkle_root": "0x3281da916ef6d5d6a4384159f0e24d3f61f31bf80e64f143afed55801e17bc4a"
+          },
+          {
+            "leaf_index": 2,
+            "packet_hash": "0xff52cc2677beb806c3858d5541461c5b1532465e39b75fe6acaf89aca8c91cf1",
+            "leaf_hash": "0x6d00b22ad1362857b61519be43af7ecb25bf85ae92e6caa22cbad72b3afe171f",
+            "siblings": [
+              "0x887ab61061ea25ad13d0d36f1a18af5a07b11198447a6aef79135aa1bad6d02b",
+              "0x58d4d96af7e63f1201373309d632fc017b95fff27460cb46946651f0c3abc594",
+              "0x08619ce9561755125a9aedc2f79a4ca4f9de15811674b07d479b5b109056f8ac"
+            ],
+            "merkle_root": "0x3281da916ef6d5d6a4384159f0e24d3f61f31bf80e64f143afed55801e17bc4a"
+          },
+          {
+            "leaf_index": 3,
+            "packet_hash": "0x4d4c9d89bcec0361059019cc2a860c7fc25b6feb95892f966d9b54a9bcbd954d",
+            "leaf_hash": "0x887ab61061ea25ad13d0d36f1a18af5a07b11198447a6aef79135aa1bad6d02b",
+            "siblings": [
+              "0x6d00b22ad1362857b61519be43af7ecb25bf85ae92e6caa22cbad72b3afe171f",
+              "0x58d4d96af7e63f1201373309d632fc017b95fff27460cb46946651f0c3abc594",
+              "0x08619ce9561755125a9aedc2f79a4ca4f9de15811674b07d479b5b109056f8ac"
+            ],
+            "merkle_root": "0x3281da916ef6d5d6a4384159f0e24d3f61f31bf80e64f143afed55801e17bc4a"
+          },
+          {
+            "leaf_index": 4,
+            "packet_hash": "0xbcbe7ade68569608a3f683033867ddfb734964578efd616947a21e2c951207eb",
+            "leaf_hash": "0x7c6a595061fb2ab0e444a435831c545b8a74141a054226a124a3423cb0f4f280",
+            "siblings": [
+              "0x6d00b22ad1362857b61519be43af7ecb25bf85ae92e6caa22cbad72b3afe171f",
+              "0x364414987c05820cea583ad8cc97bdd684cb67d0d9dbc445a3c074a1860f85ec",
+              "0xaa58b380cd2863c1b45adc64fafd0f5b5ccc15344f771631a3693d39b0116501"
+            ],
+            "merkle_root": "0x3281da916ef6d5d6a4384159f0e24d3f61f31bf80e64f143afed55801e17bc4a"
+          },
+          {
+            "leaf_index": 5,
+            "packet_hash": "0xff52cc2677beb806c3858d5541461c5b1532465e39b75fe6acaf89aca8c91cf1",
+            "leaf_hash": "0x6d00b22ad1362857b61519be43af7ecb25bf85ae92e6caa22cbad72b3afe171f",
+            "siblings": [
+              "0x7c6a595061fb2ab0e444a435831c545b8a74141a054226a124a3423cb0f4f280",
+              "0x364414987c05820cea583ad8cc97bdd684cb67d0d9dbc445a3c074a1860f85ec",
+              "0xaa58b380cd2863c1b45adc64fafd0f5b5ccc15344f771631a3693d39b0116501"
+            ],
+            "merkle_root": "0x3281da916ef6d5d6a4384159f0e24d3f61f31bf80e64f143afed55801e17bc4a"
+          },
+          {
+            "leaf_index": 6,
+            "packet_hash": "0xa47d5a765966831869800a6339d174f6174758f94ce9f1b6fc69a75d5f4ceb63",
+            "leaf_hash": "0x0b6fdd5e184b7b60dc983533c94b640654d230753f64c2791e9d39db92b8b5df",
+            "siblings": [
+              "0x82e445e0dead670c70b67722d070442439dff29de02c7e7fade83a044a9432aa",
+              "0xc8e902339410e07e6ccf631e9090a45f8c3af195fb4978237b984dfbb665dd97",
+              "0xaa58b380cd2863c1b45adc64fafd0f5b5ccc15344f771631a3693d39b0116501"
+            ],
+            "merkle_root": "0x3281da916ef6d5d6a4384159f0e24d3f61f31bf80e64f143afed55801e17bc4a"
+          },
+          {
+            "leaf_index": 7,
+            "packet_hash": "0x79a0ff73be17625a523cc9a3a92fc4676d6e02b96e7ea8e97bcb7550abc10be2",
+            "leaf_hash": "0x82e445e0dead670c70b67722d070442439dff29de02c7e7fade83a044a9432aa",
+            "siblings": [
+              "0x0b6fdd5e184b7b60dc983533c94b640654d230753f64c2791e9d39db92b8b5df",
+              "0xc8e902339410e07e6ccf631e9090a45f8c3af195fb4978237b984dfbb665dd97",
+              "0xaa58b380cd2863c1b45adc64fafd0f5b5ccc15344f771631a3693d39b0116501"
+            ],
+            "merkle_root": "0x3281da916ef6d5d6a4384159f0e24d3f61f31bf80e64f143afed55801e17bc4a"
+          }
+        ]
+      }
+    }
+  },
+  "vote_commitment_vector": {
+    "verdict_object": {
+      "batch_id": 2,
+      "verifier_address": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+      "model_hash": "0x9dfa4c50906452325e5d241d82c765aa89c7aac01897ff4af47c9eaebb4f5d01",
+      "input_hash": "0x211f1746d301208121450e602a2450bcc2273d855ab73bd853cfa1c201280e8b",
+      "score_bp": 9450,
+      "verdict": 1,
+      "reason_codes": [
+        "SIG_INVALID",
+        "CHAIN_BREAK",
+        "PHYSICS_RESIDUAL"
+      ],
+      "salt": "0x167db39c95b6b76e44f8389c23ba686680893641428319bd5800fefb10ed783e",
+      "vote_commitment": "0x137abd2d338791d833c8013bef6886257eefaf686ec357c05566ad0e70d2d32e"
+    },
+    "abi_encoded_preimage_hex": "0x00000000000000000000000000000000000000000000000000000000000000029dfa4c50906452325e5d241d82c765aa89c7aac01897ff4af47c9eaebb4f5d01211f1746d301208121450e602a2450bcc2273d855ab73bd853cfa1c201280e8b00000000000000000000000000000000000000000000000000000000000024ea0000000000000000000000000000000000000000000000000000000000000001167db39c95b6b76e44f8389c23ba686680893641428319bd5800fefb10ed783e"
+  },
+  "report_vector": {
+    "report_version": "1.0.0",
+    "cbam_aligned": true,
+    "installation_id": "INST-GOLDEN-STEEL-01",
+    "device_id": "DEV-GOLDEN-001",
+    "period": {
+      "label": "2026-Q3-DEMO",
+      "start_utc": "2026-07-01T00:00:00Z",
+      "end_utc": "2026-07-01T00:00:08Z"
+    },
+    "totals": {
+      "verified_emissions_tco2e": 2.41634,
+      "production_tonnes": 1.271758,
+      "specific_embedded_emissions_tco2e_per_t": 1.9,
+      "heat_input_mmbtu": 23574.0
+    },
+    "coverage": {
+      "total_batches": 4,
+      "verified_batches": 1,
+      "quarantined_batches_count": 3,
+      "coverage_bp": 2500
+    },
+    "quarantined_batches": [
+      {
+        "batch_id": 2,
+        "first_seq": 0,
+        "last_seq": 7,
+        "merkle_root": "0x211f1746d301208121450e602a2450bcc2273d855ab73bd853cfa1c201280e8b",
+        "reason_codes": [
+          "SIG_INVALID",
+          "CHAIN_BREAK",
+          "PHYSICS_RESIDUAL"
+        ],
+        "challenge_status": "UPHELD_SLASHED"
+      },
+      {
+        "batch_id": 3,
+        "first_seq": 0,
+        "last_seq": 7,
+        "merkle_root": "0x8c961820c0f796f1582fbca95907a4f8299d7b067d3b5c39a87f47a4b1eda54a",
+        "reason_codes": [
+          "SEQ_GAP",
+          "CHAIN_BREAK"
+        ],
+        "challenge_status": "UPHELD_SLASHED"
+      },
+      {
+        "batch_id": 4,
+        "first_seq": 0,
+        "last_seq": 7,
+        "merkle_root": "0x3281da916ef6d5d6a4384159f0e24d3f61f31bf80e64f143afed55801e17bc4a",
+        "reason_codes": [
+          "SEQ_GAP",
+          "CHAIN_BREAK",
+          "SPECTRAL_REPEAT"
+        ],
+        "challenge_status": "UPHELD_SLASHED"
+      }
+    ],
+    "merkle_roots": [
+      "0xfef6845c31a5bde0f7b6cc96792c8ec76aab269de617cf1e8c25593267b309cc"
+    ],
+    "transaction_hashes": {
+      "batch_anchors": [
+        "0xd8c6275c5f0ba5332a3fb2422ebf32667cbb0c31370c27796f399d1c78af61ce"
+      ],
+      "attestation_tx": "0x38ebea9c42180a23837ee218f382405c655e8923effb3ba3cd6d3465754f0d52"
+    },
+    "attestation_id": 1
+  }
+}

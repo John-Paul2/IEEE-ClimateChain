@@ -1,0 +1,31 @@
+# VeriCEMS Quantified Climate Impact Configuration
+# Baseline: Turkish Industrial Exports to the European Union under EU CBAM
+# Context: IEEE Global ClimateChain Hackathon 2026 (Organised by IEEE Blockchain Türkiye & Istanbul Chamber of Commerce / İTO)
+
+schema_version: "1.0.0"
+
+# Annual covered emissions in tCO2e/year for CBAM-covered industrial exports from Türkiye to the EU
+# Sourced from Eurostat trade data (>14 million tonnes of CBAM goods; #1 non-EU physical supplier)
+# and World Bank Country Climate and Development Report (CCDR) for Türkiye / Ministry of Trade Green Action Plan:
+# - Iron and steel (~7.4 million tonnes @ ~1.8 tCO2e/t ≈ 13.3 Mt CO2e)
+# - Cement and clinker (~6.0 million tonnes @ ~0.88 tCO2e/t ≈ 5.3 Mt CO2e)
+# - Aluminium and fertilisers (≈ 1.4 Mt CO2e)
+# Total direct embedded emissions in scope ≈ 20.0 million tonnes CO2e (20,000,000 tCO2e/year).
+covered_emissions_tco2e: 20000000.0
+
+cbam_certificate_price_eur: 82.32
+
+# Sensitivity scenarios for attempted under-reporting (labelled strictly as assumptions per AGENTS.md)
+misreporting_scenarios_pct:
+  - 1.0   # 1% subtle drift / calibration trim
+  - 5.0   # 5% moderate systematic downward scaling
+  - 10.0  # 10% substantial fraudulent trim
+
+source_info:
+  target_geography: "Türkiye to European Union industrial export corridor"
+  covered_sectors: "Iron & Steel, Cement & Clinker, Aluminium, Fertilisers"
+  annual_export_volume_tonnes: 14000000
+  source_name: "Eurostat International Trade Database & World Bank Country Climate and Development Report (CCDR) for Türkiye"
+  regulation_context: "Regulation (EU) 2023/956 & Turkish Ministry of Trade Green Action Plan (Yeşil Mutabakat Eylem Planı)"
+  last_verified: "2026-10-22"
+  notes: "Türkiye is the #1 non-EU physical supplier of CBAM goods to the EU (>14 Mt annually) and #2 steel supplier (€7.1B+)."

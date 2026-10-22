@@ -1,0 +1,51 @@
+{
+  "base_seed": 42,
+  "data_hashes": {
+    "campd_hourly_processed_parquet_sha256": "0xac7b911e96843c5c58ef4d4141460176b295824da9e85760b0e54b42fefe1f3c",
+    "preprocessing_manifest_json_sha256": "0xd9cebfa0494ed0261362e768a337ee285db5cbc1b21f93f3628b6106e1bbd1c1",
+    "splits_json_sha256": "0xbebaf68ba76a5ced208068d5d0526b191f7bc79507ee319e521b59c9391aebb0"
+  },
+  "git_commit_hash": "uncommitted",
+  "library_versions": {
+    "cryptography": "unknown",
+    "matplotlib": "3.10.8",
+    "numpy": "2.4.3",
+    "onnx": "1.23.2",
+    "onnxruntime": "1.31.0",
+    "pandas": "3.0.2",
+    "python": "3.14.3",
+    "pyyaml": "6.0.3",
+    "scikit-learn": "1.9.0",
+    "scipy": "1.17.1",
+    "torch": "2.14.1"
+  },
+  "n_facilities_total": 29,
+  "n_splits": 5,
+  "parameters": {
+    "attack_window_fraction": 0.4,
+    "autoencoder_hidden_dim": 16,
+    "autoencoder_latent_dim": 3,
+    "autoencoder_max_epochs": 25,
+    "autoencoder_physics_penalty_weight": 0.5,
+    "fuel_ledger_synthetic_noise_std_fraction": 0.0015,
+    "rolling_window_hours": 8,
+    "series_hours_per_unit": 720,
+    "target_fpr": 0.02
+  },
+  "runtime_seconds": 1179.853,
+  "schema_version": "1.0.0",
+  "split_onnx_model_hashes": {
+    "split_0": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+    "split_1": "0x70d0ca7579d9305b7bb96e9bef070117facfb717cf06d41bd3517a506e5ec6ab",
+    "split_2": "0x214686c184f1272573843429cb2d3958c705b6d7a274b5e7439dc83db04b870c",
+    "split_3": "0x7284376aff4d9224c42bb8faaa49c18897dee42b9bf17a66254cbca297875f42",
+    "split_4": "0xceefb4e431bdf2c465286eb52a2a9a30b86f5d88bd261a4c75bbd9a8bb8c27f8"
+  },
+  "split_seeds": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ]
+}
