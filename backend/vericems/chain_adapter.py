@@ -159,6 +159,21 @@ def load_contract_artifact(
     """Load ABI and bytecode from `contracts/out/<ContractName>.sol/<ContractName>.json`."""
     artifact_path = Path(out_dir) / f"{contract_name}.sol" / f"{contract_name}.json"
     if not artifact_path.exists():
+        # Attempt automatic compilation via forge build if artifact is missing
+        forge_bin = _resolve_foundry_binary("forge")
+        contracts_dir = REPO_ROOT / "contracts"
+        try:
+            subprocess.run(
+                [forge_bin, "build", "--root", str(contracts_dir)],
+                cwd=str(contracts_dir),
+                check=True,
+                capture_output=True,
+                timeout=60,
+            )
+        except Exception:
+            pass
+
+    if not artifact_path.exists():
         raise ChainAdapterError(
             f"Contract artifact not found at {artifact_path}. Run `forge build` in contracts/.",
             code="ABI_ARTIFACT_MISSING",

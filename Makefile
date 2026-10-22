@@ -6,6 +6,7 @@ PYTHON ?= .venv/Scripts/python.exe
 setup:
 	$(PYTHON) -m pip install --upgrade pip
 	$(PYTHON) -m pip install -r requirements.txt
+	-forge build --root contracts
 
 test:
 	$(PYTHON) -m pytest -q

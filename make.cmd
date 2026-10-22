@@ -31,6 +31,11 @@ if /I "%~1"=="demo" (
 if /I "%~1"=="setup" (
     "%PY%" -m pip install --upgrade pip
     "%PY%" -m pip install -r "%REPO_ROOT%requirements.txt"
+    if exist "%REPO_ROOT%.venv\Scripts\forge.exe" (
+        "%REPO_ROOT%.venv\Scripts\forge.exe" build --root "%REPO_ROOT%contracts"
+    ) else (
+        where forge >nul 2>nul && forge build --root "%REPO_ROOT%contracts"
+    )
     exit /b %ERRORLEVEL%
 )
 if /I "%~1"=="lint" (
