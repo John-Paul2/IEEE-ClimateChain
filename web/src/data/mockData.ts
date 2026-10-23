@@ -3,6 +3,7 @@
  * Conforms to AGENTS.md Rule 3: explicitly labelled synthetic in code and data.
  */
 
+import { keccak256, stringToBytes } from "viem";
 import type {
   BatchDetail,
   VerifierNodeStatus,
@@ -11,10 +12,13 @@ import type {
   TelemetryPacket,
 } from "../types/telemetry";
 import type { HealthResponse, StateResponse } from "../types/api";
+import { deploymentConfig } from "../chain/deploymentConfig.ts";
+
+const synthHash = (seed: string): string => keccak256(stringToBytes(seed));
 
 export function generateSyntheticPackets(startSeq: number, count: number): TelemetryPacket[] {
   const packets: TelemetryPacket[] = [];
-  let prevHash = "0x" + "00".repeat(32);
+  let prevHash = synthHash("initial-prev-hash");
 
   for (let i = 0; i < count; i++) {
     const seq = startSeq + i;
@@ -28,8 +32,8 @@ export function generateSyntheticPackets(startSeq: number, count: number): Telem
     const flow = 840 + load * 0.5;
 
     // Deterministic mock hash string for visual display
-    const packetHash = `0x${((seq + 1) * 11111111).toString(16).padStart(8, "0")}${"a1b2c3d4e5f67890".repeat(3).slice(0, 56)}`;
-    const signature = `0x${((seq + 1) * 7777777).toString(16).padStart(8, "0")}${"deadbeefcafe1234".repeat(7).slice(0, 120)}`;
+    const packetHash = synthHash(`packet-${seq}`);
+    const signature = synthHash(`sig-${seq}`);
 
     packets.push({
       device_id: "DEV-STEEL-001",
@@ -60,19 +64,20 @@ export function getSyntheticBatches(): BatchDetail[] {
   const p2 = generateSyntheticPackets(8, 8);
   const p3 = generateSyntheticPackets(16, 8);
   const p4 = generateSyntheticPackets(24, 8);
+  const instId = deploymentConfig.contracts.Attestation;
 
   return [
     {
       batch_id: 1,
       device_id: "DEV-STEEL-001",
-      installation_id: "0x1111111111111111111111111111111111111111111111111111111111111111",
-      merkle_root: "0x789a42f8c5b9671144177cd390de2ef830026e6d1c815ec6ba9d2424fa75d9e1",
+      installation_id: instId,
+      merkle_root: synthHash("batch-1-root"),
       first_seq: 0,
       last_seq: 7,
       count: 8,
       status: "Verified",
       anchored_at: 1782820800,
-      tx_hash: "0x89ab12cd34ef567890abcdef1234567890abcdef1234567890abcdef12345678",
+      tx_hash: synthHash("batch-1-tx"),
       clean_votes: 5,
       fraud_votes: 0,
       mean_score_bp: 9820,
@@ -81,14 +86,14 @@ export function getSyntheticBatches(): BatchDetail[] {
     {
       batch_id: 2,
       device_id: "DEV-STEEL-001",
-      installation_id: "0x1111111111111111111111111111111111111111111111111111111111111111",
-      merkle_root: "0x34bc89de01fa23bc45de67ef890123456789abcdef0123456789abcdef012345",
+      installation_id: instId,
+      merkle_root: synthHash("batch-2-root"),
       first_seq: 8,
       last_seq: 15,
       count: 8,
       status: "Verified",
       anchored_at: 1782823200,
-      tx_hash: "0x12cd34ef567890abcdef1234567890abcdef1234567890abcdef1234567890ab",
+      tx_hash: synthHash("batch-2-tx"),
       clean_votes: 4,
       fraud_votes: 1,
       mean_score_bp: 9410,
@@ -97,14 +102,14 @@ export function getSyntheticBatches(): BatchDetail[] {
     {
       batch_id: 3,
       device_id: "DEV-STEEL-001",
-      installation_id: "0x1111111111111111111111111111111111111111111111111111111111111111",
-      merkle_root: "0xfa123456bcde7890123456789abcdef0123456789abcdef0123456789abcdef0",
+      installation_id: instId,
+      merkle_root: synthHash("batch-3-root"),
       first_seq: 16,
       last_seq: 23,
       count: 8,
       status: "Quarantined",
       anchored_at: 1782825600,
-      tx_hash: "0xdeadbeef1234567890abcdef1234567890abcdef1234567890abcdef12345678",
+      tx_hash: synthHash("batch-3-tx"),
       clean_votes: 1,
       fraud_votes: 4,
       mean_score_bp: 2150,
@@ -113,14 +118,14 @@ export function getSyntheticBatches(): BatchDetail[] {
     {
       batch_id: 4,
       device_id: "DEV-STEEL-001",
-      installation_id: "0x1111111111111111111111111111111111111111111111111111111111111111",
-      merkle_root: "0xee99887766554433221100ffeeddccbbaa99887766554433221100ffeeddccbb",
+      installation_id: instId,
+      merkle_root: synthHash("batch-4-root"),
       first_seq: 24,
       last_seq: 31,
       count: 8,
       status: "Anchored",
       anchored_at: Math.floor(Date.now() / 1000) - 45,
-      tx_hash: "0xbeefcafe00112233445566778899aabbccddeeff00112233445566778899aabb",
+      tx_hash: synthHash("batch-4-tx"),
       clean_votes: 2,
       fraud_votes: 0,
       mean_score_bp: 9650,
@@ -130,61 +135,65 @@ export function getSyntheticBatches(): BatchDetail[] {
 }
 
 export function getSyntheticVerifiers(): VerifierNodeStatus[] {
+  const verifiers = deploymentConfig.verifiers || [];
+  const quorum = deploymentConfig.contracts.VerifierQuorum;
+  const modelHash = synthHash("model-onnx-ae-physics-v1");
+
   return [
     {
       verifier_id: "VERIFIER-01",
-      address: "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+      address: verifiers[0] || quorum,
       mode: "honest",
       staked_amount_wei: "500000000000000000",
       is_active: true,
       last_batch_id: 4,
       last_verdict: "clean",
       last_score_bp: 9820,
-      last_model_hash: "0x4b7c891023d456789abcdef0123456789abcdef0123456789abcdef012345678",
+      last_model_hash: modelHash,
     },
     {
       verifier_id: "VERIFIER-02",
-      address: "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+      address: verifiers[1] || quorum,
       mode: "honest",
       staked_amount_wei: "500000000000000000",
       is_active: true,
       last_batch_id: 4,
       last_verdict: "clean",
       last_score_bp: 9790,
-      last_model_hash: "0x4b7c891023d456789abcdef0123456789abcdef0123456789abcdef012345678",
+      last_model_hash: modelHash,
     },
     {
       verifier_id: "VERIFIER-03",
-      address: "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+      address: verifiers[2] || quorum,
       mode: "honest",
       staked_amount_wei: "500000000000000000",
       is_active: true,
       last_batch_id: 3,
       last_verdict: "fraud",
       last_score_bp: 2100,
-      last_model_hash: "0x4b7c891023d456789abcdef0123456789abcdef0123456789abcdef012345678",
+      last_model_hash: modelHash,
     },
     {
       verifier_id: "VERIFIER-04",
-      address: "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc",
+      address: verifiers[3] || quorum,
       mode: "honest",
       staked_amount_wei: "500000000000000000",
       is_active: true,
       last_batch_id: 3,
       last_verdict: "fraud",
       last_score_bp: 2200,
-      last_model_hash: "0x4b7c891023d456789abcdef0123456789abcdef0123456789abcdef012345678",
+      last_model_hash: modelHash,
     },
     {
       verifier_id: "VERIFIER-05",
-      address: "0x976EA74026E726554dB657fA54763abd0C3a0aa9",
+      address: verifiers[4] || quorum,
       mode: "honest",
       staked_amount_wei: "500000000000000000",
       is_active: true,
       last_batch_id: 3,
       last_verdict: "fraud",
       last_score_bp: 2150,
-      last_model_hash: "0x4b7c891023d456789abcdef0123456789abcdef0123456789abcdef012345678",
+      last_model_hash: modelHash,
     },
   ];
 }
@@ -209,40 +218,40 @@ export function getSyntheticEvents(): TelemetryEvent[] {
     {
       event_id: "evt-001",
       timestamp: new Date(now.getTime() - 120_000).toISOString(),
-      type: "BATCH_ANCHORED",
+      type: "batch_anchored",
       batch_id: 3,
       data: {
         device_id: "DEV-STEEL-001",
         first_seq: 16,
         last_seq: 23,
-        merkle_root: "0xfa123456bcde7890123456789abcdef0123456789abcdef0123456789abcdef0",
+        merkle_root: synthHash("batch-3-root"),
       },
     },
     {
       event_id: "evt-002",
       timestamp: new Date(now.getTime() - 90_000).toISOString(),
-      type: "VERIFIER_VOTE_COMMITTED",
+      type: "vote",
       batch_id: 3,
-      data: { verifier_id: "VERIFIER-03", commitment: "0x11aa22bb..." },
+      data: { verifier_id: "VERIFIER-03", commitment: synthHash("vote-commitment-3") },
     },
     {
       event_id: "evt-003",
       timestamp: new Date(now.getTime() - 60_000).toISOString(),
-      type: "VERIFIER_VOTE_REVEALED",
+      type: "vote",
       batch_id: 3,
-      data: { verifier_id: "VERIFIER-03", verdict: "fraud", score_bp: 2100 },
+      data: { verifier_id: "VERIFIER-03", verdict: 1, score_bp: 2100 },
     },
     {
       event_id: "evt-004",
       timestamp: new Date(now.getTime() - 35_000).toISOString(),
-      type: "QUORUM_REACHED",
+      type: "finalized",
       batch_id: 3,
-      data: { outcome: "FRAUD", clean_votes: 1, fraud_votes: 4 },
+      data: { winning_verdict: 1, matching_votes: 4, score_bp_by_verifier: { "VERIFIER-01": 9000, "VERIFIER-02": 2100, "VERIFIER-03": 2100, "VERIFIER-04": 2200, "VERIFIER-05": 2150 } },
     },
     {
       event_id: "evt-005",
       timestamp: new Date(now.getTime() - 35_000).toISOString(),
-      type: "CHALLENGE_OPENED",
+      type: "challenge_open",
       batch_id: 3,
       data: { challenge_window_seconds: 120, bond_at_risk_wei: "1000000000000000000" },
     },
@@ -252,7 +261,7 @@ export function getSyntheticEvents(): TelemetryEvent[] {
 export function getSyntheticHealth(): HealthResponse {
   return {
     status: "ok",
-    chain_id: 31337,
+    chain_id: deploymentConfig.chainId,
     clock: {
       wall_start_epoch: Math.floor(Date.now() / 1000) - 3600,
       scenario_time_utc: new Date().toISOString(),
@@ -265,7 +274,7 @@ export function getSyntheticHealth(): HealthResponse {
 export function getSyntheticState(): StateResponse {
   return {
     attack: "none",
-    installation_id: "0x1111111111111111111111111111111111111111111111111111111111111111",
+    installation_id: deploymentConfig.contracts.Attestation,
     device_id: "DEV-STEEL-001",
     vault: {
       operator_bond_wei: "1000000000000000000",

@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { Copy, Check, ExternalLink, AlertCircle } from "lucide-react";
 import { Skeleton } from "./Skeleton";
+import { deploymentConfig } from "../chain/deploymentConfig.ts";
 
 export interface HashChipProps {
   hash?: string | null;
@@ -73,13 +74,14 @@ export const HashChip: React.FC<HashChipProps> = ({
       ? `${clean.slice(0, truncateLen + 2)}...${clean.slice(-truncateLen)}`
       : clean;
 
-  const defaultExplorer =
-    explorerUrl ||
-    (type === "tx"
-      ? `https://sepolia.arbiscan.io/tx/${clean}`
-      : type === "address"
-      ? `https://sepolia.arbiscan.io/address/${clean}`
-      : undefined);
+  const baseUrl = explorerUrl || deploymentConfig.explorerBaseUrl;
+  const defaultExplorer = baseUrl
+    ? (type === "tx"
+        ? `${baseUrl}/tx/${clean}`
+        : type === "address"
+        ? `${baseUrl}/address/${clean}`
+        : undefined)
+    : undefined;
 
   return (
     <span

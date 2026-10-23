@@ -88,7 +88,11 @@ export const VerifierPage: React.FC = () => {
 
   const sharedModelHash =
     verifiers[0]?.last_model_hash ||
-    "0x4b789a2bcde7890123456789abcdef0123456789abcdef0123456789abcdef0678";
+    verifiers.find((v) => v.last_model_hash)?.last_model_hash ||
+    null;
+
+  const totalVerifiers = verifiers.length || 5;
+  const fraudVotes = verifiers.filter((v) => v.last_verdict === "fraud").length;
 
   return (
     <div className="space-y-6">
@@ -100,7 +104,7 @@ export const VerifierPage: React.FC = () => {
           </h1>
           <Chip
             variant={isQuarantined ? "FRAUD" : "CLEAN"}
-            label={isQuarantined ? "3 of 5 flagged" : "3-of-5 quorum"}
+            label={isQuarantined ? `${fraudVotes} of ${totalVerifiers} flagged` : `${cleanVotes} of ${totalVerifiers} verified`}
           />
           <Popover
             title="Verifier committee"

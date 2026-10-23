@@ -46,7 +46,7 @@ export function useVeriCEMSWebSocket(isMock: boolean = true) {
           batch_id: 4,
           data: {
             seq: counter,
-            device_id: "DEV-STEEL-001",
+            device_id: "DEV-001",
             synthetic_stack_flow_kscfm: 842.1 + (counter % 5),
             co2_mass_short_tons: 294.8 + (counter % 3) * 0.4,
           },

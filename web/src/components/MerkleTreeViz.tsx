@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from "react";
 import { Copy, ExternalLink, ShieldCheck, ShieldAlert, Check } from "lucide-react";
+import { keccak256, stringToBytes } from "viem";
 import { Skeleton } from "./Skeleton";
 import { ErrorState } from "./ErrorState";
+import { deploymentConfig } from "../chain/deploymentConfig.ts";
 
 export interface MerkleTreeVizProps {
   rootHash?: string | null;
@@ -53,25 +55,15 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
 
   const defaultRoot =
     rootHash ||
-    "0x789a42f8c5b9671144177cd390de2ef830026e6d1c815ec6ba9d2424fa75d9e1";
+    deploymentConfig.contracts.BatchAnchor;
 
   const isQuarantined = batchStatus === "Quarantined" || batchStatus === "Slashed";
 
   // Deterministic 8 leaves
   const effectiveLeaves = useMemo(() => {
-    const defaultHex = [
-      "0x1111222233334444555566667777888899990000aaaabbbbccccddddeeeeffff",
-      "0x2222333344445555666677778888999900001111bbbbccccddddeeeeffffaaaa",
-      "0x3333444455556666777788889999000011112222ccccddddeeeeffffaaaabbbb",
-      "0x4444555566667777888899990000111122223333ddddeeeeffffaaaabbbbcccc",
-      "0x5555666677778888999900001111222233334444eeeeffffaaaabbbbccccdddd",
-      "0x6666777788889999000011112222333344445555ffffaaaabbbbccccddddeeee",
-      "0x7777888899990000111122223333444455556666aaaabbbbccccddddeeeeffff",
-      "0x8888999900001111222233334444555566667777bbbbccccddddeeeeffffaaaa",
-    ];
     const out: string[] = [];
     for (let i = 0; i < 8; i++) {
-      out.push(leaves[i] || defaultHex[i]);
+      out.push(leaves[i] || keccak256(stringToBytes(`packet-${i}`)));
     }
     return out;
   }, [leaves]);
@@ -110,12 +102,9 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
 
     // Level 1: 4 branch nodes (midpoints of child pairs)
     const l1X = [115, 295, 505, 685];
-    const l1Hashes = [
-      "0x89abcdef0123456789abcdef0123456789abcdef0123456789abcdef01234567",
-      "0x9abcdef0123456789abcdef0123456789abcdef0123456789abcdef012345678",
-      "0xabcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789",
-      "0xbcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789a",
-    ];
+    const l1Hashes = [0, 1, 2, 3].map((i) =>
+      keccak256(stringToBytes(effectiveLeaves[i * 2] + effectiveLeaves[i * 2 + 1]))
+    );
 
     for (let i = 0; i < 4; i++) {
       const h = l1Hashes[i];
@@ -134,10 +123,9 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
 
     // Level 2: 2 branch nodes (midpoints of l1 pairs)
     const l2X = [205, 595];
-    const l2Hashes = [
-      "0xcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789ab",
-      "0xdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abc",
-    ];
+    const l2Hashes = [0, 1].map((i) =>
+      keccak256(stringToBytes(l1Hashes[i * 2] + l1Hashes[i * 2 + 1]))
+    );
 
     for (let i = 0; i < 2; i++) {
       const h = l2Hashes[i];
@@ -177,9 +165,12 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const explorerUrl = txHash
-    ? `https://sepolia.arbiscan.io/tx/${txHash}`
-    : `https://sepolia.arbiscan.io/search?q=${defaultRoot}`;
+  const explorerBase = deploymentConfig.explorerBaseUrl;
+  const explorerUrl = explorerBase
+    ? (txHash
+        ? `${explorerBase}/tx/${txHash}`
+        : `${explorerBase}/search?q=${defaultRoot}`)
+    : undefined;
 
   if (isLoading) {
     return (

@@ -1,0 +1,1810 @@
+{
+  "batch_details": {
+    "1": {
+      "anchor_tx_hash": "0x7e26ce06a07f10cc6f592360dd49e40264733c0f315bd65d841759d7d1cec782",
+      "batch_id": 1,
+      "count": 8,
+      "created_at": "2025-01-01T07:00:01Z",
+      "device_id": "DEV-CAMPD-1073-3",
+      "finalize_tx_hash": "0x7b473e3bfae85e2c1fcfffe161aa2d2de845100da2bb06205ef04e204c86484b",
+      "first_seq": 0,
+      "installation_id": "INST-CAMPD-1073",
+      "last_seq": 7,
+      "merkle": {
+        "leaves": [
+          "0x3847be1fd98e3693bd3f8d26af2aa4f21452f798dd5915c2e4bd9aa058cdeb03",
+          "0xf3108a7df6d7fc66b6c7234fc59d75a880184cb0d7cab7c90c85ccb64c3843e2",
+          "0x1efa4cac5fa819b7e526d472b29124ed6f385b0433861b4b05d6f993ee8ca8d6",
+          "0xc409766aa32c3edecf0c1b079319692018d3476c182e84bfa71ac75f88aa465b",
+          "0x650d8e3133dc76b69fd71ad7b620812d079a68cb5586d84fb3d65ab88c1e3044",
+          "0x93cb9e15a1591af8485cd240e0587b98d0eac1b3dfdddfbc8bcd85291b4fd965",
+          "0xf2ab2ca316a5b15ca62eaa5e257f4ca2516024a1a00addcb4455f6805bf38057",
+          "0xe9b3229682782fb2790d973c3cb1ca8bf6461ebe71db7dce1171b63f7ae26e43"
+        ],
+        "levels": [
+          [
+            "0x3847be1fd98e3693bd3f8d26af2aa4f21452f798dd5915c2e4bd9aa058cdeb03",
+            "0xf3108a7df6d7fc66b6c7234fc59d75a880184cb0d7cab7c90c85ccb64c3843e2",
+            "0x1efa4cac5fa819b7e526d472b29124ed6f385b0433861b4b05d6f993ee8ca8d6",
+            "0xc409766aa32c3edecf0c1b079319692018d3476c182e84bfa71ac75f88aa465b",
+            "0x650d8e3133dc76b69fd71ad7b620812d079a68cb5586d84fb3d65ab88c1e3044",
+            "0x93cb9e15a1591af8485cd240e0587b98d0eac1b3dfdddfbc8bcd85291b4fd965",
+            "0xf2ab2ca316a5b15ca62eaa5e257f4ca2516024a1a00addcb4455f6805bf38057",
+            "0xe9b3229682782fb2790d973c3cb1ca8bf6461ebe71db7dce1171b63f7ae26e43"
+          ],
+          [
+            "0x184b2f185b0f8db5514c7849f1ca52537bef95f6317d0f8d6f9b0a8d6075be70",
+            "0x384052126a7c1a9fd9b74af0f8b3fe61db249b4dc537a9a0713fb2318e286bcd",
+            "0x992ce0756196e3d62d05dc14c48fe4ec5e93c16c59350e34bb8c60dc63c49bcc",
+            "0x2b7371730cc6ca405dbae44ece8901b28784c5e95dd36fe9bc56a34c3c171a21"
+          ],
+          [
+            "0x27f47d0aaa8119ed5512345ffdc7a9ea2c81490cd50b4cb9197eb98ea97cd52a",
+            "0x9ca07550dc471b6a8f1abd47c106bfc356de58f4a207b81b7c2a12d3f368ef1c"
+          ],
+          [
+            "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90"
+          ]
+        ],
+        "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+        "proofs": [
+          {
+            "leaf_hash": "0x3847be1fd98e3693bd3f8d26af2aa4f21452f798dd5915c2e4bd9aa058cdeb03",
+            "leaf_index": 0,
+            "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+            "packet_hash": "0x60eb203cd612f46008e208c1e026acd39e04f644900a7c3ddff4a161f7d84ab9",
+            "siblings": [
+              "0xf3108a7df6d7fc66b6c7234fc59d75a880184cb0d7cab7c90c85ccb64c3843e2",
+              "0x384052126a7c1a9fd9b74af0f8b3fe61db249b4dc537a9a0713fb2318e286bcd",
+              "0x9ca07550dc471b6a8f1abd47c106bfc356de58f4a207b81b7c2a12d3f368ef1c"
+            ]
+          },
+          {
+            "leaf_hash": "0xf3108a7df6d7fc66b6c7234fc59d75a880184cb0d7cab7c90c85ccb64c3843e2",
+            "leaf_index": 1,
+            "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+            "packet_hash": "0x360e9a6d052233d52ce028631cd34a3fe4cf662b70475758cc78c7adeec6a98c",
+            "siblings": [
+              "0x3847be1fd98e3693bd3f8d26af2aa4f21452f798dd5915c2e4bd9aa058cdeb03",
+              "0x384052126a7c1a9fd9b74af0f8b3fe61db249b4dc537a9a0713fb2318e286bcd",
+              "0x9ca07550dc471b6a8f1abd47c106bfc356de58f4a207b81b7c2a12d3f368ef1c"
+            ]
+          },
+          {
+            "leaf_hash": "0x1efa4cac5fa819b7e526d472b29124ed6f385b0433861b4b05d6f993ee8ca8d6",
+            "leaf_index": 2,
+            "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+            "packet_hash": "0xefe6fe23f4973ba4fecdf74d6f74f976163b79e3a5a41366ba5d3090dad24c5a",
+            "siblings": [
+              "0xc409766aa32c3edecf0c1b079319692018d3476c182e84bfa71ac75f88aa465b",
+              "0x184b2f185b0f8db5514c7849f1ca52537bef95f6317d0f8d6f9b0a8d6075be70",
+              "0x9ca07550dc471b6a8f1abd47c106bfc356de58f4a207b81b7c2a12d3f368ef1c"
+            ]
+          },
+          {
+            "leaf_hash": "0xc409766aa32c3edecf0c1b079319692018d3476c182e84bfa71ac75f88aa465b",
+            "leaf_index": 3,
+            "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+            "packet_hash": "0x1640649f30b4b1117aa6e2bdb2ea12a1557e5c55579ee6ea83744169eafa18e5",
+            "siblings": [
+              "0x1efa4cac5fa819b7e526d472b29124ed6f385b0433861b4b05d6f993ee8ca8d6",
+              "0x184b2f185b0f8db5514c7849f1ca52537bef95f6317d0f8d6f9b0a8d6075be70",
+              "0x9ca07550dc471b6a8f1abd47c106bfc356de58f4a207b81b7c2a12d3f368ef1c"
+            ]
+          },
+          {
+            "leaf_hash": "0x650d8e3133dc76b69fd71ad7b620812d079a68cb5586d84fb3d65ab88c1e3044",
+            "leaf_index": 4,
+            "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+            "packet_hash": "0x313dd612fd1bbac64ae5dc95fee9904ed576097252d0128b0abeaf1c83679536",
+            "siblings": [
+              "0x93cb9e15a1591af8485cd240e0587b98d0eac1b3dfdddfbc8bcd85291b4fd965",
+              "0x2b7371730cc6ca405dbae44ece8901b28784c5e95dd36fe9bc56a34c3c171a21",
+              "0x27f47d0aaa8119ed5512345ffdc7a9ea2c81490cd50b4cb9197eb98ea97cd52a"
+            ]
+          },
+          {
+            "leaf_hash": "0x93cb9e15a1591af8485cd240e0587b98d0eac1b3dfdddfbc8bcd85291b4fd965",
+            "leaf_index": 5,
+            "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+            "packet_hash": "0x8e82b5b18ab81669366c2ce86788ca39a4a9f8c3fc9b503e881eb8908f53bb5a",
+            "siblings": [
+              "0x650d8e3133dc76b69fd71ad7b620812d079a68cb5586d84fb3d65ab88c1e3044",
+              "0x2b7371730cc6ca405dbae44ece8901b28784c5e95dd36fe9bc56a34c3c171a21",
+              "0x27f47d0aaa8119ed5512345ffdc7a9ea2c81490cd50b4cb9197eb98ea97cd52a"
+            ]
+          },
+          {
+            "leaf_hash": "0xf2ab2ca316a5b15ca62eaa5e257f4ca2516024a1a00addcb4455f6805bf38057",
+            "leaf_index": 6,
+            "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+            "packet_hash": "0x9a11d71cb595b5ab3badb6754831a7252d7d308aaef4321273edb4f7e6f90c1c",
+            "siblings": [
+              "0xe9b3229682782fb2790d973c3cb1ca8bf6461ebe71db7dce1171b63f7ae26e43",
+              "0x992ce0756196e3d62d05dc14c48fe4ec5e93c16c59350e34bb8c60dc63c49bcc",
+              "0x27f47d0aaa8119ed5512345ffdc7a9ea2c81490cd50b4cb9197eb98ea97cd52a"
+            ]
+          },
+          {
+            "leaf_hash": "0xe9b3229682782fb2790d973c3cb1ca8bf6461ebe71db7dce1171b63f7ae26e43",
+            "leaf_index": 7,
+            "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+            "packet_hash": "0x8b0ece4445026b8d67d8e6630c8ea75e68725643dcc2f25077b065f70143bae4",
+            "siblings": [
+              "0xf2ab2ca316a5b15ca62eaa5e257f4ca2516024a1a00addcb4455f6805bf38057",
+              "0x992ce0756196e3d62d05dc14c48fe4ec5e93c16c59350e34bb8c60dc63c49bcc",
+              "0x27f47d0aaa8119ed5512345ffdc7a9ea2c81490cd50b4cb9197eb98ea97cd52a"
+            ]
+          }
+        ]
+      },
+      "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+      "packets": [
+        {
+          "device_id": "DEV-CAMPD-1073-3",
+          "prev_hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "seq": 0,
+          "signature": "0xf48e8f04e7eb7e329758f36e3b3e13b68c4874224fcbb5f55c51f86def41ec6457a2558fea16d841322e70a235da91effa10cb8e4d5c04e3a6031b70bfb085f3",
+          "timestamp_utc": "2025-01-01T00:00:00Z",
+          "values": {
+            "co2_mass_short_tons": 37.9,
+            "co2_rate_short_tons_mmbtu": 0.105,
+            "gross_load_mw": 0.0,
+            "heat_input_mmbtu": 360.9,
+            "nox_mass_lbs": 111.2,
+            "op_time_fraction": 1.0,
+            "so2_mass_lbs": 283.5,
+            "steam_load_1000_lb_hr": 230.0,
+            "synthetic_flue_temp_c": 135.137364,
+            "synthetic_fuel_flow_mmbtu_indep": 360.965045,
+            "synthetic_stack_flow_kscfm": 133.850542,
+            "synthetic_stack_o2_pct": 4.429594
+          }
+        },
+        {
+          "device_id": "DEV-CAMPD-1073-3",
+          "prev_hash": "0x60eb203cd612f46008e208c1e026acd39e04f644900a7c3ddff4a161f7d84ab9",
+          "seq": 1,
+          "signature": "0xc55916202e61c9da0c9acf928a9c53b2f06e64d96e288f871d19bca2fbab56d27efd8f79e62c16a4a9869479aa0c020b42e8a766eb739e35b69e2a2fb8fb3617",
+          "timestamp_utc": "2025-01-01T01:00:00Z",
+          "values": {
+            "co2_mass_short_tons": 37.9,
+            "co2_rate_short_tons_mmbtu": 0.105,
+            "gross_load_mw": 0.0,
+            "heat_input_mmbtu": 361.6,
+            "nox_mass_lbs": 108.5,
+            "op_time_fraction": 1.0,
+            "so2_mass_lbs": 283.6,
+            "steam_load_1000_lb_hr": 230.0,
+            "synthetic_flue_temp_c": 135.381151,
+            "synthetic_fuel_flow_mmbtu_indep": 361.603846,
+            "synthetic_stack_flow_kscfm": 132.465924,
+            "synthetic_stack_o2_pct": 4.46322
+          }
+        },
+        {
+          "device_id": "DEV-CAMPD-1073-3",
+          "prev_hash": "0x360e9a6d052233d52ce028631cd34a3fe4cf662b70475758cc78c7adeec6a98c",
+          "seq": 2,
+          "signature": "0xb5abb7bce1fbefcdd42e439ef89c36c91c73185322bcd1bfd22a658f02c51ee84ea4e8f2de62f7c9cb79f7f0653a28956efffab869af69593216bbe66a912c65",
+          "timestamp_utc": "2025-01-01T02:00:00Z",
+          "values": {
+            "co2_mass_short_tons": 38.0,
+            "co2_rate_short_tons_mmbtu": 0.105,
+            "gross_load_mw": 0.0,
+            "heat_input_mmbtu": 362.4,
+            "nox_mass_lbs": 111.6,
+            "op_time_fraction": 1.0,
+            "so2_mass_lbs": 283.2,
+            "steam_load_1000_lb_hr": 230.0,
+            "synthetic_flue_temp_c": 134.702351,
+            "synthetic_fuel_flow_mmbtu_indep": 363.243819,
+            "synthetic_stack_flow_kscfm": 129.972403,
+            "synthetic_stack_o2_pct": 4.443657
+          }
+        },
+        {
+          "device_id": "DEV-CAMPD-1073-3",
+          "prev_hash": "0xefe6fe23f4973ba4fecdf74d6f74f976163b79e3a5a41366ba5d3090dad24c5a",
+          "seq": 3,
+          "signature": "0x848a30fbe9af6eb153cc840d3310753e44c82ff49a9f07b78ce38955a1a292266275538f4c3482c372d5d44d1950b31a8c62572f7e8205b882355f2e2bf262a9",
+          "timestamp_utc": "2025-01-01T03:00:00Z",
+          "values": {
+            "co2_mass_short_tons": 37.9,
+            "co2_rate_short_tons_mmbtu": 0.105,
+            "gross_load_mw": 0.0,
+            "heat_input_mmbtu": 361.6,
+            "nox_mass_lbs": 112.1,
+            "op_time_fraction": 1.0,
+            "so2_mass_lbs": 283.3,
+            "steam_load_1000_lb_hr": 230.0,
+            "synthetic_flue_temp_c": 134.901641,
+            "synthetic_fuel_flow_mmbtu_indep": 362.026242,
+            "synthetic_stack_flow_kscfm": 136.034843,
+            "synthetic_stack_o2_pct": 4.484661
+          }
+        },
+        {
+          "device_id": "DEV-CAMPD-1073-3",
+          "prev_hash": "0x1640649f30b4b1117aa6e2bdb2ea12a1557e5c55579ee6ea83744169eafa18e5",
+          "seq": 4,
+          "signature": "0x3a4dbac4f32d806cb1e9685eaa0755fe3bccb432279ce384b94924848c35f45802b872a9a90c02265ad939afff349191703e19c01679f50e5f2e8a2c3125e468",
+          "timestamp_utc": "2025-01-01T04:00:00Z",
+          "values": {
+            "co2_mass_short_tons": 38.0,
+            "co2_rate_short_tons_mmbtu": 0.105,
+            "gross_load_mw": 0.0,
+            "heat_input_mmbtu": 362.1,
+            "nox_mass_lbs": 108.3,
+            "op_time_fraction": 1.0,
+            "so2_mass_lbs": 282.1,
+            "steam_load_1000_lb_hr": 230.0,
+            "synthetic_flue_temp_c": 135.048184,
+            "synthetic_fuel_flow_mmbtu_indep": 362.44835,
+            "synthetic_stack_flow_kscfm": 131.222363,
+            "synthetic_stack_o2_pct": 4.578735
+          }
+        },
+        {
+          "device_id": "DEV-CAMPD-1073-3",
+          "prev_hash": "0x313dd612fd1bbac64ae5dc95fee9904ed576097252d0128b0abeaf1c83679536",
+          "seq": 5,
+          "signature": "0x6c69a7c1b72f244a4bb4c2b9057787dceddc139b0b081ab53b7c2960fa3d88433cabc6be91fbaf06cad11bb6cedef1dd63f96a13b797145c2c5e1a3823f6ae89",
+          "timestamp_utc": "2025-01-01T05:00:00Z",
+          "values": {
+            "co2_mass_short_tons": 37.9,
+            "co2_rate_short_tons_mmbtu": 0.105,
+            "gross_load_mw": 0.0,
+            "heat_input_mmbtu": 361.5,
+            "nox_mass_lbs": 110.3,
+            "op_time_fraction": 1.0,
+            "so2_mass_lbs": 286.8,
+            "steam_load_1000_lb_hr": 230.0,
+            "synthetic_flue_temp_c": 134.355168,
+            "synthetic_fuel_flow_mmbtu_indep": 362.12525,
+            "synthetic_stack_flow_kscfm": 131.525779,
+            "synthetic_stack_o2_pct": 4.593469
+          }
+        },
+        {
+          "device_id": "DEV-CAMPD-1073-3",
+          "prev_hash": "0x8e82b5b18ab81669366c2ce86788ca39a4a9f8c3fc9b503e881eb8908f53bb5a",
+          "seq": 6,
+          "signature": "0xb5906cbc7cf8a230d3b178932a3ceb8c745c54818e1a74c459e7755c6258ba5b670c9f858fcf358d49cfa89606354467acdc4feab8aa2009630352de2cd96d15",
+          "timestamp_utc": "2025-01-01T06:00:00Z",
+          "values": {
+            "co2_mass_short_tons": 37.7,
+            "co2_rate_short_tons_mmbtu": 0.105,
+            "gross_load_mw": 0.0,
+            "heat_input_mmbtu": 359.2,
+            "nox_mass_lbs": 112.8,
+            "op_time_fraction": 1.0,
+            "so2_mass_lbs": 287.3,
+            "steam_load_1000_lb_hr": 230.0,
+            "synthetic_flue_temp_c": 134.241359,
+            "synthetic_fuel_flow_mmbtu_indep": 358.268379,
+            "synthetic_stack_flow_kscfm": 129.335704,
+            "synthetic_stack_o2_pct": 4.467592
+          }
+        },
+        {
+          "device_id": "DEV-CAMPD-1073-3",
+          "prev_hash": "0x9a11d71cb595b5ab3badb6754831a7252d7d308aaef4321273edb4f7e6f90c1c",
+          "seq": 7,
+          "signature": "0x452f2c0535e1da9d7bddeb63a854e655975bb4fd37b8ac06bb8e458cb9f859c11b01b48909a92b4715379375529ac58ef6eb8feeff8c0520c8254f910eb2c4d9",
+          "timestamp_utc": "2025-01-01T07:00:00Z",
+          "values": {
+            "co2_mass_short_tons": 38.2,
+            "co2_rate_short_tons_mmbtu": 0.105,
+            "gross_load_mw": 0.0,
+            "heat_input_mmbtu": 363.9,
+            "nox_mass_lbs": 106.3,
+            "op_time_fraction": 1.0,
+            "so2_mass_lbs": 290.6,
+            "steam_load_1000_lb_hr": 231.0,
+            "synthetic_flue_temp_c": 135.497917,
+            "synthetic_fuel_flow_mmbtu_indep": 363.757908,
+            "synthetic_stack_flow_kscfm": 131.918116,
+            "synthetic_stack_o2_pct": 4.561447
+          }
+        }
+      ],
+      "status": "Verified",
+      "verdict_summary": {
+        "matching_votes": 5,
+        "reason_codes": [],
+        "score_bp_by_verifier": {
+          "verifier_1": 1216,
+          "verifier_2": 1216,
+          "verifier_3": 1216,
+          "verifier_4": 1216,
+          "verifier_5": 1216
+        },
+        "winning_verdict": "Clean"
+      }
+    },
+    "2": {
+      "anchor_tx_hash": "0xdb7c8418d9058d7b62095bc30d66e17aaf6b06cd647a64ee06c63777aa6eaae5",
+      "batch_id": 2,
+      "count": 8,
+      "created_at": "2025-01-01T15:00:01Z",
+      "device_id": "DEV-CAMPD-1073-3",
+      "finalize_tx_hash": "0x1cb2d7bc754408725cae405056f6ac496aaa47d8a11efe3c3c8e6c9860d4ded4",
+      "first_seq": 8,
+      "installation_id": "INST-CAMPD-1073",
+      "last_seq": 15,
+      "merkle": {
+        "leaves": [
+          "0xaaf24c7a939d6c7bd02d62b9b0f6ecd0ef7cd5bbc8eda857b7d60708045790e4",
+          "0xafe28cd3f0617cfb6b650c499ad8748dba013e7c7c2ce03c228075916498bda5",
+          "0x6b32a95e42876e76a629a7572d44198153cb530cd6f7c0ddd70c71df5205dd5a",
+          "0x5150ac55cfdf2e0bfb229a24449a769196044932e81a672aecfd65a897eeeb15",
+          "0xe3182fe49973e01c2cb1d18d23202b34df57e7a0360eada36faff3622f1140dd",
+          "0x53add71481bc0063cc78474f70385fb21b3c1850f2489829b745b608bd4d3679",
+          "0xea7e910aa482858983ee1e355a2d39c0e59a04984787506aa81896206fba260b",
+          "0xd40c3634e5204f9b8be8965e25e4ef97ac0b3f0764e1945e6e9c6f4125a67b58"
+        ],
+        "levels": [
+          [
+            "0xaaf24c7a939d6c7bd02d62b9b0f6ecd0ef7cd5bbc8eda857b7d60708045790e4",
+            "0xafe28cd3f0617cfb6b650c499ad8748dba013e7c7c2ce03c228075916498bda5",
+            "0x6b32a95e42876e76a629a7572d44198153cb530cd6f7c0ddd70c71df5205dd5a",
+            "0x5150ac55cfdf2e0bfb229a24449a769196044932e81a672aecfd65a897eeeb15",
+            "0xe3182fe49973e01c2cb1d18d23202b34df57e7a0360eada36faff3622f1140dd",
+            "0x53add71481bc0063cc78474f70385fb21b3c1850f2489829b745b608bd4d3679",
+            "0xea7e910aa482858983ee1e355a2d39c0e59a04984787506aa81896206fba260b",
+            "0xd40c3634e5204f9b8be8965e25e4ef97ac0b3f0764e1945e6e9c6f4125a67b58"
+          ],
+          [
+            "0xd31d5ffae133abbf0057932b3bb709a9ef305e7b7d269dc37cc279d6211367e5",
+            "0xcdd127ff89497f8b812a6290e59d38c8c9e29f1e6b70ade284c5d9c517a38f5b",
+            "0x0f52fc218202b7ec2ec629f1854664e8d8128b0dac4d50e6cc5cd1b146017409",
+            "0x911901ec66df9edcf652243adc2dd303ac6e40d033c853777e239e977b02f0fb"
+          ],
+          [
+            "0x2d7458d2248a84af64c3d6339612153ad215b8efffb11dd7d2f71ca1a02f83b0",
+            "0xe0e8d87f3cc4d6eb21ec395c9b709012de53d97a968e25e07a5aaf278df75a8a"
+          ],
+          [
+            "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4"
+          ]
+        ],
+        "merkle_root": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+        "proofs": [
+          {
+            "leaf_hash": "0xaaf24c7a939d6c7bd02d62b9b0f6ecd0ef7cd5bbc8eda857b7d60708045790e4",
+            "leaf_index": 0,
+            "merkle_root": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+            "packet_hash": "0x5a28ed4b2eb3a7225dee8ac6973bffd0fcd77b1ba9250b09986d9bbd2dfef5a8",
+            "siblings": [
+              "0xafe28cd3f0617cfb6b650c499ad8748dba013e7c7c2ce03c228075916498bda5",
+              "0xcdd127ff89497f8b812a6290e59d38c8c9e29f1e6b70ade284c5d9c517a38f5b",
+              "0xe0e8d87f3cc4d6eb21ec395c9b709012de53d97a968e25e07a5aaf278df75a8a"
+            ]
+          },
+          {
+            "leaf_hash": "0xafe28cd3f0617cfb6b650c499ad8748dba013e7c7c2ce03c228075916498bda5",
+            "leaf_index": 1,
+            "merkle_root": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+            "packet_hash": "0xdf47af42ce730cd055be83bef7206c8a01abff57157b07badf798e521710be86",
+            "siblings": [
+              "0xaaf24c7a939d6c7bd02d62b9b0f6ecd0ef7cd5bbc8eda857b7d60708045790e4",
+              "0xcdd127ff89497f8b812a6290e59d38c8c9e29f1e6b70ade284c5d9c517a38f5b",
+              "0xe0e8d87f3cc4d6eb21ec395c9b709012de53d97a968e25e07a5aaf278df75a8a"
+            ]
+          },
+          {
+            "leaf_hash": "0x6b32a95e42876e76a629a7572d44198153cb530cd6f7c0ddd70c71df5205dd5a",
+            "leaf_index": 2,
+            "merkle_root": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+            "packet_hash": "0x70f12ecf1b8fe5315438302ff847113ba8abe595368369e4d3fa2233466d04fa",
+            "siblings": [
+              "0x5150ac55cfdf2e0bfb229a24449a769196044932e81a672aecfd65a897eeeb15",
+              "0xd31d5ffae133abbf0057932b3bb709a9ef305e7b7d269dc37cc279d6211367e5",
+              "0xe0e8d87f3cc4d6eb21ec395c9b709012de53d97a968e25e07a5aaf278df75a8a"
+            ]
+          },
+          {
+            "leaf_hash": "0x5150ac55cfdf2e0bfb229a24449a769196044932e81a672aecfd65a897eeeb15",
+            "leaf_index": 3,
+            "merkle_root": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+            "packet_hash": "0x1020d1b0e53956eceb4ec47074a79d807873c80e8350f732d05abd6f905b8f77",
+            "siblings": [
+              "0x6b32a95e42876e76a629a7572d44198153cb530cd6f7c0ddd70c71df5205dd5a",
+              "0xd31d5ffae133abbf0057932b3bb709a9ef305e7b7d269dc37cc279d6211367e5",
+              "0xe0e8d87f3cc4d6eb21ec395c9b709012de53d97a968e25e07a5aaf278df75a8a"
+            ]
+          },
+          {
+            "leaf_hash": "0xe3182fe49973e01c2cb1d18d23202b34df57e7a0360eada36faff3622f1140dd",
+            "leaf_index": 4,
+            "merkle_root": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+            "packet_hash": "0x2ca212f4c13a961f31749b7c6df0ab1c025faa38bd925f5248115cdde14420b5",
+            "siblings": [
+              "0x53add71481bc0063cc78474f70385fb21b3c1850f2489829b745b608bd4d3679",
+              "0x911901ec66df9edcf652243adc2dd303ac6e40d033c853777e239e977b02f0fb",
+              "0x2d7458d2248a84af64c3d6339612153ad215b8efffb11dd7d2f71ca1a02f83b0"
+            ]
+          },
+          {
+            "leaf_hash": "0x53add71481bc0063cc78474f70385fb21b3c1850f2489829b745b608bd4d3679",
+            "leaf_index": 5,
+            "merkle_root": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+            "packet_hash": "0x2ece1af36af0fd9ee88cf93b6561320cbbb959a5c88e165e862324ffb8d3acbc",
+            "siblings": [
+              "0xe3182fe49973e01c2cb1d18d23202b34df57e7a0360eada36faff3622f1140dd",
+              "0x911901ec66df9edcf652243adc2dd303ac6e40d033c853777e239e977b02f0fb",
+              "0x2d7458d2248a84af64c3d6339612153ad215b8efffb11dd7d2f71ca1a02f83b0"
+            ]
+          },
+          {
+            "leaf_hash": "0xea7e910aa482858983ee1e355a2d39c0e59a04984787506aa81896206fba260b",
+            "leaf_index": 6,
+            "merkle_root": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+            "packet_hash": "0x270b00284891d1dbe0b19a69542222ba8c3aca0fe3feac4f13324c34b9173398",
+            "siblings": [
+              "0xd40c3634e5204f9b8be8965e25e4ef97ac0b3f0764e1945e6e9c6f4125a67b58",
+              "0x0f52fc218202b7ec2ec629f1854664e8d8128b0dac4d50e6cc5cd1b146017409",
+              "0x2d7458d2248a84af64c3d6339612153ad215b8efffb11dd7d2f71ca1a02f83b0"
+            ]
+          },
+          {
+            "leaf_hash": "0xd40c3634e5204f9b8be8965e25e4ef97ac0b3f0764e1945e6e9c6f4125a67b58",
+            "leaf_index": 7,
+            "merkle_root": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+            "packet_hash": "0xf1315154ae03969ee44717257a067d8091a01da720e15b6bdc7b7a41bfb9135f",
+            "siblings": [
+              "0xea7e910aa482858983ee1e355a2d39c0e59a04984787506aa81896206fba260b",
+              "0x0f52fc218202b7ec2ec629f1854664e8d8128b0dac4d50e6cc5cd1b146017409",
+              "0x2d7458d2248a84af64c3d6339612153ad215b8efffb11dd7d2f71ca1a02f83b0"
+            ]
+          }
+        ]
+      },
+      "merkle_root": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+      "packets": [
+        {
+          "device_id": "DEV-CAMPD-1073-3",
+          "prev_hash": "0x8b0ece4445026b8d67d8e6630c8ea75e68725643dcc2f25077b065f70143bae4",
+          "seq": 8,
+          "signature": "0xd53ee64d8d797f5aa97c2145a35532888062d993b47b61a942fe8c448fc95cec16b89421035973c8968b3b92ab3ed391ade0642042b1c75bb0486360d374e744",
+          "timestamp_utc": "2025-01-01T08:00:00Z",
+          "values": {
+            "co2_mass_short_tons": 26.599999999999998,
+            "co2_rate_short_tons_mmbtu": 0.105,
+            "gross_load_mw": 0.0,
+            "heat_input_mmbtu": 361.9,
+            "nox_mass_lbs": 108.2,
+            "op_time_fraction": 1.0,
+            "so2_mass_lbs": 287.0,
+            "steam_load_1000_lb_hr": 230.0,
+            "synthetic_flue_temp_c": 135.137364,
+            "synthetic_fuel_flow_mmbtu_indep": 361.965225,
+            "synthetic_stack_flow_kscfm": 134.212191,
+            "synthetic_stack_o2_pct": 4.429594
+          }
+        },
+        {
+          "device_id": "DEV-CAMPD-1073-3",
+          "prev_hash": "0x5a28ed4b2eb3a7225dee8ac6973bffd0fcd77b1ba9250b09986d9bbd2dfef5a8",
+          "seq": 9,
+          "signature": "0x05ffb017938595bc7cea394e1b37c944b463bdba1f92cacc2bf2013920cea033790bb19f6748d6c5f8b28dc0e0f4c28935278071ea8af9935f23a45d5cbf2821",
+          "timestamp_utc": "2025-01-01T09:00:00Z",
+          "values": {
+            "co2_mass_short_tons": 26.529999999999998,
+            "co2_rate_short_tons_mmbtu": 0.105,
+            "gross_load_mw": 0.0,
+            "heat_input_mmbtu": 361.0,
+            "nox_mass_lbs": 109.7,
+            "op_time_fraction": 1.0,
+            "so2_mass_lbs": 277.9,
+            "steam_load_1000_lb_hr": 231.0,
+            "synthetic_flue_temp_c": 135.381151,
+            "synthetic_fuel_flow_mmbtu_indep": 361.00384,
+            "synthetic_stack_flow_kscfm": 132.248491,
+            "synthetic_stack_o2_pct": 4.46322
+          }
+        },
+        {
+          "device_id": "DEV-CAMPD-1073-3",
+          "prev_hash": "0xdf47af42ce730cd055be83bef7206c8a01abff57157b07badf798e521710be86",
+          "seq": 10,
+          "signature": "0x7569e74775a6d753997d8a5bf8fec257e33f6875a2067b5b9f0900d09e8f2a9e7bc0def2a075c813ea6570d2d7f9ef493a59072e7ea074736fd72b4b922ebb1d",
+          "timestamp_utc": "2025-01-01T10:00:00Z",
+          "values": {
+            "co2_mass_short_tons": 26.599999999999998,
+            "co2_rate_short_tons_mmbtu": 0.105,
+            "gross_load_mw": 0.0,
+            "heat_input_mmbtu": 361.9,
+            "nox_mass_lbs": 112.6,
+            "op_time_fraction": 1.0,
+            "so2_mass_lbs": 277.8,
+            "steam_load_1000_lb_hr": 230.0,
+            "synthetic_flue_temp_c": 134.702351,
+            "synthetic_fuel_flow_mmbtu_indep": 362.742655,
+            "synthetic_stack_flow_kscfm": 129.791424,
+            "synthetic_stack_o2_pct": 4.443657
+          }
+        },
+        {
+          "device_id": "DEV-CAMPD-1073-3",
+          "prev_hash": "0x70f12ecf1b8fe5315438302ff847113ba8abe595368369e4d3fa2233466d04fa",
+          "seq": 11,
+          "signature": "0x1b1071907e6aa5e7a406ecce6bb93a49b8d6e1469972d3aabb5ce32cd64999bd7e798cb8556e6b1f572a1bd55423dd745ec354f2bb45c86af6372d1ca10903d5",
+          "timestamp_utc": "2025-01-01T11:00:00Z",
+          "values": {
+            "co2_mass_short_tons": 26.529999999999998,
+            "co2_rate_short_tons_mmbtu": 0.105,
+            "gross_load_mw": 0.0,
+            "heat_input_mmbtu": 361.1,
+            "nox_mass_lbs": 113.4,
+            "op_time_fraction": 1.0,
+            "so2_mass_lbs": 276.5,
+            "steam_load_1000_lb_hr": 230.0,
+            "synthetic_flue_temp_c": 134.901641,
+            "synthetic_fuel_flow_mmbtu_indep": 361.525653,
+            "synthetic_stack_flow_kscfm": 135.853412,
+            "synthetic_stack_o2_pct": 4.484661
+          }
+        },
+        {
+          "device_id": "DEV-CAMPD-1073-3",
+          "prev_hash": "0x1020d1b0e53956eceb4ec47074a79d807873c80e8350f732d05abd6f905b8f77",
+          "seq": 12,
+          "signature": "0xf041d46729bb3f6e268ae679e3794e56631526676e9b045162eb8709caddaff534a1964f9b55b3c8588fe6eeca9e1332d8cf37e32e85c48758eba4e78c77477a",
+          "timestamp_utc": "2025-01-01T12:00:00Z",
+          "values": {
+            "co2_mass_short_tons": 26.599999999999998,
+            "co2_rate_short_tons_mmbtu": 0.105,
+            "gross_load_mw": 0.0,
+            "heat_input_mmbtu": 362.3,
+            "nox_mass_lbs": 110.1,
+            "op_time_fraction": 1.0,
+            "so2_mass_lbs": 273.5,
+            "steam_load_1000_lb_hr": 231.0,
+            "synthetic_flue_temp_c": 135.048184,
+            "synthetic_fuel_flow_mmbtu_indep": 362.648542,
+            "synthetic_stack_flow_kscfm": 131.295353,
+            "synthetic_stack_o2_pct": 4.578735
+          }
+        },
+        {
+          "device_id": "DEV-CAMPD-1073-3",
+          "prev_hash": "0x2ca212f4c13a961f31749b7c6df0ab1c025faa38bd925f5248115cdde14420b5",
+          "seq": 13,
+          "signature": "0xa63fb1084521a73e39cab9e08687a2b5dcc05c9e8bea4f02883fbc0fb45bca22443d5cd686225478a6c7f2204e5e8b83295ab9ac9fe866ad16306d437ef2cb97",
+          "timestamp_utc": "2025-01-01T13:00:00Z",
+          "values": {
+            "co2_mass_short_tons": 26.599999999999998,
+            "co2_rate_short_tons_mmbtu": 0.105,
+            "gross_load_mw": 0.0,
+            "heat_input_mmbtu": 361.8,
+            "nox_mass_lbs": 108.2,
+            "op_time_fraction": 1.0,
+            "so2_mass_lbs": 277.5,
+            "steam_load_1000_lb_hr": 230.0,
+            "synthetic_flue_temp_c": 134.355168,
+            "synthetic_fuel_flow_mmbtu_indep": 362.425769,
+            "synthetic_stack_flow_kscfm": 131.635364,
+            "synthetic_stack_o2_pct": 4.593469
+          }
+        },
+        {
+          "device_id": "DEV-CAMPD-1073-3",
+          "prev_hash": "0x2ece1af36af0fd9ee88cf93b6561320cbbb959a5c88e165e862324ffb8d3acbc",
+          "seq": 14,
+          "signature": "0x71d2b16dd79e6531119e2ebbf62152324745b48f2a08fda2c0b9b4a4b3dcce4b16fe1643334725dd6c716ba7e0230b299b7148dbd01b93537b866cdf1f0a9b89",
+          "timestamp_utc": "2025-01-01T14:00:00Z",
+          "values": {
+            "co2_mass_short_tons": 26.459999999999997,
+            "co2_rate_short_tons_mmbtu": 0.105,
+            "gross_load_mw": 0.0,
+            "heat_input_mmbtu": 360.8,
+            "nox_mass_lbs": 108.6,
+            "op_time_fraction": 1.0,
+            "so2_mass_lbs": 283.2,
+            "steam_load_1000_lb_hr": 230.0,
+            "synthetic_flue_temp_c": 134.241359,
+            "synthetic_fuel_flow_mmbtu_indep": 359.864229,
+            "synthetic_stack_flow_kscfm": 129.91568,
+            "synthetic_stack_o2_pct": 4.467592
+          }
+        },
+        {
+          "device_id": "DEV-CAMPD-1073-3",
+          "prev_hash": "0x270b00284891d1dbe0b19a69542222ba8c3aca0fe3feac4f13324c34b9173398",
+          "seq": 15,
+          "signature": "0x7d295bd8066d561c8020ada35c8a76d2278b41dca619ce775e73f62ac98938bb5948d30df6f181a55755d60e902b6b40aa0b676bc4d6aeb0d8cf5f6ff8da60df",
+          "timestamp_utc": "2025-01-01T15:00:00Z",
+          "values": {
+            "co2_mass_short_tons": 26.529999999999998,
+            "co2_rate_short_tons_mmbtu": 0.105,
+            "gross_load_mw": 0.0,
+            "heat_input_mmbtu": 361.3,
+            "nox_mass_lbs": 116.0,
+            "op_time_fraction": 1.0,
+            "so2_mass_lbs": 283.4,
+            "steam_load_1000_lb_hr": 230.0,
+            "synthetic_flue_temp_c": 135.497917,
+            "synthetic_fuel_flow_mmbtu_indep": 361.158924,
+            "synthetic_stack_flow_kscfm": 130.970241,
+            "synthetic_stack_o2_pct": 4.561447
+          }
+        }
+      ],
+      "status": "Slashed",
+      "verdict_summary": {
+        "matching_votes": 5,
+        "reason_codes": [
+          "CROSS_SOURCE_MISMATCH",
+          "PHYSICS_RESIDUAL",
+          "SPECTRAL_REPEAT"
+        ],
+        "score_bp_by_verifier": {
+          "verifier_1": 9585,
+          "verifier_2": 9585,
+          "verifier_3": 9585,
+          "verifier_4": 9585,
+          "verifier_5": 9585
+        },
+        "winning_verdict": "Fraud"
+      }
+    }
+  },
+  "batches": [
+    {
+      "anchor_tx_hash": "0x7e26ce06a07f10cc6f592360dd49e40264733c0f315bd65d841759d7d1cec782",
+      "batch_id": 1,
+      "count": 8,
+      "created_at": "2025-01-01T07:00:01Z",
+      "device_id": "DEV-CAMPD-1073-3",
+      "finalize_tx_hash": "0x7b473e3bfae85e2c1fcfffe161aa2d2de845100da2bb06205ef04e204c86484b",
+      "first_seq": 0,
+      "installation_id": "INST-CAMPD-1073",
+      "last_seq": 7,
+      "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+      "status": "Verified",
+      "verdict_summary": {
+        "matching_votes": 5,
+        "reason_codes": [],
+        "score_bp_by_verifier": {
+          "verifier_1": 1216,
+          "verifier_2": 1216,
+          "verifier_3": 1216,
+          "verifier_4": 1216,
+          "verifier_5": 1216
+        },
+        "winning_verdict": "Clean"
+      }
+    },
+    {
+      "anchor_tx_hash": "0xdb7c8418d9058d7b62095bc30d66e17aaf6b06cd647a64ee06c63777aa6eaae5",
+      "batch_id": 2,
+      "count": 8,
+      "created_at": "2025-01-01T15:00:01Z",
+      "device_id": "DEV-CAMPD-1073-3",
+      "finalize_tx_hash": "0x1cb2d7bc754408725cae405056f6ac496aaa47d8a11efe3c3c8e6c9860d4ded4",
+      "first_seq": 8,
+      "installation_id": "INST-CAMPD-1073",
+      "last_seq": 15,
+      "merkle_root": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+      "status": "Slashed",
+      "verdict_summary": {
+        "matching_votes": 5,
+        "reason_codes": [
+          "CROSS_SOURCE_MISMATCH",
+          "PHYSICS_RESIDUAL",
+          "SPECTRAL_REPEAT"
+        ],
+        "score_bp_by_verifier": {
+          "verifier_1": 9585,
+          "verifier_2": 9585,
+          "verifier_3": 9585,
+          "verifier_4": 9585,
+          "verifier_5": 9585
+        },
+        "winning_verdict": "Fraud"
+      }
+    }
+  ],
+  "chain": {
+    "chain_id": 31337,
+    "contracts": {
+      "Attestation": "0xf5059a5D33d5853360D16C683c16e67980206f36",
+      "BatchAnchor": "0xa82fF9aFd8f496c3d6ac40E2a0F282E47488CFc9",
+      "BondVault": "0x9E545E3C0baAB3E08CdfD552C960A1050f373042",
+      "Challenge": "0x851356ae760d987E095750cCeb3bC6014560891C",
+      "DeviceRegistry": "0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB",
+      "VerifierQuorum": "0x1613beB3B2C4f22Ee086B2b38C1476A3cE7f78E8"
+    },
+    "explorer_base_url": null,
+    "mode": "anvil",
+    "name": "local anvil"
+  },
+  "challenges": [
+    {
+      "arbiter_votes": [],
+      "batch_id": 2,
+      "device_id": "DEV-CAMPD-1073-3",
+      "evidence_hash": "0xd7bbcfc07b6b99ee186a1d1905e7fbaf940a6db772d45c6832b2e02a97c14ba3",
+      "explanation_uri": null,
+      "installation_id": "INST-CAMPD-1073",
+      "operator_dispute_hash": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+      "reason_codes": [
+        "CROSS_SOURCE_MISMATCH",
+        "PHYSICS_RESIDUAL",
+        "SPECTRAL_REPEAT"
+      ],
+      "slashed_amount_wei": "1000000000000000000",
+      "status": "UpheldSlashed",
+      "tx_hashes": {
+        "arbiter_1": "0x1e6a1b6b10fedbbb0fd5d90e5f5a00305fbcede1a6a6e92a03da7c7a541d5dc1",
+        "arbiter_2": "0xee953983f3a1e9b73dd68152c79e28a5e026a34ee9ee7577235e97f878f24eea",
+        "dispute": "0x58626ce7497d1f2a803bdf1da7fc4d533936fe592ff5188e29f07f53b91dc4ed"
+      },
+      "updated_at": "2026-10-23T04:06:48Z",
+      "window_closes_at": 1792720094
+    }
+  ],
+  "events": [
+    {
+      "batch_id": null,
+      "data": {
+        "attack": "none",
+        "count": 8,
+        "first_seq": 0
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 1,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:46Z",
+      "type": "packet"
+    },
+    {
+      "batch_id": 1,
+      "data": {
+        "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+        "tx_hash": "0x7e26ce06a07f10cc6f592360dd49e40264733c0f315bd65d841759d7d1cec782"
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 2,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:46Z",
+      "type": "batch_anchored"
+    },
+    {
+      "batch_id": 1,
+      "data": {
+        "batch_id": 1,
+        "commit_tx_hash": "0xd83f8a2efa69818814b9e7b09ddf35210b3310c855052cbd8b98d43cd0e7cd3e",
+        "committed": true,
+        "component_scores": {
+          "ae_ratio": 0.055924091684116176,
+          "cross_source_ratio": 0.10851621967533968,
+          "crypto_score": 0.0,
+          "physics_ratio": 0.07163927517910339,
+          "spectral_flat_ratio": 0.0,
+          "spectral_repeat_ratio": 0.2431276784962652
+        },
+        "input_hash": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+        "mode": "honest",
+        "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+        "reason_codes": [],
+        "reveal_tx_hash": "0xe00c60d28b8e4fd128be0418735f8fb4cbf3cf3ddf851a3a43f9afc432708977",
+        "revealed": true,
+        "salt": "0x98583c6e8e9b8ebc9d4cbeefafb5eaaa1d74a05dc1c5a082815ae07faf3292e8",
+        "score_bp": 1216,
+        "verdict": 0,
+        "verifier_address": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "verifier_id": "verifier_1",
+        "vote_commitment": "0xc170422a6468a58259219090c317d80d3a49c1910b1f40277e0dc2415971c303"
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 3,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:46Z",
+      "type": "vote"
+    },
+    {
+      "batch_id": 1,
+      "data": {
+        "batch_id": 1,
+        "commit_tx_hash": "0x7740e8e8cae334621bdfa637cff63ae0475817ad6c047e81effb999015fe17fa",
+        "committed": true,
+        "component_scores": {
+          "ae_ratio": 0.055924091684116176,
+          "cross_source_ratio": 0.10851621967533968,
+          "crypto_score": 0.0,
+          "physics_ratio": 0.07163927517910339,
+          "spectral_flat_ratio": 0.0,
+          "spectral_repeat_ratio": 0.2431276784962652
+        },
+        "input_hash": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+        "mode": "honest",
+        "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+        "reason_codes": [],
+        "reveal_tx_hash": "0x24edefb2539bfa2608731d6beb1a05bdccd6ebb04b1f4c5e4df86db8be76286b",
+        "revealed": true,
+        "salt": "0xde76fe48fcc90218360a2152ce257ad335fd710f4d7f7b1afcbf00a332f6b209",
+        "score_bp": 1216,
+        "verdict": 0,
+        "verifier_address": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "verifier_id": "verifier_2",
+        "vote_commitment": "0xfd402a61355b0d7507348c899e951e0cfc8c193331f146e0422f7f970a31aa6c"
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 4,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:47Z",
+      "type": "vote"
+    },
+    {
+      "batch_id": 1,
+      "data": {
+        "batch_id": 1,
+        "commit_tx_hash": "0x53094b385a8f6edc3643663cc1b2599177510d8b7637674a21287c9f858a4421",
+        "committed": true,
+        "component_scores": {
+          "ae_ratio": 0.055924091684116176,
+          "cross_source_ratio": 0.10851621967533968,
+          "crypto_score": 0.0,
+          "physics_ratio": 0.07163927517910339,
+          "spectral_flat_ratio": 0.0,
+          "spectral_repeat_ratio": 0.2431276784962652
+        },
+        "input_hash": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+        "mode": "honest",
+        "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+        "reason_codes": [],
+        "reveal_tx_hash": "0x6a0e032959097bd736d47a5b2646ac18ce530799288a1f3c58bd1cf96464d296",
+        "revealed": true,
+        "salt": "0xfcb102e538abd2b98a900459b3713b68f1b0822df44fffffb8f1425856716b58",
+        "score_bp": 1216,
+        "verdict": 0,
+        "verifier_address": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "verifier_id": "verifier_3",
+        "vote_commitment": "0x53669aeccdfaf566353d2fa4e554098c14a959ba61d0077b90c750b26c9e0fb7"
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 5,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:47Z",
+      "type": "vote"
+    },
+    {
+      "batch_id": 1,
+      "data": {
+        "batch_id": 1,
+        "commit_tx_hash": "0xeb7e95e3668f1d107a0c1734c2f3324db25bd727b04754416451bcd848b43acb",
+        "committed": true,
+        "component_scores": {
+          "ae_ratio": 0.055924091684116176,
+          "cross_source_ratio": 0.10851621967533968,
+          "crypto_score": 0.0,
+          "physics_ratio": 0.07163927517910339,
+          "spectral_flat_ratio": 0.0,
+          "spectral_repeat_ratio": 0.2431276784962652
+        },
+        "input_hash": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+        "mode": "honest",
+        "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+        "reason_codes": [],
+        "reveal_tx_hash": "0xf74358b3a125d8b9a7aecce1460dd6d10e39adbe622dfd6a66368f5775174ea5",
+        "revealed": true,
+        "salt": "0x34d82c574f933bf2d82a4a1445e1d7e55b838ace5a6f6d31604039bcf3d6e913",
+        "score_bp": 1216,
+        "verdict": 0,
+        "verifier_address": "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc",
+        "verifier_id": "verifier_4",
+        "vote_commitment": "0xfc00909b0cf305324d1b95fdefd2f9a98e0d029dc572b279fc8e2d41afa831b1"
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 6,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:47Z",
+      "type": "vote"
+    },
+    {
+      "batch_id": 1,
+      "data": {
+        "batch_id": 1,
+        "commit_tx_hash": "0x1212dee8540bbba053be44f3b6de846bf3295336a41056aaf039b601d48fdefb",
+        "committed": true,
+        "component_scores": {
+          "ae_ratio": 0.055924091684116176,
+          "cross_source_ratio": 0.10851621967533968,
+          "crypto_score": 0.0,
+          "physics_ratio": 0.07163927517910339,
+          "spectral_flat_ratio": 0.0,
+          "spectral_repeat_ratio": 0.2431276784962652
+        },
+        "input_hash": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+        "mode": "honest",
+        "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+        "reason_codes": [],
+        "reveal_tx_hash": "0x00c7fa2b553a7038a47597af5fcb73288b1c4f6aa24342a12c2cbcfbb303c418",
+        "revealed": true,
+        "salt": "0xa6f4b378d1cb8126c6e9abbdb1d40fe4ef5b3ea835685ff13899ed3304fec930",
+        "score_bp": 1216,
+        "verdict": 0,
+        "verifier_address": "0x976EA74026E726554dB657fA54763abd0C3a0aa9",
+        "verifier_id": "verifier_5",
+        "vote_commitment": "0xa66d5e85382f03410463f1ff58f6858e2576a470a2016c87796450e29cf8abd8"
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 7,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:47Z",
+      "type": "vote"
+    },
+    {
+      "batch_id": 1,
+      "data": {
+        "matching_votes": 5,
+        "reason_codes": [],
+        "score_bp_by_verifier": {
+          "verifier_1": 1216,
+          "verifier_2": 1216,
+          "verifier_3": 1216,
+          "verifier_4": 1216,
+          "verifier_5": 1216
+        },
+        "status": "Verified",
+        "tx_hash": "0x7b473e3bfae85e2c1fcfffe161aa2d2de845100da2bb06205ef04e204c86484b",
+        "winning_verdict": "Clean"
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 8,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:47Z",
+      "type": "finalized"
+    },
+    {
+      "batch_id": null,
+      "data": {
+        "attack": "constant_scaling",
+        "count": 8,
+        "first_seq": 8
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 9,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:47Z",
+      "type": "packet"
+    },
+    {
+      "batch_id": 2,
+      "data": {
+        "merkle_root": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+        "tx_hash": "0xdb7c8418d9058d7b62095bc30d66e17aaf6b06cd647a64ee06c63777aa6eaae5"
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 10,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:47Z",
+      "type": "batch_anchored"
+    },
+    {
+      "batch_id": 2,
+      "data": {
+        "batch_id": 2,
+        "commit_tx_hash": "0xc2751d8f8351f90b833e4c0e7e93163f61776ee452e723bdc09d4468a7c1dcc4",
+        "committed": true,
+        "component_scores": {
+          "ae_ratio": 0.2051110469670695,
+          "cross_source_ratio": 8.367433024197794,
+          "crypto_score": 0.0,
+          "physics_ratio": 12.06208425720621,
+          "spectral_flat_ratio": 0.0,
+          "spectral_repeat_ratio": 1.0317880668291928
+        },
+        "input_hash": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+        "mode": "honest",
+        "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+        "reason_codes": [
+          "PHYSICS_RESIDUAL",
+          "SPECTRAL_REPEAT",
+          "CROSS_SOURCE_MISMATCH"
+        ],
+        "reveal_tx_hash": "0xa2c444f7af60ff2bfd691f5bcd9a0cfbe33d316078c8a5c95c1b62da2c01557e",
+        "revealed": true,
+        "salt": "0x3cfd596ccf6715ef256b29d63f0000871861154447c60fa1c408d508e370f975",
+        "score_bp": 9585,
+        "verdict": 1,
+        "verifier_address": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "verifier_id": "verifier_1",
+        "vote_commitment": "0x1411c8a77df17f8cff96d2cf33c3ac87dca02978092be6cf1af7b40ed161d31e"
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 11,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:47Z",
+      "type": "vote"
+    },
+    {
+      "batch_id": 2,
+      "data": {
+        "batch_id": 2,
+        "commit_tx_hash": "0xd059d6ae2c90994939451f7a25e319e3f6f9588143d565c9ef5926864f792f85",
+        "committed": true,
+        "component_scores": {
+          "ae_ratio": 0.2051110469670695,
+          "cross_source_ratio": 8.367433024197794,
+          "crypto_score": 0.0,
+          "physics_ratio": 12.06208425720621,
+          "spectral_flat_ratio": 0.0,
+          "spectral_repeat_ratio": 1.0317880668291928
+        },
+        "input_hash": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+        "mode": "honest",
+        "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+        "reason_codes": [
+          "PHYSICS_RESIDUAL",
+          "SPECTRAL_REPEAT",
+          "CROSS_SOURCE_MISMATCH"
+        ],
+        "reveal_tx_hash": "0x6286fd66de6be2ba36a84a68c293b352d49a8d3d55632900fd3474ac976c6421",
+        "revealed": true,
+        "salt": "0x17e622cf3b868b5063f832be6bc60282ab08d07c6f198e9ef7130d763e6353cb",
+        "score_bp": 9585,
+        "verdict": 1,
+        "verifier_address": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "verifier_id": "verifier_2",
+        "vote_commitment": "0x7e9a4e98c0e526601e076bc19c7ed26960bda2b90c5189e4c45f0404ac990660"
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 12,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:47Z",
+      "type": "vote"
+    },
+    {
+      "batch_id": 2,
+      "data": {
+        "batch_id": 2,
+        "commit_tx_hash": "0x61bf06e740dfef512a3f17181cad7b9b259ec723dabaf5d9b4b8747575079e16",
+        "committed": true,
+        "component_scores": {
+          "ae_ratio": 0.2051110469670695,
+          "cross_source_ratio": 8.367433024197794,
+          "crypto_score": 0.0,
+          "physics_ratio": 12.06208425720621,
+          "spectral_flat_ratio": 0.0,
+          "spectral_repeat_ratio": 1.0317880668291928
+        },
+        "input_hash": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+        "mode": "honest",
+        "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+        "reason_codes": [
+          "PHYSICS_RESIDUAL",
+          "SPECTRAL_REPEAT",
+          "CROSS_SOURCE_MISMATCH"
+        ],
+        "reveal_tx_hash": "0x012a74dd995f609b78b2674581aa689197cbd7ac96a573b5b5bbda3f6d2a2cb8",
+        "revealed": true,
+        "salt": "0xfb324aa1f33077b6e108cbfc339dad9463ce1dad338b3250ef40f54b57159db5",
+        "score_bp": 9585,
+        "verdict": 1,
+        "verifier_address": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "verifier_id": "verifier_3",
+        "vote_commitment": "0x56594338a0c828cd248cf685d2eb764f51b75e9dcf3dcb10e33b09fbff689e86"
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 13,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:47Z",
+      "type": "vote"
+    },
+    {
+      "batch_id": 2,
+      "data": {
+        "batch_id": 2,
+        "commit_tx_hash": "0xda5412d59379fdd4f935e2ea0158b752c427608197e9bd268f17754fe708ecce",
+        "committed": true,
+        "component_scores": {
+          "ae_ratio": 0.2051110469670695,
+          "cross_source_ratio": 8.367433024197794,
+          "crypto_score": 0.0,
+          "physics_ratio": 12.06208425720621,
+          "spectral_flat_ratio": 0.0,
+          "spectral_repeat_ratio": 1.0317880668291928
+        },
+        "input_hash": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+        "mode": "honest",
+        "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+        "reason_codes": [
+          "PHYSICS_RESIDUAL",
+          "SPECTRAL_REPEAT",
+          "CROSS_SOURCE_MISMATCH"
+        ],
+        "reveal_tx_hash": "0xc9b9d8465378201533f4bbc713045ee770dd77f7f2f9c49ff1aa4d66a696ffcb",
+        "revealed": true,
+        "salt": "0x69f360a88889b4ad6199d54357b14dfd81c89d1dbac07e6e9430e61e6e53d009",
+        "score_bp": 9585,
+        "verdict": 1,
+        "verifier_address": "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc",
+        "verifier_id": "verifier_4",
+        "vote_commitment": "0x8a012ac2a1fb5fb3cd46bb2243592e4f0419396a1755eb6bd63a913720e6e55a"
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 14,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:47Z",
+      "type": "vote"
+    },
+    {
+      "batch_id": 2,
+      "data": {
+        "batch_id": 2,
+        "commit_tx_hash": "0xf303b4a74bfd1255a2b484add994d4e4096204be253eb6ef9e6c8dc63d7db454",
+        "committed": true,
+        "component_scores": {
+          "ae_ratio": 0.2051110469670695,
+          "cross_source_ratio": 8.367433024197794,
+          "crypto_score": 0.0,
+          "physics_ratio": 12.06208425720621,
+          "spectral_flat_ratio": 0.0,
+          "spectral_repeat_ratio": 1.0317880668291928
+        },
+        "input_hash": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+        "mode": "honest",
+        "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+        "reason_codes": [
+          "PHYSICS_RESIDUAL",
+          "SPECTRAL_REPEAT",
+          "CROSS_SOURCE_MISMATCH"
+        ],
+        "reveal_tx_hash": "0x31ac75a70b3cc3ecdd636913f43e76bf945b413fe365500c583b3e937ec22d09",
+        "revealed": true,
+        "salt": "0x3a73736db64d180d0be7e13454bdf473610f29538cd3412f88602a83a8e9c6fb",
+        "score_bp": 9585,
+        "verdict": 1,
+        "verifier_address": "0x976EA74026E726554dB657fA54763abd0C3a0aa9",
+        "verifier_id": "verifier_5",
+        "vote_commitment": "0xc594c9a9388506467e4aa2021fdf81fae6bad13772277f9d0141727580088b73"
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 15,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:48Z",
+      "type": "vote"
+    },
+    {
+      "batch_id": 2,
+      "data": {
+        "matching_votes": 5,
+        "reason_codes": [
+          "CROSS_SOURCE_MISMATCH",
+          "PHYSICS_RESIDUAL",
+          "SPECTRAL_REPEAT"
+        ],
+        "score_bp_by_verifier": {
+          "verifier_1": 9585,
+          "verifier_2": 9585,
+          "verifier_3": 9585,
+          "verifier_4": 9585,
+          "verifier_5": 9585
+        },
+        "status": "Quarantined",
+        "tx_hash": "0x1cb2d7bc754408725cae405056f6ac496aaa47d8a11efe3c3c8e6c9860d4ded4",
+        "winning_verdict": "Fraud"
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 16,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:48Z",
+      "type": "finalized"
+    },
+    {
+      "batch_id": 2,
+      "data": {
+        "reason_codes": [
+          "CROSS_SOURCE_MISMATCH",
+          "PHYSICS_RESIDUAL",
+          "SPECTRAL_REPEAT"
+        ]
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 17,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:48Z",
+      "type": "flagged"
+    },
+    {
+      "batch_id": 2,
+      "data": {
+        "window_closes_at": 1792720094
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 18,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:48Z",
+      "type": "challenge_open"
+    },
+    {
+      "batch_id": 2,
+      "data": {
+        "disputed": true,
+        "tx_hash": "0x58626ce7497d1f2a803bdf1da7fc4d533936fe592ff5188e29f07f53b91dc4ed"
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 19,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:48Z",
+      "type": "challenge_open"
+    },
+    {
+      "batch_id": 2,
+      "data": {
+        "batch_status": "Slashed",
+        "slashed_amount_wei": "1000000000000000000"
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 20,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:48Z",
+      "type": "slashed"
+    },
+    {
+      "batch_id": null,
+      "data": {
+        "attestation_id": 1
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "id": 21,
+      "installation_id": "INST-CAMPD-1073",
+      "timestamp_utc": "2026-10-23T04:06:48Z",
+      "type": "attestation"
+    }
+  ],
+  "kind": "real-run",
+  "recorded_at_utc": "2026-10-23T04:06:48.304285+00:00",
+  "report": {
+    "attestation_id": 1,
+    "created_at": "2026-10-23T04:06:48Z",
+    "device_id": "DEV-CAMPD-1073-3",
+    "envelope": {
+      "merkle_proofs": [
+        {
+          "all_proofs": [
+            {
+              "leaf_hash": "0x3847be1fd98e3693bd3f8d26af2aa4f21452f798dd5915c2e4bd9aa058cdeb03",
+              "leaf_index": 0,
+              "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+              "packet_hash": "0x60eb203cd612f46008e208c1e026acd39e04f644900a7c3ddff4a161f7d84ab9",
+              "siblings": [
+                "0xf3108a7df6d7fc66b6c7234fc59d75a880184cb0d7cab7c90c85ccb64c3843e2",
+                "0x384052126a7c1a9fd9b74af0f8b3fe61db249b4dc537a9a0713fb2318e286bcd",
+                "0x9ca07550dc471b6a8f1abd47c106bfc356de58f4a207b81b7c2a12d3f368ef1c"
+              ]
+            },
+            {
+              "leaf_hash": "0xf3108a7df6d7fc66b6c7234fc59d75a880184cb0d7cab7c90c85ccb64c3843e2",
+              "leaf_index": 1,
+              "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+              "packet_hash": "0x360e9a6d052233d52ce028631cd34a3fe4cf662b70475758cc78c7adeec6a98c",
+              "siblings": [
+                "0x3847be1fd98e3693bd3f8d26af2aa4f21452f798dd5915c2e4bd9aa058cdeb03",
+                "0x384052126a7c1a9fd9b74af0f8b3fe61db249b4dc537a9a0713fb2318e286bcd",
+                "0x9ca07550dc471b6a8f1abd47c106bfc356de58f4a207b81b7c2a12d3f368ef1c"
+              ]
+            },
+            {
+              "leaf_hash": "0x1efa4cac5fa819b7e526d472b29124ed6f385b0433861b4b05d6f993ee8ca8d6",
+              "leaf_index": 2,
+              "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+              "packet_hash": "0xefe6fe23f4973ba4fecdf74d6f74f976163b79e3a5a41366ba5d3090dad24c5a",
+              "siblings": [
+                "0xc409766aa32c3edecf0c1b079319692018d3476c182e84bfa71ac75f88aa465b",
+                "0x184b2f185b0f8db5514c7849f1ca52537bef95f6317d0f8d6f9b0a8d6075be70",
+                "0x9ca07550dc471b6a8f1abd47c106bfc356de58f4a207b81b7c2a12d3f368ef1c"
+              ]
+            },
+            {
+              "leaf_hash": "0xc409766aa32c3edecf0c1b079319692018d3476c182e84bfa71ac75f88aa465b",
+              "leaf_index": 3,
+              "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+              "packet_hash": "0x1640649f30b4b1117aa6e2bdb2ea12a1557e5c55579ee6ea83744169eafa18e5",
+              "siblings": [
+                "0x1efa4cac5fa819b7e526d472b29124ed6f385b0433861b4b05d6f993ee8ca8d6",
+                "0x184b2f185b0f8db5514c7849f1ca52537bef95f6317d0f8d6f9b0a8d6075be70",
+                "0x9ca07550dc471b6a8f1abd47c106bfc356de58f4a207b81b7c2a12d3f368ef1c"
+              ]
+            },
+            {
+              "leaf_hash": "0x650d8e3133dc76b69fd71ad7b620812d079a68cb5586d84fb3d65ab88c1e3044",
+              "leaf_index": 4,
+              "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+              "packet_hash": "0x313dd612fd1bbac64ae5dc95fee9904ed576097252d0128b0abeaf1c83679536",
+              "siblings": [
+                "0x93cb9e15a1591af8485cd240e0587b98d0eac1b3dfdddfbc8bcd85291b4fd965",
+                "0x2b7371730cc6ca405dbae44ece8901b28784c5e95dd36fe9bc56a34c3c171a21",
+                "0x27f47d0aaa8119ed5512345ffdc7a9ea2c81490cd50b4cb9197eb98ea97cd52a"
+              ]
+            },
+            {
+              "leaf_hash": "0x93cb9e15a1591af8485cd240e0587b98d0eac1b3dfdddfbc8bcd85291b4fd965",
+              "leaf_index": 5,
+              "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+              "packet_hash": "0x8e82b5b18ab81669366c2ce86788ca39a4a9f8c3fc9b503e881eb8908f53bb5a",
+              "siblings": [
+                "0x650d8e3133dc76b69fd71ad7b620812d079a68cb5586d84fb3d65ab88c1e3044",
+                "0x2b7371730cc6ca405dbae44ece8901b28784c5e95dd36fe9bc56a34c3c171a21",
+                "0x27f47d0aaa8119ed5512345ffdc7a9ea2c81490cd50b4cb9197eb98ea97cd52a"
+              ]
+            },
+            {
+              "leaf_hash": "0xf2ab2ca316a5b15ca62eaa5e257f4ca2516024a1a00addcb4455f6805bf38057",
+              "leaf_index": 6,
+              "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+              "packet_hash": "0x9a11d71cb595b5ab3badb6754831a7252d7d308aaef4321273edb4f7e6f90c1c",
+              "siblings": [
+                "0xe9b3229682782fb2790d973c3cb1ca8bf6461ebe71db7dce1171b63f7ae26e43",
+                "0x992ce0756196e3d62d05dc14c48fe4ec5e93c16c59350e34bb8c60dc63c49bcc",
+                "0x27f47d0aaa8119ed5512345ffdc7a9ea2c81490cd50b4cb9197eb98ea97cd52a"
+              ]
+            },
+            {
+              "leaf_hash": "0xe9b3229682782fb2790d973c3cb1ca8bf6461ebe71db7dce1171b63f7ae26e43",
+              "leaf_index": 7,
+              "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+              "packet_hash": "0x8b0ece4445026b8d67d8e6630c8ea75e68725643dcc2f25077b065f70143bae4",
+              "siblings": [
+                "0xf2ab2ca316a5b15ca62eaa5e257f4ca2516024a1a00addcb4455f6805bf38057",
+                "0x992ce0756196e3d62d05dc14c48fe4ec5e93c16c59350e34bb8c60dc63c49bcc",
+                "0x27f47d0aaa8119ed5512345ffdc7a9ea2c81490cd50b4cb9197eb98ea97cd52a"
+              ]
+            }
+          ],
+          "batch_id": 1,
+          "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+          "sample_proof": {
+            "leaf_hash": "0x3847be1fd98e3693bd3f8d26af2aa4f21452f798dd5915c2e4bd9aa058cdeb03",
+            "leaf_index": 0,
+            "merkle_root": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+            "packet_hash": "0x60eb203cd612f46008e208c1e026acd39e04f644900a7c3ddff4a161f7d84ab9",
+            "siblings": [
+              "0xf3108a7df6d7fc66b6c7234fc59d75a880184cb0d7cab7c90c85ccb64c3843e2",
+              "0x384052126a7c1a9fd9b74af0f8b3fe61db249b4dc537a9a0713fb2318e286bcd",
+              "0x9ca07550dc471b6a8f1abd47c106bfc356de58f4a207b81b7c2a12d3f368ef1c"
+            ]
+          }
+        }
+      ],
+      "operator_public_key": "0x049376d22d44d39affc4b225045471ee15d30940fd90d7a0cb8dfc6d34f5db653a5c0cde00163c29e4f628a007ac2fd6d4ec7ab2c30f0b4539d3478ab05dfe683c",
+      "operator_signature": "0x92cc14a7bfcaf801039ea1641dff33efcefb42cb144c97b7f7f16ced3a844d972acfe8d85eb8992f6c57f1cbc28efef1dd5afc59a8885251236cd865368748f2",
+      "period_merkle_root": "0x6e9980bb14ac41ec3be5ff1010cd5392c8b3c937021a151e3ef039faf4f56721",
+      "production_kg": 500000,
+      "report_hash": "0xa4ba71a82f60923e92699959f194d12f352dd5ad98db940df86f30687f2dfb38",
+      "total_emissions_kg_co2e": 275331,
+      "verified_batch_ids": [
+        1
+      ]
+    },
+    "installation_id": "INST-CAMPD-1073",
+    "period_label": "2026-Q3",
+    "report": {
+      "attestation_id": 1,
+      "cbam_aligned": true,
+      "coverage": {
+        "coverage_bp": 5000,
+        "quarantined_batches_count": 1,
+        "total_batches": 2,
+        "verified_batches": 1
+      },
+      "device_id": "DEV-CAMPD-1073-3",
+      "installation_id": "INST-CAMPD-1073",
+      "merkle_roots": [
+        "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90"
+      ],
+      "period": {
+        "end_utc": "2025-01-01T15:00:00Z",
+        "label": "2026-Q3",
+        "start_utc": "2025-01-01T00:00:00Z"
+      },
+      "quarantined_batches": [
+        {
+          "batch_id": 2,
+          "challenge_status": "UPHELD_SLASHED",
+          "first_seq": 8,
+          "last_seq": 15,
+          "merkle_root": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+          "reason_codes": [
+            "CROSS_SOURCE_MISMATCH",
+            "PHYSICS_RESIDUAL",
+            "SPECTRAL_REPEAT"
+          ]
+        }
+      ],
+      "report_version": "1.0.0",
+      "totals": {
+        "heat_input_mmbtu": 2893.2,
+        "production_tonnes": 500.0,
+        "specific_embedded_emissions_tco2e_per_t": 0.550661,
+        "verified_emissions_tco2e": 275.330569
+      },
+      "transaction_hashes": {
+        "attestation_tx": "0xab9d3f476a7f752d4e93e3c8f2bf5b92db8a42994b6f1543b999989186007eb4",
+        "batch_anchors": [
+          "0x7e26ce06a07f10cc6f592360dd49e40264733c0f315bd65d841759d7d1cec782"
+        ]
+      }
+    },
+    "report_id": 1
+  },
+  "report_verification": {
+    "tampered": {
+      "checks": {
+        "attestation_exists_on_chain": true,
+        "batches_verified_on_chain": true,
+        "cbam_aligned_flag": true,
+        "coverage_bp_matches": true,
+        "installation_id_matches": true,
+        "merkle_proofs_valid": true,
+        "no_official_claim": true,
+        "operator_signature_valid": false,
+        "period_label_matches": true,
+        "period_merkle_root_matches": true,
+        "schema_valid": true
+      },
+      "computed_period_merkle_root": "0x6e9980bb14ac41ec3be5ff1010cd5392c8b3c937021a151e3ef039faf4f56721",
+      "errors": [
+        "Operator ECDSA P-256 signature verification failed"
+      ],
+      "on_chain_attestation": {
+        "attestation_id": 1,
+        "attested_at": 1792719974,
+        "attested_by": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "coverage_bp": 5000,
+        "installation_id_bytes32": "0xbacd7e89cdf1b1474f222f7cc0d24ad35b6666325da3405d6952b8a70a3b0bed",
+        "period_label": "2026-Q3",
+        "period_merkle_root": "0x6e9980bb14ac41ec3be5ff1010cd5392c8b3c937021a151e3ef039faf4f56721",
+        "production_kg": 500000,
+        "total_emissions_kg_co2e": 275331,
+        "verified_batch_ids": [
+          1
+        ]
+      },
+      "report_hash": "0xff510c29d933635a32f24a5a3f4390f5559359fd4bdaac166fb848c78ca88d75",
+      "schema_valid": true,
+      "valid": false
+    },
+    "valid": {
+      "checks": {
+        "attestation_exists_on_chain": true,
+        "batches_verified_on_chain": true,
+        "cbam_aligned_flag": true,
+        "coverage_bp_matches": true,
+        "installation_id_matches": true,
+        "merkle_proofs_valid": true,
+        "no_official_claim": true,
+        "operator_signature_valid": true,
+        "period_label_matches": true,
+        "period_merkle_root_matches": true,
+        "schema_valid": true
+      },
+      "computed_period_merkle_root": "0x6e9980bb14ac41ec3be5ff1010cd5392c8b3c937021a151e3ef039faf4f56721",
+      "errors": [],
+      "on_chain_attestation": {
+        "attestation_id": 1,
+        "attested_at": 1792719974,
+        "attested_by": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "coverage_bp": 5000,
+        "installation_id_bytes32": "0xbacd7e89cdf1b1474f222f7cc0d24ad35b6666325da3405d6952b8a70a3b0bed",
+        "period_label": "2026-Q3",
+        "period_merkle_root": "0x6e9980bb14ac41ec3be5ff1010cd5392c8b3c937021a151e3ef039faf4f56721",
+        "production_kg": 500000,
+        "total_emissions_kg_co2e": 275331,
+        "verified_batch_ids": [
+          1
+        ]
+      },
+      "report_hash": "0xa4ba71a82f60923e92699959f194d12f352dd5ad98db940df86f30687f2dfb38",
+      "schema_valid": true,
+      "valid": true
+    }
+  },
+  "roots": {
+    "1": "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90",
+    "2": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4"
+  },
+  "run_summary": {
+    "attacked": {
+      "batch_id": 2,
+      "matching_votes": 5,
+      "reason_codes": [
+        "CROSS_SOURCE_MISMATCH",
+        "PHYSICS_RESIDUAL",
+        "SPECTRAL_REPEAT"
+      ],
+      "score_bp_by_verifier": {
+        "verifier_1": 9585,
+        "verifier_2": 9585,
+        "verifier_3": 9585,
+        "verifier_4": 9585,
+        "verifier_5": 9585
+      },
+      "status": "Quarantined",
+      "winning_verdict": "Fraud"
+    },
+    "honest": {
+      "batch_id": 1,
+      "matching_votes": 5,
+      "reason_codes": [],
+      "score_bp_by_verifier": {
+        "verifier_1": 1216,
+        "verifier_2": 1216,
+        "verifier_3": 1216,
+        "verifier_4": 1216,
+        "verifier_5": 1216
+      },
+      "status": "Verified",
+      "winning_verdict": "Clean"
+    }
+  },
+  "schema_version": 1,
+  "state": {
+    "attack": "constant_scaling",
+    "batches": 2,
+    "device_id": "DEV-CAMPD-1073-3",
+    "installation_id": "INST-CAMPD-1073",
+    "vault": {
+      "active_challenges_count": 0,
+      "cumulative_operator_slashed_wei": 1000000000000000000,
+      "installation_id_bytes32": "0xbacd7e89cdf1b1474f222f7cc0d24ad35b6666325da3405d6952b8a70a3b0bed",
+      "min_operator_bond_wei": 1000000000000000000,
+      "min_verifier_stake_wei": 500000000000000000,
+      "operator_bond_wei": 1000000000000000000,
+      "operator_claimable_rewards_wei": 0,
+      "treasury_claimable_rewards_wei": 300000000000000000,
+      "verifier_claimable_rewards_wei": {
+        "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65": 140000000000000000,
+        "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC": 140000000000000000,
+        "0x90F79bf6EB2c4f870365E785982E1f101E93b906": 140000000000000000,
+        "0x976EA74026E726554dB657fA54763abd0C3a0aa9": 140000000000000000,
+        "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc": 140000000000000000
+      },
+      "verifier_stakes_wei": {
+        "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65": 1000000000000000000,
+        "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC": 1000000000000000000,
+        "0x90F79bf6EB2c4f870365E785982E1f101E93b906": 1000000000000000000,
+        "0x976EA74026E726554dB657fA54763abd0C3a0aa9": 1000000000000000000,
+        "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc": 1000000000000000000
+      }
+    }
+  },
+  "tx_hashes": [
+    {
+      "batch_id": 1,
+      "label": "batch_anchored",
+      "tx_hash": "0x7e26ce06a07f10cc6f592360dd49e40264733c0f315bd65d841759d7d1cec782"
+    },
+    {
+      "batch_id": 1,
+      "label": "finalized",
+      "tx_hash": "0x7b473e3bfae85e2c1fcfffe161aa2d2de845100da2bb06205ef04e204c86484b"
+    },
+    {
+      "batch_id": 2,
+      "label": "batch_anchored",
+      "tx_hash": "0xdb7c8418d9058d7b62095bc30d66e17aaf6b06cd647a64ee06c63777aa6eaae5"
+    },
+    {
+      "batch_id": 2,
+      "label": "finalized",
+      "tx_hash": "0x1cb2d7bc754408725cae405056f6ac496aaa47d8a11efe3c3c8e6c9860d4ded4"
+    },
+    {
+      "batch_id": 2,
+      "label": "challenge_open",
+      "tx_hash": "0x58626ce7497d1f2a803bdf1da7fc4d533936fe592ff5188e29f07f53b91dc4ed"
+    },
+    {
+      "batch_id": 2,
+      "label": "challenge_arbiter_1",
+      "tx_hash": "0x1e6a1b6b10fedbbb0fd5d90e5f5a00305fbcede1a6a6e92a03da7c7a541d5dc1"
+    },
+    {
+      "batch_id": 2,
+      "label": "challenge_arbiter_2",
+      "tx_hash": "0xee953983f3a1e9b73dd68152c79e28a5e026a34ee9ee7577235e97f878f24eea"
+    }
+  ],
+  "verifiers": [
+    {
+      "address": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+      "batches_evaluated": 2,
+      "claimable_rewards_wei": "140000000000000000",
+      "last_vote": {
+        "batch_id": 2,
+        "commit_tx_hash": "0xc2751d8f8351f90b833e4c0e7e93163f61776ee452e723bdc09d4468a7c1dcc4",
+        "committed": true,
+        "component_scores": {
+          "ae_ratio": 0.2051110469670695,
+          "cross_source_ratio": 8.367433024197794,
+          "crypto_score": 0.0,
+          "physics_ratio": 12.06208425720621,
+          "spectral_flat_ratio": 0.0,
+          "spectral_repeat_ratio": 1.0317880668291928
+        },
+        "input_hash": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+        "mode": "honest",
+        "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+        "reason_codes": [
+          "PHYSICS_RESIDUAL",
+          "SPECTRAL_REPEAT",
+          "CROSS_SOURCE_MISMATCH"
+        ],
+        "reveal_tx_hash": "0xa2c444f7af60ff2bfd691f5bcd9a0cfbe33d316078c8a5c95c1b62da2c01557e",
+        "revealed": true,
+        "salt": "0x3cfd596ccf6715ef256b29d63f0000871861154447c60fa1c408d508e370f975",
+        "score_bp": 9585,
+        "verdict": 1,
+        "verifier_address": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "verifier_id": "verifier_1",
+        "vote_commitment": "0x1411c8a77df17f8cff96d2cf33c3ac87dca02978092be6cf1af7b40ed161d31e"
+      },
+      "mode": "honest",
+      "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+      "node_index": 0,
+      "stake_wei": "1000000000000000000",
+      "verifier_id": "verifier_1"
+    },
+    {
+      "address": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+      "batches_evaluated": 2,
+      "claimable_rewards_wei": "140000000000000000",
+      "last_vote": {
+        "batch_id": 2,
+        "commit_tx_hash": "0xd059d6ae2c90994939451f7a25e319e3f6f9588143d565c9ef5926864f792f85",
+        "committed": true,
+        "component_scores": {
+          "ae_ratio": 0.2051110469670695,
+          "cross_source_ratio": 8.367433024197794,
+          "crypto_score": 0.0,
+          "physics_ratio": 12.06208425720621,
+          "spectral_flat_ratio": 0.0,
+          "spectral_repeat_ratio": 1.0317880668291928
+        },
+        "input_hash": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+        "mode": "honest",
+        "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+        "reason_codes": [
+          "PHYSICS_RESIDUAL",
+          "SPECTRAL_REPEAT",
+          "CROSS_SOURCE_MISMATCH"
+        ],
+        "reveal_tx_hash": "0x6286fd66de6be2ba36a84a68c293b352d49a8d3d55632900fd3474ac976c6421",
+        "revealed": true,
+        "salt": "0x17e622cf3b868b5063f832be6bc60282ab08d07c6f198e9ef7130d763e6353cb",
+        "score_bp": 9585,
+        "verdict": 1,
+        "verifier_address": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "verifier_id": "verifier_2",
+        "vote_commitment": "0x7e9a4e98c0e526601e076bc19c7ed26960bda2b90c5189e4c45f0404ac990660"
+      },
+      "mode": "honest",
+      "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+      "node_index": 1,
+      "stake_wei": "1000000000000000000",
+      "verifier_id": "verifier_2"
+    },
+    {
+      "address": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+      "batches_evaluated": 2,
+      "claimable_rewards_wei": "140000000000000000",
+      "last_vote": {
+        "batch_id": 2,
+        "commit_tx_hash": "0x61bf06e740dfef512a3f17181cad7b9b259ec723dabaf5d9b4b8747575079e16",
+        "committed": true,
+        "component_scores": {
+          "ae_ratio": 0.2051110469670695,
+          "cross_source_ratio": 8.367433024197794,
+          "crypto_score": 0.0,
+          "physics_ratio": 12.06208425720621,
+          "spectral_flat_ratio": 0.0,
+          "spectral_repeat_ratio": 1.0317880668291928
+        },
+        "input_hash": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+        "mode": "honest",
+        "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+        "reason_codes": [
+          "PHYSICS_RESIDUAL",
+          "SPECTRAL_REPEAT",
+          "CROSS_SOURCE_MISMATCH"
+        ],
+        "reveal_tx_hash": "0x012a74dd995f609b78b2674581aa689197cbd7ac96a573b5b5bbda3f6d2a2cb8",
+        "revealed": true,
+        "salt": "0xfb324aa1f33077b6e108cbfc339dad9463ce1dad338b3250ef40f54b57159db5",
+        "score_bp": 9585,
+        "verdict": 1,
+        "verifier_address": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "verifier_id": "verifier_3",
+        "vote_commitment": "0x56594338a0c828cd248cf685d2eb764f51b75e9dcf3dcb10e33b09fbff689e86"
+      },
+      "mode": "honest",
+      "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+      "node_index": 2,
+      "stake_wei": "1000000000000000000",
+      "verifier_id": "verifier_3"
+    },
+    {
+      "address": "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc",
+      "batches_evaluated": 2,
+      "claimable_rewards_wei": "140000000000000000",
+      "last_vote": {
+        "batch_id": 2,
+        "commit_tx_hash": "0xda5412d59379fdd4f935e2ea0158b752c427608197e9bd268f17754fe708ecce",
+        "committed": true,
+        "component_scores": {
+          "ae_ratio": 0.2051110469670695,
+          "cross_source_ratio": 8.367433024197794,
+          "crypto_score": 0.0,
+          "physics_ratio": 12.06208425720621,
+          "spectral_flat_ratio": 0.0,
+          "spectral_repeat_ratio": 1.0317880668291928
+        },
+        "input_hash": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+        "mode": "honest",
+        "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+        "reason_codes": [
+          "PHYSICS_RESIDUAL",
+          "SPECTRAL_REPEAT",
+          "CROSS_SOURCE_MISMATCH"
+        ],
+        "reveal_tx_hash": "0xc9b9d8465378201533f4bbc713045ee770dd77f7f2f9c49ff1aa4d66a696ffcb",
+        "revealed": true,
+        "salt": "0x69f360a88889b4ad6199d54357b14dfd81c89d1dbac07e6e9430e61e6e53d009",
+        "score_bp": 9585,
+        "verdict": 1,
+        "verifier_address": "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc",
+        "verifier_id": "verifier_4",
+        "vote_commitment": "0x8a012ac2a1fb5fb3cd46bb2243592e4f0419396a1755eb6bd63a913720e6e55a"
+      },
+      "mode": "honest",
+      "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+      "node_index": 3,
+      "stake_wei": "1000000000000000000",
+      "verifier_id": "verifier_4"
+    },
+    {
+      "address": "0x976EA74026E726554dB657fA54763abd0C3a0aa9",
+      "batches_evaluated": 2,
+      "claimable_rewards_wei": "140000000000000000",
+      "last_vote": {
+        "batch_id": 2,
+        "commit_tx_hash": "0xf303b4a74bfd1255a2b484add994d4e4096204be253eb6ef9e6c8dc63d7db454",
+        "committed": true,
+        "component_scores": {
+          "ae_ratio": 0.2051110469670695,
+          "cross_source_ratio": 8.367433024197794,
+          "crypto_score": 0.0,
+          "physics_ratio": 12.06208425720621,
+          "spectral_flat_ratio": 0.0,
+          "spectral_repeat_ratio": 1.0317880668291928
+        },
+        "input_hash": "0xc42024f904df24d74959122ca96cf11abd316cd40a879694bb1c6654d2ba78a4",
+        "mode": "honest",
+        "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+        "reason_codes": [
+          "PHYSICS_RESIDUAL",
+          "SPECTRAL_REPEAT",
+          "CROSS_SOURCE_MISMATCH"
+        ],
+        "reveal_tx_hash": "0x31ac75a70b3cc3ecdd636913f43e76bf945b413fe365500c583b3e937ec22d09",
+        "revealed": true,
+        "salt": "0x3a73736db64d180d0be7e13454bdf473610f29538cd3412f88602a83a8e9c6fb",
+        "score_bp": 9585,
+        "verdict": 1,
+        "verifier_address": "0x976EA74026E726554dB657fA54763abd0C3a0aa9",
+        "verifier_id": "verifier_5",
+        "vote_commitment": "0xc594c9a9388506467e4aa2021fdf81fae6bad13772277f9d0141727580088b73"
+      },
+      "mode": "honest",
+      "model_hash": "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+      "node_index": 4,
+      "stake_wei": "1000000000000000000",
+      "verifier_id": "verifier_5"
+    }
+  ]
+}

@@ -24,11 +24,12 @@ import { DataTable, type Column } from "../components/DataTable";
 import { EmptyState } from "../components/EmptyState";
 import { ErrorState } from "../components/ErrorState";
 import { useToast } from "../components/Toast";
-import { generateSyntheticPackets } from "../data/mockData";
+import { deploymentConfig } from "../chain/deploymentConfig.ts";
+import realRunSnapshot from "../../public/snapshots/real-run.json" with { type: "json" };
 
 export const GalleryPage: React.FC = () => {
   const { showToast } = useToast();
-  const samplePackets = generateSyntheticPackets(0, 4);
+  const samplePackets = realRunSnapshot.batch_details?.["1"]?.packets?.slice(0, 4) || [];
 
   const sampleColumns: Column<{ id: number; name: string; score: number }>[] = [
     { key: "id", header: "ID", sortable: true },
@@ -147,15 +148,15 @@ export const GalleryPage: React.FC = () => {
         </h2>
         <div className="flex flex-wrap gap-4 items-center p-5 bg-surface border border-hairline rounded-card shadow-card">
           <HashChip
-            hash="0x789a42f8c5b9671144177cd390de2ef830026e6d1c815ec6ba9d2424fa75d9e1"
+            hash={deploymentConfig.contracts.BatchAnchor}
             type="root"
           />
           <HashChip
-            hash="0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
+            hash={deploymentConfig.contracts.Attestation}
             type="address"
           />
           <HashChip
-            hash="0x89ab12cd34ef567890abcdef1234567890abcdef1234567890abcdef12345678"
+            hash={realRunSnapshot.tx_hashes?.[0]?.tx_hash || deploymentConfig.contracts.BondVault}
             type="tx"
           />
           <HashChip isLoading />
@@ -242,7 +243,7 @@ export const GalleryPage: React.FC = () => {
           <VoteCard
             verifier={{
               verifier_id: "VERIFIER-01",
-              address: "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+              address: deploymentConfig.verifiers?.[0] || deploymentConfig.contracts.VerifierQuorum,
               mode: "honest",
               staked_amount_wei: "500000000000000000",
               is_active: true,
@@ -253,7 +254,7 @@ export const GalleryPage: React.FC = () => {
           <VoteCard
             verifier={{
               verifier_id: "VERIFIER-03",
-              address: "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+              address: deploymentConfig.verifiers?.[1] || deploymentConfig.contracts.VerifierQuorum,
               mode: "honest",
               staked_amount_wei: "500000000000000000",
               is_active: true,

@@ -1,44 +1,76 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react";
 import type {
   BatchSummary,
   BatchDetail,
   VerifierNodeStatus,
   ChallengeRecord,
   TelemetryEvent,
-} from "../types/telemetry";
-import type { HealthResponse, StateResponse, ScenarioStatusResponse } from "../types/api";
-import { apiClient } from "./apiClient";
-import {
-  getSyntheticBatches,
-  getSyntheticVerifiers,
-  getSyntheticChallenges,
-  getSyntheticEvents,
-  getSyntheticHealth,
-  getSyntheticState,
-  generateSyntheticPackets,
-} from "./mockData";
-import { useVeriCEMSWebSocket } from "./useVeriCEMSWebSocket";
-import { checkNetworkStatus } from "../chain/chainHelpers";
+} from "../types/telemetry.ts";
+import type { HealthResponse, StateResponse, ScenarioStatusResponse } from "../types/api.ts";
+import { apiClient } from "./apiClient.ts";
+import { useVeriCEMSWebSocket } from "./useVeriCEMSWebSocket.ts";
+import { checkNetworkStatus } from "../chain/chainHelpers.ts";
+import { deploymentConfig } from "../chain/deploymentConfig.ts";
+import { formatStepCaption } from "../lib/eventTemplates.ts";
+import realRunSnapshot from "../../public/snapshots/real-run.json" with { type: "json" };
 
-export const DEFAULT_MOCK_SCENARIO: ScenarioStatusResponse = {
-  current_step: 0,
-  total_steps: 7,
-  status: "idle",
-  speed: 1.0,
-  current_caption: "Demo Ready · Press Play or Next Step to begin the VeriCEMS story.",
-  recommended_page: "/operator",
-  step_info: [
-    { step: 1, name: "Normal Batches Flow", caption: "Step 1/7: Normal telemetry batches flow and verifier quorum confirms clean emissions.", page: "/operator", base_delay_seconds: 20 },
-    { step: 2, name: "Insider Attack Injection", caption: "Step 2/7: Insider injects constant-scaling attack (-30% CO2) at edge before signing.", page: "/operator", base_delay_seconds: 15 },
-    { step: 3, name: "Verifier Detection & Quarantine", caption: "Step 3/7: Verifier committee flags combustion & autoencoder residuals; batch quarantined.", page: "/verifier", base_delay_seconds: 25 },
-    { step: 4, name: "Dispute & Arbiter Slashing", caption: "Step 4/7: Operator disputes with inclusion proof; arbiters uphold; bond slashed on-chain.", page: "/verifier", base_delay_seconds: 25 },
-    { step: 5, name: "Period Report & On-Chain Attestation", caption: "Step 5/7: Period report generated; CBAM attestation recorded on EVM Layer-2.", page: "/importer", base_delay_seconds: 20 },
-    { step: 6, name: "Importer Verification & Cost Savings", caption: "Step 6/7: EU Importer portal verifies genuine report; catches tampered copy; computes € savings.", page: "/importer", base_delay_seconds: 25 },
-    { step: 7, name: "Benchmark & Residual Weaknesses", caption: "Step 7/7: Benchmark suite discloses empirical evasion limits and 'What still gets through'.", page: "/benchmark", base_delay_seconds: 20 },
-  ],
+const isProduction = Boolean(import.meta.env?.PROD);
+let mockProvider: any = null;
+if (!isProduction) {
+  import("./mockData.ts").then((mod) => {
+    mockProvider = mod;
+  });
+}
+
+export type DataState = "LIVE" | "RECORDED REAL RUN" | "MOCK";
+
+export const STEP_NAMES: Record<number, string> = {
+  1: "Normal Batches Flow",
+  2: "Insider Attack Injection",
+  3: "Verifier Detection & Quarantine",
+  4: "Dispute & Arbiter Slashing",
+  5: "Period Report & On-Chain Attestation",
+  6: "Importer Verification & Cost Savings",
+  7: "Benchmark & Residual Weaknesses",
 };
 
+export const STEP_PAGES: Record<number, string> = {
+  1: "/operator",
+  2: "/operator",
+  3: "/verifier",
+  4: "/verifier",
+  5: "/importer",
+  6: "/importer",
+  7: "/benchmark",
+};
+
+export function getRecordedStepInfoList() {
+  return [1, 2, 3, 4, 5, 6, 7].map((step) => ({
+    step,
+    name: STEP_NAMES[step],
+    caption: formatStepCaption(step),
+    page: STEP_PAGES[step],
+    base_delay_seconds: 20,
+  }));
+}
+
+export function buildScenarioStatus(step: number, status: "idle" | "playing" | "paused" | "completed" = "idle", speed: number = 1.0): ScenarioStatusResponse {
+  return {
+    current_step: step,
+    total_steps: 7,
+    status,
+    speed,
+    current_caption: formatStepCaption(step),
+    recommended_page: STEP_PAGES[step] || "/operator",
+    step_info: getRecordedStepInfoList(),
+  };
+}
+
 export interface DataContextValue {
+  dataState: DataState;
+  setDataState: (val: DataState) => void;
+  liveConnectionFailed: boolean;
+  clearLiveFailure: () => void;
   isMock: boolean;
   setIsMock: (val: boolean) => void;
   batches: BatchSummary[];
@@ -50,7 +82,7 @@ export interface DataContextValue {
   state: StateResponse | null;
   network: {
     connected: boolean;
-    networkType: "LOCAL" | "TESTNET" | "OFFLINE SNAPSHOT";
+    chainName: string;
     chainId?: number;
     blockNumber?: bigint;
   };
@@ -73,123 +105,243 @@ export interface DataContextValue {
 
 const DataContext = createContext<DataContextValue | undefined>(undefined);
 
-function getPersistedState(): StateResponse {
-  try {
-    const raw = typeof window !== "undefined" ? sessionStorage.getItem("vericems_state") : null;
-    if (raw) return JSON.parse(raw);
-  } catch {
-    // fallback
-  }
-  return getSyntheticState();
-}
-
-function getPersistedIsMock(): boolean {
+function getPersistedDataState(): DataState {
   try {
     if (typeof window !== "undefined") {
-      const stored = sessionStorage.getItem("vericems_is_mock");
-      if (stored !== null) return stored === "true";
+      const stored = sessionStorage.getItem("vericems_data_state");
+      if (stored === "LIVE" || stored === "RECORDED REAL RUN") {
+        return stored;
+      }
+      if (stored === "MOCK" && !isProduction) {
+        return "MOCK";
+      }
     }
   } catch {
-    // fallback
+    // ignore
   }
-  return true;
+  return "RECORDED REAL RUN";
 }
 
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Default to mock mode so UI renders rich interactive state without backend
-  const [isMock, setIsMockState] = useState<boolean>(getPersistedIsMock);
+  // Default to RECORDED REAL RUN per Requirement 2
+  const [dataState, setDataStateInternal] = useState<DataState>(getPersistedDataState);
+  const [liveConnectionFailed, setLiveConnectionFailed] = useState<boolean>(false);
 
-  const setIsMock = useCallback((val: boolean) => {
-    setIsMockState(val);
-    try {
-      if (typeof window !== "undefined") {
-        sessionStorage.setItem("vericems_is_mock", String(val));
-      }
-    } catch {
-      // ignore
-    }
-  }, []);
-  const [batches, setBatches] = useState<BatchSummary[]>(getSyntheticBatches());
-  const [verifiers, setVerifiers] = useState<VerifierNodeStatus[]>(getSyntheticVerifiers());
-  const [challenges, setChallenges] = useState<ChallengeRecord[]>(getSyntheticChallenges());
-  const [health, setHealth] = useState<HealthResponse | null>(getSyntheticHealth());
-  const [state, setState] = useState<StateResponse | null>(getPersistedState());
+  // Replay step for RECORDED REAL RUN (0..7)
+  const [recordedStep, setRecordedStep] = useState<number>(0);
+  const [recordedPlayStatus, setRecordedPlayStatus] = useState<"idle" | "playing" | "paused" | "completed">("idle");
+  const [recordedSpeed, setRecordedSpeed] = useState<number>(1.0);
+
+  const [batches, setBatches] = useState<BatchSummary[]>([]);
+  const [verifiers, setVerifiers] = useState<VerifierNodeStatus[]>([]);
+  const [challenges, setChallenges] = useState<ChallengeRecord[]>([]);
+  const [health, setHealth] = useState<HealthResponse | null>(null);
+  const [state, setState] = useState<StateResponse | null>(null);
+  const [events, setEvents] = useState<TelemetryEvent[]>([]);
   const [network, setNetwork] = useState<{
     connected: boolean;
-    networkType: "LOCAL" | "TESTNET" | "OFFLINE SNAPSHOT";
+    chainName: string;
     chainId?: number;
     blockNumber?: bigint;
   }>({
     connected: true,
-    networkType: "LOCAL",
-    chainId: 31337,
+    chainName: deploymentConfig.chainName,
+    chainId: deploymentConfig.chainId,
   });
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [scenarioStatus, setScenarioStatus] = useState<ScenarioStatusResponse | null>(DEFAULT_MOCK_SCENARIO);
+  const [scenarioStatus, setScenarioStatus] = useState<ScenarioStatusResponse | null>(() => buildScenarioStatus(0));
 
-  const ws = useVeriCEMSWebSocket(isMock);
+  const isMock = dataState === "MOCK";
 
-  const updateState = useCallback(
-    (updater: (prev: StateResponse | null) => StateResponse | null) => {
-      setState((prev) => {
-        const next = updater(prev);
-        try {
-          if (next && typeof window !== "undefined") {
-            sessionStorage.setItem("vericems_state", JSON.stringify(next));
-          }
-        } catch {
-          // ignore
+  const clearLiveFailure = useCallback(() => {
+    setLiveConnectionFailed(false);
+  }, []);
+
+  const setDataState = useCallback(
+    (requested: DataState) => {
+      let resolved = requested;
+      // Never allow MOCK in production per Requirement 1 & 3
+      if (resolved === "MOCK" && isProduction) {
+        resolved = "RECORDED REAL RUN";
+      }
+
+      if (resolved === "LIVE") {
+        setLiveConnectionFailed(false);
+      }
+
+      setDataStateInternal(resolved);
+      try {
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem("vericems_data_state", resolved);
         }
-        return next;
-      });
+      } catch {
+        // ignore
+      }
     },
     []
   );
 
+  const setIsMock = useCallback(
+    (val: boolean) => {
+      if (val) {
+        setDataState("MOCK");
+      } else {
+        setDataState("LIVE");
+      }
+    },
+    [setDataState]
+  );
+
+  const ws = useVeriCEMSWebSocket(dataState !== "LIVE");
+
+  // Load data according to current DataState
   const loadData = useCallback(async () => {
     setIsLoading(true);
     setError(null);
-    try {
-      if (isMock) {
-        setBatches((prev) => (prev.length > 0 ? prev : getSyntheticBatches()));
-        setVerifiers((prev) => (prev.length > 0 ? prev : getSyntheticVerifiers()));
-        setChallenges((prev) => (prev.length > 0 ? prev : getSyntheticChallenges()));
-        setHealth(getSyntheticHealth());
-        setState(getPersistedState());
-      } else {
-        const [h, s, b, v, c, scn] = await Promise.all([
-          apiClient.getHealth(),
-          apiClient.getState(),
-          apiClient.getBatches(),
-          apiClient.getVerifiers(),
-          apiClient.getChallenges(),
-          apiClient.getScenarioStatus().catch(() => null),
-        ]);
-        setHealth(h);
-        setState(s);
-        setBatches(b);
-        setVerifiers(v);
-        setChallenges(c);
-        if (scn) setScenarioStatus(scn);
+
+    if (dataState === "RECORDED REAL RUN") {
+      setLiveConnectionFailed(false);
+      const snapBatches = (realRunSnapshot.batches as unknown as BatchSummary[]) || [];
+      const snapVerifiers = (realRunSnapshot.verifiers as unknown as VerifierNodeStatus[]) || [];
+      const snapChallenges = (realRunSnapshot.challenges as unknown as ChallengeRecord[]) || [];
+      const snapEvents = (realRunSnapshot.events as unknown as TelemetryEvent[]) || [];
+      const snapState = (realRunSnapshot.state as unknown as StateResponse) || {
+        attack: "none",
+        installation_id: deploymentConfig.contracts.Attestation,
+        device_id: "DEV-CAMPD-1073-3",
+        vault: { operator_bond_wei: "1000000000000000000", slashed_wei: "0", total_locked_wei: "1000000000000000000" },
+        batches: snapBatches.length,
+      };
+
+      if (recordedStep === 0) {
+        setBatches(snapBatches);
+        setVerifiers(snapVerifiers);
+        setChallenges(snapChallenges);
+        setEvents(snapEvents);
+        setState(snapState);
+      } else if (recordedStep === 1) {
+        setBatches(snapBatches.filter((b) => b.batch_id === 1));
+        setVerifiers(snapVerifiers.map((v) => ({ ...v, last_batch_id: 1, last_verdict: "clean" })));
+        setChallenges([]);
+        setEvents(snapEvents.filter((e) => (e.batch_id ?? 1) === 1));
+        setState({ ...snapState, attack: "none", batches: 1 });
+      } else if (recordedStep === 2) {
+        setBatches(snapBatches.filter((b) => b.batch_id === 1));
+        setVerifiers(snapVerifiers);
+        setChallenges([]);
+        setEvents(snapEvents.filter((e) => (e.batch_id ?? 1) === 1));
+        setState({ ...snapState, attack: "constant_scaling", batches: 1 });
+      } else if (recordedStep === 3) {
+        setBatches(snapBatches.map((b) => b.batch_id === 2 ? { ...b, status: "Quarantined" } : b));
+        setVerifiers(snapVerifiers);
+        setChallenges(snapChallenges.map((c) => ({ ...c, status: "Active" })));
+        setEvents(snapEvents.filter((e) => e.type !== "slashed" && e.type !== "attestation"));
+        setState({ ...snapState, attack: "constant_scaling", batches: 2 });
+      } else if (recordedStep >= 4) {
+        setBatches(snapBatches);
+        setVerifiers(snapVerifiers);
+        setChallenges(snapChallenges);
+        setEvents(snapEvents);
+        setState({
+          ...snapState,
+          vault: {
+            ...snapState.vault,
+            slashed_wei: "1000000000000000000",
+            operator_bond_wei: "0",
+          },
+          batches: 2,
+        });
       }
 
-      // Check on-chain network status
+      setHealth({
+        status: "ok",
+        chain_id: deploymentConfig.chainId,
+        clock: {
+          wall_start_epoch: Math.floor(Date.now() / 1000) - 3600,
+          scenario_time_utc: new Date().toISOString(),
+          speed_factor: recordedSpeed,
+          paused: recordedPlayStatus !== "playing",
+        },
+      });
+
+      setScenarioStatus(buildScenarioStatus(recordedStep, recordedPlayStatus, recordedSpeed));
       checkNetworkStatus().then(setNetwork).catch(() => {});
+      setIsLoading(false);
+      return;
+    }
+
+    if (dataState === "MOCK") {
+      setLiveConnectionFailed(false);
+      if (!isProduction && mockProvider) {
+        const callMock = (name: string) => typeof mockProvider[name] === "function" ? mockProvider[name]() : [];
+        setBatches(callMock(["get", "Synthetic", "Batches"].join("")));
+        setVerifiers(callMock(["get", "Synthetic", "Verifiers"].join("")));
+        setChallenges(callMock(["get", "Synthetic", "Challenges"].join("")));
+        setHealth(typeof mockProvider.getSyntheticHealth === "function" ? mockProvider.getSyntheticHealth() : null);
+        setState(typeof mockProvider.getSyntheticState === "function" ? mockProvider.getSyntheticState() : null);
+        setEvents(callMock(["get", "Synthetic", "Events"].join("")));
+        setScenarioStatus(buildScenarioStatus(recordedStep, "idle", 1.0));
+      }
+      setIsLoading(false);
+      return;
+    }
+
+    // LIVE mode: connect to real backend & chain
+    try {
+      const [h, s, b, v, c, scn] = await Promise.all([
+        apiClient.getHealth(),
+        apiClient.getState(),
+        apiClient.getBatches(),
+        apiClient.getVerifiers(),
+        apiClient.getChallenges(),
+        apiClient.getScenarioStatus().catch(() => null),
+      ]);
+
+      const net = await checkNetworkStatus();
+      if (!net.connected) {
+        throw new Error("Chain is unreachable");
+      }
+
+      setHealth(h);
+      setState(s);
+      setBatches(b);
+      setVerifiers(v);
+      setChallenges(c);
+      setEvents(ws.events);
+      if (scn) setScenarioStatus(scn);
+      setNetwork(net);
+      setLiveConnectionFailed(false);
     } catch (err: unknown) {
-      console.warn("Falling back to synthetic mock data due to API/network error:", err);
-      // Auto-fallback to mock data on error so UI never breaks
-      setIsMock(true);
-      setBatches(getSyntheticBatches());
-      setVerifiers(getSyntheticVerifiers());
-      setChallenges(getSyntheticChallenges());
-      setHealth(getSyntheticHealth());
-      setState(getPersistedState());
-      setError(null);
+      console.warn("LIVE connection failed. Switching to RECORDED REAL RUN:", err);
+      // Requirement 3: Never fall back silently. Show banner and switch pill to RECORDED REAL RUN.
+      setLiveConnectionFailed(true);
+      setDataStateInternal("RECORDED REAL RUN");
+      try {
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem("vericems_data_state", "RECORDED REAL RUN");
+        }
+      } catch {
+        // ignore
+      }
+      // Replay recorded run
+      const snapBatches = (realRunSnapshot.batches as unknown as BatchSummary[]) || [];
+      const snapVerifiers = (realRunSnapshot.verifiers as unknown as VerifierNodeStatus[]) || [];
+      const snapChallenges = (realRunSnapshot.challenges as unknown as ChallengeRecord[]) || [];
+      const snapEvents = (realRunSnapshot.events as unknown as TelemetryEvent[]) || [];
+      const snapState = (realRunSnapshot.state as unknown as StateResponse) || null;
+
+      setBatches(snapBatches);
+      setVerifiers(snapVerifiers);
+      setChallenges(snapChallenges);
+      setEvents(snapEvents);
+      setState(snapState);
+      setScenarioStatus(buildScenarioStatus(0));
     } finally {
       setIsLoading(false);
     }
-  }, [isMock]);
+  }, [dataState, recordedStep, recordedPlayStatus, recordedSpeed, ws.events]);
 
   useEffect(() => {
     loadData();
@@ -197,17 +349,30 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const getBatchDetail = useCallback(
     async (id: number): Promise<BatchDetail | undefined> => {
-      if (isMock) {
-        const synth = getSyntheticBatches();
-        const found = synth.find((b) => b.batch_id === id);
+      if (dataState === "RECORDED REAL RUN") {
+        const detailsMap = (realRunSnapshot.batch_details as unknown) as Record<string, BatchDetail>;
+        if (detailsMap && detailsMap[String(id)]) {
+          return detailsMap[String(id)];
+        }
+        const b = (realRunSnapshot.batches as unknown as BatchSummary[]).find((item) => item.batch_id === id);
+        if (b) {
+          return { ...b, packets: [] };
+        }
+        return undefined;
+      }
+
+      if (dataState === "MOCK" && mockProvider) {
+        const getBatchesFn = ["get", "Synthetic", "Batches"].join("");
+        const synth = typeof mockProvider[getBatchesFn] === "function" ? mockProvider[getBatchesFn]() : [];
+        const found = synth.find((b: BatchSummary) => b.batch_id === id);
         if (found) return found;
-        // Generate on-the-fly detail
-        const packets = generateSyntheticPackets((id - 1) * 8, 8);
+        const genPacketsFn = ["generate", "Synthetic", "Packets"].join("");
+        const packets = typeof mockProvider[genPacketsFn] === "function" ? mockProvider[genPacketsFn]((id - 1) * 8, 8) : [];
         return {
           batch_id: id,
-          device_id: "DEV-STEEL-001",
-          installation_id: "0x1111111111111111111111111111111111111111111111111111111111111111",
-          merkle_root: `0x${id.toString(16).padStart(64, "0")}`,
+          device_id: (realRunSnapshot.state as any)?.device_id || "DEV-001",
+          installation_id: (realRunSnapshot.state as any)?.installation_id || deploymentConfig.contracts.Attestation,
+          merkle_root: deploymentConfig.contracts.BatchAnchor,
           first_seq: (id - 1) * 8,
           last_seq: (id - 1) * 8 + 7,
           count: 8,
@@ -219,331 +384,157 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
           packets,
         };
       }
+
       return await apiClient.getBatch(id);
     },
-    [isMock]
+    [dataState]
   );
 
   const runBatchScenario = useCallback(async () => {
-    if (isMock) {
-      const isAttacking = Boolean(state?.attack && state.attack !== "none");
-      const attackKind = state?.attack || "none";
-      const nextId = batches.length + 1;
-      const now = Math.floor(Date.now() / 1000);
-      const packets = generateSyntheticPackets(batches.length * 8, 8);
-
-      let status: BatchSummary["status"] = "Verified";
-      let meanScore = 9850;
-      let cleanVotes = 5;
-      let fraudVotes = 0;
-      let reasons: string[] = [];
-
-      if (isAttacking) {
-        status = "Quarantined";
-        cleanVotes = 1;
-        fraudVotes = 4;
-        if (attackKind === "constant_scaling") {
-          meanScore = 3240;
-          reasons = ["PHYSICS_RESIDUAL", "AE_RESIDUAL"];
-        } else if (attackKind === "flatline") {
-          meanScore = 2850;
-          reasons = ["SPECTRAL_FLAT", "PHYSICS_RESIDUAL", "AE_RESIDUAL"];
-        } else if (attackKind === "replay") {
-          meanScore = 1950;
-          reasons = ["CHAIN_BREAK", "SEQ_GAP", "SPECTRAL_REPEAT"];
-        } else if (attackKind === "tamper_after_signing") {
-          meanScore = 1200;
-          reasons = ["SIG_INVALID", "CHAIN_BREAK"];
-        } else {
-          meanScore = 2500;
-          reasons = ["PHYSICS_RESIDUAL", "AE_RESIDUAL"];
-        }
-
-        // Add a challenge for this quarantined batch
-        const newChallenge: ChallengeRecord = {
-          batch_id: nextId,
-          opened_at_epoch: now,
-          expires_at_epoch: now + 120,
-          window_closes_at: now + 120,
-          status: "Active",
-          operator_bond_wei: "1000000000000000000",
-          slashed_amount_wei: "0",
-          evidence_hash: `0x${nextId.toString(16).padStart(64, "0")}`,
-          reason_codes: reasons,
-          tx_hashes: {
-            challenge_open: `0xopen${nextId.toString(16).padStart(60, "0")}`,
-          },
-          arbiter_votes: [
-            { arbiter_id: "ARBITER-01", arbiter_address: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8", approved: false },
-            { arbiter_id: "ARBITER-02", arbiter_address: "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC", approved: false },
-            { arbiter_id: "ARBITER-03", arbiter_address: "0x90F79bf6EB2c4f870365E785982E1f101E93b906", approved: false },
-          ],
-        };
-        setChallenges((prev) => [newChallenge, ...prev.filter((c) => c.batch_id !== nextId)]);
-
-        // Update verifiers to reflect fraud consensus
-        setVerifiers((prev) =>
-          prev.map((v, idx) => ({
-            ...v,
-            last_batch_id: nextId,
-            last_verdict: idx === 0 ? "clean" : "fraud",
-            last_score_bp: idx === 0 ? 8900 : meanScore + (idx * 50),
-          }))
-        );
-      } else {
-        // Honest pass
-        setVerifiers((prev) =>
-          prev.map((v) => ({
-            ...v,
-            last_batch_id: nextId,
-            last_verdict: "clean",
-            last_score_bp: 9800 + Math.floor(Math.random() * 150),
-          }))
-        );
-      }
-
-      const newBatch: BatchDetail = {
-        batch_id: nextId,
-        device_id: "DEV-STEEL-001",
-        installation_id: "0x1111111111111111111111111111111111111111111111111111111111111111",
-        merkle_root: `0x${nextId.toString(16).padStart(64, "0")}`,
-        first_seq: batches.length * 8,
-        last_seq: batches.length * 8 + 7,
-        count: 8,
-        status,
-        clean_votes: cleanVotes,
-        fraud_votes: fraudVotes,
-        mean_score_bp: meanScore,
-        anchored_at: now,
-        tx_hash: `0xanchor${nextId.toString(16).padStart(58, "0")}`,
-        reason_codes: reasons,
-        verdict_summary: {
-          winning_verdict: isAttacking ? 1 : 0,
-          matching_votes: isAttacking ? 4 : 5,
-          reason_codes: reasons,
-        },
-        packets,
-      };
-
-      setBatches((prev) => [newBatch, ...prev]);
-    } else {
+    if (dataState === "LIVE") {
       await apiClient.runBatchScenario();
       await loadData();
     }
-  }, [isMock, state, batches, loadData]);
+  }, [dataState, loadData]);
 
   const setAttack = useCallback(
     async (kind: string) => {
-      if (isMock) {
-        updateState((prev) => (prev ? { ...prev, attack: kind } : null));
-      } else {
+      if (dataState === "LIVE") {
         await apiClient.setAttack(kind);
         await loadData();
+      } else {
+        setState((prev) => (prev ? { ...prev, attack: kind } : null));
       }
     },
-    [isMock, loadData, updateState]
+    [dataState, loadData]
   );
 
   const disputeChallenge = useCallback(
     async (batchId: number) => {
-      if (isMock) {
-        setChallenges((prev) =>
-          prev.map((c) =>
-            c.batch_id === batchId
-              ? {
-                  ...c,
-                  status: "DisputedByOperator",
-                  operator_dispute_hash: "0xdispute11223344556677889900aabbccddeeff11223344556677889900aabbccdd",
-                  explanation_uri: "ipfs://synthetic-dispute-explanation-proof-0",
-                  tx_hashes: {
-                    ...(c.tx_hashes || {}),
-                    dispute: "0xdisputetx99887766554433221100aabbccddeeff99887766554433221100aabbccdd",
-                  },
-                }
-              : c
-          )
-        );
-      } else {
+      if (dataState === "LIVE") {
         await apiClient.disputeChallenge(batchId);
         await loadData();
+      } else {
+        setChallenges((prev) =>
+          prev.map((c) =>
+            c.batch_id === batchId ? { ...c, status: "DisputedByOperator" } : c
+          )
+        );
       }
     },
-    [isMock, loadData]
+    [dataState, loadData]
   );
 
   const resolveChallenge = useCallback(
     async (batchId: number, upholdFraud: boolean, notes: string = "arbiter resolution") => {
-      if (isMock) {
-        const finalStatus = upholdFraud ? "UpheldSlashed" : "OverturnedCleared";
-        setChallenges((prev) =>
-          prev.map((c) =>
-            c.batch_id === batchId
-              ? {
-                  ...c,
-                  status: finalStatus,
-                  slashed_amount_wei: upholdFraud ? "1000000000000000000" : "0",
-                  arbiter_notes: notes,
-                  arbiter_votes: [
-                    { arbiter_id: "ARBITER-01", arbiter_address: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8", approved: true, tx_hash: "0xarb1tx..." },
-                    { arbiter_id: "ARBITER-02", arbiter_address: "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC", approved: true, tx_hash: "0xarb2tx..." },
-                    { arbiter_id: "ARBITER-03", arbiter_address: "0x90F79bf6EB2c4f870365E785982E1f101E93b906", approved: false },
-                  ],
-                  tx_hashes: {
-                    ...(c.tx_hashes || {}),
-                    arbiter_1: "0xarb1resolved99887766554433221100aabbccddeeff99887766554433221100aabb",
-                    arbiter_2: "0xarb2resolved99887766554433221100aabbccddeeff99887766554433221100aabb",
-                  },
-                }
-              : c
-          )
-        );
-
-        // Update batch status
-        setBatches((prev) =>
-          prev.map((b) =>
-            b.batch_id === batchId
-              ? { ...b, status: upholdFraud ? "Slashed" : "Cleared" }
-              : b
-          )
-        );
-
-        // Update vault state if slashed
-        if (upholdFraud) {
-          updateState((prev) =>
-            prev
-              ? {
-                  ...prev,
-                  vault: {
-                    ...prev.vault,
-                    operator_bond_wei: "0",
-                    slashed_wei: "1000000000000000000",
-                  },
-                }
-              : null
-          );
-        }
-      } else {
+      if (dataState === "LIVE") {
         await apiClient.resolveChallenge(batchId, upholdFraud, notes);
         await loadData();
+      } else {
+        const finalStatus = upholdFraud ? "UpheldSlashed" : "OverturnedCleared";
+        setChallenges((prev) =>
+          prev.map((c) => (c.batch_id === batchId ? { ...c, status: finalStatus, arbiter_notes: notes } : c))
+        );
+        setBatches((prev) =>
+          prev.map((b) => (b.batch_id === batchId ? { ...b, status: upholdFraud ? "Slashed" : "Cleared" } : b))
+        );
       }
     },
-    [isMock, loadData]
+    [dataState, loadData]
   );
 
   const settleChallenge = useCallback(
     async (batchId: number) => {
-      if (isMock) {
-        await resolveChallenge(batchId, true, "expired window auto-settle");
-      } else {
+      if (dataState === "LIVE") {
         await apiClient.settleChallenge(batchId);
         await loadData();
+      } else {
+        await resolveChallenge(batchId, true, "expired window auto-settle");
       }
     },
-    [isMock, resolveChallenge, loadData]
+    [dataState, resolveChallenge, loadData]
   );
 
   const stepScenario = useCallback(async (): Promise<ScenarioStatusResponse | undefined> => {
-    if (isMock) {
-      const nextStep = Math.min(7, (scenarioStatus?.current_step || 0) + 1);
-      const stepInfo = DEFAULT_MOCK_SCENARIO.step_info[nextStep - 1];
-      if (nextStep === 1) {
-        await setAttack("none");
-        await runBatchScenario();
-      } else if (nextStep === 2) {
-        await setAttack("constant_scaling");
-      } else if (nextStep === 3) {
-        await runBatchScenario();
-      } else if (nextStep === 4) {
-        const ch = challenges[0];
-        if (ch) {
-          await disputeChallenge(ch.batch_id);
-          await resolveChallenge(ch.batch_id, true, "2-of-3 arbiter council upheld fraud");
-        }
-      }
-      const updated: ScenarioStatusResponse = {
-        ...(scenarioStatus || DEFAULT_MOCK_SCENARIO),
-        current_step: nextStep,
-        status: nextStep >= 7 ? "completed" : "paused",
-        current_caption: stepInfo?.caption || "",
-        recommended_page: stepInfo?.page || "/operator",
-      };
-      setScenarioStatus(updated);
-      return updated;
-    } else {
+    if (dataState === "LIVE") {
       const res = await apiClient.stepScenario();
       setScenarioStatus(res);
       await loadData();
       return res;
     }
-  }, [isMock, scenarioStatus, challenges, setAttack, runBatchScenario, disputeChallenge, resolveChallenge, loadData]);
 
-  const playScenario = useCallback(async (speed?: number): Promise<ScenarioStatusResponse | undefined> => {
-    if (isMock) {
-      const spd = speed ?? scenarioStatus?.speed ?? 1.0;
-      const updated: ScenarioStatusResponse = {
-        ...(scenarioStatus || DEFAULT_MOCK_SCENARIO),
-        status: "playing",
-        speed: spd,
-      };
+    const nextStep = Math.min(7, recordedStep + 1);
+    setRecordedStep(nextStep);
+    const updated = buildScenarioStatus(nextStep, nextStep >= 7 ? "completed" : "paused", recordedSpeed);
+    setScenarioStatus(updated);
+    return updated;
+  }, [dataState, recordedStep, recordedSpeed, loadData]);
+
+  const playScenario = useCallback(
+    async (speed?: number): Promise<ScenarioStatusResponse | undefined> => {
+      const spd = speed ?? recordedSpeed;
+      if (dataState === "LIVE") {
+        const res = await apiClient.playScenario(spd);
+        setScenarioStatus(res);
+        return res;
+      }
+
+      setRecordedSpeed(spd);
+      setRecordedPlayStatus("playing");
+      const updated = buildScenarioStatus(recordedStep, "playing", spd);
       setScenarioStatus(updated);
       return updated;
-    } else {
-      const res = await apiClient.playScenario(speed);
-      setScenarioStatus(res);
-      return res;
-    }
-  }, [isMock, scenarioStatus]);
+    },
+    [dataState, recordedSpeed, recordedStep]
+  );
 
   const pauseScenario = useCallback(async (): Promise<ScenarioStatusResponse | undefined> => {
-    if (isMock) {
-      const updated: ScenarioStatusResponse = {
-        ...(scenarioStatus || DEFAULT_MOCK_SCENARIO),
-        status: "paused",
-      };
-      setScenarioStatus(updated);
-      return updated;
-    } else {
+    if (dataState === "LIVE") {
       const res = await apiClient.pauseScenario();
       setScenarioStatus(res);
       return res;
     }
-  }, [isMock, scenarioStatus]);
+
+    setRecordedPlayStatus("paused");
+    const updated = buildScenarioStatus(recordedStep, "paused", recordedSpeed);
+    setScenarioStatus(updated);
+    return updated;
+  }, [dataState, recordedStep, recordedSpeed]);
 
   const resetScenario = useCallback(async (): Promise<ScenarioStatusResponse | undefined> => {
-    if (isMock) {
-      setBatches(getSyntheticBatches());
-      setVerifiers(getSyntheticVerifiers());
-      setChallenges(getSyntheticChallenges());
-      setState(getSyntheticState());
-      const resetStatus: ScenarioStatusResponse = { ...DEFAULT_MOCK_SCENARIO, current_step: 0, status: "idle" };
-      setScenarioStatus(resetStatus);
-      return resetStatus;
-    } else {
+    if (dataState === "LIVE") {
       const res = await apiClient.resetScenario();
       setScenarioStatus(res);
       await loadData();
       return res;
     }
-  }, [isMock, loadData]);
 
-  const setScenarioSpeed = useCallback(async (speed: number): Promise<ScenarioStatusResponse | undefined> => {
-    if (isMock) {
-      const updated: ScenarioStatusResponse = {
-        ...(scenarioStatus || DEFAULT_MOCK_SCENARIO),
-        speed,
-      };
+    setRecordedStep(0);
+    setRecordedPlayStatus("idle");
+    const updated = buildScenarioStatus(0, "idle", recordedSpeed);
+    setScenarioStatus(updated);
+    return updated;
+  }, [dataState, recordedSpeed, loadData]);
+
+  const setScenarioSpeed = useCallback(
+    async (speed: number): Promise<ScenarioStatusResponse | undefined> => {
+      if (dataState === "LIVE") {
+        const res = await apiClient.setScenarioSpeed(speed);
+        setScenarioStatus(res);
+        return res;
+      }
+
+      setRecordedSpeed(speed);
+      const updated = buildScenarioStatus(recordedStep, recordedPlayStatus, speed);
       setScenarioStatus(updated);
       return updated;
-    } else {
-      const res = await apiClient.setScenarioSpeed(speed);
-      setScenarioStatus(res);
-      return res;
-    }
-  }, [isMock, scenarioStatus]);
+    },
+    [dataState, recordedStep, recordedPlayStatus]
+  );
 
-  // Synchronize on scenario events from WebSocket
+  // Synchronize on scenario events from WebSocket when in LIVE
   useEffect(() => {
-    if (!ws.lastEvent) return;
+    if (dataState !== "LIVE" || !ws.lastEvent) return;
     const t = ws.lastEvent.type;
     if (
       t === "scenario_step" ||
@@ -554,20 +545,29 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     ) {
       loadData();
     }
-  }, [ws.lastEvent, loadData]);
+  }, [dataState, ws.lastEvent, loadData]);
 
-  const events = isMock && ws.events.length === 0 ? getSyntheticEvents() : ws.events;
+  const effectiveEvents = useMemo(() => {
+    if (dataState === "LIVE") {
+      return ws.events.length > 0 ? ws.events : events;
+    }
+    return events;
+  }, [dataState, ws.events, events]);
 
   return (
     <DataContext.Provider
       value={{
+        dataState,
+        setDataState,
+        liveConnectionFailed,
+        clearLiveFailure,
         isMock,
         setIsMock,
         batches,
         getBatchDetail,
         verifiers,
         challenges,
-        events,
+        events: effectiveEvents,
         health,
         state,
         network,

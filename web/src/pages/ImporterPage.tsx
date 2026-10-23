@@ -26,6 +26,7 @@ import {
   type VerificationResult,
 } from "../lib/reportVerifier";
 import validReportPayload from "../../e2e/fixtures/valid_report_payload.json" with { type: "json" };
+import { keccak256 } from "viem";
 import { CONTRACT_ADDRESSES } from "../chain/viemClient";
 
 export const ImporterPage: React.FC = () => {
@@ -152,8 +153,7 @@ export const ImporterPage: React.FC = () => {
 
   const handleLoadTamperedSample = () => {
     const tampered = JSON.parse(JSON.stringify(validReportPayload));
-    tampered.report.merkle_roots[0] =
-      "0x0000000000000000000000000000000000000000000000000000000000000001";
+    tampered.report.merkle_roots[0] = keccak256(new TextEncoder().encode("tampered-merkle-root"));
     tampered.report.totals.specific_embedded_emissions_tco2e_per_t = 0.123456;
     runVerification(tampered, isOfflineSnapshotMode);
   };
@@ -681,9 +681,12 @@ export const ImporterPage: React.FC = () => {
                 <h4 className="text-xs uppercase tracking-wider font-semibold text-muted-strong">
                   Default Value Route
                 </h4>
-                <span className="text-[11px] font-mono font-semibold text-[#9B1C1C]">
-                  +10% markup
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[11px] font-mono font-semibold text-[#9B1C1C]">
+                    +10% markup
+                  </span>
+                  <Chip variant="ILLUSTRATIVE" label="ILLUSTRATIVE" size="sm" />
+                </div>
               </div>
               <div className="text-2xl sm:text-3xl font-heading font-bold text-ink">
                 {comparison
@@ -706,7 +709,10 @@ export const ImporterPage: React.FC = () => {
                 <h4 className="text-xs uppercase tracking-wider font-semibold text-ink">
                   Verified Actual Route
                 </h4>
-                <Chip variant="verified" label="VERIFIED" size="sm" />
+                <div className="flex items-center gap-1.5">
+                  <Chip variant="verified" label="VERIFIED" size="sm" />
+                  <Chip variant="ILLUSTRATIVE" label="ILLUSTRATIVE" size="sm" />
+                </div>
               </div>
               <div className="text-2xl sm:text-3xl font-heading font-bold text-ink">
                 {comparison
@@ -727,9 +733,12 @@ export const ImporterPage: React.FC = () => {
           {/* Black "You Save" Strip with Red Accent */}
           <div className="bg-[#0A0A0A] text-white dark:bg-[#141414] dark:border dark:border-[#262626] rounded-card p-4 sm:p-5 flex items-center justify-between shadow-md">
             <div>
-              <span className="text-xs uppercase tracking-wider font-semibold text-white/70 block">
-                Net CBAM Importer Savings
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs uppercase tracking-wider font-semibold text-white/70 block">
+                  Net CBAM Importer Savings
+                </span>
+                <Chip variant="ILLUSTRATIVE" label="ILLUSTRATIVE" size="sm" />
+              </div>
               <span className="text-sm font-semibold text-white">
                 You save
               </span>

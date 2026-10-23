@@ -161,7 +161,7 @@ export const ChallengePanel: React.FC<ChallengePanelProps> = ({
     challenge.tx_hashes?.settlement ||
     challenge.tx_hashes?.arbiter_1 ||
     challenge.tx_hashes?.dispute ||
-    (isUpheld ? "0x9876543210abcdef0123456789abcdef0123456789abcdef0123456789abcdef" : null);
+    null;
 
   return (
     <div

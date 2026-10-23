@@ -217,7 +217,7 @@ The adversarial evaluation protocol is defined in `ml/benchmark/`:
 ### 6.1 Data Ingestion & Splitting
 - **Dataset:** 30 combustion power facilities deterministically selected from US EPA CAMPD 2025 bulk data (`config/facilities.yaml`), totaling 393,222 facility operating hours across IA, UT, and WY.
 - **Cross-Validation:** 5 facility-grouped splits (`results/splits.json`). All units of a facility are confined to either train, validation, or test to prevent cross-facility data leakage.
-- **Calibration:** All detector thresholds are calibrated strictly on clean validation facilities to satisfy a target false-positive rate of **2.0%** (`target_fpr: 0.02`).
+- **Calibration:** All detector thresholds are calibrated strictly on clean validation facilities to satisfy a target false-positive rate of **2.0% on validation (8.3% on held-out facilities)** (`target_fpr: 0.02`).
 
 ### 6.2 Evaluated Attack Classes (`ml/attacks/`)
 The benchmark executes 8 primary attack classes (14 variations total) across 720-hour evaluation series:

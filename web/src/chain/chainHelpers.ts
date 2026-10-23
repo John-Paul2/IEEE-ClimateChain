@@ -1,5 +1,6 @@
 import { publicClient, CONTRACT_ADDRESSES } from "./viemClient.ts";
 import { BatchAnchorAbi, AttestationAbi, BondVaultAbi } from "./abis.ts";
+import { deploymentConfig } from "./deploymentConfig.ts";
 import type { BatchStatus } from "../types/telemetry";
 
 const STATUS_MAP: Record<number, BatchStatus> = {
@@ -119,7 +120,7 @@ export async function checkNetworkStatus(): Promise<{
   connected: boolean;
   chainId?: number;
   blockNumber?: bigint;
-  networkType: "LOCAL" | "TESTNET" | "OFFLINE SNAPSHOT";
+  chainName: string;
 }> {
   try {
     const [chainId, blockNumber] = await Promise.all([
@@ -127,18 +128,11 @@ export async function checkNetworkStatus(): Promise<{
       publicClient.getBlockNumber(),
     ]);
 
-    let networkType: "LOCAL" | "TESTNET" | "OFFLINE SNAPSHOT" = "LOCAL";
-    if (chainId === 421614 || chainId === 80002 || chainId === 11155111) {
-      networkType = "TESTNET";
-    } else if (chainId === 31337) {
-      networkType = "LOCAL";
-    }
-
-    return { connected: true, chainId, blockNumber, networkType };
+    return { connected: true, chainId, blockNumber, chainName: deploymentConfig.chainName };
   } catch {
     return {
       connected: false,
-      networkType: "OFFLINE SNAPSHOT",
+      chainName: deploymentConfig.chainName,
     };
   }
 }

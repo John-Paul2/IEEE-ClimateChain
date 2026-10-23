@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { ArrowDownRight, Info } from "lucide-react";
+import { Chip } from "./Chip";
 
 export interface AnimatedSavingsProps {
   savingsEur: number;
@@ -90,6 +91,7 @@ export const AnimatedSavings: React.FC<AnimatedSavingsProps> = ({
             <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-verified/10 text-verified border border-verified/30">
               {percentage}% Cost Reduction
             </span>
+            <Chip variant="ILLUSTRATIVE" label="ILLUSTRATIVE" size="sm" />
           </div>
 
           <div className="mt-2 flex items-baseline gap-3">

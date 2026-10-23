@@ -3,14 +3,18 @@
 /**
  * ui_text_lint.mjs
  *
- * VeriCEMS UI Text Linter per DESIGN.md Section 4 & Task 6:
- * Fails on UI strings containing:
+ * VeriCEMS UI Text Linter per AGENTS.md, DESIGN.md & Task instructions:
+ * Fails on:
  *   1. "AGENTS.md"
  *   2. "Honesty Rule"
  *   3. File paths (e.g. docs/..., results/..., *.json, *.py, *.md)
  *   4. Backticks (`)
  *   5. Markdown asterisks (**, *bold*)
- * - Fails on any Card paragraph over 25 words
+ *   6. Chain names (Arbitrum, Sepolia, Base, Polygon, Amoy)
+ *   7. The word "confirmed"
+ *   8. Hardcoded euro amounts (e.g. €25,930 or 100 EUR)
+ *   9. Any 0x literals in web/src outside test fixtures
+ *  10. Any Card paragraph over 25 words
  */
 
 import fs from "node:fs";
@@ -62,6 +66,18 @@ const BANNED_PATTERNS = [
     name: "Markdown asterisk artifact in UI string",
     regex: /\*\*[^*]+\*\*|\*[a-zA-Z0-9]+/,
   },
+  {
+    name: 'Banned chain name (Arbitrum, Sepolia, Polygon, Amoy, Base)',
+    regex: /\b(?:Arbitrum|Sepolia|Polygon|Amoy)\b|(?<!text-)(?<!font-)\bBase\b(?!\s*(?:seed|component|SEE|url|URL|line))/i,
+  },
+  {
+    name: 'Banned term "confirmed"',
+    regex: /\bconfirmed\b/i,
+  },
+  {
+    name: "Hardcoded euro amount in UI string",
+    regex: /(?:€|EUR)\s*[0-9]+|[0-9]+\s*(?:€|EUR)/i,
+  },
 ];
 
 // Skip technical files that explicitly handle external raw code/markdown
@@ -70,53 +86,73 @@ const SKIP_FILES = new Set([
   "MarkdownViewer.tsx",
 ]);
 
-function getFiles(dir) {
+function getAllFiles(dir, filterFn) {
   const dirents = fs.readdirSync(dir, { withFileTypes: true });
   const files = [];
   for (const dirent of dirents) {
     const res = path.resolve(dir, dirent.name);
     if (dirent.isDirectory()) {
-      if (dirent.name === "__tests__" || dirent.name === "node_modules") continue;
-      files.push(...getFiles(res));
-    } else if (
-      (dirent.name.endsWith(".tsx") || dirent.name.endsWith(".jsx")) &&
-      !dirent.name.includes(".test.") &&
-      !dirent.name.includes(".spec.")
-    ) {
+      if (dirent.name === "node_modules") continue;
+      files.push(...getAllFiles(res, filterFn));
+    } else if (filterFn(res)) {
       files.push(res);
     }
   }
   return files;
 }
 
+function getUIFiles(dir) {
+  return getAllFiles(dir, (filePath) => {
+    const base = path.basename(filePath);
+    return (
+      (base.endsWith(".tsx") || base.endsWith(".jsx")) &&
+      !base.includes(".test.") &&
+      !base.includes(".spec.") &&
+      !filePath.includes(`${path.sep}__tests__${path.sep}`)
+    );
+  });
+}
+
+function getSourceFilesOutsideFixtures(dir) {
+  return getAllFiles(dir, (filePath) => {
+    const base = path.basename(filePath);
+    const isCode = base.endsWith(".ts") || base.endsWith(".tsx") || base.endsWith(".js") || base.endsWith(".mjs");
+    const isTestFixture =
+      base.includes(".test.") ||
+      base.includes(".spec.") ||
+      filePath.includes(`${path.sep}__tests__${path.sep}`) ||
+      filePath.includes(`${path.sep}fixtures${path.sep}`) ||
+      filePath.includes(`${path.sep}e2e${path.sep}`);
+    return isCode && !isTestFixture;
+  });
+}
+
 let totalViolations = 0;
 const violations = [];
 
-const targetFiles = [];
+// 1. Scan UI files for visible strings and text constraints
+const targetUIFiles = [];
 for (const sub of UI_DIRS) {
   const p = path.join(srcDir, sub);
   if (fs.existsSync(p)) {
-    targetFiles.push(...getFiles(p));
+    targetUIFiles.push(...getUIFiles(p));
   }
 }
 
-// UI text attributes to check
 const UI_ATTR_REGEX = /\b(title|subtitle|label|description|placeholder|emptyMessage|message|alt)=["']([^"']+)["']/g;
 
-for (const filePath of targetFiles) {
+for (const filePath of targetUIFiles) {
   const basename = path.basename(filePath);
   if (SKIP_FILES.has(basename)) continue;
 
   const content = fs.readFileSync(filePath, "utf-8");
   const lines = content.split(/\r?\n/);
 
-  // 1. Scan lines for UI strings
   for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
     const line = lines[lineIdx];
     const lineNum = lineIdx + 1;
     const trimmed = line.trim();
 
-    // Skip comment lines and imports/types
     if (trimmed.startsWith("//") || trimmed.startsWith("/*") || trimmed.startsWith("*")) continue;
     if (trimmed.startsWith("import ") || trimmed.startsWith("export type ") || trimmed.startsWith("interface ")) continue;
 
@@ -124,7 +160,6 @@ for (const filePath of targetFiles) {
     let attrMatch;
     while ((attrMatch = UI_ATTR_REGEX.exec(line)) !== null) {
       const val = attrMatch[2];
-      // Skip explorer links or code imports
       if (val.startsWith("http://") || val.startsWith("https://")) continue;
 
       for (const rule of BANNED_PATTERNS) {
@@ -161,7 +196,7 @@ for (const filePath of targetFiles) {
     }
   }
 
-  // 2. Check for Card paragraphs over 25 words
+  // Check Card paragraphs over 25 words
   const cardRegex = /<Card[\s\S]*?<\/Card>/g;
   let cardMatch;
   while ((cardMatch = cardRegex.exec(content)) !== null) {
@@ -186,10 +221,38 @@ for (const filePath of targetFiles) {
   }
 }
 
+// 2. Scan web/src outside test fixtures for 0x literals
+const sourceFilesOutsideFixtures = getSourceFilesOutsideFixtures(srcDir);
+const HEX_LITERAL_REGEX = /\b0x[0-9a-fA-F]{4,}\b/g;
+
+for (const filePath of sourceFilesOutsideFixtures) {
+  const content = fs.readFileSync(filePath, "utf-8");
+  const lines = content.split(/\r?\n/);
+
+  for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
+    const line = lines[lineIdx];
+    const lineNum = lineIdx + 1;
+    const trimmed = line.trim();
+
+    if (trimmed.startsWith("//") || trimmed.startsWith("/*") || trimmed.startsWith("*")) continue;
+
+    let hexMatch;
+    while ((hexMatch = HEX_LITERAL_REGEX.exec(line)) !== null) {
+      violations.push({
+        file: path.relative(process.cwd(), filePath),
+        line: lineNum,
+        rule: `0x literal found in web/src outside test fixtures (${hexMatch[0]})`,
+        text: trimmed,
+      });
+      totalViolations++;
+    }
+  }
+}
+
 console.log(`\n========================================`);
 console.log(`VeriCEMS UI Text & Text Diet Linter`);
 console.log(`========================================`);
-console.log(`Scanned ${targetFiles.length} UI files across components, pages, shell.`);
+console.log(`Scanned ${targetUIFiles.length} UI files and ${sourceFilesOutsideFixtures.length} source files.`);
 
 if (totalViolations > 0) {
   console.error(`\n❌ FAILED: Found ${totalViolations} UI text violation(s):\n`);
