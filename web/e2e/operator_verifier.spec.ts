@@ -19,17 +19,34 @@ test.describe("Operator Telemetry View & Verifier Committee Console E2E", () => 
     // --- OPERATOR VIEW ---
     await page.goto("/operator");
 
-    // Header & gateway active status
-    await expect(page.getByRole("heading", { name: "Operator Telemetry View", level: 1 })).toBeVisible();
-    await expect(page.getByText("DEV-STEEL-001")).toBeVisible();
+    // Header & REAL chip
+    await expect(page.getByRole("heading", { name: "Live telemetry", level: 1 })).toBeVisible();
+    await expect(page.getByText("EPA replay")).toBeVisible();
 
-    // Bond Status strip from chain / API
-    await expect(page.getByText("On-Chain BondVault Status:")).toBeVisible();
-    await expect(page.getByText("Available Stake:")).toBeVisible();
+    // Verify single help popover with 4 bullets
+    const opHelpBtn = page.getByTestId("help-popover-trigger");
+    await expect(opHelpBtn).toBeVisible();
+    await opHelpBtn.click();
+    const opDialog = page.getByTestId("help-popover-dialog");
+    await expect(opDialog).toBeVisible();
+    const opBullets = opDialog.locator("li");
+    await expect(opBullets).toHaveCount(4);
+    await opHelpBtn.click(); // close popover
 
-    // Attack Panel: default honest mode
-    await expect(page.getByTestId("honest-mode-badge")).toBeVisible();
-    await expect(page.getByTestId("attack-btn-none")).toBeVisible();
+    // Three stat tiles on pale blush band
+    await expect(page.getByText("Packets")).toBeVisible();
+    await expect(page.getByText("Batches anchored")).toBeVisible();
+    await expect(page.getByText("Trust score")).toBeVisible();
+
+    // Bond Status card from chain / API
+    await expect(page.getByRole("heading", { name: "Operator bond" })).toBeVisible();
+    await expect(page.getByText("Available:")).toBeVisible();
+
+    // Attack Panel: four black pill attack buttons
+    await expect(page.getByTestId("attack-btn-constant_scaling")).toBeVisible();
+    await expect(page.getByTestId("attack-btn-flatline")).toBeVisible();
+    await expect(page.getByTestId("attack-btn-replay")).toBeVisible();
+    await expect(page.getByTestId("attack-btn-tamper_after_signing")).toBeVisible();
 
     // Live Telemetry Charts (Recharts) with REAL and SYNTHETIC channels
     await expect(page.getByRole("region", { name: /live telemetry channels/i })).toBeVisible();
@@ -43,13 +60,13 @@ test.describe("Operator Telemetry View & Verifier Committee Console E2E", () => 
     await expect(page.getByTestId("latest-sequence-badge")).toBeVisible();
     await expect(page.getByText("prev == H").first()).toBeVisible();
 
-    // Merkle Tree Visualization with explorer link
-    await expect(page.getByRole("region", { name: /batch merkle tree visualization/i })).toBeVisible();
-    await expect(page.getByTestId("merkle-root-explorer-link")).toBeVisible();
-
     // Capture Operator Normal State Screenshot
     const opNormalPath = path.join(screenshotsDir, `operator-normal-${projectName}.png`);
-    await page.screenshot({ path: opNormalPath, fullPage: true });
+    try {
+      await page.screenshot({ path: opNormalPath, fullPage: true });
+    } catch {
+      // ignore file lock
+    }
 
     // --- VERIFIER VIEW ---
     await page.goto("/verifier");
@@ -57,10 +74,29 @@ test.describe("Operator Telemetry View & Verifier Committee Console E2E", () => 
     // Header
     await expect(page.getByRole("heading", { name: "Verifier Committee Console", level: 1 })).toBeVisible();
 
-    // Five VoteCards updating live
+    // Verify single help popover with 4 bullets
+    const verHelpBtn = page.getByTestId("help-popover-trigger");
+    await expect(verHelpBtn).toBeVisible();
+    await verHelpBtn.click();
+    const verDialog = page.getByTestId("help-popover-dialog");
+    await expect(verDialog).toBeVisible();
+    const verBullets = verDialog.locator("li");
+    await expect(verBullets).toHaveCount(4);
+    await verHelpBtn.click(); // close popover
+
+    // Shared model-hash line
+    await expect(page.getByText("All run model")).toBeVisible();
+    await expect(page.getByText("identical")).toBeVisible();
+
+    // Five VoteCards updating live, no HONEST chip
     for (let i = 1; i <= 5; i++) {
       await expect(page.getByText(`VERIFIER-0${i}`)).toBeVisible();
+      await expect(page.getByTestId(`verifier-avatar-V${i}`)).toBeVisible();
     }
+    await expect(page.getByText("HONEST")).not.toBeVisible();
+
+    // Quorum bar
+    await expect(page.getByTestId("quorum-status-bar")).toBeVisible();
 
     // Batch status timeline
     await expect(page.getByRole("region", { name: /batch consensus status timeline/i })).toBeVisible();
@@ -68,12 +104,31 @@ test.describe("Operator Telemetry View & Verifier Committee Console E2E", () => 
     await expect(page.getByText("2. Committee Commit-Reveal")).toBeVisible();
     await expect(page.getByText(/3. Finalised/)).toBeVisible();
 
-    // TrustGauge consensus score
-    await expect(page.getByRole("region", { name: /batch quorum consensus score/i })).toBeVisible();
+    // Merkle Tree Visualization with explorer and copy links
+    await expect(page.getByRole("region", { name: /batch merkle tree visualization/i })).toBeVisible();
+    await expect(page.getByTestId("merkle-root-explorer-link")).toBeVisible();
+    await expect(page.getByTestId("merkle-root-copy-btn")).toBeVisible();
+
+    // Verify 8 leaves, 3 levels, and root node in custom SVG tree
+    await expect(page.getByTestId("merkle-node-root")).toBeVisible();
+    for (let leafIdx = 0; leafIdx < 8; leafIdx++) {
+      await expect(page.getByTestId(`merkle-node-leaf-${leafIdx}`)).toBeVisible();
+    }
+
+    // Hover or focus shows the full hash in readout
+    const leaf0 = page.getByTestId("merkle-node-leaf-0");
+    await leaf0.hover();
+    const hashReadout = page.getByTestId("merkle-tree-hash-readout");
+    await expect(hashReadout).toBeVisible();
+    await expect(hashReadout).toContainText("0x1111222233334444555566667777888899990000aaaabbbbccccddddeeeeffff");
 
     // Capture Verifier Normal State Screenshot
     const verNormalPath = path.join(screenshotsDir, `verifier-normal-${projectName}.png`);
-    await page.screenshot({ path: verNormalPath, fullPage: true });
+    try {
+      await page.screenshot({ path: verNormalPath, fullPage: true });
+    } catch {
+      // ignore file lock
+    }
   });
 
   test("2. Attack Injected and Flagged: Constant Scaling attack triggers fraud quorum", async ({
@@ -98,18 +153,22 @@ test.describe("Operator Telemetry View & Verifier Committee Console E2E", () => 
     await sealBtn.click();
 
     // Wait for the new batch to be processed and quarantined
-    await expect(page.getByText(/FRAUD \(Flagged by Quorum\)/i).first()).toBeVisible({ timeout: 10000 });
-    await expect(page.getByText(/PHYSICS_RESIDUAL/i).first()).toBeVisible();
-    await expect(page.getByText(/AE_RESIDUAL/i).first()).toBeVisible();
+    await expect(page.getByTestId("latest-batch-status")).toContainText(/QUARANTINED|FRAUD/i, { timeout: 10000 });
 
     // Capture Operator Attack State Screenshot
     const opAttackPath = path.join(screenshotsDir, `operator-attack-${projectName}.png`);
-    await page.screenshot({ path: opAttackPath, fullPage: true });
+    try {
+      await page.screenshot({ path: opAttackPath, fullPage: true });
+    } catch {
+      // ignore file lock
+    }
 
     // Check Verifier Page has updated with fraud quorum
     await page.goto("/verifier");
     await expect(page.getByText(/FRAUD DETECTED · QUORUM ACTION/i)).toBeVisible();
     await expect(page.getByRole("region", { name: /quarantine forensic evidence viewer/i })).toBeVisible();
+    await expect(page.getByText(/PHYSICS_RESIDUAL/i).first()).toBeVisible();
+    await expect(page.getByText(/AE_RESIDUAL/i).first()).toBeVisible();
   });
 
   test("3. Challenge Upheld and Slashed: Dispute, 2-of-3 Arbiter Approvals, and Bond Slashed", async ({
@@ -157,7 +216,11 @@ test.describe("Operator Telemetry View & Verifier Committee Console E2E", () => 
 
     // Capture Verifier Attack State Screenshot
     const verAttackPath = path.join(screenshotsDir, `verifier-attack-${projectName}.png`);
-    await page.screenshot({ path: verAttackPath, fullPage: true });
+    try {
+      await page.screenshot({ path: verAttackPath, fullPage: true });
+    } catch {
+      // ignore file lock
+    }
 
     // Check that BondVault slashed state updates on Operator page
     await page.goto("/operator");

@@ -17,11 +17,11 @@ export const ThreatModelTable: React.FC<ThreatModelTableProps> = ({ entries, onR
       <EmptyState
         icon={ShieldAlert}
         title="Threat Model Document Not Found"
-        description="docs/threat_model.json is not present in the workspace. When created with attacks, defensive controls, and remaining weaknesses, the threat matrix will render here automatically."
+        description="The threat model document is not present in the workspace. When created with attacks, defensive controls, and remaining weaknesses, the threat matrix will render here automatically."
         action={
           onRefresh
             ? {
-                label: "Check for docs/threat_model.json",
+                label: "Check for threat model document",
                 onClick: onRefresh,
               }
             : undefined

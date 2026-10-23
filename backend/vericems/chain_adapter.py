@@ -1286,10 +1286,14 @@ class AnvilProcess:
 
         cmd_bin = _resolve_foundry_binary("anvil")
 
+        anvil_log_path = REPO_ROOT / "data" / "anvil.log"
+        anvil_log_path.parent.mkdir(parents=True, exist_ok=True)
+        self._log_fh = open(anvil_log_path, "a", encoding="utf-8")
+
         self.process = subprocess.Popen(
             [cmd_bin, "--host", self.host, "--port", str(self.port), "--accounts", "10", "--balance", "10000"],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+            stdout=self._log_fh,
+            stderr=self._log_fh,
             text=True,
         )
 
@@ -1342,6 +1346,12 @@ class AnvilProcess:
             )
 
     def stop(self) -> None:
+        if hasattr(self, "_log_fh") and self._log_fh:
+            try:
+                self._log_fh.close()
+            except Exception:
+                pass
+            self._log_fh = None
         if self.process is not None:
             try:
                 self.process.terminate()

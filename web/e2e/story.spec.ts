@@ -135,8 +135,8 @@ test.describe("VeriCEMS Deterministic Story & Reset Repeatability", () => {
       await expect(captionArea).toContainText("Normal telemetry batches flow");
 
       // Verify batch 1 on Operator page
-      await expect(page.getByText("#1").first()).toBeVisible({ timeout: 10000 });
-      await expect(page.getByText("VERIFIED").first()).toBeVisible();
+      await expect(page.locator("main").getByText("#1").first()).toBeVisible({ timeout: 10000 });
+      await expect(page.locator("main").getByText("VERIFIED").first()).toBeVisible();
 
       // Capture Step 1 Screenshot
       if (cycleNum === 1) {
@@ -230,7 +230,7 @@ test.describe("VeriCEMS Deterministic Story & Reset Repeatability", () => {
 
       // 2. Tampered report verification fails
       await page.getByTestId("load-tampered-report-btn").click();
-      await expect(statusBanner).toContainText("VERIFICATION FAILED: TAMPERED OR NON-COMPLIANT REPORT");
+      await expect(statusBanner).toContainText("VERIFICATION FAILED: TAMPERED REPORT");
       await expect(page.getByText("INTEGRITY VIOLATION")).toBeVisible();
 
       // 3. Restore valid report & load illustrative preset to show cost savings
@@ -256,11 +256,11 @@ test.describe("VeriCEMS Deterministic Story & Reset Repeatability", () => {
       await expect(captionArea).toContainText("What still gets through");
 
       await page.waitForURL("**/benchmark", { timeout: 10000 });
-      await expect(page.getByRole("heading", { name: /benchmark & threat model/i, level: 1 })).toBeVisible();
+      await expect(page.getByRole("heading", { name: /what we catch, and what we don't/i, level: 1 })).toBeVisible();
 
       // Disclosure section visible
-      await expect(page.getByRole("heading", { name: /3\. Prominent Disclosure: What Still Gets Through/i })).toBeVisible();
-      await expect(page.getByText(/Honesty Disclosure: Attacks with Proposed Detector Recall/i)).toBeVisible();
+      await expect(page.getByRole("heading", { name: /what still gets through/i })).toBeVisible();
+      await expect(page.getByText(/slow drift \(0\.1%\/day\)/i)).toBeVisible();
 
       if (cycleNum === 1) {
         const p = path.join(screenshotsDir, `story-step-7-benchmark-disclosure-${projectName}.png`);
@@ -286,7 +286,7 @@ test.describe("VeriCEMS Deterministic Story & Reset Repeatability", () => {
     await page.goto("/operator");
     await expect(page.getByTestId("demo-caption-area")).toContainText("Demo Ready");
     await expect(page.getByTestId("operator-slashed-bond")).toContainText("0.00 ETH");
-    await expect(page.getByTestId("honest-mode-badge")).toBeVisible();
+    await expect(page.getByTestId("attack-btn-constant_scaling")).toBeVisible();
 
     // =========================================================================
     // CYCLE 2: Repeat Story Execution (Must produce identical outcomes)

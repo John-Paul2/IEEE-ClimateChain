@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { ShieldCheck, ShieldAlert, Shield, AlertCircle, AlertTriangle } from "lucide-react";
+import { CheckCircle2, Shield, AlertCircle, AlertTriangle } from "lucide-react";
 import { Skeleton } from "./Skeleton";
 import { ErrorState } from "./ErrorState";
 
@@ -83,19 +83,19 @@ export const TrustGauge: React.FC<TrustGaugeProps> = ({
   if (isLoading) {
     return (
       <div
-        className={`flex flex-col items-center justify-center p-6 bg-surface border border-border rounded-xl ${className}`}
+        className={`flex flex-col items-center justify-center p-6 bg-surface border border-hairline rounded-card ${className}`}
         style={{ minHeight: size + 40 }}
       >
         <Skeleton variant="circular" width={size * 0.7} height={size * 0.7} className="mb-4" />
-        <Skeleton className="h-4 w-32 mb-2" />
-        <Skeleton className="h-3 w-20" />
+        <Skeleton className="h-4 w-32 mb-2 rounded-md" />
+        <Skeleton className="h-3 w-20 rounded-md" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className={`p-4 bg-surface border border-border rounded-xl ${className}`}>
+      <div className={`p-5 bg-surface border border-hairline rounded-card ${className}`}>
         <ErrorState title={title} message={error} onRetry={onRetry} />
       </div>
     );
@@ -104,14 +104,14 @@ export const TrustGauge: React.FC<TrustGaugeProps> = ({
   if (isEmpty || scoreBp === null || scoreBp === undefined) {
     return (
       <div
-        className={`flex flex-col items-center justify-center p-6 bg-surface border border-border rounded-xl text-center ${className}`}
+        className={`flex flex-col items-center justify-center p-6 bg-surface border border-hairline rounded-card text-center ${className}`}
         style={{ minHeight: size + 40 }}
       >
-        <div className="p-3 bg-surface-raised border border-border rounded-full text-muted mb-3">
+        <div className="p-3 bg-surface-soft border border-hairline rounded-full text-muted mb-3">
           <AlertCircle className="w-8 h-8" aria-hidden="true" />
         </div>
-        <h4 className="text-sm font-medium text-text">{title}</h4>
-        <p className="text-xs text-muted mt-1">No trust score calculated yet</p>
+        <h4 className="font-heading font-semibold text-sm text-ink">{title}</h4>
+        <p className="text-xs text-muted-strong mt-1">No trust score calculated yet</p>
       </div>
     );
   }
@@ -128,10 +128,10 @@ export const TrustGauge: React.FC<TrustGaugeProps> = ({
 
   const gaugeColor =
     verdict === "fraud" || !isAboveThreshold
-      ? "#F43F5E"
+      ? "#FF6B6B"
       : verdict === "clean" || isAboveThreshold
-      ? "#2DD4BF"
-      : "#F59E0B";
+      ? "#0E9F6E"
+      : "#D97706";
 
   const derivedVerdict = verdict || (isAboveThreshold ? "clean" : "fraud");
 
@@ -139,13 +139,16 @@ export const TrustGauge: React.FC<TrustGaugeProps> = ({
     <div
       role="region"
       aria-label={`${title}: ${(pct * 100).toFixed(2)} percent (${safeScore} basis points)`}
-      className={`flex flex-col items-center justify-center p-6 bg-surface border border-border rounded-xl shadow-sm ${className}`}
+      className={`flex flex-col items-center justify-center p-6 bg-surface border border-hairline rounded-card shadow-card ${className}`}
     >
-      <span className="text-xs font-semibold uppercase tracking-wider text-muted mb-2">
+      <span className="text-[12px] font-semibold uppercase tracking-wider text-muted-strong mb-2">
         {title}
       </span>
 
-      <div className="relative flex items-center justify-center" style={{ width: size, height: size * 0.65 }}>
+      <div
+        className="relative flex items-center justify-center"
+        style={{ width: size, height: size * 0.65 }}
+      >
         <svg
           viewBox="0 0 180 110"
           className="w-full h-full overflow-visible"
@@ -167,18 +170,13 @@ export const TrustGauge: React.FC<TrustGaugeProps> = ({
             const tx = 90 - radius * Math.cos(threshAngle);
             const ty = 100 - radius * Math.sin(threshAngle);
             return (
-              <circle
-                cx={tx}
-                cy={ty}
-                r="3"
-                fill="#8FA0BF"
-              >
+              <circle cx={tx} cy={ty} r="3" fill="#8FA0BF">
                 <title>{`Quorum threshold: ${thresholdBp} bp`}</title>
               </circle>
             );
           })()}
 
-          {/* Animated Gauge Arc (Motion with purpose) */}
+          {/* Animated Gauge Arc */}
           <motion.path
             d="M 20 100 A 70 70 0 0 1 160 100"
             fill="none"
@@ -194,27 +192,27 @@ export const TrustGauge: React.FC<TrustGaugeProps> = ({
 
         {/* Center Readout */}
         <div className="absolute inset-x-0 bottom-1 flex flex-col items-center justify-center text-center">
-          <span className="text-3xl font-extrabold font-mono tracking-tight text-text">
+          <span className="text-3xl font-extrabold font-mono tracking-tight text-ink">
             {(pct * 100).toFixed(1)}%
           </span>
-          <span className="text-xs font-mono text-muted">{safeScore} bp</span>
+          <span className="text-xs font-mono text-muted-strong">{safeScore} bp</span>
         </div>
       </div>
 
       {/* Accessible verdict label with icon */}
       <div className="mt-4 flex items-center gap-2">
         {derivedVerdict === "clean" ? (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-verified/10 border border-verified/30 text-verified">
-            <ShieldCheck className="w-4 h-4" aria-hidden="true" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-chip text-xs font-semibold bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
+            <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
             <span>CLEAN (Passes Quorum)</span>
           </span>
         ) : derivedVerdict === "fraud" ? (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-flagged/10 border border-flagged/30 text-flagged">
-            <ShieldAlert className="w-4 h-4" aria-hidden="true" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-chip text-xs font-semibold bg-red-500/15 border border-red-500/30 text-[#FF6B6B]">
+            <AlertTriangle className="w-4 h-4" aria-hidden="true" />
             <span>FRAUD (Flagged by Quorum)</span>
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-warning/10 border border-warning/30 text-warning">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-chip text-xs font-semibold bg-amber-500/15 border border-amber-500/30 text-amber-400">
             <Shield className="w-4 h-4" aria-hidden="true" />
             <span>PENDING CONSENSUS</span>
           </span>
@@ -223,8 +221,8 @@ export const TrustGauge: React.FC<TrustGaugeProps> = ({
 
       {/* Flagged Reason Codes with Plain-Language Explanations */}
       {derivedVerdict === "fraud" && reasonCodes.length > 0 && (
-        <div className="mt-4 w-full pt-4 border-t border-border/60 space-y-2">
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-flagged">
+        <div className="mt-5 w-full pt-4 border-t border-hairline space-y-2">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-[#FF6B6B]">
             <AlertTriangle className="w-3.5 h-3.5" aria-hidden="true" />
             <span>Flagged Reason Codes ({reasonCodes.length})</span>
           </div>
@@ -237,27 +235,29 @@ export const TrustGauge: React.FC<TrustGaugeProps> = ({
               };
               const layerBg =
                 info.layer === "Cryptographic"
-                  ? "bg-info/10 text-info border-info/30"
+                  ? "bg-blue-500/15 text-blue-300 border-blue-500/30"
                   : info.layer === "Physics"
-                  ? "bg-warning/10 text-warning border-warning/30"
+                  ? "bg-amber-500/15 text-amber-300 border-amber-500/30"
                   : info.layer === "Signal"
-                  ? "bg-purple-500/10 text-purple-400 border-purple-500/30"
-                  : "bg-flagged/10 text-flagged border-flagged/30";
+                  ? "bg-purple-500/15 text-purple-300 border-purple-500/30"
+                  : "bg-red-500/15 text-[#FF6B6B] border-red-500/30";
 
               return (
                 <div
                   key={code}
-                  className="p-2.5 rounded-lg bg-surface-raised border border-flagged/30 text-left space-y-1"
+                  className="p-3 rounded-card bg-surface-soft border border-hairline text-left space-y-1"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-mono font-bold text-xs text-text">
+                    <span className="font-mono font-bold text-xs text-ink">
                       {info.label} ({code})
                     </span>
-                    <span className={`text-[10px] uppercase font-mono px-1.5 py-0.5 rounded border ${layerBg}`}>
+                    <span
+                      className={`text-[10px] uppercase font-mono px-2 py-0.5 rounded-chip border font-semibold ${layerBg}`}
+                    >
                       {info.layer}
                     </span>
                   </div>
-                  <p className="text-xs text-muted leading-relaxed">{info.desc}</p>
+                  <p className="text-xs text-muted-strong leading-relaxed">{info.desc}</p>
                 </div>
               );
             })}

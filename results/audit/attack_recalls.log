@@ -1,0 +1,14 @@
+adaptive_whitebox_a_single_source {'autoencoder_only': 0.145, 'baseline_1_static': 0.451, 'baseline_2_physics': 0.139, 'proposed': 0.857}
+adaptive_whitebox_b_coordinated_insider {'autoencoder_only': 0.237, 'baseline_1_static': 0.051, 'baseline_2_physics': 0.002, 'proposed': 0.03}
+constant_scaling_10pct {'autoencoder_only': 0.518, 'baseline_1_static': 0.653, 'baseline_2_physics': 1.0, 'proposed': 1.0}
+constant_scaling_20pct {'autoencoder_only': 0.75, 'baseline_1_static': 0.653, 'baseline_2_physics': 1.0, 'proposed': 1.0}
+constant_scaling_30pct {'autoencoder_only': 0.862, 'baseline_1_static': 0.741, 'baseline_2_physics': 1.0, 'proposed': 1.0}
+constant_scaling_5pct {'autoencoder_only': 0.267, 'baseline_1_static': 0.653, 'baseline_2_physics': 1.0, 'proposed': 0.858}
+flatline_injection {'autoencoder_only': 0.775, 'baseline_1_static': 0.822, 'baseline_2_physics': 0.973, 'proposed': 0.991}
+naive_replay {'autoencoder_only': 0.041, 'baseline_1_static': 0.053, 'baseline_2_physics': 0.021, 'proposed': 1.0}
+selective_packet_dropping {'autoencoder_only': 0.11, 'baseline_1_static': 0.038, 'baseline_2_physics': 0.002, 'proposed': 1.0}
+slow_drift_0_1pct_day {'autoencoder_only': 0.104, 'baseline_1_static': 0.197, 'baseline_2_physics': 0.071, 'proposed': 0.081}
+slow_drift_0_3pct_day {'autoencoder_only': 0.17, 'baseline_1_static': 0.431, 'baseline_2_physics': 0.34, 'proposed': 0.291}
+slow_drift_0_5pct_day {'autoencoder_only': 0.211, 'baseline_1_static': 0.515, 'baseline_2_physics': 0.595, 'proposed': 0.512}
+synthetic_noise_on_flatline {'autoencoder_only': 0.776, 'baseline_1_static': 0.828, 'baseline_2_physics': 0.975, 'proposed': 0.972}
+time_shifted_replay {'autoencoder_only': 0.316, 'baseline_1_static': 0.053, 'baseline_2_physics': 0.318, 'proposed': 0.998}

@@ -1,0 +1,47 @@
+AppShell.tsx:4: import { EventTicker } from "./EventTicker";
+AppShell.tsx:9: {/* Sticky Top Navigation Bar & Event Ticker */}
+AppShell.tsx:12: <EventTicker />
+EventTicker.tsx:5: export const EventTicker: React.FC = () => {
+EventTicker.tsx:42: const tickerItems = useMemo(() => {
+EventTicker.tsx:79: "P-256 ECDSA gateway signature confirmed on Arbitrum Sepolia",
+EventTicker.tsx:92: return tickerItems.slice(0, 3);
+EventTicker.tsx:93: }, [tickerItems]);
+EventTicker.tsx:98: aria-label="VeriCEMS Real-Time Event Ticker & Story Narration"
+EventTicker.tsx:99: className="bg-[#0A0A0A] text-white border-b border-black text-xs font-mono min-h-11 px-4 py-1.5 flex flex-wrap items-center justify-between overflow-hidden select-none ti
+EventTicker.tsx:104: aria-live="polite"
+EventTicker.tsx:124: {/* Marquee / Reduced-Motion Event Ticker */}
+EventTicker.tsx:139: <div className="animate-ticker-marquee flex items-center gap-8 py-1 group-hover:[animation-play-state:paused]">
+EventTicker.tsx:140: {tickerItems.concat(tickerItems).map((ev, i) => (
+TopBar.tsx:23: isMock,
+TopBar.tsx:24: setIsMock,
+TopBar.tsx:44: const stored = localStorage.getItem("vericems-theme");
+TopBar.tsx:57: localStorage.setItem("vericems-theme", theme);
+TopBar.tsx:152: LOCAL: {
+TopBar.tsx:158: TESTNET: {
+TopBar.tsx:164: "OFFLINE SNAPSHOT": {
+TopBar.tsx:227: <span className="sm:hidden">{network.networkType === "OFFLINE SNAPSHOT" ? "OFFLINE" : network.networkType}</span>
+TopBar.tsx:231: {network.networkType === "TESTNET" && (
+TopBar.tsx:233: href={import.meta.env?.VITE_EXPLORER_BASE_URL || "https://sepolia.arbiscan.io"}
+TopBar.tsx:236: aria-label="View on Arbitrum Sepolia Block Explorer"
+TopBar.tsx:237: title="Open Arbiscan Sepolia Explorer"
+TopBar.tsx:245: {/* MOCK DATA Badge */}
+TopBar.tsx:246: {isMock && (
+TopBar.tsx:249: aria-label="Mock Data Provider is active"
+TopBar.tsx:253: <span className="hidden sm:inline">MOCK DATA</span>
+TopBar.tsx:254: <span className="sm:hidden">MOCK</span>
+TopBar.tsx:258: {/* Mode Toggle (SYNTHETIC / LIVE) */}
+TopBar.tsx:262: setIsMock(!isMock);
+TopBar.tsx:265: isMock ? "Switched to Live Provider" : "Switched to Mock Provider",
+TopBar.tsx:266: isMock
+TopBar.tsx:267: ? "Connecting to local backend and chain."
+TopBar.tsx:268: : "Rendering offline synthetic test scenarios."
+TopBar.tsx:272: isMock
+TopBar.tsx:276: aria-label={`Toggle mock/live provider, currently ${isMock ? "Mock" : "Live"}`}
+TopBar.tsx:278: {isMock ? "SYNTHETIC" : "LIVE"}
+DataProvenancePanel.tsx:72: Real vs Synthetic Channels ({TELEMETRY_CHANNELS_PROVENANCE.length})
+DataProvenancePanel.tsx:98: {/* Tab 1: Real vs Synthetic Channels */}
+DataProvenancePanel.tsx:105: <span>Part 75 CO₂ Circularity & The Need for Synthetic Channels</span>
+DataProvenancePanel.tsx:108: In primary US EPA CAMPD bulk files, stack O₂, flue temperature, and stack flow rate are absent from the hourly CSVs. Furthermore, Part 75 CO₂ Mass and Heat Input are math
+DataProvenancePanel.tsx:137: label={ch.source === "real" ? "REAL" : "SYNTHETIC"}
+DataProvenancePanel.tsx:143: {ch.epaField || <span className="text-muted italic">None (synthetic)</span>}
+DataProvenancePanel.tsx:184: {(manifest.parameters.fuel_ledger_synthetic_noise_std_fraction * 100).toFixed(2)}%

@@ -11,6 +11,9 @@ import {
 import { Card } from "../components/Card";
 import { StatTile } from "../components/StatTile";
 import { Badge } from "../components/Badge";
+import { Chip } from "../components/Chip";
+import { Button } from "../components/Button";
+import { Popover } from "../components/Popover";
 import { HashChip } from "../components/HashChip";
 import { TrustGauge } from "../components/TrustGauge";
 import { HashChainStrip } from "../components/HashChainStrip";
@@ -45,73 +48,104 @@ export const GalleryPage: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-10 max-w-7xl mx-auto pb-12">
-      {/* Header */}
-      <div className="border-b border-border pb-4">
-        <div className="flex items-center gap-2 text-info mb-1">
-          <Component className="w-6 h-6" />
-          <span className="text-xs font-mono font-bold uppercase tracking-wider">
-            Design System Reference
-          </span>
+    <div className="space-y-8 max-w-full overflow-x-hidden">
+      {/* Header - Blush Band */}
+      <section className="bg-band border border-hairline rounded-card p-6 sm:p-8 shadow-card transition-all">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-brand mb-1.5">
+            <Component className="w-6 h-6" />
+            <span className="text-xs font-mono font-bold uppercase tracking-wider">
+              Design System Reference
+            </span>
+          </div>
+          <Popover
+            title="Design System Notes"
+            bullets={[
+              "Tokens follow Section 2 spec",
+              "Light theme default with dark toggle",
+              "Hairline borders and 24px cards",
+              "All chips pair icon with text",
+            ]}
+          />
         </div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-text">
+        <h1 className="text-page-title font-heading font-bold tracking-tight text-ink">
           Component Library & Token Gallery
         </h1>
-        <p className="text-sm text-muted mt-1">
-          Exhibition of all 14 components across standard, loading, empty, and error states.
+        <p className="text-body text-muted-strong mt-1.5 max-w-3xl">
+          Showcase of design tokens, pill buttons, chips, and 14 base components in both light and dark systems.
         </p>
-      </div>
+      </section>
 
       {/* 1. Design Tokens */}
       <section className="space-y-3">
-        <h2 className="text-lg font-bold text-text flex items-center gap-2">
+        <h2 className="text-section-title font-heading font-bold text-ink flex items-center gap-2">
           <span>1. Design Tokens</span>
-          <span className="text-xs font-normal text-muted">(Section 11.3 Theme Palette)</span>
+          <span className="text-xs font-normal text-muted-strong font-mono">(Section 2 CSS & Tailwind)</span>
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
           {[
-            { name: "background", hex: "#0B1220", bg: "bg-[#0B1220]", border: "border-border" },
-            { name: "surface", hex: "#111A2E", bg: "bg-[#111A2E]", border: "border-border" },
-            { name: "border", hex: "#1F2A44", bg: "bg-[#1F2A44]", border: "border-border" },
-            { name: "text", hex: "#E6EDF7", bg: "bg-[#E6EDF7]", text: "text-[#0B1220]" },
-            { name: "muted", hex: "#8FA0BF", bg: "bg-[#8FA0BF]", text: "text-[#0B1220]" },
-            { name: "verified", hex: "#2DD4BF", bg: "bg-verified", text: "text-[#0B1220]" },
-            { name: "flagged", hex: "#F43F5E", bg: "bg-flagged", text: "text-white" },
-            { name: "warning", hex: "#F59E0B", bg: "bg-warning", text: "text-[#0B1220]" },
-            { name: "info", hex: "#60A5FA", bg: "bg-info", text: "text-[#0B1220]" },
+            { name: "brand", hex: "#E5383B", bg: "bg-brand", text: "text-white" },
+            { name: "brand-pressed", hex: "#BA1F22", bg: "bg-[#BA1F22]", text: "text-white" },
+            { name: "brand-on-black", hex: "#FF6B6B", bg: "bg-[#0A0A0A]", text: "text-[#FF6B6B]" },
+            { name: "canvas", hex: "#FFFFFF", bg: "bg-canvas", border: "border-hairline", text: "text-ink" },
+            { name: "band (blush)", hex: "#FFF0F0", bg: "bg-band", border: "border-hairline", text: "text-ink" },
+            { name: "surface-soft", hex: "#F2F4F5", bg: "bg-surface-soft", border: "border-hairline", text: "text-ink" },
+            { name: "hairline", hex: "#E5E7EB", bg: "bg-hairline", text: "text-ink" },
+            { name: "ink", hex: "#0A0A0A", bg: "bg-ink", text: "text-white dark:text-black" },
+            { name: "muted", hex: "#86909C", bg: "bg-muted", text: "text-white" },
+            { name: "muted-strong", hex: "#5B6573", bg: "bg-[#5B6573]", text: "text-white" },
+            { name: "verified", hex: "#0E9F6E", bg: "bg-verified", text: "text-white" },
+            { name: "warning", hex: "#D97706", bg: "bg-warning", text: "text-white" },
           ].map((token) => (
             <div
               key={token.name}
-              className={`p-3 rounded-lg border ${token.border || "border-transparent"} ${
+              className={`p-3.5 rounded-card border ${token.border || "border-transparent"} ${
                 token.bg
-              } ${token.text || "text-text"} flex flex-col justify-between h-20 shadow-sm`}
+              } ${token.text || "text-ink"} flex flex-col justify-between h-24 shadow-sm`}
             >
-              <span className="font-semibold text-xs capitalize">{token.name}</span>
+              <span className="font-semibold text-xs">{token.name}</span>
               <span className="font-mono text-[11px] opacity-90">{token.hex}</span>
             </div>
           ))}
         </div>
       </section>
 
-      {/* 2. Badges */}
-      <section className="space-y-3">
-        <h2 className="text-lg font-bold text-text">2. Badge (Icon + Label, Never Colour Alone)</h2>
-        <div className="flex flex-wrap gap-3 items-center p-4 bg-surface border border-border rounded-xl">
-          <Badge variant="verified" label="VERIFIED" />
-          <Badge variant="flagged" label="FLAGGED" />
-          <Badge variant="warning" label="WARNING" />
-          <Badge variant="info" label="INFO" />
-          <Badge variant="muted" label="MUTED" />
-          <Badge isLoading label="LOADING" />
-          <Badge isEmpty label="" />
-          <Badge error="Failed to verify" />
+      {/* 2. Badge & Chip & Button */}
+      <section className="space-y-4">
+        <h2 className="text-section-title font-heading font-bold text-ink">
+          2. Badge & Chip & Pill Buttons
+        </h2>
+        <div className="space-y-3 p-5 bg-surface border border-hairline rounded-card shadow-card">
+          <div className="flex flex-wrap gap-3 items-center">
+            <span className="text-xs font-semibold text-muted-strong uppercase">Chips:</span>
+            <Chip variant="REAL" />
+            <Chip variant="SYNTHETIC" />
+            <Chip variant="ILLUSTRATIVE" />
+            <Chip variant="MOCK" />
+            <Chip variant="CLEAN" />
+            <Chip variant="FRAUD" />
+            <Badge variant="verified" label="VERIFIED" />
+            <Badge variant="flagged" label="FLAGGED" />
+            <Badge variant="warning" label="WARNING" />
+            <Badge variant="info" label="INFO" />
+          </div>
+          <div className="flex flex-wrap gap-3 items-center pt-2 border-t border-hairline">
+            <span className="text-xs font-semibold text-muted-strong uppercase">Buttons:</span>
+            <Button variant="black">Black Pill (Primary)</Button>
+            <Button variant="red">Red Pill (Brand)</Button>
+            <Button variant="ghost">Ghost Pill</Button>
+            <Button variant="black" size="sm">Small Black</Button>
+            <Button variant="red" size="sm">Small Red</Button>
+          </div>
         </div>
       </section>
 
       {/* 3. HashChip */}
       <section className="space-y-3">
-        <h2 className="text-lg font-bold text-text">3. HashChip (Copy + Explorer Link)</h2>
-        <div className="flex flex-wrap gap-4 items-center p-4 bg-surface border border-border rounded-xl">
+        <h2 className="text-section-title font-heading font-bold text-ink">
+          3. HashChip (Copy + Explorer Link)
+        </h2>
+        <div className="flex flex-wrap gap-4 items-center p-5 bg-surface border border-hairline rounded-card shadow-card">
           <HashChip
             hash="0x789a42f8c5b9671144177cd390de2ef830026e6d1c815ec6ba9d2424fa75d9e1"
             type="root"
@@ -130,9 +164,11 @@ export const GalleryPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 4. StatTiles */}
+      {/* 4. StatTile */}
       <section className="space-y-3">
-        <h2 className="text-lg font-bold text-text">4. StatTile (Various States)</h2>
+        <h2 className="text-section-title font-heading font-bold text-ink">
+          4. StatTile (Section 7.2)
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatTile
             label="Verified Rate"
@@ -156,7 +192,7 @@ export const GalleryPage: React.FC = () => {
 
       {/* 5. TrustGauge */}
       <section className="space-y-3">
-        <h2 className="text-lg font-bold text-text">5. TrustGauge (Motion with Purpose)</h2>
+        <h2 className="text-section-title font-heading font-bold text-ink">5. TrustGauge</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <TrustGauge
             scoreBp={9820}
@@ -176,11 +212,11 @@ export const GalleryPage: React.FC = () => {
       </section>
 
       {/* 6. HashChainStrip */}
-      <section className="space-y-3">
-        <h2 className="text-lg font-bold text-text">6. HashChainStrip (Drawing Links)</h2>
-        <div className="space-y-4">
+      <section className="space-y-3 w-full min-w-0 max-w-full overflow-hidden">
+        <h2 className="text-section-title font-heading font-bold text-ink">6. HashChainStrip</h2>
+        <div className="space-y-4 w-full min-w-0 max-w-full overflow-hidden">
           <HashChainStrip packets={samplePackets} />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full min-w-0 overflow-hidden">
             <HashChainStrip isLoading />
             <HashChainStrip isEmpty />
           </div>
@@ -188,11 +224,11 @@ export const GalleryPage: React.FC = () => {
       </section>
 
       {/* 7. MerkleTreeViz */}
-      <section className="space-y-3">
-        <h2 className="text-lg font-bold text-text">7. MerkleTreeViz (React Flow Graph)</h2>
-        <div className="space-y-4">
+      <section className="space-y-3 w-full min-w-0 max-w-full overflow-hidden">
+        <h2 className="text-section-title font-heading font-bold text-ink">7. MerkleTreeViz</h2>
+        <div className="space-y-4 w-full min-w-0 max-w-full overflow-hidden">
           <MerkleTreeViz batchId={1} />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full min-w-0 overflow-hidden">
             <MerkleTreeViz isLoading />
             <MerkleTreeViz isEmpty />
           </div>
@@ -200,8 +236,8 @@ export const GalleryPage: React.FC = () => {
       </section>
 
       {/* 8. VoteCard */}
-      <section className="space-y-3">
-        <h2 className="text-lg font-bold text-text">8. VoteCard (Verifier Committee)</h2>
+      <section className="space-y-3 w-full min-w-0 max-w-full overflow-hidden">
+        <h2 className="text-section-title font-heading font-bold text-ink">8. VoteCard</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <VoteCard
             verifier={{
@@ -231,9 +267,9 @@ export const GalleryPage: React.FC = () => {
       </section>
 
       {/* 9. Countdown */}
-      <section className="space-y-3">
-        <h2 className="text-lg font-bold text-text">9. Countdown (Challenge Window Timer)</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <section className="space-y-3 w-full min-w-0 max-w-full overflow-hidden">
+        <h2 className="text-section-title font-heading font-bold text-ink">9. Countdown</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full min-w-0">
           <Countdown
             expiresAtEpoch={Math.floor(Date.now() / 1000) + 75}
             totalDurationSeconds={120}
@@ -250,43 +286,29 @@ export const GalleryPage: React.FC = () => {
       </section>
 
       {/* 10. DataTable */}
-      <section className="space-y-3">
-        <h2 className="text-lg font-bold text-text">10. DataTable (Accessible & Sortable)</h2>
-        <div className="space-y-4">
+      <section className="space-y-3 w-full min-w-0 max-w-full overflow-hidden">
+        <h2 className="text-section-title font-heading font-bold text-ink">10. DataTable</h2>
+        <div className="space-y-4 w-full min-w-0 overflow-x-auto">
           <DataTable
             columns={sampleColumns}
             data={sampleData}
             keyField="id"
           />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <DataTable
-              columns={sampleColumns}
-              data={[]}
-              keyField="id"
-              isLoading
-            />
-            <DataTable
-              columns={sampleColumns}
-              data={[]}
-              keyField="id"
-              isEmpty
-            />
-          </div>
         </div>
       </section>
 
-      {/* 11. Cards (All states) */}
-      <section className="space-y-3">
-        <h2 className="text-lg font-bold text-text">11. Card (Container States)</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* 11. Card */}
+      <section className="space-y-3 w-full min-w-0 max-w-full overflow-hidden">
+        <h2 className="text-section-title font-heading font-bold text-ink">11. Card</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full min-w-0">
           <Card title="Standard Card" subtitle="Ready for content" icon={Activity}>
-            <p className="text-xs text-muted">Normal interactive content panel.</p>
+            <p className="text-xs text-muted-strong">Standard content container.</p>
           </Card>
           <Card title="Loading Card" isLoading icon={Clock}>
-            <p>Will be hidden by skeleton</p>
+            <p>Skeleton state</p>
           </Card>
           <Card title="Empty Card" isEmpty icon={AlertTriangle}>
-            <p>Hidden</p>
+            <p>Empty state</p>
           </Card>
           <Card
             title="Error Card"
@@ -294,53 +316,53 @@ export const GalleryPage: React.FC = () => {
             onRetry={() => {}}
             icon={Sparkles}
           >
-            <p>Hidden</p>
+            <p>Error state</p>
           </Card>
         </div>
       </section>
 
-      {/* 12. Toast Interactive Triggers */}
-      <section className="space-y-3">
-        <h2 className="text-lg font-bold text-text">12. Toast System (Live Triggers)</h2>
-        <div className="flex flex-wrap gap-3 p-4 bg-surface border border-border rounded-xl">
-          <button
-            type="button"
-            onClick={() => showToast("success", "Batch Verified", "3-of-5 clean quorum achieved.")}
-            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-verified/10 text-verified border border-verified/30 hover:bg-verified/20"
+      {/* 12. Toast System */}
+      <section className="space-y-3 w-full min-w-0 max-w-full overflow-hidden">
+        <h2 className="text-section-title font-heading font-bold text-ink">12. Toast System</h2>
+        <div className="flex flex-wrap gap-3 p-4 bg-surface border border-hairline rounded-card shadow-card w-full min-w-0">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => showToast("success", "Batch Verified", "Clean quorum reached.")}
           >
             Trigger Success Toast
-          </button>
-          <button
-            type="button"
-            onClick={() => showToast("error", "Fraud Quorum Reached", "Batch quarantined; challenge window opened.")}
-            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-flagged/10 text-flagged border border-flagged/30 hover:bg-flagged/20"
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => showToast("error", "Fraud Quorum Reached", "Quarantined.")}
           >
             Trigger Error Toast
-          </button>
-          <button
-            type="button"
-            onClick={() => showToast("warning", "Dispute Window Expiring", "15 seconds remaining.")}
-            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-warning/10 text-warning border border-warning/30 hover:bg-warning/20"
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => showToast("warning", "Dispute Expiring", "15 seconds.")}
           >
             Trigger Warning Toast
-          </button>
-          <button
-            type="button"
-            onClick={() => showToast("info", "Sync Complete", "Blockchain block 421614 fetched.")}
-            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-info/10 text-info border border-info/30 hover:bg-info/20"
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => showToast("info", "Sync Complete", "Chain synchronized.")}
           >
             Trigger Info Toast
-          </button>
+          </Button>
         </div>
       </section>
 
-      {/* 13. Skeleton, EmptyState & ErrorState standalone */}
+      {/* 13. Fallback Panels */}
       <section className="space-y-3">
-        <h2 className="text-lg font-bold text-text">13. Standalone Fallback Panels</h2>
+        <h2 className="text-section-title font-heading font-bold text-ink">13. Standalone Fallback Panels</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <EmptyState
             title="Standalone Empty State"
-            description="Clear visual placeholder with optional recovery button."
+            description="Clear placeholder with recovery action."
             action={{ label: "Initialize Gateway", onClick: () => {} }}
           />
           <ErrorState
@@ -354,3 +376,5 @@ export const GalleryPage: React.FC = () => {
     </div>
   );
 };
+
+export default GalleryPage;

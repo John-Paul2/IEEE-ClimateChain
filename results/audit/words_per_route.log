@@ -1,0 +1,5 @@
+OperatorPage: own=75 components=141 total~216 (n_components=5)
+VerifierPage: own=49 components=197 total~246 (n_components=7)
+ImporterPage: own=271 components=143 total~414 (n_components=5)
+BenchmarkPage: own=110 components=408 total~518 (n_components=6)
+GalleryPage: own=225 components=474 total~699 (n_components=16)

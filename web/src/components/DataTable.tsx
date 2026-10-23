@@ -73,33 +73,35 @@ export function DataTable<T extends Record<string, any>>({
 
   if (error) {
     return (
-      <div className={`p-4 bg-surface border border-border rounded-xl ${className}`}>
+      <div className={`p-5 bg-surface border border-hairline rounded-card shadow-card ${className}`}>
         <ErrorState title="Failed to load table" message={error} onRetry={onRetry} />
       </div>
     );
   }
 
   return (
-    <div className={`bg-surface border border-border rounded-xl overflow-hidden shadow-sm ${className}`}>
+    <div
+      className={`bg-surface border border-hairline rounded-card overflow-hidden shadow-card ${className}`}
+    >
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm" role="table">
-          <thead className="bg-surface-raised border-b border-border text-xs uppercase font-semibold text-muted">
+          <thead className="bg-surface-soft border-b border-hairline text-[12px] uppercase font-semibold text-muted-strong">
             <tr>
               {columns.map((col) => (
-                <th key={col.key} scope="col" className={`px-4 py-3 ${col.className || ""}`}>
+                <th key={col.key} scope="col" className={`px-5 py-3.5 ${col.className || ""}`}>
                   {col.sortable ? (
                     <button
                       type="button"
                       onClick={() => handleSort(col.key)}
-                      className="inline-flex items-center gap-1 hover:text-text focus-visible:ring-1 focus-visible:ring-info focus-visible:outline-none rounded"
+                      className="inline-flex items-center gap-1.5 hover:text-ink focus-visible:ring-1 focus-visible:ring-brand focus-visible:outline-none rounded"
                       aria-label={`Sort by ${col.header}`}
                     >
                       <span>{col.header}</span>
                       {sortKey === col.key ? (
                         sortDir === "asc" ? (
-                          <ArrowUp className="w-3.5 h-3.5 text-info" aria-hidden="true" />
+                          <ArrowUp className="w-3.5 h-3.5 text-brand" aria-hidden="true" />
                         ) : (
-                          <ArrowDown className="w-3.5 h-3.5 text-info" aria-hidden="true" />
+                          <ArrowDown className="w-3.5 h-3.5 text-brand" aria-hidden="true" />
                         )
                       ) : (
                         <ArrowUpDown className="w-3 h-3 opacity-40" aria-hidden="true" />
@@ -113,31 +115,28 @@ export function DataTable<T extends Record<string, any>>({
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-border/60">
+          <tbody className="divide-y divide-hairline">
             {isLoading ? (
               Array.from({ length: 4 }).map((_, rIdx) => (
                 <tr key={`skeleton-${rIdx}`}>
                   {columns.map((_, cIdx) => (
-                    <td key={`cell-${rIdx}-${cIdx}`} className="px-4 py-3.5">
-                      <Skeleton className="h-4 w-full" />
+                    <td key={`cell-${rIdx}-${cIdx}`} className="px-5 py-4">
+                      <Skeleton className="h-4 w-full rounded-md" />
                     </td>
                   ))}
                 </tr>
               ))
             ) : isEmpty || paginatedData.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="px-4 py-8">
+                <td colSpan={columns.length} className="px-5 py-10">
                   <EmptyState title={emptyTitle} description={emptyDescription} />
                 </td>
               </tr>
             ) : (
               paginatedData.map((row) => (
-                <tr
-                  key={String(row[keyField])}
-                  className="hover:bg-surface-raised/50 transition-colors"
-                >
+                <tr key={String(row[keyField])} className="hover:bg-band/40 transition-colors">
                   {columns.map((col) => (
-                    <td key={col.key} className={`px-4 py-3 ${col.className || ""}`}>
+                    <td key={col.key} className={`px-5 py-3.5 ${col.className || ""}`}>
                       {col.render ? col.render(row) : String(row[col.key] ?? "--")}
                     </td>
                   ))}
@@ -150,28 +149,28 @@ export function DataTable<T extends Record<string, any>>({
 
       {/* Pagination Controls */}
       {!isLoading && !isEmpty && sortedData.length > pageSize && (
-        <div className="flex items-center justify-between px-4 py-3 border-t border-border bg-surface-sunken/40 text-xs text-muted">
+        <div className="flex items-center justify-between px-5 py-3 border-t border-hairline bg-surface-soft/60 text-xs text-muted-strong">
           <span>
             Showing {(currentPage - 1) * pageSize + 1} to{" "}
             {Math.min(currentPage * pageSize, sortedData.length)} of {sortedData.length} entries
           </span>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <button
               type="button"
               disabled={currentPage <= 1}
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              className="px-2.5 py-1 rounded border border-border bg-surface hover:bg-surface-raised text-text disabled:opacity-40 disabled:pointer-events-none transition-colors"
+              className="px-3 py-1 rounded-pill border border-hairline bg-surface-soft hover:bg-white/10 text-ink disabled:opacity-40 disabled:pointer-events-none transition-colors"
             >
               Previous
             </button>
-            <span className="px-2 font-mono">
+            <span className="px-2 font-mono font-semibold">
               {currentPage} / {totalPages}
             </span>
             <button
               type="button"
               disabled={currentPage >= totalPages}
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              className="px-2.5 py-1 rounded border border-border bg-surface hover:bg-surface-raised text-text disabled:opacity-40 disabled:pointer-events-none transition-colors"
+              className="px-3 py-1 rounded-pill border border-hairline bg-surface-soft hover:bg-white/10 text-ink disabled:opacity-40 disabled:pointer-events-none transition-colors"
             >
               Next
             </button>

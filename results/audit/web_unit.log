@@ -1,0 +1,50 @@
+
+> vericems-web@1.0.0 test:unit
+> node --test src/lib/__tests__/*.test.ts
+
+Γû╢ VeriCEMS Benchmark Artifacts & Honesty Verification
+  Γ£ö loads results/benchmark_summary.json with valid structure and 14 attack scenarios (0.6614ms)
+  Γ£ö verifies macro averages and ROC curve coordinates (0.5657ms)
+  Γ£ö loads results/run_manifest.json with exact reproducibility metadata (0.1576ms)
+  Γ£ö validates telemetry channels provenance strictly adheres to AGENTS.md real vs synthetic rule (0.1215ms)
+  Γ£ö verifies formatMeanStd helper formats numbers deterministically (0.1294ms)
+  Γ£ö reads results/WHAT_STILL_GETS_THROUGH.md and ensures prominent disclosure of attacks under 50% recall (0.3073ms)
+Γ£ö VeriCEMS Benchmark Artifacts & Honesty Verification (2.7882ms)
+Γû╢ VeriCEMS TypeScript CBAM Calculator (web/src/lib/cbam.ts)
+  Γ£ö loads cbam_config.json and enforces NEEDS_SOURCE honesty rules (0.5497ms)
+  Γ£ö loads calculator/sources.json with all 7 required regulations (0.1114ms)
+  Γ£ö reproduces shared valid vector: illustrative_example (0.6691ms)
+  Γ£ö reproduces shared valid vector: payable_floors_at_zero_when_see_below_sefa (0.1372ms)
+  Γ£ö reproduces shared valid vector: both_payable_floor_at_zero (0.1307ms)
+  Γ£ö reproduces shared valid vector: zero_tonnes_shipped (0.1429ms)
+  Γ£ö reproduces shared valid vector: year_2027_markup_20_pct (0.128ms)
+  Γ£ö reproduces shared valid vector: year_2028_markup_30_pct_and_separate_default_benchmark (0.1432ms)
+  Γ£ö reproduces Guide Appendix A illustrative worked example (EUR 22,020.60 / EUR 47,951.40 / EUR 25,930.80) (0.3552ms)
+  Γ£ö enforces shared error vector: null_benchmark_raises_needs_source (0.4835ms)
+  Γ£ö enforces shared error vector: null_cscf_raises_needs_source (0.0745ms)
+  Γ£ö enforces shared error vector: null_default_value_base_raises_needs_source (0.0479ms)
+  Γ£ö enforces shared error vector: negative_tonnes_rejected (0.1042ms)
+  Γ£ö enforces shared error vector: negative_verified_see_rejected (0.0544ms)
+  Γ£ö enforces shared error vector: negative_price_rejected (0.0424ms)
+  Γ£ö enforces shared error vector: free_allocation_factor_above_one_rejected (0.0446ms)
+  Γ£ö throws NeedsSourceError when resolving from raw config without overrides for null parameters (0.0842ms)
+  Γ£ö validates pure helper functions for zero floor and null parameters (0.1395ms)
+Γ£ö VeriCEMS TypeScript CBAM Calculator (web/src/lib/cbam.ts) (4.2824ms)
+Γû╢ VeriCEMS Browser-Side Merkle & Verification Tests
+  Γ£ö computes empty Keccak-256 matching golden self-test (0.6408ms)
+  Γ£ö reproduces Merkle roots and proofs for all 4 golden chains (1.8775ms)
+  Γ£ö rejects invalid or tampered Merkle proofs (0.411ms)
+  Γ£ö computes deterministic identifier byte32 hashes (0.1448ms)
+  Γ£ö validates golden report against report.schema.json (1.084ms)
+  Γ£ö strictly enforces AGENTS.md Rule 5: rejects any report containing the word 'official' (0.1372ms)
+  Γ£ö verifies the recorded valid fixture via offline snapshot (0.8609ms)
+  Γ£ö detects and flags tampered reports in offline verification (0.389ms)
+Γ£ö VeriCEMS Browser-Side Merkle & Verification Tests (6.1695ms)
+Γä╣ tests 32
+Γä╣ suites 3
+Γä╣ pass 32
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 614.7227

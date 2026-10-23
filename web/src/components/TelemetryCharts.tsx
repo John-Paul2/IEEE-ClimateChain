@@ -107,36 +107,36 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
 
   if (isLoading) {
     return (
-      <div className={`p-5 bg-surface border border-border rounded-xl space-y-4 ${className}`}>
+      <div className={`p-5 bg-surface border border-hairline rounded-card space-y-4 shadow-card ${className}`}>
         <div className="flex items-center justify-between">
-          <Skeleton className="h-6 w-52" />
-          <Skeleton className="h-4 w-32" />
+          <Skeleton className="h-6 w-52 rounded-md" />
+          <Skeleton className="h-4 w-32 rounded-chip" />
         </div>
         <div className="flex gap-2">
-          <Skeleton className="h-8 w-24 rounded-full" />
-          <Skeleton className="h-8 w-24 rounded-full" />
-          <Skeleton className="h-8 w-24 rounded-full" />
+          <Skeleton className="h-8 w-24 rounded-chip" />
+          <Skeleton className="h-8 w-24 rounded-chip" />
+          <Skeleton className="h-8 w-24 rounded-chip" />
         </div>
-        <Skeleton className="h-72 w-full rounded-lg" />
+        <Skeleton className="h-72 w-full rounded-card" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className={`p-4 bg-surface border border-border rounded-xl ${className}`}>
-        <ErrorState title="Telemetry Charts Error" message={error} onRetry={onRetry} />
+      <div className={`p-4 bg-surface border border-hairline rounded-card shadow-card ${className}`}>
+        <ErrorState title="Telemetry error" message={error} onRetry={onRetry} />
       </div>
     );
   }
 
   if (isEmpty || packets.length === 0) {
     return (
-      <div className={`p-5 bg-surface border border-border rounded-xl ${className}`}>
+      <div className={`p-5 bg-surface border border-hairline rounded-card shadow-card ${className}`}>
         <EmptyState
           icon={ChartIcon}
-          title="No telemetry data recorded"
-          description="Live Recharts will display sensor streams once packets arrive from CEMS edge gateway."
+          title="No telemetry"
+          description="Waiting for plant edge gateway packets."
         />
       </div>
     );
@@ -169,30 +169,25 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
     <div
       role="region"
       aria-label="Live Telemetry Channels (Recharts)"
-      className={`p-5 bg-surface border border-border rounded-xl shadow-sm space-y-4 ${className}`}
+      className={`p-5 bg-surface border border-hairline rounded-card shadow-card space-y-4 ${className}`}
     >
       {/* Header and Channel Legend */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-3 border-b border-border/50">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-hairline">
         <div className="flex items-center gap-2">
-          <ChartIcon className="w-5 h-5 text-info" aria-hidden="true" />
-          <div>
-            <h3 className="text-sm font-semibold text-text">
-              Real-Time Stack Telemetry Multi-Chart
-            </h3>
-            <p className="text-xs text-muted">
-              Live Recharts visualization across {packets.length} sealed packets (US EPA CAMPD & synthetic channels)
-            </p>
-          </div>
+          <ChartIcon className="w-4 h-4 text-brand" aria-hidden="true" />
+          <h2 className="font-heading font-semibold text-sm text-ink">
+            Telemetry streams
+          </h2>
         </div>
 
         {/* Real vs Synthetic Summary Badges */}
         <div className="flex items-center gap-2 text-xs">
-          <span className="flex items-center gap-1 font-mono text-[11px] px-2 py-0.5 rounded bg-verified/10 text-verified border border-verified/30">
-            <span className="w-2 h-2 rounded-full bg-verified" />
+          <span className="flex items-center gap-1 font-mono text-[11px] px-2 py-0.5 rounded-chip bg-emerald-500/15 text-emerald-600 border border-emerald-500/30">
+            <span className="w-2 h-2 rounded-full bg-emerald-600" />
             REAL (EPA CAMPD)
           </span>
-          <span className="flex items-center gap-1 font-mono text-[11px] px-2 py-0.5 rounded bg-warning/10 text-warning border border-warning/30">
-            <span className="w-2 h-2 rounded-full bg-warning" />
+          <span className="flex items-center gap-1 font-mono text-[11px] px-2 py-0.5 rounded-chip bg-amber-500/15 text-amber-600 border border-amber-500/30">
+            <span className="w-2 h-2 rounded-full bg-amber-600" />
             SYNTHETIC (Simulated)
           </span>
         </div>
@@ -208,22 +203,22 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
               type="button"
               onClick={() => toggleChannel(ch.key)}
               aria-pressed={isActive}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-chip text-xs font-medium border transition-all ${
                 isActive
-                  ? "bg-surface-raised border-info/50 text-text shadow-sm"
-                  : "bg-surface-sunken border-border text-muted hover:text-text hover:border-border/80 opacity-60"
+                  ? "bg-surface-soft border-hairline-strong text-ink shadow-sm font-semibold"
+                  : "bg-surface border-hairline text-muted-strong hover:text-ink hover:border-hairline-strong opacity-70"
               }`}
             >
               <span
-                className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                className="w-2 h-2 rounded-full flex-shrink-0"
                 style={{ backgroundColor: ch.color }}
               />
               <span className="font-mono text-xs">{ch.label}</span>
               <span
-                className={`text-[9px] font-mono font-bold px-1 py-0.2 rounded border ${
+                className={`text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-chip border ${
                   ch.source === "REAL"
-                    ? "bg-verified/15 text-verified border-verified/40"
-                    : "bg-warning/15 text-warning border-warning/40"
+                    ? "bg-emerald-500/15 text-emerald-600 border-emerald-500/30"
+                    : "bg-amber-500/15 text-amber-600 border-amber-500/30"
                 }`}
               >
                 {ch.source}
@@ -237,31 +232,31 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
       <div className="h-80 w-full pt-2">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData} margin={{ top: 10, right: 25, left: 0, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1F2A44" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
             <XAxis
               dataKey="label"
-              stroke="#8FA0BF"
+              stroke="#5B6573"
               fontSize={11}
               tickLine={false}
-              axisLine={{ stroke: "#1F2A44" }}
+              axisLine={{ stroke: "#E5E7EB" }}
             />
             {/* Left Y Axis for CO2 / O2 */}
             <YAxis
               yAxisId="left"
-              stroke="#8FA0BF"
+              stroke="#5B6573"
               fontSize={11}
               tickLine={false}
-              axisLine={{ stroke: "#1F2A44" }}
+              axisLine={{ stroke: "#E5E7EB" }}
               domain={["auto", "auto"]}
             />
             {/* Right Y Axis for MW / Heat / Temp / Flow */}
             <YAxis
               yAxisId="right"
               orientation="right"
-              stroke="#8FA0BF"
+              stroke="#5B6573"
               fontSize={11}
               tickLine={false}
-              axisLine={{ stroke: "#1F2A44" }}
+              axisLine={{ stroke: "#E5E7EB" }}
               domain={["auto", "auto"]}
             />
             <Tooltip
@@ -269,10 +264,10 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
                 if (!active || !payload || payload.length === 0) return null;
                 const pt = payload[0].payload;
                 return (
-                  <div className="p-3 bg-surface border border-border rounded-lg shadow-xl text-xs space-y-1.5 min-w-[200px]">
-                    <div className="flex items-center justify-between pb-1 mb-1 border-b border-border/60">
-                      <span className="font-bold font-mono text-text">{label}</span>
-                      <span className="text-[10px] text-muted">{pt.time}</span>
+                  <div className="p-3 bg-surface border border-hairline rounded-card shadow-card text-xs space-y-1.5 min-w-[200px]">
+                    <div className="flex items-center justify-between pb-1 mb-1 border-b border-hairline">
+                      <span className="font-bold font-mono text-ink">{label}</span>
+                      <span className="text-[10px] text-muted-strong">{pt.time}</span>
                     </div>
                     {payload.map((entry: any) => {
                       const cfg = REGISTERED_CHANNELS.find((c) => c.key === entry.dataKey);
@@ -284,18 +279,18 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
                               className="w-2 h-2 rounded-full"
                               style={{ backgroundColor: cfg.color }}
                             />
-                            <span className="text-muted">{cfg.label}:</span>
+                            <span className="text-muted-strong">{cfg.label}:</span>
                             <span
-                              className={`text-[9px] font-mono px-1 rounded ${
+                              className={`text-[9px] font-mono px-1 rounded-chip ${
                                 cfg.source === "REAL"
-                                  ? "bg-verified/20 text-verified"
-                                  : "bg-warning/20 text-warning"
+                                  ? "bg-emerald-500/15 text-emerald-600"
+                                  : "bg-amber-500/15 text-amber-600"
                               }`}
                             >
                               {cfg.source}
                             </span>
                           </div>
-                          <span className="font-mono font-bold text-text">
+                          <span className="font-mono font-bold text-ink">
                             {entry.value !== null && entry.value !== undefined
                               ? `${Number(entry.value).toFixed(2)} ${cfg.unit}`
                               : "--"}
@@ -317,7 +312,7 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
                 yAxisId={ch.yAxisId}
                 strokeWidth={2}
                 dot={{ r: 3, fill: ch.color }}
-                activeDot={{ r: 5, stroke: "#0B1220", strokeWidth: 2 }}
+                activeDot={{ r: 5, stroke: "#E5383B", strokeWidth: 2 }}
                 isAnimationActive={true}
               />
             ))}

@@ -83,9 +83,32 @@ function getPersistedState(): StateResponse {
   return getSyntheticState();
 }
 
+function getPersistedIsMock(): boolean {
+  try {
+    if (typeof window !== "undefined") {
+      const stored = sessionStorage.getItem("vericems_is_mock");
+      if (stored !== null) return stored === "true";
+    }
+  } catch {
+    // fallback
+  }
+  return true;
+}
+
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Default to mock mode so UI renders rich interactive state without backend
-  const [isMock, setIsMock] = useState<boolean>(true);
+  const [isMock, setIsMockState] = useState<boolean>(getPersistedIsMock);
+
+  const setIsMock = useCallback((val: boolean) => {
+    setIsMockState(val);
+    try {
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("vericems_is_mock", String(val));
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
   const [batches, setBatches] = useState<BatchSummary[]>(getSyntheticBatches());
   const [verifiers, setVerifiers] = useState<VerifierNodeStatus[]>(getSyntheticVerifiers());
   const [challenges, setChallenges] = useState<ChallengeRecord[]>(getSyntheticChallenges());

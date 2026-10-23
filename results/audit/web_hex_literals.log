@@ -1,0 +1,68 @@
+web/src/chain/viemClient.ts:12: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0") as `0x${string}`,
+web/src/chain/viemClient.ts:14: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707") as `0x${string}`,
+web/src/chain/viemClient.ts:16: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512") as `0x${string}`,
+web/src/chain/viemClient.ts:18: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9") as `0x${string}`,
+web/src/chain/viemClient.ts:20: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9") as `0x${string}`,
+web/src/chain/viemClient.ts:22: "0x5FbDB2315678afecb367f032d93F642f64180aa3") as `0x${string}`,
+web/src/components/ChallengePanel.tsx:164: (isUpheld ? "0x9876543210abcdef0123456789abcdef0123456789abcdef0123456789abcdef" : null);
+web/src/components/MerkleTreeViz.tsx:56: "0x789a42f8c5b9671144177cd390de2ef830026e6d1c815ec6ba9d2424fa75d9e1";
+web/src/components/MerkleTreeViz.tsx:63: "0x1111222233334444555566667777888899990000aaaabbbbccccddddeeeeffff",
+web/src/components/MerkleTreeViz.tsx:64: "0x2222333344445555666677778888999900001111bbbbccccddddeeeeffffaaaa",
+web/src/components/MerkleTreeViz.tsx:65: "0x3333444455556666777788889999000011112222ccccddddeeeeffffaaaabbbb",
+web/src/components/MerkleTreeViz.tsx:66: "0x4444555566667777888899990000111122223333ddddeeeeffffaaaabbbbcccc",
+web/src/components/MerkleTreeViz.tsx:67: "0x5555666677778888999900001111222233334444eeeeffffaaaabbbbccccdddd",
+web/src/components/MerkleTreeViz.tsx:68: "0x6666777788889999000011112222333344445555ffffaaaabbbbccccddddeeee",
+web/src/components/MerkleTreeViz.tsx:69: "0x7777888899990000111122223333444455556666aaaabbbbccccddddeeeeffff",
+web/src/components/MerkleTreeViz.tsx:70: "0x8888999900001111222233334444555566667777bbbbccccddddeeeeffffaaaa",
+web/src/components/MerkleTreeViz.tsx:114: "0x89abcdef0123456789abcdef0123456789abcdef0123456789abcdef01234567",
+web/src/components/MerkleTreeViz.tsx:115: "0x9abcdef0123456789abcdef0123456789abcdef0123456789abcdef012345678",
+web/src/components/MerkleTreeViz.tsx:116: "0xabcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789",
+web/src/components/MerkleTreeViz.tsx:117: "0xbcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789a",
+web/src/components/MerkleTreeViz.tsx:138: "0xcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789ab",
+web/src/components/MerkleTreeViz.tsx:139: "0xdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abc",
+web/src/data/DataContext.tsx:209: installation_id: "0x1111111111111111111111111111111111111111111111111111111111111111",
+web/src/data/DataContext.tsx:277: { arbiter_id: "ARBITER-01", arbiter_address: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8", approved: false },
+web/src/data/DataContext.tsx:278: { arbiter_id: "ARBITER-02", arbiter_address: "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC", approved: false },
+web/src/data/DataContext.tsx:279: { arbiter_id: "ARBITER-03", arbiter_address: "0x90F79bf6EB2c4f870365E785982E1f101E93b906", approved: false },
+web/src/data/DataContext.tsx:308: installation_id: "0x1111111111111111111111111111111111111111111111111111111111111111",
+web/src/data/DataContext.tsx:387: { arbiter_id: "ARBITER-01", arbiter_address: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8", approved: true, tx_hash: "0xarb1tx..." },
+web/src/data/DataContext.tsx:388: { arbiter_id: "ARBITER-02", arbiter_address: "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC", approved: true, tx_hash: "0xarb2tx..." },
+web/src/data/DataContext.tsx:389: { arbiter_id: "ARBITER-03", arbiter_address: "0x90F79bf6EB2c4f870365E785982E1f101E93b906", approved: false },
+web/src/data/mockData.ts:68: installation_id: "0x1111111111111111111111111111111111111111111111111111111111111111",
+web/src/data/mockData.ts:69: merkle_root: "0x789a42f8c5b9671144177cd390de2ef830026e6d1c815ec6ba9d2424fa75d9e1",
+web/src/data/mockData.ts:75: tx_hash: "0x89ab12cd34ef567890abcdef1234567890abcdef1234567890abcdef12345678",
+web/src/data/mockData.ts:84: installation_id: "0x1111111111111111111111111111111111111111111111111111111111111111",
+web/src/data/mockData.ts:85: merkle_root: "0x34bc89de01fa23bc45de67ef890123456789abcdef0123456789abcdef012345",
+web/src/data/mockData.ts:91: tx_hash: "0x12cd34ef567890abcdef1234567890abcdef1234567890abcdef1234567890ab",
+web/src/data/mockData.ts:100: installation_id: "0x1111111111111111111111111111111111111111111111111111111111111111",
+web/src/data/mockData.ts:101: merkle_root: "0xfa123456bcde7890123456789abcdef0123456789abcdef0123456789abcdef0",
+web/src/data/mockData.ts:107: tx_hash: "0xdeadbeef1234567890abcdef1234567890abcdef1234567890abcdef12345678",
+web/src/data/mockData.ts:116: installation_id: "0x1111111111111111111111111111111111111111111111111111111111111111",
+web/src/data/mockData.ts:117: merkle_root: "0xee99887766554433221100ffeeddccbbaa99887766554433221100ffeeddccbb",
+web/src/data/mockData.ts:123: tx_hash: "0xbeefcafe00112233445566778899aabbccddeeff00112233445566778899aabb",
+web/src/data/mockData.ts:136: address: "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+web/src/data/mockData.ts:143: last_model_hash: "0x4b7c891023d456789abcdef0123456789abcdef0123456789abcdef012345678",
+web/src/data/mockData.ts:147: address: "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+web/src/data/mockData.ts:154: last_model_hash: "0x4b7c891023d456789abcdef0123456789abcdef0123456789abcdef012345678",
+web/src/data/mockData.ts:158: address: "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+web/src/data/mockData.ts:165: last_model_hash: "0x4b7c891023d456789abcdef0123456789abcdef0123456789abcdef012345678",
+web/src/data/mockData.ts:169: address: "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc",
+web/src/data/mockData.ts:176: last_model_hash: "0x4b7c891023d456789abcdef0123456789abcdef0123456789abcdef012345678",
+web/src/data/mockData.ts:180: address: "0x976EA74026E726554dB657fA54763abd0C3a0aa9",
+web/src/data/mockData.ts:187: last_model_hash: "0x4b7c891023d456789abcdef0123456789abcdef0123456789abcdef012345678",
+web/src/data/mockData.ts:218: merkle_root: "0xfa123456bcde7890123456789abcdef0123456789abcdef0123456789abcdef0",
+web/src/data/mockData.ts:226: data: { verifier_id: "VERIFIER-03", commitment: "0x11aa22bb..." },
+web/src/data/mockData.ts:268: installation_id: "0x1111111111111111111111111111111111111111111111111111111111111111",
+web/src/lib/__tests__/verification.test.ts:40: const zeroPktHash = "0x0000000000000000000000000000000000000000000000000000000000000000";
+web/src/lib/__tests__/verification.test.ts:99: badSiblings[0] = "0x1111111111111111111111111111111111111111111111111111111111111111";
+web/src/lib/__tests__/verification.test.ts:105: "0x9999999999999999999999999999999999999999999999999999999999999999",
+web/src/lib/__tests__/verification.test.ts:117: "0xabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcd"
+web/src/lib/__tests__/verification.test.ts:125: assert.equal(b32.toLowerCase(), "0xbacd7e89cdf1b1474f222f7cc0d24ad35b6666325da3405d6952b8a70a3b0bed");
+web/src/lib/__tests__/verification.test.ts:159: "0x0000000000000000000000000000000000000000000000000000000000000001";
+web/src/pages/GalleryPage.tsx:150: hash="0x789a42f8c5b9671144177cd390de2ef830026e6d1c815ec6ba9d2424fa75d9e1"
+web/src/pages/GalleryPage.tsx:154: hash="0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
+web/src/pages/GalleryPage.tsx:158: hash="0x89ab12cd34ef567890abcdef1234567890abcdef1234567890abcdef12345678"
+web/src/pages/GalleryPage.tsx:245: address: "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+web/src/pages/GalleryPage.tsx:256: address: "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+web/src/pages/ImporterPage.tsx:156: "0x0000000000000000000000000000000000000000000000000000000000000001";
+web/src/pages/VerifierPage.tsx:91: "0x4b789a2bcde7890123456789abcdef0123456789abcdef0123456789abcdef0678";

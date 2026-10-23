@@ -1,0 +1,13 @@
+backend\vericems\crypto\secure_element.py:276: element (such as a Microchip ATECC608) over I2C/SPI. In this hackathon
+ml\benchmark\report.py:356: "> **Generated automatically by:** [`ml/benchmark/report.py`](file:///c:/Users/LENOVO/Documents/Hackathons/IEEE%20Climate%20Change/ml/benchmark/report.py) from [`results/benchmark_summary.json`](file:///c:/Users/LENOVO/Documents/Hackathons/IEEE%20Climate%20Change/results/benchmark_summary.json) and [`results/run_manifest.json`](file:///c:/Users/LENOVO/Documents/Hackathons/IEEE%20Climate%20Change/results/run_manifest.json).",
+ml\data\make_data_card.py:65: "> **Generated automatically by:** [`ml/data/make_data_card.py`](file:///c:/Users/LENOVO/Documents/Hackathons/IEEE%20Climate%20Change/ml/data/make_data_card.py) "
+ml\data\make_data_card.py:66: "from [`results/data_inspection.json`](file:///c:/Users/LENOVO/Documents/Hackathons/IEEE%20Climate%20Change/results/data_inspection.json), "
+ml\data\make_data_card.py:67: "[`data/processed/preprocessing_manifest.json`](file:///c:/Users/LENOVO/Documents/Hackathons/IEEE%20Climate%20Change/data/processed/preprocessing_manifest.json), and "
+ml\data\make_data_card.py:68: "[`results/splits.json`](file:///c:/Users/LENOVO/Documents/Hackathons/IEEE%20Climate%20Change/results/splits.json)."
+ml\data\make_data_card.py:224: "factors recorded in [`config/emission_factors.yaml`](file:///c:/Users/LENOVO/Documents/Hackathons/IEEE%20Climate%20Change/config/emission_factors.yaml)."
+ml\data\make_data_card.py:253: "All published reference factors cited in [`config/emission_factors.yaml`](file:///c:/Users/LENOVO/Documents/Hackathons/IEEE%20Climate%20Change/config/emission_factors.yaml) "
+scripts\honesty_lint.py:153: "post-hackathon",
+scripts\honesty_lint.py:245: "post-hackathon",
+scripts\update_readme.py:146: [![IEEE ClimateChain Hackathon](https://img.shields.io/badge/IEEE%20Hackathon-Track%204-purple)](https://cmte.ieee.org/turkiye-blockchain/hackatlon/)
+scripts\update_readme.py:148: > **IEEE Global ClimateChain Hackathon 2026 — Track 4 (Climate Data & Environmental Monitoring)**
+scripts\update_readme.py:235: VeriCEMS is an open-source hackathon prototype developed for the IEEE Global ClimateChain Hackathon 2026. Code is licensed under Apache-2.0. All benchmark results are deterministically reproducible with fixed seeds (`base_seed = 42`).

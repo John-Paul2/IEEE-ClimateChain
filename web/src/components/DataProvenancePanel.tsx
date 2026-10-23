@@ -33,12 +33,12 @@ export const DataProvenancePanel: React.FC<DataProvenancePanelProps> = ({ manife
           <span className="text-[10px] text-muted block mt-0.5">Seeds 42..46</span>
         </div>
 
-        <div className="bg-surface-raised p-3 rounded-xl border border-border">
-          <span className="text-[11px] uppercase font-mono text-muted block">Git Commit</span>
-          <span className="text-sm font-bold font-mono text-text truncate block mt-1" title={manifest.git_commit_hash}>
+        <div className="bg-surface-soft p-3 rounded-card border border-hairline">
+          <span className="text-[11px] uppercase font-mono text-muted-strong block font-semibold">Git Commit</span>
+          <span className="text-sm font-bold font-mono text-ink truncate block mt-1" title={manifest.git_commit_hash}>
             {manifest.git_commit_hash}
           </span>
-          <span className="text-[10px] text-muted block mt-0.5">run_manifest.json</span>
+          <span className="text-[10px] text-muted-strong block mt-0.5">Run manifest (uncommitted)</span>
         </div>
 
         <div className="bg-surface-raised p-3 rounded-xl border border-border">

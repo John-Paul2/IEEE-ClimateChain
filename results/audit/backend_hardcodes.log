@@ -1,0 +1,85 @@
+chain.py:169: expected_device_id = str(batch["device_id"])
+chain.py:226: inferred_device_id = str(dev_id)
+merkle.py:32: 0x0000000000000001,
+merkle.py:33: 0x0000000000008082,
+merkle.py:34: 0x800000000000808A,
+merkle.py:35: 0x8000000080008000,
+merkle.py:36: 0x000000000000808B,
+merkle.py:37: 0x0000000080000001,
+merkle.py:38: 0x8000000080008081,
+merkle.py:39: 0x8000000000008009,
+merkle.py:40: 0x000000000000008A,
+merkle.py:41: 0x0000000000000088,
+merkle.py:42: 0x0000000080008009,
+merkle.py:43: 0x000000008000000A,
+merkle.py:44: 0x000000008000808B,
+merkle.py:45: 0x800000000000008B,
+merkle.py:46: 0x8000000000008089,
+merkle.py:47: 0x8000000000008003,
+merkle.py:48: 0x8000000000008002,
+merkle.py:49: 0x8000000000000080,
+merkle.py:50: 0x000000000000800A,
+merkle.py:51: 0x800000008000000A,
+merkle.py:52: 0x8000000080008081,
+merkle.py:53: 0x8000000000008080,
+merkle.py:54: 0x0000000080000001,
+merkle.py:55: 0x8000000080008008,
+merkle.py:68: return ((val << shift) | (val >> (64 - shift))) & 0xFFFFFFFFFFFFFFFF if shift else val
+merkle.py:416: resolved_device_id = str(device_id if device_id is not None else packets[0]["device_id"])
+merkle.py:420: f"Packet at index {idx} has device_id={pkt.get('device_id')!r} != {resolved_device_id!r}"
+packet.py:170: device_id=device_id,
+packet.py:211: device_id=device_id,
+secure_element.py:27: P256_P: Final[int] = 0xFFFFFFFF00000001000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF
+secure_element.py:29: P256_B: Final[int] = 0x5AC635D8AA3A93E7B3EBBD55769886BC651D06B0CC53B0F63BCE3C3E27D2604B
+secure_element.py:30: P256_N: Final[int] = 0xFFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551
+secure_element.py:32: P256_GX: Final[int] = 0x6B17D1F2E12C4247F8BCE6E563A440F277037D812DEB33A0F4A13945D898C296
+secure_element.py:33: P256_GY: Final[int] = 0x4FE342E2FE1A7F9B8EE7EB4A7C0F9E162BCE33576B315ECECBB6406837BF51F5
+baseline_physics.py:391: device_id=resolved_dev_id,
+verifier.py:150: verifier_address: str = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+verifier.py:305: device_id=device_id,
+verifier.py:322: device_id=device_id,
+verifier.py:482: device_id = ctx.get("device_id")
+verifier.py:484: device_id = packets[0].get("device_id")
+verifier.py:543: expected_device_id=str(device_id) if device_id else None,
+verifier.py:581: device_id=str(device_id) if device_id else None,
+verifier.py:630: device_id=str(device_id) if device_id else None,
+chain_adapter.py:286: self.deployment.get("admin", "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")
+chain_adapter.py:294: self.deployment.get("admin", "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"),
+chain_adapter.py:301: self.deployment.get("treasury", "0x70997970C51812dc3A010C7d01b50e0d17dc79C8")
+chain_adapter.py:309: "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+chain_adapter.py:310: "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+chain_adapter.py:311: "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+chain_adapter.py:312: "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc",
+chain_adapter.py:313: "0x976EA74026E726554dB657fA54763abd0C3a0aa9",
+chain_adapter.py:323: "0x14dC79964da2C08b23698B3D3cc7Ca32193d9955",
+chain_adapter.py:324: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f",
+chain_adapter.py:325: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720",
+chain_adapter.py:1221: device_id=device_id,
+chain_adapter.py:1222: installation_id=installation_id,
+chain_adapter.py:1334: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+gateway.py:222: self.device_id = (
+gateway.py:273: device_id=self.device_id,
+gateway.py:376: device_id=self.device_id,
+orchestrator.py:89: self.installation_id = installation_id
+orchestrator.py:90: self.device_id = device_id
+orchestrator.py:110: device_id=self.device_id,
+orchestrator.py:111: installation_id=self.installation_id,
+orchestrator.py:163: device_id=self.device_id,
+orchestrator.py:164: installation_id=self.installation_id,
+orchestrator.py:244: installation_id=self.installation_id,
+orchestrator.py:245: device_id=self.device_id,
+orchestrator.py:259: installation_id=self.installation_id,
+orchestrator.py:260: device_id=self.device_id,
+orchestrator.py:337: installation_id=self.installation_id,
+orchestrator.py:338: device_id=self.device_id,
+reports.py:355: installation_id=installation_id,
+reports.py:424: installation_id=installation_id,
+reports.py:425: device_id=device_id,
+server.py:27: INSTALLATION_ID = "INST-CAMPD-1073"
+server.py:28: DEVICE_ID = "DEV-CAMPD-1073-3"
+server.py:48: gateway = GatewaySimulator(FACILITY_ID, UNIT_ID, device_id=DEVICE_ID)
+server.py:50: device_id=DEVICE_ID,
+server.py:51: installation_id=INSTALLATION_ID,
+server.py:69: installation_id=INSTALLATION_ID,
+server.py:70: device_id=DEVICE_ID,
+store.py:173: resolved_device_id = (

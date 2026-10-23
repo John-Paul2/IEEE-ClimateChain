@@ -22,7 +22,7 @@ test.describe("VeriCEMS Application Shell & Route Smoke Tests", () => {
 
     // Verify page header
     await expect(
-      page.getByRole("heading", { name: "Operator Telemetry View", level: 1 })
+      page.getByRole("heading", { name: /Live telemetry|Operator Telemetry View/i, level: 1 })
     ).toBeVisible();
 
     // Verify hash chain component
@@ -30,8 +30,8 @@ test.describe("VeriCEMS Application Shell & Route Smoke Tests", () => {
       page.getByRole("region", { name: /tamper-evident hash chain/i })
     ).toBeVisible();
 
-    // Verify anchored batches table
-    await expect(page.getByRole("heading", { name: "Anchored Batches History" })).toBeVisible();
+    // Verify operator bond card and attack injection
+    await expect(page.getByRole("heading", { name: /Operator bond|Anchored Batches History/i })).toBeVisible();
 
     // Take screenshot for both desktop and mobile
     const projectName = testInfo.project.name;
@@ -73,9 +73,9 @@ test.describe("VeriCEMS Application Shell & Route Smoke Tests", () => {
     ).toBeVisible();
 
     // Financial comparison metrics
-    await expect(page.getByText("Verified Cost")).toBeVisible();
-    await expect(page.getByText("Default Value Cost")).toBeVisible();
-    await expect(page.getByText("CBAM Savings")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Default Value Route" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Verified Actual Route" })).toBeVisible();
+    await expect(page.getByText("You save", { exact: true })).toBeVisible();
 
     // Attestation certificate
     await expect(
@@ -87,7 +87,7 @@ test.describe("VeriCEMS Application Shell & Route Smoke Tests", () => {
     await page.goto("/benchmark");
 
     await expect(
-      page.getByRole("heading", { name: /benchmark & threat model/i, level: 1 })
+      page.getByRole("heading", { name: /what we catch, and what we don't/i, level: 1 })
     ).toBeVisible();
 
     // Evaluated attack scenarios from results/benchmark_summary.json

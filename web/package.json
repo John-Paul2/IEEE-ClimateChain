@@ -12,12 +12,13 @@
     "test:verification": "node --test src/lib/__tests__/verification.test.ts",
     "test:unit": "node --test src/lib/__tests__/*.test.ts",
     "test:e2e": "playwright test",
-    "test": "npm run test:unit && npm run test:e2e"
+    "test": "npm run test:unit && npm run test:e2e",
+    "lint": "node scripts/ui_text_lint.mjs"
   },
   "dependencies": {
     "@fontsource/inter": "^5.1.0",
     "@fontsource/jetbrains-mono": "^5.1.0",
-    "@xyflow/react": "^12.3.5",
+    "@fontsource/titillium-web": "^5.3.0",
     "ajv": "^8.20.0",
     "framer-motion": "^11.11.17",
     "lucide-react": "^0.460.0",

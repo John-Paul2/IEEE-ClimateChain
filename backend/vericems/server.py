@@ -74,7 +74,11 @@ def run_server(
     app = create_app(orch, scenario=scenario)
 
     print(f"[*] Starting VeriCEMS API & WebSocket server on http://{host}:{port}")
-    uvicorn.run(app, host=host, port=port, log_level="info")
+    try:
+        uvicorn.run(app, host=host, port=port, log_level="info")
+    finally:
+        print("[*] Stopping Anvil process...")
+        anvil.stop()
 
 
 if __name__ == "__main__":

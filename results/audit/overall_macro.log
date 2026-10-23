@@ -1,0 +1,90 @@
+{
+ "autoencoder_only": {
+  "auroc": {
+   "mean": 0.755516,
+   "std": 0.020129
+  },
+  "detection_delay_hours": {
+   "mean": 131.01185,
+   "std": 71.365181
+  },
+  "fpr": {
+   "mean": 0.10505,
+   "std": 0.114329
+  },
+  "precision": {
+   "mean": 0.567763,
+   "std": 0.116859
+  },
+  "recall": {
+   "mean": 0.377324,
+   "std": 0.217754
+  }
+ },
+ "baseline_1_static": {
+  "auroc": {
+   "mean": 0.577032,
+   "std": 0.134414
+  },
+  "detection_delay_hours": {
+   "mean": 130.480419,
+   "std": 14.772978
+  },
+  "fpr": {
+   "mean": 0.032194,
+   "std": 0.034066
+  },
+  "precision": {
+   "mean": 0.74424,
+   "std": 0.081883
+  },
+  "recall": {
+   "mean": 0.438496,
+   "std": 0.07372
+  }
+ },
+ "baseline_2_physics": {
+  "auroc": {
+   "mean": 0.802859,
+   "std": 0.029664
+  },
+  "detection_delay_hours": {
+   "mean": 106.595954,
+   "std": 11.933251
+  },
+  "fpr": {
+   "mean": 0.002453,
+   "std": 0.001812
+  },
+  "precision": {
+   "mean": 0.816516,
+   "std": 0.060767
+  },
+  "recall": {
+   "mean": 0.531133,
+   "std": 0.028116
+  }
+ },
+ "proposed": {
+  "auroc": {
+   "mean": 0.883008,
+   "std": 0.010667
+  },
+  "detection_delay_hours": {
+   "mean": 49.680716,
+   "std": 21.780091
+  },
+  "fpr": {
+   "mean": 0.083397,
+   "std": 0.060778
+  },
+  "precision": {
+   "mean": 0.775867,
+   "std": 0.082331
+  },
+  "recall": {
+   "mean": 0.756359,
+   "std": 0.080267
+  }
+ }
+}

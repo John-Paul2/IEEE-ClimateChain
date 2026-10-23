@@ -1,3 +1,5 @@
+@import "@fontsource/titillium-web/latin-600.css";
+@import "@fontsource/titillium-web/latin-700.css";
 @import "@fontsource/inter/latin-400.css";
 @import "@fontsource/inter/latin-500.css";
 @import "@fontsource/inter/latin-600.css";
@@ -5,7 +7,6 @@
 @import "@fontsource/jetbrains-mono/latin-400.css";
 @import "@fontsource/jetbrains-mono/latin-500.css";
 @import "@fontsource/jetbrains-mono/latin-600.css";
-@import "@xyflow/react/dist/style.css";
 
 @tailwind base;
 @tailwind components;
@@ -13,18 +14,139 @@
 
 @layer base {
   :root {
+    /* Brand (Section 2) */
+    --brand: #E5383B;          /* primary red: buttons, logo, active tab */
+    --brand-pressed: #BA1F22;
+    --on-brand: #FFFFFF;
+    --brand-on-black: #FF6B6B; /* readable red on black bands */
+
+    /* Neutrals (Section 2 - Light Design System) */
+    --ink: #0A0A0A;
+    --canvas: #FFFFFF;
+    --band: #FFF0F0;           /* pale blush band */
+    --surface-soft: #F2F4F5;
+    --surface-card: #FFFFFF;
+    --surface-raised: #FFFFFF;
+    --hairline: #E5E7EB;
+    --hairline-strong: #CBD5E1;
+    --muted: #86909C;          /* large text and icons only */
+    --muted-strong: #5B6573;   /* use for all small text (contrast) */
+
+    /* Status (small chips only, always with icon + word) */
+    --verified: #0E9F6E;
+    --warning: #D97706;
+    --flagged-bg: #FDECEC;
+    --flagged-ink: #9B1C1C;
+
+    /* Shape and space */
+    --radius-chip: 12px;
+    --radius-card: 24px;
+    --radius-pill: 9999px;
+    --space: 8px;              /* 8 px grid */
+    --section: 48px;
+
+    color-scheme: light;
+  }
+
+  .dark {
+    /* Brand Dark */
+    --brand: #E5383B;
+    --brand-pressed: #BA1F22;
+    --on-brand: #FFFFFF;
+    --brand-on-black: #FF6B6B;
+
+    /* Neutrals (Dark Theme Mode - Pure Neutral / #0E0E0E Charcoal) */
+    --ink: #F5F5F7;
+    --canvas: #0E0E0E;              /* Exact color requested by user */
+    --band: #141414;
+    --surface-soft: #1C1C1C;
+    --surface-card: #161616;
+    --surface-raised: #222222;
+    --hairline: #262626;
+    --hairline-strong: #383838;
+    --muted: #8E8E93;
+    --muted-strong: #AEAEB2;
+
+    /* Status Dark */
+    --verified: #0E9F6E;
+    --warning: #D97706;
+    --flagged-bg: rgba(229, 56, 59, 0.2);
+    --flagged-ink: #FF6B6B;
+
     color-scheme: dark;
   }
 
-  body {
-    background-color: #0b1220;
-    color: #e6edf7;
-    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  html {
+    max-width: 100%;
+    overflow-x: clip;
   }
 
-  /* Accessible focus indicators */
+  body {
+    background-color: var(--canvas);
+    color: var(--ink);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    max-width: 100%;
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  #root {
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  /* App type scale (DESIGN.MD: Titillium Web headings, Inter UI, JetBrains Mono numbers) */
+  h1, .text-page-title {
+    font-family: "Titillium Web", Inter, sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+
+  h2, .text-section-title {
+    font-family: "Titillium Web", Inter, sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+
+  h3, .text-card-title {
+    font-family: "Titillium Web", Inter, sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--ink);
+  }
+
+  .text-body {
+    font-family: Inter, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+
+  .text-caption {
+    font-family: Inter, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--muted-strong);
+  }
+
+  code, pre, .font-mono {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12.5px;
+  }
+
+  /* Accessible focus indicators with brand ring */
   :focus-visible {
-    outline: 2px solid #60a5fa !important;
+    outline: 2px solid var(--brand) !important;
     outline-offset: 2px !important;
   }
 
@@ -38,21 +160,46 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+
+    .animate-ticker-marquee {
+      animation: none !important;
+      transform: none !important;
+    }
   }
 
-  /* Sleek dark scrollbars */
+  /* Scrollbars */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
   ::-webkit-scrollbar-track {
-    background: #0b1220;
+    background: var(--canvas);
   }
   ::-webkit-scrollbar-thumb {
-    background: #1f2a44;
-    border-radius: 4px;
+    background: var(--hairline);
+    border-radius: var(--radius-pill);
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #2d3e64;
+    background: var(--hairline-strong);
   }
+}
+
+/* Ticker Marquee Keyframe */
+@keyframes ticker-marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-ticker-marquee {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: ticker-marquee 45s linear infinite;
+}
+
+.animate-ticker-marquee:hover {
+  animation-play-state: paused;
 }

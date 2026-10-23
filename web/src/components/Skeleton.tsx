@@ -16,14 +16,14 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   const variantStyles = {
     text: "h-4 w-full rounded",
     circular: "rounded-full aspect-square",
-    rectangular: "rounded-lg",
+    rectangular: "rounded-xl",
   };
 
   return (
     <div
       role="status"
       aria-label="Loading..."
-      className={`animate-pulse bg-surface-raised border border-border/50 ${variantStyles[variant]} ${className}`}
+      className={`animate-pulse bg-surface-soft border border-hairline/60 ${variantStyles[variant]} ${className}`}
       style={{
         width: typeof width === "number" ? `${width}px` : width,
         height: typeof height === "number" ? `${height}px` : height,
@@ -33,3 +33,5 @@ export const Skeleton: React.FC<SkeletonProps> = ({
     </div>
   );
 };
+
+export default Skeleton;

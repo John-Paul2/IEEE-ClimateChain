@@ -1,0 +1,35 @@
+
+> vericems-web@1.0.0 build
+> tsc && vite build
+
+[36mvite v5.4.21 [32mbuilding for production...[36m[39m
+transforming...
+[32mΓ£ô[39m 4082 modules transformed.
+rendering chunks...
+computing gzip size...
+[2mdist/[22m[32mindex.html                                             [39m[1m[2m    0.91 kB[22m[1m[22m[2m Γöé gzip:   0.51 kB[22m
+[2mdist/[22m[32massets/titillium-web-latin-700-normal-YDdGQjzo.woff2   [39m[1m[2m   11.73 kB[22m[1m[22m
+[2mdist/[22m[32massets/titillium-web-latin-600-normal-DBtSc4_g.woff2   [39m[1m[2m   12.12 kB[22m[1m[22m
+[2mdist/[22m[32massets/titillium-web-latin-700-normal-D73cfq1_.woff    [39m[1m[2m   15.67 kB[22m[1m[22m
+[2mdist/[22m[32massets/titillium-web-latin-600-normal-DAj26wWp.woff    [39m[1m[2m   16.26 kB[22m[1m[22m
+[2mdist/[22m[32massets/jetbrains-mono-latin-400-normal-V6pRDFza.woff2  [39m[1m[2m   21.17 kB[22m[1m[22m
+[2mdist/[22m[32massets/jetbrains-mono-latin-500-normal-BWZEU5yA.woff2  [39m[1m[2m   21.83 kB[22m[1m[22m
+[2mdist/[22m[32massets/jetbrains-mono-latin-600-normal-C8RAYTDA.woff2  [39m[1m[2m   21.86 kB[22m[1m[22m
+[2mdist/[22m[32massets/inter-latin-400-normal-C38fXH4l.woff2           [39m[1m[2m   23.66 kB[22m[1m[22m
+[2mdist/[22m[32massets/inter-latin-500-normal-Cerq10X2.woff2           [39m[1m[2m   24.27 kB[22m[1m[22m
+[2mdist/[22m[32massets/inter-latin-700-normal-Yt3aPRUw.woff2           [39m[1m[2m   24.36 kB[22m[1m[22m
+[2mdist/[22m[32massets/inter-latin-600-normal-LgqL8muc.woff2           [39m[1m[2m   24.45 kB[22m[1m[22m
+[2mdist/[22m[32massets/jetbrains-mono-latin-400-normal-6-qcROiO.woff   [39m[1m[2m   27.50 kB[22m[1m[22m
+[2mdist/[22m[32massets/jetbrains-mono-latin-600-normal-BfsvjouI.woff   [39m[1m[2m   28.18 kB[22m[1m[22m
+[2mdist/[22m[32massets/jetbrains-mono-latin-500-normal-CJOVTJB7.woff   [39m[1m[2m   28.21 kB[22m[1m[22m
+[2mdist/[22m[32massets/inter-latin-400-normal-CyCys3Eg.woff            [39m[1m[2m   30.70 kB[22m[1m[22m
+[2mdist/[22m[32massets/inter-latin-600-normal-CiBQ2DWP.woff            [39m[1m[2m   31.26 kB[22m[1m[22m
+[2mdist/[22m[32massets/inter-latin-500-normal-BL9OpVg8.woff            [39m[1m[2m   31.28 kB[22m[1m[22m
+[2mdist/[22m[32massets/inter-latin-700-normal-BLAVimhd.woff            [39m[1m[2m   31.32 kB[22m[1m[22m
+[2mdist/[22m[32massets/adaptive_attacker_curve-BPJmaRTJ.png            [39m[1m[2m  113.80 kB[22m[1m[22m
+[2mdist/[22m[32massets/recall_per_attack_detector-C3KlREm9.png         [39m[1m[2m  149.70 kB[22m[1m[22m
+[2mdist/[22m[32massets/roc_curves-GLCXKfrM.png                         [39m[1m[2m  182.16 kB[22m[1m[22m
+[2mdist/[22m[35massets/index-DSirE5hM.css                              [39m[1m[2m   54.50 kB[22m[1m[22m[2m Γöé gzip:  10.81 kB[22m
+[2mdist/[22m[36massets/ccip-DyfuFy8M.js                                [39m[1m[2m    5.72 kB[22m[1m[22m[2m Γöé gzip:   1.76 kB[22m
+[2mdist/[22m[36massets/index-BpY019TG.js                               [39m[1m[33m2,599.39 kB[39m[22m[2m Γöé gzip: 545.25 kB[22m
+[32mΓ£ô built in 5.37s[39m

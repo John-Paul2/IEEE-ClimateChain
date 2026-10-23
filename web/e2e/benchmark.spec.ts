@@ -16,108 +16,84 @@ test.describe("VeriCEMS Benchmark and Threat Model Screen", () => {
   }, testInfo) => {
     await page.goto("/benchmark");
 
-    // 1. Header & Title
+    // 1. Header & Title with REAL Chip & Popover
     await expect(
-      page.getByRole("heading", { name: "Benchmark & Threat Model", level: 1 })
+      page.getByRole("heading", { name: "What we catch, and what we don't", level: 1 })
+    ).toBeVisible();
+    await expect(page.getByText("EPA CAMPD", { exact: true })).toBeVisible();
+
+    // Check '?' Popover (4 bullets, max 8 words)
+    await page.getByTestId("help-popover-trigger").click();
+    await expect(page.getByTestId("help-popover-dialog")).toBeVisible();
+    await expect(
+      page.getByText("Empirical evaluation across 14 industrial attack scenarios.")
     ).toBeVisible();
 
-    // 2. Real KPI Tiles (Macro Metrics from benchmark_summary.json)
-    await expect(page.getByText("Macro Recall (Proposed)")).toBeVisible();
-    await expect(page.getByText("Macro Precision")).toBeVisible();
-    await expect(page.getByText("Empirical FPR")).toBeVisible();
-    await expect(page.getByText("Overall AUROC")).toBeVisible();
+    // Close Popover
+    await page.keyboard.press("Escape");
 
-    // 3. Attack x Detector Summary Table
+    // 2. 4-Column Table (Attack, Caught, Delay, Why)
     const attackSection = page.locator('section[aria-labelledby="section-attack-table"]');
-    await expect(attackSection.getByText("1. Attack × Detector Empirical Benchmark")).toBeVisible();
+    await expect(attackSection.getByText("Attack")).toBeVisible();
+    await expect(attackSection.getByText("Caught")).toBeVisible();
+    await expect(attackSection.getByText("Delay")).toBeVisible();
+    await expect(attackSection.getByText("Why")).toBeVisible();
+
+    // Check human attack names only (no machine ids)
     await expect(attackSection.getByText("1a. Constant Scaling (-5%)")).toBeVisible();
     await expect(attackSection.getByText("8A. Adaptive White-Box (Single-Source)")).toBeVisible();
     await expect(attackSection.getByText("8B. Adaptive White-Box (Coordinated Insider)")).toBeVisible();
 
-    // Test detector toggle to B2 Physics
-    await attackSection.getByRole("button", { name: /B2 Physics/i }).click();
-    await expect(attackSection.getByText("Active detector: Baseline 2: Mass-Balance & Load Physics")).toBeVisible();
+    // Check below 50% chips
+    await expect(attackSection.getByText("Below 50%").first()).toBeVisible();
 
-    // Test 4-Detector Compare toggle
-    await attackSection.getByRole("button", { name: /4-Detector Compare/i }).click();
-    await expect(attackSection.getByText("Proposed Recall")).toBeVisible();
-    await expect(attackSection.getByText("B2 Physics Recall")).toBeVisible();
-
-    // Switch back to Proposed
-    await attackSection.getByRole("button", { name: /Proposed \(Union\)/i }).click();
-
-    // 4. ROC and Adaptive Attacker Curves
-    const curvesSection = page.locator('section[aria-labelledby="section-curves"]');
+    // Check expandable 'Why' (at most 12 words)
+    const whyBtn = attackSection.getByRole("button", { name: /Why 1a\. Constant Scaling \(-5%\)/i });
+    await whyBtn.click();
     await expect(
-      curvesSection.getByText("2. Receiver Operating Characteristic & Adaptive Attacker Sweep")
+      attackSection.getByText(/Caught by stoichiometric mass-balance residual/i)
     ).toBeVisible();
-    await expect(curvesSection.getByText("Receiver Operating Characteristic (ROC)")).toBeVisible();
-    await expect(curvesSection.getByText("Adaptive Attacker Response Curves")).toBeVisible();
 
-    // Test publication PNG figures tab
+    // 3. ROC and Adaptive Attacker Curves
+    const curvesSection = page.locator('section[aria-labelledby="section-curves"]');
+    await expect(curvesSection.getByText("Empirical Curves & Figures")).toBeVisible();
+
+    // Publication PNGs tab toggle
     await curvesSection.getByRole("button", { name: /Publication PNGs/i }).click();
     await expect(curvesSection.getByText("1. roc_curves.png")).toBeVisible();
-    await expect(curvesSection.getByRole("button", { name: /2. adaptive_attacker_curve.png/i })).toBeVisible();
-    await expect(curvesSection.getByRole("button", { name: /3. recall_per_attack_detector.png/i })).toBeVisible();
 
-    // Switch back to interactive plots
+    // Switch back to Interactive plots
     await curvesSection.getByRole("button", { name: /Interactive Plots/i }).click();
 
-    // 5. "What Still Gets Through" Panel (from results/WHAT_STILL_GETS_THROUGH.md)
+    // 4. "What Still Gets Through" Panel (3 Bullets + Details Expander)
     const disclosureSection = page.locator('section[aria-labelledby="section-what-still-gets-through"]');
-    await expect(disclosureSection.getByText("3. Prominent Disclosure: What Still Gets Through")).toBeVisible();
-    await expect(disclosureSection.getByText("6a. Slow Calibration Drift (0.1%/day)").first()).toBeVisible();
-    await expect(disclosureSection.getByText("8B. Adaptive White-Box (Coordinated Insider)").first()).toBeVisible();
+    await expect(disclosureSection.getByText("What still gets through")).toBeVisible();
+    await expect(disclosureSection.getByText("3 attacks")).toBeVisible();
     await expect(
-      disclosureSection.getByText(/At 0.1%\/day, cumulative drift over 12 days is at most 1.2%/i).first()
+      disclosureSection.getByText(/Slow drift \(0\.1%\/day\): 8\.1% caught · cumulative drift stays within normal boiler noise/i)
+    ).toBeVisible();
+    await expect(
+      disclosureSection.getByText(/Slow drift \(0\.3%\/day\): 29\.1% caught · evades detection for first 9 operating days/i)
+    ).toBeVisible();
+    await expect(
+      disclosureSection.getByText(/Coordinated insider: 3\.0% caught · falsifies fuel ledger within thermal margins/i)
     ).toBeVisible();
 
-    // 6. Threat Model Table (EmptyState when docs/threat_model.json does not exist)
-    const threatSection = page.locator('section[aria-labelledby="section-threat-model"]');
-    await expect(threatSection.getByText("4. Threat Model & Residual Weakness Matrix")).toBeVisible();
-    await expect(threatSection.getByText("Threat Model Document Not Found")).toBeVisible();
+    // Details expander
+    await disclosureSection.getByRole("button", { name: /details/i }).click();
     await expect(
-      threatSection.getByText(/docs\/threat_model\.json is not present in the workspace/i)
+      disclosureSection.getByText(/Attacks inside natural boiler variance and validation tolerance evade statistical thresholds/i)
     ).toBeVisible();
 
-    // 7. Data Provenance Panel (from results/run_manifest.json and docs/DATA_CARD.md)
-    const provenanceSection = page.locator('section[aria-labelledby="section-provenance"]');
-    await expect(provenanceSection.getByText("5. Data Provenance & Run Manifest")).toBeVisible();
-    await expect(provenanceSection.getByText("29", { exact: true })).toBeVisible(); // 29 facilities
-    await expect(provenanceSection.getByText("uncommitted")).toBeVisible(); // git commit
-    await expect(provenanceSection.getByText("synthetic_stack_o2_pct")).toBeVisible();
-    await expect(provenanceSection.getByText("synthetic_fuel_flow_mmbtu_indep")).toBeVisible();
+    // 5. One-Line Footer of Provenance Chips
+    await expect(page.getByText("5 splits")).toBeVisible();
+    await expect(page.getByText("seed 42")).toBeVisible();
+    await expect(page.getByText(/commit 9cad8a0/i)).toBeVisible();
+    await expect(page.getByText("REAL EPA CAMPD")).toBeVisible();
 
-    // 8. "Reproduce This" Box
-    const reproduceSection = page.locator('section[aria-labelledby="section-reproduce"]');
-    await expect(reproduceSection.getByText("6. Reproduce Results")).toBeVisible();
-    await expect(reproduceSection.getByText("$ make benchmark")).toBeVisible();
-    await expect(reproduceSection.getByText("$ python -m ml.benchmark.run_benchmark", { exact: true })).toBeVisible();
-
-    // Capture primary screenshot (desktop or mobile)
+    // Capture primary screenshot
     const projectName = testInfo.project.name;
     const screenshotPath = path.join(screenshotsDir, `benchmark-${projectName}.png`);
     await page.screenshot({ path: screenshotPath, fullPage: true });
-
-    // 9. Verify Missing File State Handling
-    const missingSelect = page.getByLabel("Simulate Missing Files State");
-    await missingSelect.selectOption("missing_summary");
-
-    // Summary table should show EmptyState
-    await expect(page.getByText("Benchmark Summary Data Missing")).toBeVisible();
-    await expect(
-      page.getByText(/results\/benchmark_summary\.json is missing or corrupted/i)
-    ).toBeVisible();
-
-    // Capture missing state screenshot
-    const missingScreenshotPath = path.join(
-      screenshotsDir,
-      `benchmark-missing-state-${projectName}.png`
-    );
-    await page.screenshot({ path: missingScreenshotPath, fullPage: true });
-
-    // Restore real files
-    await missingSelect.selectOption("all_present");
-    await expect(attackSection.getByText("1a. Constant Scaling (-5%)")).toBeVisible();
   });
 });

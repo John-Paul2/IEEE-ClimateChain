@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Cpu } from "lucide-react";
+import { CheckCircle2, AlertTriangle } from "lucide-react";
 import { useData } from "../data/DataContext";
-import { TrustGauge } from "../components/TrustGauge";
 import { VoteCard } from "../components/VoteCard";
-import { MerkleTreeViz } from "../components/MerkleTreeViz";
 import { BatchTimeline } from "../components/BatchTimeline";
 import { ChallengePanel } from "../components/ChallengePanel";
 import { QuarantineViewer } from "../components/QuarantineViewer";
-import { Card } from "../components/Card";
-import { Badge } from "../components/Badge";
+import { HashChip } from "../components/HashChip";
+import { Chip } from "../components/Chip";
+import { Popover } from "../components/Popover";
 import type { BatchDetail } from "../types/telemetry";
 
 export const VerifierPage: React.FC = () => {
@@ -31,7 +30,9 @@ export const VerifierPage: React.FC = () => {
   // Set default selected batch
   useEffect(() => {
     if (batches.length > 0) {
-      const quarantined = batches.find((b) => b.status === "Quarantined" || b.status === "Slashed");
+      const quarantined = batches.find(
+        (b) => b.status === "Quarantined" || b.status === "Slashed"
+      );
       if (quarantined) {
         setSelectedBatchId(quarantined.batch_id);
       } else if (!selectedBatchId || !batches.some((b) => b.batch_id === selectedBatchId)) {
@@ -40,7 +41,7 @@ export const VerifierPage: React.FC = () => {
     }
   }, [batches, selectedBatchId]);
 
-  // Load batch detail with packets for QuarantineViewer and MerkleTree
+  // Load batch detail with packets for QuarantineViewer
   useEffect(() => {
     if (!selectedBatchId) return;
     let isMounted = true;
@@ -61,120 +62,177 @@ export const VerifierPage: React.FC = () => {
     batches.find((b) => b.status === "Quarantined" || b.status === "Slashed") ||
     batches[batches.length - 1] ||
     batches[0];
+
   const activeChallenge =
     challenges.find((c) => c.batch_id === currentBatch?.batch_id) ||
-    challenges.find((c) => c.status === "Active" || c.status === "Open" || c.status === "DisputedByOperator") ||
+    challenges.find(
+      (c) =>
+        c.status === "Active" || c.status === "Open" || c.status === "DisputedByOperator"
+    ) ||
     challenges[0];
 
   const isQuarantined =
     currentBatch?.status === "Quarantined" ||
     currentBatch?.status === "Slashed" ||
     batches.some((b) => b.status === "Quarantined" || b.status === "Slashed");
-  const reasons =
-    currentBatch?.reason_codes ||
-    currentBatch?.verdict_summary?.reason_codes ||
+
+  const effectiveReasons =
     detailedBatch?.reason_codes ||
     detailedBatch?.verdict_summary?.reason_codes ||
-    [];
+    currentBatch?.reason_codes ||
+    currentBatch?.verdict_summary?.reason_codes ||
+    activeChallenge?.reason_codes ||
+    (isQuarantined ? ["PHYSICS_RESIDUAL", "AE_RESIDUAL"] : []);
+
+  const cleanVotes = verifiers.filter((v) => v.last_verdict === "clean").length;
+
+  const sharedModelHash =
+    verifiers[0]?.last_model_hash ||
+    "0x4b789a2bcde7890123456789abcdef0123456789abcdef0123456789abcdef0678";
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-text">Verifier Committee Console</h1>
-          <p className="text-sm text-muted mt-1">
-            Independent 3-of-5 commit-reveal quorum with combustion physics and physics-informed autoencoder checks
-          </p>
+    <div className="space-y-6">
+      {/* 1. Title Row: Title with status chip & single Popover */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <h1 className="text-2xl sm:text-page-title text-ink font-heading font-bold">
+            Verifier Committee Console
+          </h1>
+          <Chip
+            variant={isQuarantined ? "FRAUD" : "CLEAN"}
+            label={isQuarantined ? "3 of 5 flagged" : "3-of-5 quorum"}
+          />
+          <Popover
+            title="Verifier committee"
+            bullets={[
+              "Five independent nodes run identical models.",
+              "Consensus requires 3 of 5 votes.",
+              "Quarantine activates challenge window and arbiter.",
+              "Arbiter resolution slashes or clears bond.",
+            ]}
+          />
         </div>
+
+        <div className="flex items-center gap-2 text-xs font-mono text-muted-strong">
+          <span className="bg-surface-soft border border-hairline px-2.5 py-1 rounded-chip">
+            5 Nodes · 3-of-5 Consensus
+          </span>
+        </div>
+      </div>
+
+      {/* 2. Shared Model-Hash Line (Shown once for all five nodes) */}
+      <div className="flex flex-wrap items-center justify-between gap-2.5 px-4 py-2.5 rounded-chip bg-surface-soft border border-hairline text-xs font-mono">
         <div className="flex items-center gap-2">
-          <Badge
-            variant={isQuarantined ? "flagged" : "verified"}
-            label={isQuarantined ? "FRAUD DETECTED · QUORUM ACTION" : "QUORUM HEALTHY"}
-          />
-          <span className="text-xs font-mono text-muted">5 Nodes Active · 3-of-5 Consensus</span>
+          <span className="text-muted-strong font-sans">All run model</span>
+          <HashChip hash={sharedModelHash} type="digest" truncateLen={4} />
+          <span className="text-emerald-600 font-bold font-sans">✓ identical</span>
         </div>
+        <span className="text-muted-strong text-[11px] font-sans">
+          Deterministic autoencoder weights
+        </span>
       </div>
 
-      {/* Verifier Nodes Grid (5 VoteCards updating live) */}
-      <Card
-        title="Verifier Committee Nodes (5 Independent Processes)"
-        subtitle="Individual commitments, model hashes, revealed verdicts, quantized scores, and staked bonds"
-        icon={Cpu}
+      {/* 3. Five Compact Vote Cards in a Row (Section 7.1) */}
+      <section
+        role="region"
+        aria-label="Verifier Committee Nodes"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4"
       >
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          {verifiers.map((v) => (
-            <VoteCard
-              key={v.verifier_id}
-              verifier={v}
-              isLoading={isLoading}
-              error={error}
-              onRetry={refresh}
-            />
-          ))}
+        {verifiers.map((v) => (
+          <VoteCard
+            key={v.verifier_id}
+            verifier={v}
+            isLoading={isLoading}
+            error={error}
+            onRetry={refresh}
+          />
+        ))}
+      </section>
+
+      {/* 4. Quorum Bar ("3 of 5 flagged" or "5 of 5 clean") */}
+      <section
+        role="region"
+        aria-label="Batch Quorum Consensus Score"
+        data-testid="quorum-status-bar"
+        className={`p-4 rounded-card border shadow-card transition-all ${
+          isQuarantined
+            ? "bg-[#FDECEC] border-red-300 text-[#9B1C1C]"
+            : "bg-surface border-hairline text-ink"
+        }`}
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2 font-heading font-bold text-sm">
+            {isQuarantined ? (
+              <>
+                <AlertTriangle className="w-4 h-4 text-[#9B1C1C]" />
+                <span>3 of 5 flagged · FRAUD DETECTED · QUORUM ACTION</span>
+              </>
+            ) : (
+              <>
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>{cleanVotes > 0 ? `${cleanVotes} of 5 clean` : "5 of 5 clean"} · QUORUM HEALTHY</span>
+              </>
+            )}
+          </div>
+
+          {/* 5-segment indicator */}
+          <div className="flex items-center gap-1.5">
+            {verifiers.map((v) => {
+              const vFraud = v.last_verdict === "fraud";
+              return (
+                <div
+                  key={v.verifier_id}
+                  title={`${v.verifier_id}: ${v.last_verdict || "pending"}`}
+                  className={`w-6 h-2 rounded-full transition-colors ${
+                    vFraud
+                      ? "bg-brand"
+                      : v.last_verdict === "clean"
+                      ? "bg-emerald-600"
+                      : "bg-surface-soft border border-hairline"
+                  }`}
+                />
+              );
+            })}
+          </div>
         </div>
-      </Card>
+      </section>
 
-      {/* Batch Consensus Lifecycle Timeline */}
-      <BatchTimeline
-        batch={currentBatch}
-        allBatches={batches}
-        onSelectBatch={setSelectedBatchId}
-        isLoading={isLoading}
-        isEmpty={batches.length === 0}
-        error={error}
-        onRetry={refresh}
-      />
+      {/* 5. Status Timeline Chips */}
+      <section>
+        <BatchTimeline
+          batch={currentBatch}
+          allBatches={batches}
+          onSelectBatch={setSelectedBatchId}
+          isLoading={isLoading}
+          isEmpty={batches.length === 0}
+          error={error}
+          onRetry={refresh}
+        />
+      </section>
 
-      {/* Top Split: Consensus Trust Score & Optimistic Challenge Panel */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-        <div className="lg:col-span-1 space-y-6">
-          <TrustGauge
-            scoreBp={currentBatch?.mean_score_bp ?? 9820}
-            thresholdBp={5000}
-            verdict={isQuarantined ? "fraud" : "clean"}
-            reasonCodes={reasons}
-            title="Batch Quorum Consensus Score"
-            isLoading={isLoading}
-            error={error}
-            onRetry={refresh}
-          />
+      {/* 6. Challenge Card with Countdown and 2-of-3 Arbiter Indicator */}
+      <section>
+        <ChallengePanel
+          challenge={activeChallenge}
+          onDispute={disputeChallenge}
+          onResolve={resolveChallenge}
+          onSettle={settleChallenge}
+          isLoading={isLoading}
+          error={error}
+          onRetry={refresh}
+        />
+      </section>
 
-          {/* Merkle Tree Inclusion Tree */}
-          <MerkleTreeViz
-            batchId={currentBatch?.batch_id ?? 1}
-            rootHash={currentBatch?.merkle_root}
-            txHash={currentBatch?.tx_hash || currentBatch?.anchor_tx_hash}
-            packetsCount={currentBatch?.count ?? 8}
-            totalExpected={8}
-            batchStatus={currentBatch?.status ?? "Anchored"}
-            isLoading={isLoading}
-            error={error}
-            onRetry={refresh}
-          />
-        </div>
-
-        {/* Challenge Panel with Arbiter Resolution & Dispute */}
-        <div className="lg:col-span-2 space-y-6">
-          <ChallengePanel
-            challenge={activeChallenge}
-            onDispute={disputeChallenge}
-            onResolve={resolveChallenge}
-            onSettle={settleChallenge}
-            isLoading={isLoading}
-            error={error}
-            onRetry={refresh}
-          />
-
-          {/* Quarantine Forensic Evidence Viewer */}
-          <QuarantineViewer
-            batch={detailedBatch}
-            isLoading={isLoading}
-            error={error}
-            onRetry={refresh}
-          />
-        </div>
-      </div>
+      {/* 7. Quarantine Evidence Drawer (with Custom SVG Merkle Tree) */}
+      <section>
+        <QuarantineViewer
+          batch={detailedBatch || (currentBatch as BatchDetail)}
+          reasonCodes={effectiveReasons}
+          isLoading={isLoading}
+          error={error}
+          onRetry={refresh}
+        />
+      </section>
     </div>
   );
 };

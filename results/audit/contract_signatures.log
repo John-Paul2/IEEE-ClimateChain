@@ -1,0 +1,155 @@
+Attestation.sol:31: error EmptyBatchList();
+Attestation.sol:32: error BatchNotVerified(uint256 batchId);
+Attestation.sol:33: error InstallationMismatch(uint256 batchId, bytes32 expectedInstallation, bytes32 actualInstallation);
+Attestation.sol:34: error InvalidCoverageBp(uint16 coverageBp);
+Attestation.sol:35: error ZeroProductionMass();
+Attestation.sol:36: error EmptyPeriodMerkleRoot();
+Attestation.sol:37: error AttestationNotFound(uint256 attestationId);
+Attestation.sol:38: error UnauthorizedCaller(address caller);
+Attestation.sol:39: error ZeroAddress();
+Attestation.sol:41: event AttestationRecorded(
+Attestation.sol:82: function recordAttestation(
+Attestation.sol:146: function getAttestation(uint256 attestationId) external view returns (PeriodAttestation memory) {
+Attestation.sol:155: function getAttestationBatchIds(uint256 attestationId) external view returns (uint256[] memory) {
+Attestation.sol:161: function pause() external onlyRole(ADMIN_ROLE) {
+Attestation.sol:166: function unpause() external onlyRole(ADMIN_ROLE) {
+BatchAnchor.sol:39: error DeviceNotActive(bytes32 deviceId);
+BatchAnchor.sol:40: error InsufficientOperatorBond(bytes32 installationId);
+BatchAnchor.sol:41: error InvalidSequenceRange(uint64 expectedFirstSeq, uint64 actualFirstSeq, uint64 lastSeq, uint32 count);
+BatchAnchor.sol:42: error EmptyMerkleRoot();
+BatchAnchor.sol:43: error BatchNotFound(uint256 batchId);
+BatchAnchor.sol:44: error InvalidStatusTransition(BatchStatus current, BatchStatus requested);
+BatchAnchor.sol:45: error UnauthorizedCaller(address caller);
+BatchAnchor.sol:46: error ZeroAddress();
+BatchAnchor.sol:48: event BatchAnchored(
+BatchAnchor.sol:57: event BatchStatusUpdated(uint256 indexed batchId, BatchStatus oldStatus, BatchStatus newStatus);
+BatchAnchor.sol:88: function anchorBatch(
+BatchAnchor.sol:141: function updateBatchStatus(uint256 batchId, BatchStatus newStatus) external whenNotPaused {
+BatchAnchor.sol:171: function getBatch(uint256 batchId) external view returns (BatchRecord memory) {
+BatchAnchor.sol:182: function verifyPacketInclusion(
+BatchAnchor.sol:194: function pause() external onlyRole(ADMIN_ROLE) {
+BatchAnchor.sol:199: function unpause() external onlyRole(ADMIN_ROLE) {
+BondVault.sol:25: error ZeroDeposit();
+BondVault.sol:26: error ZeroAmount();
+BondVault.sol:27: error ZeroAddress();
+BondVault.sol:28: error InsufficientBondBalance(uint256 available, uint256 requested);
+BondVault.sol:29: error WithdrawalDelayNotElapsed(uint64 currentTimestamp, uint64 unlockTimestamp);
+BondVault.sol:30: error NoPendingWithdrawal();
+BondVault.sol:31: error ActiveChallengeBlocksWithdrawal(bytes32 installationId);
+BondVault.sol:32: error NothingToClaim();
+BondVault.sol:33: error TransferFailed();
+BondVault.sol:34: error UnauthorizedCaller(address caller);
+BondVault.sol:35: error InvalidBps(uint16 bps);
+BondVault.sol:37: event OperatorBondDeposited(
+BondVault.sol:43: event VerifierStakeDeposited(address indexed verifier, uint256 amount, uint256 newBalance);
+BondVault.sol:44: event WithdrawalRequested(
+BondVault.sol:50: event WithdrawalExecuted(address indexed account, bytes32 indexed installationId, uint256 amount);
+BondVault.sol:51: event OperatorSlashed(
+BondVault.sol:57: event VerifierSlashed(address indexed verifier, uint256 slashAmount, address indexed recipient);
+BondVault.sol:58: event RewardsClaimed(address indexed recipient, uint256 amount);
+BondVault.sol:59: event ChallengeLockUpdated(bytes32 indexed installationId, uint256 activeChallengeCount);
+BondVault.sol:114: function depositOperatorBond(bytes32 installationId) external payable whenNotPaused nonReentrant {
+BondVault.sol:130: function depositVerifierStake() external payable whenNotPaused nonReentrant {
+BondVault.sol:142: function requestOperatorWithdraw(bytes32 installationId, uint256 amount) external whenNotPaused {
+BondVault.sol:166: function executeOperatorWithdraw(bytes32 installationId) external whenNotPaused nonReentrant {
+BondVault.sol:195: function requestVerifierWithdraw(uint256 amount) external whenNotPaused {
+BondVault.sol:212: function executeVerifierWithdraw() external whenNotPaused nonReentrant {
+BondVault.sol:239: function slashOperator(
+BondVault.sol:297: function slashVerifier(address verifier, uint256 slashAmount, address recipient) external whenNotPaused {
+BondVault.sol:328: function setChallengeStatus(bytes32 installationId, bool isOpen) external {
+BondVault.sol:341: function claimRewards() external whenNotPaused nonReentrant {
+BondVault.sol:363: function operatorBondOf(bytes32 installationId) external view returns (uint256) {
+BondVault.sol:370: function verifierStakeOf(address verifier) external view returns (uint256) {
+BondVault.sol:377: function hasSufficientOperatorBond(bytes32 installationId) external view returns (bool) {
+BondVault.sol:384: function hasSufficientVerifierStake(address verifier) external view returns (bool) {
+BondVault.sol:393: function updateParameters(
+BondVault.sol:407: function pause() external onlyRole(ADMIN_ROLE) {
+BondVault.sol:412: function unpause() external onlyRole(ADMIN_ROLE) {
+BondVault.sol:416: function _resolveInstallationOperator(bytes32 installationId) internal view returns (address) {
+BondVault.sol:421: function _safeTransferETH(address to, uint256 amount) internal {
+Challenge.sol:41: error ChallengeAlreadyExists(uint256 batchId);
+Challenge.sol:42: error ChallengeNotFound(uint256 batchId);
+Challenge.sol:43: error ChallengeWindowExpired(uint256 batchId, uint64 windowClosesAt);
+Challenge.sol:44: error ChallengeWindowStillOpen(uint256 batchId, uint64 windowClosesAt);
+Challenge.sol:45: error ChallengeAlreadySettled(uint256 batchId);
+Challenge.sol:46: error OperatorAlreadyDisputed(uint256 batchId);
+Challenge.sol:47: error ArbiterAlreadyVoted(uint256 batchId, address arbiter);
+Challenge.sol:48: error BatchNotQuarantined(uint256 batchId);
+Challenge.sol:49: error InvalidMerkleProof(uint256 batchId, bytes32 packetHash);
+Challenge.sol:50: error InvalidEvidenceHash();
+Challenge.sol:51: error InvalidConfig();
+Challenge.sol:52: error UnauthorizedCaller(address caller);
+Challenge.sol:53: error ZeroAddress();
+Challenge.sol:55: event ChallengeOpened(
+Challenge.sol:61: event OperatorDisputeSubmitted(
+Challenge.sol:67: event ArbiterVoteCast(
+Challenge.sol:74: event ChallengeResolved(
+Challenge.sol:80: event ChallengeSettled(uint256 indexed batchId, ChallengeStatus finalStatus, uint256 slashedAmount);
+Challenge.sol:159: function openChallenge(uint256 batchId, bytes32 evidenceHash) external whenNotPaused {
+Challenge.sol:195: function submitOperatorDispute(
+Challenge.sol:209: function submitOperatorDispute(
+Challenge.sol:227: function resolve(
+Challenge.sol:268: function settleExpired(uint256 batchId) external whenNotPaused {
+Challenge.sol:291: function getChallenge(uint256 batchId) external view returns (ChallengeRecord memory) {
+Challenge.sol:298: function pause() external onlyRole(ADMIN_ROLE) {
+Challenge.sol:303: function unpause() external onlyRole(ADMIN_ROLE) {
+Challenge.sol:307: function _recordDispute(
+Challenge.sol:341: function _executeUpheld(
+Challenge.sol:369: function _executeOverturned(
+DeviceRegistry.sol:29: error DeviceAlreadyRegistered(bytes32 deviceId);
+DeviceRegistry.sol:30: error DeviceNotFound(bytes32 deviceId);
+DeviceRegistry.sol:31: error DeviceNotActive(bytes32 deviceId);
+DeviceRegistry.sol:32: error InvalidPublicKeyLength(uint256 length);
+DeviceRegistry.sol:33: error UnauthorizedCaller(address caller);
+DeviceRegistry.sol:34: error ZeroAddress();
+DeviceRegistry.sol:35: error InvalidIdentifier();
+DeviceRegistry.sol:37: event DeviceRegistered(
+DeviceRegistry.sol:43: event DeviceKeyRotated(bytes32 indexed deviceId, bytes oldPubKeyP256, bytes newPubKeyP256);
+DeviceRegistry.sol:44: event DeviceRevoked(bytes32 indexed deviceId, address indexed revokedBy, string reason);
+DeviceRegistry.sol:45: event InstallationOperatorUpdated(bytes32 indexed installationId, address indexed operator);
+DeviceRegistry.sol:63: function registerDevice(
+DeviceRegistry.sol:111: function rotateKey(bytes32 deviceId, bytes calldata newPubKeyP256) external whenNotPaused {
+DeviceRegistry.sol:131: function revokeDevice(bytes32 deviceId, string calldata reason) external whenNotPaused {
+DeviceRegistry.sol:148: function setInstallationOperator(bytes32 installationId, address operator) external whenNotPaused {
+DeviceRegistry.sol:164: function getDevice(bytes32 deviceId) external view returns (DeviceInfo memory) {
+DeviceRegistry.sol:171: function isDeviceActive(bytes32 deviceId) external view returns (bool) {
+DeviceRegistry.sol:178: function getInstallationOperator(bytes32 installationId) external view returns (address) {
+DeviceRegistry.sol:183: function pause() external onlyRole(ADMIN_ROLE) {
+DeviceRegistry.sol:188: function unpause() external onlyRole(ADMIN_ROLE) {
+DeviceRegistry.sol:192: function _validatePublicKey(bytes calldata pubKeyP256) internal pure {
+VerifierQuorum.sol:11: function openChallenge(uint256 batchId, bytes32 evidenceHash) external;
+VerifierQuorum.sol:37: error NotRegisteredVerifier(address caller);
+VerifierQuorum.sol:38: error InsufficientVerifierStake(address verifier);
+VerifierQuorum.sol:39: error CommitWindowClosed(uint256 batchId);
+VerifierQuorum.sol:40: error CommitWindowStillOpen(uint256 batchId);
+VerifierQuorum.sol:41: error RevealWindowClosed(uint256 batchId);
+VerifierQuorum.sol:42: error AlreadyCommitted(uint256 batchId, address verifier);
+VerifierQuorum.sol:43: error NotCommitted(uint256 batchId, address verifier);
+VerifierQuorum.sol:44: error AlreadyRevealed(uint256 batchId, address verifier);
+VerifierQuorum.sol:45: error CommitmentMismatch(bytes32 expected, bytes32 actual);
+VerifierQuorum.sol:46: error InvalidScoreBp(uint16 scoreBp);
+VerifierQuorum.sol:47: error InputHashMismatch(bytes32 expectedMerkleRoot, bytes32 providedInputHash);
+VerifierQuorum.sol:48: error QuorumNotReached(uint256 batchId);
+VerifierQuorum.sol:49: error BatchAlreadyFinalized(uint256 batchId);
+VerifierQuorum.sol:50: error InvalidQuorumConfig(uint8 verifierCount, uint8 requiredQuorum);
+VerifierQuorum.sol:51: error MaxVerifiersReached(uint8 maxVerifiers);
+VerifierQuorum.sol:52: error VerifierAlreadyRegistered(address verifier);
+VerifierQuorum.sol:53: error ZeroAddress();
+VerifierQuorum.sol:55: event VerifierRegistered(address indexed verifier, uint256 index);
+VerifierQuorum.sol:56: event VoteCommitted(uint256 indexed batchId, address indexed verifier, bytes32 commitment);
+VerifierQuorum.sol:57: event VoteRevealed(
+VerifierQuorum.sol:66: event QuorumFinalized(
+VerifierQuorum.sol:72: event UnrevealedVerifierPenalized(uint256 indexed batchId, address indexed verifier, uint256 penaltyAmount);
+VerifierQuorum.sol:143: function setChallengeContract(IChallenge challengeAddr) external onlyRole(ADMIN_ROLE) {
+VerifierQuorum.sol:150: function registerVerifier(address verifier) external onlyRole(ADMIN_ROLE) {
+VerifierQuorum.sol:165: function commitVote(uint256 batchId, bytes32 commitment) external whenNotPaused {
+VerifierQuorum.sol:196: function revealVote(
+VerifierQuorum.sol:226: function _validateReveal(
+VerifierQuorum.sol:265: function finalize(uint256 batchId) external whenNotPaused nonReentrant {
+VerifierQuorum.sol:313: function computeCommitment(
+VerifierQuorum.sol:328: function getVote(uint256 batchId, address verifier) external view returns (RevealedVote memory) {
+VerifierQuorum.sol:336: function getBatchVerifiers(uint256 batchId, Verdict verdict) external view returns (address[] memory) {
+VerifierQuorum.sol:341: function getRegisteredVerifiers() external view returns (address[] memory) {
+VerifierQuorum.sol:346: function pause() external onlyRole(ADMIN_ROLE) {
+VerifierQuorum.sol:351: function unpause() external onlyRole(ADMIN_ROLE) {
+VerifierQuorum.sol:355: function _findQuorum(

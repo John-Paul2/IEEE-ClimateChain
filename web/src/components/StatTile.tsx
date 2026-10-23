@@ -14,6 +14,7 @@ export interface StatTileProps {
     value: string;
     isPositive?: boolean;
   };
+  onBand?: boolean;
   isLoading?: boolean;
   isEmpty?: boolean;
   error?: string | null;
@@ -28,6 +29,7 @@ export const StatTile: React.FC<StatTileProps> = ({
   icon: Icon,
   variant = "default",
   delta,
+  onBand = false,
   isLoading = false,
   isEmpty = false,
   error = null,
@@ -36,31 +38,39 @@ export const StatTile: React.FC<StatTileProps> = ({
 }) => {
   if (isLoading) {
     return (
-      <div className={`p-4 bg-surface border border-border rounded-xl ${className}`}>
-        <div className="flex items-center justify-between mb-2">
-          <Skeleton className="h-4 w-24" />
-          <Skeleton className="h-8 w-8 rounded-lg" />
+      <div
+        className={`p-4 sm:p-5 rounded-card ${
+          onBand ? "bg-transparent border-none" : "bg-surface border border-hairline shadow-card"
+        } ${className}`}
+      >
+        <div className="flex items-center justify-between mb-3">
+          <Skeleton className="h-4 w-24 rounded-md" />
+          <Skeleton className="h-8 w-8 rounded-xl" />
         </div>
-        <Skeleton className="h-8 w-32 mb-1" />
-        <Skeleton className="h-3 w-16" />
+        <Skeleton className="h-8 w-28 mb-1.5 rounded-md" />
+        <Skeleton className="h-3 w-16 rounded-md" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className={`p-4 bg-surface border border-border rounded-xl ${className}`}>
+      <div
+        className={`p-4 sm:p-5 rounded-card ${
+          onBand ? "bg-transparent border-none" : "bg-surface border border-hairline shadow-card"
+        } ${className}`}
+      >
         <ErrorState title={label} message={error} onRetry={onRetry} />
       </div>
     );
   }
 
   const valueColors = {
-    default: "text-text",
-    verified: "text-verified",
-    flagged: "text-flagged",
-    warning: "text-warning",
-    info: "text-info",
+    default: "text-ink",
+    verified: "text-emerald-600 dark:text-emerald-400",
+    flagged: "text-brand",
+    warning: "text-amber-600 dark:text-amber-400",
+    info: "text-blue-600 dark:text-blue-400",
   };
 
   const isValEmpty = isEmpty || value === null || value === undefined || value === "";
@@ -69,45 +79,51 @@ export const StatTile: React.FC<StatTileProps> = ({
     <div
       role="region"
       aria-label={`${label} metric`}
-      className={`p-4 bg-surface border border-border rounded-xl flex flex-col justify-between shadow-sm transition-colors ${className}`}
+      className={`p-4 sm:p-5 rounded-card flex flex-col justify-between transition-all ${
+        onBand
+          ? "bg-transparent border-none shadow-none"
+          : "bg-surface border border-hairline shadow-card hover:border-hairline-strong"
+      } ${className}`}
     >
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs font-medium text-muted uppercase tracking-wider">{label}</span>
+        <span className="text-[13px] font-medium text-muted-strong tracking-normal">
+          {label}
+        </span>
         {Icon && (
-          <div className="p-1.5 rounded-lg bg-surface-raised border border-border text-muted">
-            <Icon className="w-4 h-4 text-info" aria-hidden="true" />
+          <div className="p-2 rounded-xl bg-surface-soft border border-hairline text-muted-strong shrink-0">
+            <Icon className="w-4 h-4 text-brand" aria-hidden="true" />
           </div>
         )}
       </div>
 
-      <div className="mt-2 flex items-baseline gap-2">
+      <div className="mt-3 flex items-baseline gap-2">
         {isValEmpty ? (
-          <span className="text-lg font-mono text-muted italic flex items-center gap-1">
-            <AlertCircle className="w-4 h-4" aria-hidden="true" />
+          <span className="text-[15px] font-mono text-muted-strong italic flex items-center gap-1.5">
+            <AlertCircle className="w-4 h-4 text-warning" aria-hidden="true" />
             <span>needs source</span>
           </span>
         ) : (
           <>
-            <span className={`text-2xl font-bold font-mono tracking-tight ${valueColors[variant]}`}>
+            <span
+              className={`font-heading text-[28px] font-bold tracking-tight leading-none ${valueColors[variant]}`}
+            >
               {value}
             </span>
-            {unit && <span className="text-xs font-medium text-muted font-mono">{unit}</span>}
+            {unit && <span className="text-[13px] font-medium text-muted font-mono">{unit}</span>}
           </>
         )}
       </div>
 
       {delta && !isValEmpty && (
-        <div className="mt-2 flex items-center gap-1.5 text-xs">
-          <span
-            className={`font-semibold ${
-              delta.isPositive ? "text-verified" : "text-flagged"
-            }`}
-          >
-            {delta.value}
+        <div className="mt-2 text-xs font-mono font-medium flex items-center gap-1">
+          <span className={delta.isPositive ? "text-emerald-600" : "text-brand"}>
+            {delta.isPositive ? "▲" : "▼"} {delta.value}
           </span>
-          <span className="text-muted">vs previous</span>
+          <span className="text-muted text-[11px]">vs baseline</span>
         </div>
       )}
     </div>
   );
 };
+
+export default StatTile;

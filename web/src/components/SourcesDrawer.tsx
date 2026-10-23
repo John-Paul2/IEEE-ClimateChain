@@ -34,7 +34,7 @@ export const SourcesDrawer: React.FC<SourcesDrawerProps> = ({ isOpen, onClose })
                 CBAM Legal Sources & Methodology
               </h2>
               <p className="text-xs text-muted">
-                Primary EU regulations and variable mappings (AGENTS.md Honesty Rules)
+                Primary EU regulations and variable mappings
               </p>
             </div>
           </div>
@@ -69,7 +69,7 @@ export const SourcesDrawer: React.FC<SourcesDrawerProps> = ({ isOpen, onClose })
             </div>
             <p className="text-xs text-muted">
               {sources.policy_note ||
-                "Article numbers and parameter values are provided only where verified in primary legislation; unverified parameters remain null with status 'needs source' per AGENTS.md honesty rules."}
+                "Article numbers and parameter values are provided only where verified in primary legislation; unverified parameters remain null with status 'needs source' per provenance standards."}
             </p>
           </div>
 

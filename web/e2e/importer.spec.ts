@@ -56,7 +56,7 @@ test.describe("EU Importer CBAM Portal E2E Tests", () => {
     await expect(qList).toContainText("PHYSICS_RESIDUAL");
     await expect(qList).toContainText("SPECTRAL_REPEAT");
 
-    // Check Data Provenance disclosures (AGENTS.md Rule 3)
+    // Check Data Provenance disclosures (Rule 3)
     await expect(page.getByText("REAL (CAMPD 1073-3)")).toBeVisible();
     await expect(page.getByText("SYNTHETIC (Software SE)")).toBeVisible();
     await expect(page.getByText("SYNTHETIC (Reported)")).toBeVisible();
@@ -74,7 +74,8 @@ test.describe("EU Importer CBAM Portal E2E Tests", () => {
     await expect(page.getByRole("heading", { name: "Default Value Route" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Verified Actual Route" })).toBeVisible();
 
-    // Check step-by-step formula substitutions panel
+    // Check step-by-step formula substitutions panel via 'Show the math' expander
+    await page.getByRole("button", { name: /show the math/i }).click();
     const formulaPanel = page.getByTestId("formula-steps-panel");
     await expect(formulaPanel).toBeVisible();
     await expect(formulaPanel).toContainText("Step 1: Specific Embedded Free Allocation (SEFA)");
@@ -85,10 +86,10 @@ test.describe("EU Importer CBAM Portal E2E Tests", () => {
     await expect(formulaPanel).toContainText("Step 6: CBAM certificate cost (with default value)");
     await expect(formulaPanel).toContainText("Step 7: Savings from verified installation data");
 
-    // Check "How to read this" explainer
-    await expect(
-      page.getByRole("heading", { name: /how to read this importer portal & evidence pack/i })
-    ).toBeVisible();
+    // Check '?' popover with 4 short bullets (Task 3)
+    await page.getByTestId("help-popover-trigger").click();
+    await expect(page.getByTestId("help-popover-dialog")).toBeVisible();
+    await expect(page.getByText("Upload JSON period report to verify cryptographically.")).toBeVisible();
 
     // Take screenshot of Success State
     const projectName = testInfo.project.name;
@@ -107,11 +108,11 @@ test.describe("EU Importer CBAM Portal E2E Tests", () => {
     // Banner must visibly turn red with failure message
     const banner = page.getByTestId("verification-status-banner");
     await expect(banner).toBeVisible();
-    await expect(banner).toContainText("VERIFICATION FAILED: TAMPERED OR NON-COMPLIANT REPORT");
+    await expect(banner).toContainText("VERIFICATION FAILED: TAMPERED REPORT");
     await expect(page.getByText("INTEGRITY VIOLATION")).toBeVisible();
 
     // Check that root mismatch error is reported
-    await expect(page.getByText(/Period Merkle Root On-Chain Match/i)).toBeVisible();
+    await expect(page.getByText(/Period Merkle Root On-Chain Match failed/i)).toBeVisible();
 
     // Take screenshot of Tampered State
     const projectName = testInfo.project.name;
@@ -124,18 +125,20 @@ test.describe("EU Importer CBAM Portal E2E Tests", () => {
   }, testInfo) => {
     await page.goto("/importer");
 
-    // Reset to raw config where regulatory parameters are null (AGENTS.md Rule 4)
+    // Open editable inputs and reset to raw config where regulatory parameters are null
+    await page.getByRole("button", { name: /editable inputs/i }).click();
     await page.getByTestId("reset-raw-config-btn").click();
 
-    // Needs-source alert banner must be visible and block calculation
+    // Needs-source inline alert state must be visible
     const alert = page.getByTestId("needs-source-alert");
     await expect(alert).toBeVisible();
-    await expect(alert).toContainText("CALCULATION BLOCKED: MISSING VERIFIED REGULATORY SOURCES");
+    await expect(alert).toContainText("3 inputs need a source");
 
     // Check that needs source badges are visible in form inputs
     await expect(page.getByText("needs source: benchmark").first()).toBeVisible();
     await expect(page.getByText("needs source: default_value_base").first()).toBeVisible();
     await expect(page.getByText("needs source: cscf").first()).toBeVisible();
+    await expect(page.getByTestId("load-illustrative-preset-btn")).toBeVisible();
 
     // Take screenshot of Needs-Source State
     const projectName = testInfo.project.name;

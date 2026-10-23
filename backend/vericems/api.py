@@ -199,7 +199,7 @@ def create_app(orch: Orchestrator, scenario: ScenarioEngine | None = None) -> Fa
         try:
             while True:
                 await ws.send_json(await queue.get())
-        except WebSocketDisconnect:
+        except (WebSocketDisconnect, asyncio.CancelledError, Exception):
             pass
         finally:
             orch.remove_listener(listener)

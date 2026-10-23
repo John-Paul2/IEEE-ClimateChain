@@ -78,9 +78,11 @@ STEP_BASE_DELAYS: Final[dict[int, float]] = {
 
 
 def load_script_captions(script_path: Path | str | None = None) -> dict[int, str]:
-    """Load step captions from docs/VIDEO_SCRIPT.md if present, or fall back to canonical defaults."""
+    """Load step captions from custom path if present, or fall back to canonical defaults."""
     captions = dict(DEFAULT_CAPTIONS)
-    path = Path(script_path) if script_path is not None else REPO_ROOT / "docs" / "VIDEO_SCRIPT.md"
+    if script_path is None:
+        return captions
+    path = Path(script_path)
     if not path.is_file():
         return captions
 

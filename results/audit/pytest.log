@@ -1,0 +1,156 @@
+.................................................s................       [100%]
+============================== warnings summary ===============================
+.venv\Lib\site-packages\_hypothesis_pytestplugin.py:487
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\_hypothesis_pytestplugin.py:487: UserWarning: Skipping collection of '.hypothesis' directory - this usually means you've explicitly set the `norecursedirs` pytest config option, replacing rather than extending the default ignores.
+    warnings.warn(
+
+.venv\Lib\site-packages\websockets\legacy\__init__.py:6
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\websockets\legacy\__init__.py:6: DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+
+backend/tests/test_integration_anvil.py::test_honest_path_verified_attested_and_report_verifies
+backend/tests/test_integration_anvil.py::test_attack_path_quarantined_challenged_and_slashed
+backend/tests/test_integration_anvil.py::test_rest_and_websocket_smoke
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x76b3646244ca99fe3232d57f2aede6516bbae84c10b3cf9be7fd4e01b88c0b8d') and logIndex: 1 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_integration_anvil.py::test_honest_path_verified_attested_and_report_verifies
+backend/tests/test_integration_anvil.py::test_attack_path_quarantined_challenged_and_slashed
+backend/tests/test_integration_anvil.py::test_rest_and_websocket_smoke
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x76b3646244ca99fe3232d57f2aede6516bbae84c10b3cf9be7fd4e01b88c0b8d') and logIndex: 0 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_integration_anvil.py::test_attack_path_quarantined_challenged_and_slashed
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x826b4fb88a487d508ad94fb443fba2590a242bbf8dd4bf4b3b188cffcc7d4886') and logIndex: 1 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_integration_anvil.py::test_attack_path_quarantined_challenged_and_slashed
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x826b4fb88a487d508ad94fb443fba2590a242bbf8dd4bf4b3b188cffcc7d4886') and logIndex: 2 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_integration_anvil.py::test_attack_path_quarantined_challenged_and_slashed
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x826b4fb88a487d508ad94fb443fba2590a242bbf8dd4bf4b3b188cffcc7d4886') and logIndex: 3 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_integration_anvil.py::test_attack_path_quarantined_challenged_and_slashed
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x826b4fb88a487d508ad94fb443fba2590a242bbf8dd4bf4b3b188cffcc7d4886') and logIndex: 0 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_integration_anvil.py::test_attack_path_quarantined_challenged_and_slashed
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x07cf8a5d6c931fcc06986c3512d3a1c6b89e0593998d2cf7654953d13b7580e3') and logIndex: 0 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_integration_anvil.py::test_attack_path_quarantined_challenged_and_slashed
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x977904e61c85e40b7c2e7c55f695890107dca0b06049a56d8291e43148210ab6') and logIndex: 1 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_integration_anvil.py::test_attack_path_quarantined_challenged_and_slashed
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x977904e61c85e40b7c2e7c55f695890107dca0b06049a56d8291e43148210ab6') and logIndex: 2 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_integration_anvil.py::test_attack_path_quarantined_challenged_and_slashed
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x977904e61c85e40b7c2e7c55f695890107dca0b06049a56d8291e43148210ab6') and logIndex: 3 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_integration_anvil.py::test_attack_path_quarantined_challenged_and_slashed
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x977904e61c85e40b7c2e7c55f695890107dca0b06049a56d8291e43148210ab6') and logIndex: 4 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_integration_anvil.py::test_attack_path_quarantined_challenged_and_slashed
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x977904e61c85e40b7c2e7c55f695890107dca0b06049a56d8291e43148210ab6') and logIndex: 5 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_integration_anvil.py::test_attack_path_quarantined_challenged_and_slashed
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x977904e61c85e40b7c2e7c55f695890107dca0b06049a56d8291e43148210ab6') and logIndex: 0 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0xdcec75f053d5eaeb9c23c6fa2345b544229d3a9d4004d1253fae78e075899464') and logIndex: 0 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x4e9a6c93e3974dbef4661596842ec2ffece03f742d716d90b686766f51c47e0c') and logIndex: 1 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x4e9a6c93e3974dbef4661596842ec2ffece03f742d716d90b686766f51c47e0c') and logIndex: 2 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x4e9a6c93e3974dbef4661596842ec2ffece03f742d716d90b686766f51c47e0c') and logIndex: 3 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x4e9a6c93e3974dbef4661596842ec2ffece03f742d716d90b686766f51c47e0c') and logIndex: 4 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x4e9a6c93e3974dbef4661596842ec2ffece03f742d716d90b686766f51c47e0c') and logIndex: 5 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x4e9a6c93e3974dbef4661596842ec2ffece03f742d716d90b686766f51c47e0c') and logIndex: 0 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0xcee32180fdaece0682563a74b6ff31f360b04164543bfeace8f72adbdf5246db') and logIndex: 1 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0xcee32180fdaece0682563a74b6ff31f360b04164543bfeace8f72adbdf5246db') and logIndex: 0 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x7156e9f17e0b113018046e4031bcf26fd22551e83adafd07b1248db744719320') and logIndex: 1 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x7156e9f17e0b113018046e4031bcf26fd22551e83adafd07b1248db744719320') and logIndex: 2 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x7156e9f17e0b113018046e4031bcf26fd22551e83adafd07b1248db744719320') and logIndex: 3 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x7156e9f17e0b113018046e4031bcf26fd22551e83adafd07b1248db744719320') and logIndex: 0 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0xca3ea4ce1d2cf73e8c58371077437e505990e3aede1292fc2aa9913291b39dbb') and logIndex: 0 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x304bf355774e881d78b707941b6197c6ff373ebfbd65a9145ce74ea8bc39a7b8') and logIndex: 1 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x304bf355774e881d78b707941b6197c6ff373ebfbd65a9145ce74ea8bc39a7b8') and logIndex: 2 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x304bf355774e881d78b707941b6197c6ff373ebfbd65a9145ce74ea8bc39a7b8') and logIndex: 3 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x304bf355774e881d78b707941b6197c6ff373ebfbd65a9145ce74ea8bc39a7b8') and logIndex: 4 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x304bf355774e881d78b707941b6197c6ff373ebfbd65a9145ce74ea8bc39a7b8') and logIndex: 5 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x304bf355774e881d78b707941b6197c6ff373ebfbd65a9145ce74ea8bc39a7b8') and logIndex: 0 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+SKIPPED [1] calculator\tests\test_official_crosscheck.py:14: TODO_HUMAN: I will add one official or third-party worked example later (verify against European Commission CBAM guidance / Implementing Regulations 2025/2620 and 2025/2621 as corrected by 2026/1740).
+65 passed, 1 skipped, 45 warnings in 106.40s (0:01:46)

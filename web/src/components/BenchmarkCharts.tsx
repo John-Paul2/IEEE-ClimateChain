@@ -7,7 +7,6 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
-  Legend,
   ReferenceLine,
 } from "recharts";
 import { TrendingUp, ShieldAlert, Image as ImageIcon, LineChart as ChartIcon } from "lucide-react";
@@ -100,7 +99,7 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
       {viewMode === "interactive" ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* ROC Curves Plot */}
-          <div className="p-5 rounded-xl border border-border bg-surface-card flex flex-col justify-between">
+          <div className="p-5 rounded-xl border border-border bg-surface-card flex flex-col justify-between shadow-sm">
             <div>
               <div className="flex items-center justify-between mb-1">
                 <h3 className="text-base font-semibold text-text flex items-center gap-2">
@@ -113,9 +112,9 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
               </p>
 
               {/* Chart Container */}
-              <div className="h-72 w-full">
+              <div className="h-80 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={rocData} margin={{ top: 10, right: 10, left: -15, bottom: 20 }}>
+                  <LineChart data={rocData} margin={{ top: 20, right: 15, left: 10, bottom: 25 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#1F2A44" vertical={false} />
                     <XAxis
                       dataKey="fpr"
@@ -135,13 +134,13 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
                       tick={{ fill: "#8FA0BF", fontSize: 11 }}
                       unit="%"
                       domain={[0, 100]}
+                      width={48}
                       label={{
-                        value: "True Positive Rate (Recall %)",
+                        value: "True Positive Rate (%)",
                         angle: -90,
                         position: "insideLeft",
-                        offset: 20,
-                        fill: "#8FA0BF",
-                        fontSize: 11,
+                        offset: 10,
+                        style: { textAnchor: "middle", fill: "#8FA0BF", fontSize: 11 },
                       }}
                     />
                     <Tooltip
@@ -176,16 +175,16 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
                       stroke="#F59E0B"
                       strokeDasharray="4 4"
                       label={{
-                        value: "Target 2% FPR",
+                        value: "2% FPR",
                         position: "insideTopRight",
                         fill: "#F59E0B",
                         fontSize: 10,
+                        offset: 6,
                       }}
                     />
                     <Line
                       type="monotone"
                       dataKey="proposed"
-                      name={`Proposed (AUROC ${(summary.roc_curves_overall.proposed?.auroc_mean ?? 0).toFixed(3)})`}
                       stroke={DETECTOR_METADATA.proposed.color}
                       strokeWidth={2.5}
                       dot={false}
@@ -193,7 +192,6 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
                     <Line
                       type="monotone"
                       dataKey="baseline2"
-                      name={`B2 Physics (AUROC ${(summary.roc_curves_overall.baseline_2_physics?.auroc_mean ?? 0).toFixed(3)})`}
                       stroke={DETECTOR_METADATA.baseline_2_physics.color}
                       strokeWidth={1.8}
                       dot={false}
@@ -201,7 +199,6 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
                     <Line
                       type="monotone"
                       dataKey="autoencoder"
-                      name={`Autoencoder (AUROC ${(summary.roc_curves_overall.autoencoder_only?.auroc_mean ?? 0).toFixed(3)})`}
                       stroke={DETECTOR_METADATA.autoencoder_only.color}
                       strokeWidth={1.8}
                       dot={false}
@@ -209,7 +206,6 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
                     <Line
                       type="monotone"
                       dataKey="baseline1"
-                      name={`B1 Static (AUROC ${(summary.roc_curves_overall.baseline_1_static?.auroc_mean ?? 0).toFixed(3)})`}
                       stroke={DETECTOR_METADATA.baseline_1_static.color}
                       strokeWidth={1.5}
                       strokeDasharray="2 2"
@@ -218,19 +214,37 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
                     <Line
                       type="linear"
                       dataKey="random"
-                      name="Random Guess"
                       stroke="#4B5563"
                       strokeDasharray="5 5"
                       strokeWidth={1}
                       dot={false}
                     />
-                    <Legend
-                      verticalAlign="bottom"
-                      height={36}
-                      wrapperStyle={{ fontSize: "11px", paddingTop: "8px" }}
-                    />
                   </LineChart>
                 </ResponsiveContainer>
+              </div>
+
+              {/* Clean Non-Overlapping HTML Legend */}
+              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 pt-3 border-t border-border/40 text-[11px] font-mono text-muted-strong">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: DETECTOR_METADATA.proposed.color }} />
+                  <span className="text-text font-medium">Proposed (AUROC {(summary.roc_curves_overall.proposed?.auroc_mean ?? 0).toFixed(3)})</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: DETECTOR_METADATA.baseline_2_physics.color }} />
+                  <span>B2 Physics (AUROC {(summary.roc_curves_overall.baseline_2_physics?.auroc_mean ?? 0).toFixed(3)})</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: DETECTOR_METADATA.autoencoder_only.color }} />
+                  <span>Autoencoder (AUROC {(summary.roc_curves_overall.autoencoder_only?.auroc_mean ?? 0).toFixed(3)})</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: DETECTOR_METADATA.baseline_1_static.color }} />
+                  <span>B1 Static (AUROC {(summary.roc_curves_overall.baseline_1_static?.auroc_mean ?? 0).toFixed(3)})</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-muted">
+                  <span className="w-3 h-0.5 bg-gray-500 inline-block shrink-0" />
+                  <span>Random Guess</span>
+                </div>
               </div>
             </div>
 
@@ -243,7 +257,7 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
           </div>
 
           {/* Adaptive Attacker Plot */}
-          <div className="p-5 rounded-xl border border-border bg-surface-card flex flex-col justify-between">
+          <div className="p-5 rounded-xl border border-border bg-surface-card flex flex-col justify-between shadow-sm">
             <div>
               <div className="flex items-center justify-between mb-1">
                 <h3 className="text-base font-semibold text-text flex items-center gap-2">
@@ -256,9 +270,9 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
               </p>
 
               {/* Chart Container */}
-              <div className="h-72 w-full">
+              <div className="h-80 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={adaptiveData} margin={{ top: 10, right: 10, left: -15, bottom: 20 }}>
+                  <LineChart data={adaptiveData} margin={{ top: 20, right: 15, left: 10, bottom: 25 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#1F2A44" vertical={false} />
                     <XAxis
                       dataKey="targetReduction"
@@ -278,13 +292,13 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
                       tick={{ fill: "#8FA0BF", fontSize: 11 }}
                       unit="%"
                       domain={[0, 100]}
+                      width={48}
                       label={{
                         value: "Detection Probability (%)",
                         angle: -90,
                         position: "insideLeft",
-                        offset: 20,
-                        fill: "#8FA0BF",
-                        fontSize: 11,
+                        offset: 10,
+                        style: { textAnchor: "middle", fill: "#8FA0BF", fontSize: 11 },
                       }}
                     />
                     <Tooltip
@@ -317,7 +331,6 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
                     <Line
                       type="monotone"
                       dataKey="varA_proposed"
-                      name="Var A: Proposed Detector"
                       stroke={DETECTOR_METADATA.proposed.color}
                       strokeWidth={2.5}
                       dot={{ r: 3 }}
@@ -325,7 +338,6 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
                     <Line
                       type="monotone"
                       dataKey="varA_b2"
-                      name="Var A: B2 Physics"
                       stroke={DETECTOR_METADATA.baseline_2_physics.color}
                       strokeWidth={1.8}
                       strokeDasharray="4 2"
@@ -334,7 +346,6 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
                     <Line
                       type="monotone"
                       dataKey="varB_proposed"
-                      name="Var B (Insider): Proposed Detector"
                       stroke="#F43F5E"
                       strokeWidth={2.5}
                       dot={{ r: 3 }}
@@ -342,19 +353,33 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
                     <Line
                       type="monotone"
                       dataKey="varB_b2"
-                      name="Var B (Insider): B2 Physics"
                       stroke="#9CA3AF"
                       strokeWidth={1.5}
                       strokeDasharray="2 2"
                       dot={{ r: 2 }}
                     />
-                    <Legend
-                      verticalAlign="bottom"
-                      height={36}
-                      wrapperStyle={{ fontSize: "11px", paddingTop: "8px" }}
-                    />
                   </LineChart>
                 </ResponsiveContainer>
+              </div>
+
+              {/* Clean Non-Overlapping HTML Legend */}
+              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 pt-3 border-t border-border/40 text-[11px] font-mono text-muted-strong">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: DETECTOR_METADATA.proposed.color }} />
+                  <span className="text-text font-medium">Var A: Proposed Detector</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: DETECTOR_METADATA.baseline_2_physics.color }} />
+                  <span>Var A: B2 Physics</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0 bg-[#F43F5E]" />
+                  <span className="text-text font-medium">Var B (Insider): Proposed Detector</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0 bg-[#9CA3AF]" />
+                  <span>Var B (Insider): B2 Physics</span>
+                </div>
               </div>
             </div>
 
@@ -415,7 +440,7 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
                   className="rounded-lg border border-border max-h-[480px] object-contain mx-auto shadow-lg"
                 />
                 <p className="text-xs font-mono text-muted">
-                  Figure 1: results/figures/roc_curves.png — Evaluated across 5 facility splits (base seed 42)
+                  Figure 1: ROC Curves — Evaluated across 5 facility splits (base seed 42)
                 </p>
               </div>
             )}
@@ -427,7 +452,7 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
                   className="rounded-lg border border-border max-h-[480px] object-contain mx-auto shadow-lg"
                 />
                 <p className="text-xs font-mono text-muted">
-                  Figure 2: results/figures/adaptive_attacker_curve.png — White-box attack sweep (Variants A and B)
+                  Figure 2: Adaptive Attacker Curve — White-box attack sweep (Variants A and B)
                 </p>
               </div>
             )}
@@ -439,7 +464,7 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
                   className="rounded-lg border border-border max-h-[480px] object-contain mx-auto shadow-lg"
                 />
                 <p className="text-xs font-mono text-muted">
-                  Figure 3: results/figures/recall_per_attack_detector.png — Breakdown across 14 configurations
+                  Figure 3: Detection Recall — Breakdown across 14 configurations
                 </p>
               </div>
             )}

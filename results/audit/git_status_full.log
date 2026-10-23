@@ -1,0 +1,98 @@
+ M backend/vericems/api.py
+ M backend/vericems/chain_adapter.py
+ M backend/vericems/scenario.py
+ M backend/vericems/server.py
+ M package.json
+ M web/e2e/benchmark.spec.ts
+ M web/e2e/importer.spec.ts
+ M web/e2e/operator_verifier.spec.ts
+ M web/e2e/smoke.spec.ts
+ M web/e2e/story.spec.ts
+ M web/index.html
+ M web/package-lock.json
+ M web/package.json
+ M web/screenshots/benchmark-desktop.png
+ M web/screenshots/benchmark-missing-state-desktop.png
+ M web/screenshots/benchmark-missing-state-mobile.png
+ M web/screenshots/benchmark-mobile.png
+ M web/screenshots/gallery-desktop.png
+ M web/screenshots/gallery-mobile.png
+ M web/screenshots/importer-needs-source-desktop.png
+ M web/screenshots/importer-needs-source-mobile.png
+ M web/screenshots/importer-success-desktop.png
+ M web/screenshots/importer-success-mobile.png
+ M web/screenshots/importer-tampered-desktop.png
+ M web/screenshots/importer-tampered-mobile.png
+ M web/screenshots/operator-attack-desktop.png
+ M web/screenshots/operator-attack-mobile.png
+ M web/screenshots/operator-normal-desktop.png
+ M web/screenshots/operator-normal-mobile.png
+ M web/screenshots/shell-operator-desktop.png
+ M web/screenshots/shell-operator-mobile.png
+ M web/screenshots/story-step-1-normal-desktop.png
+ M web/screenshots/story-step-1-normal-mobile.png
+ M web/screenshots/story-step-2-attack-injected-desktop.png
+ M web/screenshots/story-step-2-attack-injected-mobile.png
+ M web/screenshots/story-step-3-quarantined-desktop.png
+ M web/screenshots/story-step-3-quarantined-mobile.png
+ M web/screenshots/story-step-4-slashed-desktop.png
+ M web/screenshots/story-step-4-slashed-mobile.png
+ M web/screenshots/story-step-5-attested-desktop.png
+ M web/screenshots/story-step-5-attested-mobile.png
+ M web/screenshots/story-step-6-importer-verified-desktop.png
+ M web/screenshots/story-step-6-importer-verified-mobile.png
+ M web/screenshots/story-step-7-benchmark-disclosure-desktop.png
+ M web/screenshots/story-step-7-benchmark-disclosure-mobile.png
+ M web/screenshots/verifier-attack-desktop.png
+ M web/screenshots/verifier-attack-mobile.png
+ M web/screenshots/verifier-normal-desktop.png
+ M web/screenshots/verifier-normal-mobile.png
+ M web/src/components/AttackPanel.tsx
+ M web/src/components/Badge.tsx
+ M web/src/components/BatchTimeline.tsx
+ M web/src/components/BenchmarkCharts.tsx
+ M web/src/components/BenchmarkTable.tsx
+ M web/src/components/Card.tsx
+ M web/src/components/ChallengePanel.tsx
+ M web/src/components/Countdown.tsx
+ M web/src/components/DataProvenancePanel.tsx
+ M web/src/components/DataTable.tsx
+ D web/src/components/DemoControlBar.tsx
+ M web/src/components/EmptyState.tsx
+ M web/src/components/ErrorState.tsx
+ M web/src/components/HashChainStrip.tsx
+ M web/src/components/HashChip.tsx
+ M web/src/components/MerkleTreeViz.tsx
+ M web/src/components/QuarantineViewer.tsx
+ M web/src/components/Skeleton.tsx
+ M web/src/components/SourcesDrawer.tsx
+ M web/src/components/StatTile.tsx
+ M web/src/components/TelemetryCharts.tsx
+ M web/src/components/ThreatModelTable.tsx
+ M web/src/components/Toast.tsx
+ M web/src/components/TrustGauge.tsx
+ M web/src/components/VoteCard.tsx
+ M web/src/data/DataContext.tsx
+ M web/src/index.css
+ M web/src/pages/BenchmarkPage.tsx
+ M web/src/pages/GalleryPage.tsx
+ M web/src/pages/ImporterPage.tsx
+ M web/src/pages/OperatorPage.tsx
+ M web/src/pages/VerifierPage.tsx
+ M web/src/shell/AppShell.tsx
+ D web/src/shell/Sidebar.tsx
+ M web/src/shell/TopBar.tsx
+ M web/tailwind.config.ts
+?? VeriCEMS_UI_Redesign_Spec_and_Prompts.md
+?? data/
+?? pytest.ini
+?? results/audit/
+?? web/e2e/responsive_scroll.spec.ts
+?? web/e2e/test_theme_toggle.spec.ts
+?? web/screenshots/verified_dark_mode.png
+?? web/screenshots/verified_light_mode.png
+?? web/scripts/
+?? web/src/components/Button.tsx
+?? web/src/components/Chip.tsx
+?? web/src/components/Popover.tsx
+?? web/src/shell/EventTicker.tsx

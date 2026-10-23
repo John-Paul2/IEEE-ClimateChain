@@ -1,16 +1,6 @@
-import React, { useMemo } from "react";
-import {
-  ReactFlow,
-  Background,
-  Controls,
-  type Node,
-  type Edge,
-  Position,
-  MarkerType,
-} from "@xyflow/react";
-import { GitBranch, ShieldCheck, ExternalLink, Copy, Check, Clock } from "lucide-react";
+import React, { useState, useMemo } from "react";
+import { Copy, ExternalLink, ShieldCheck, ShieldAlert, Check } from "lucide-react";
 import { Skeleton } from "./Skeleton";
-import { EmptyState } from "./EmptyState";
 import { ErrorState } from "./ErrorState";
 
 export interface MerkleTreeVizProps {
@@ -21,6 +11,7 @@ export interface MerkleTreeVizProps {
   batchId?: number;
   txHash?: string | null;
   batchStatus?: string;
+  flaggedLeafIndex?: number | null;
   isLoading?: boolean;
   isEmpty?: boolean;
   error?: string | null;
@@ -28,333 +19,423 @@ export interface MerkleTreeVizProps {
   className?: string;
 }
 
+interface TreeNode {
+  id: string;
+  hash: string;
+  shortHash: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  level: number;
+  isRoot?: boolean;
+  isFlagged?: boolean;
+  label?: string;
+}
+
 export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
   rootHash,
   leaves = [],
-  packetsCount,
-  totalExpected = 8,
+  packetsCount: _packetsCount,
+  totalExpected: _totalExpected = 8,
   batchId = 1,
   txHash,
   batchStatus = "Anchored",
+  flaggedLeafIndex,
   isLoading = false,
   isEmpty = false,
   error = null,
   onRetry,
   className = "",
 }) => {
-  const [copied, setCopied] = React.useState(false);
-
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  // Determine current leaves (up to 8, or defaults)
-  const effectiveLeaves = useMemo(() => {
-    if (leaves.length > 0) return leaves.slice(0, 8);
-    return [
-      "0x1111222233334444555566667777888899990000aaaabbbbccccddddeeeeffff",
-      "0x2222333344445555666677778888999900001111bbbbccccddddeeeeffffaaaa",
-      "0x3333444455556666777788889999000011112222ccccddddeeeeffffaaaabbbb",
-      "0x4444555566667777888899990000111122223333ddddeeeeffffaaaabbbbcccc",
-    ];
-  }, [leaves]);
-
-  const count = packetsCount ?? effectiveLeaves.length;
-  const isFilled = count >= totalExpected;
-  const isAnchored = Boolean(rootHash && (batchStatus === "Anchored" || batchStatus === "Verified" || batchStatus === "Quarantined"));
+  const [copied, setCopied] = useState(false);
+  const [activeHash, setActiveHash] = useState<string | null>(null);
 
   const defaultRoot =
     rootHash ||
     "0x789a42f8c5b9671144177cd390de2ef830026e6d1c815ec6ba9d2424fa75d9e1";
 
+  const isQuarantined = batchStatus === "Quarantined" || batchStatus === "Slashed";
+
+  // Deterministic 8 leaves
+  const effectiveLeaves = useMemo(() => {
+    const defaultHex = [
+      "0x1111222233334444555566667777888899990000aaaabbbbccccddddeeeeffff",
+      "0x2222333344445555666677778888999900001111bbbbccccddddeeeeffffaaaa",
+      "0x3333444455556666777788889999000011112222ccccddddeeeeffffaaaabbbb",
+      "0x4444555566667777888899990000111122223333ddddeeeeffffaaaabbbbcccc",
+      "0x5555666677778888999900001111222233334444eeeeffffaaaabbbbccccdddd",
+      "0x6666777788889999000011112222333344445555ffffaaaabbbbccccddddeeee",
+      "0x7777888899990000111122223333444455556666aaaabbbbccccddddeeeeffff",
+      "0x8888999900001111222233334444555566667777bbbbccccddddeeeeffffaaaa",
+    ];
+    const out: string[] = [];
+    for (let i = 0; i < 8; i++) {
+      out.push(leaves[i] || defaultHex[i]);
+    }
+    return out;
+  }, [leaves]);
+
+  // Intermediate node hashes (pseudo deterministic)
+  const treeNodes = useMemo(() => {
+    const nodes: TreeNode[] = [];
+
+    // Flagged leaf resolution: if explicitly given or batch is quarantined, flag leaf 3 (or specified index)
+    const activeFlaggedIdx =
+      flaggedLeafIndex !== undefined && flaggedLeafIndex !== null
+        ? flaggedLeafIndex
+        : isQuarantined
+        ? 3
+        : -1;
+
+    // Level 0: 8 leaves
+    const leafX = [70, 160, 250, 340, 460, 550, 640, 730];
+    const l0Hashes = effectiveLeaves;
+
+    for (let i = 0; i < 8; i++) {
+      const h = l0Hashes[i];
+      nodes.push({
+        id: `leaf-${i}`,
+        hash: h,
+        shortHash: h.slice(0, 6),
+        x: leafX[i],
+        y: 192,
+        width: 70,
+        height: 24,
+        level: 0,
+        isFlagged: i === activeFlaggedIdx,
+        label: `L${i}`,
+      });
+    }
+
+    // Level 1: 4 branch nodes (midpoints of child pairs)
+    const l1X = [115, 295, 505, 685];
+    const l1Hashes = [
+      "0x89abcdef0123456789abcdef0123456789abcdef0123456789abcdef01234567",
+      "0x9abcdef0123456789abcdef0123456789abcdef0123456789abcdef012345678",
+      "0xabcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789",
+      "0xbcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789a",
+    ];
+
+    for (let i = 0; i < 4; i++) {
+      const h = l1Hashes[i];
+      nodes.push({
+        id: `branch-1-${i}`,
+        hash: h,
+        shortHash: h.slice(0, 6),
+        x: l1X[i],
+        y: 132,
+        width: 74,
+        height: 24,
+        level: 1,
+        label: `H${i * 2},${i * 2 + 1}`,
+      });
+    }
+
+    // Level 2: 2 branch nodes (midpoints of l1 pairs)
+    const l2X = [205, 595];
+    const l2Hashes = [
+      "0xcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789ab",
+      "0xdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abc",
+    ];
+
+    for (let i = 0; i < 2; i++) {
+      const h = l2Hashes[i];
+      nodes.push({
+        id: `branch-2-${i}`,
+        hash: h,
+        shortHash: h.slice(0, 6),
+        x: l2X[i],
+        y: 72,
+        width: 78,
+        height: 24,
+        level: 2,
+        label: `H${i * 4}-${i * 4 + 3}`,
+      });
+    }
+
+    // Level 3: Root node (center 400)
+    nodes.push({
+      id: "root",
+      hash: defaultRoot,
+      shortHash: defaultRoot.slice(0, 6),
+      x: 400,
+      y: 12,
+      width: 104,
+      height: 26,
+      level: 3,
+      isRoot: true,
+      label: "ROOT",
+    });
+
+    return nodes;
+  }, [defaultRoot, effectiveLeaves, flaggedLeafIndex, isQuarantined]);
+
+  const handleCopyRoot = () => {
+    navigator.clipboard.writeText(defaultRoot);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   const explorerUrl = txHash
     ? `https://sepolia.arbiscan.io/tx/${txHash}`
     : `https://sepolia.arbiscan.io/search?q=${defaultRoot}`;
 
-  const formatHash = (h: string) => `${h.slice(0, 6)}...${h.slice(-4)}`;
-
-  const { initialNodes, initialEdges } = useMemo(() => {
-    const l0 = effectiveLeaves[0] || "0x00";
-    const l1 = effectiveLeaves[1] || "0x00";
-    const l2 = effectiveLeaves[2] || "0x00";
-    const l3 = effectiveLeaves[3] || "0x00";
-
-    // Branch nodes
-    const n01 = "0x89abcdef0123456789abcdef0123456789abcdef0123456789abcdef01234567";
-    const n23 = "0x9abcdef0123456789abcdef0123456789abcdef0123456789abcdef012345678";
-
-    const nodes: Node[] = [
-      // Level 2: Merkle Root
-      {
-        id: "root",
-        position: { x: 250, y: 15 },
-        data: {
-          label: (
-            <div
-              className={`p-2.5 rounded-lg bg-surface border-2 ${
-                isAnchored ? "border-verified" : "border-warning"
-              } shadow-md text-center min-w-[170px]`}
-            >
-              <div className="flex items-center justify-center gap-1.5 text-[11px] font-semibold mb-1">
-                {isAnchored ? (
-                  <>
-                    <ShieldCheck className="w-3.5 h-3.5 text-verified" />
-                    <span className="text-verified">ROOT (Batch #{batchId})</span>
-                  </>
-                ) : (
-                  <>
-                    <Clock className="w-3.5 h-3.5 text-warning" />
-                    <span className="text-warning">ROOT (Filling {count}/{totalExpected})</span>
-                  </>
-                )}
-              </div>
-              <code className="text-xs font-mono text-text block select-all">
-                {formatHash(defaultRoot)}
-              </code>
-            </div>
-          ),
-        },
-        sourcePosition: Position.Bottom,
-      },
-      // Level 1: Branch Nodes
-      {
-        id: "n01",
-        position: { x: 120, y: 110 },
-        data: {
-          label: (
-            <div className="p-2 rounded-lg bg-surface-raised border border-info/50 text-center min-w-[140px]">
-              <span className="text-[10px] text-info font-medium block">Branch H(0,1)</span>
-              <code className="text-[11px] font-mono text-muted block">{formatHash(n01)}</code>
-            </div>
-          ),
-        },
-        targetPosition: Position.Top,
-        sourcePosition: Position.Bottom,
-      },
-      {
-        id: "n23",
-        position: { x: 390, y: 110 },
-        data: {
-          label: (
-            <div className="p-2 rounded-lg bg-surface-raised border border-info/50 text-center min-w-[140px]">
-              <span className="text-[10px] text-info font-medium block">Branch H(2,3)</span>
-              <code className="text-[11px] font-mono text-muted block">{formatHash(n23)}</code>
-            </div>
-          ),
-        },
-        targetPosition: Position.Top,
-        sourcePosition: Position.Bottom,
-      },
-      // Level 0: Leaf Nodes
-      {
-        id: "l0",
-        position: { x: 30, y: 200 },
-        data: {
-          label: (
-            <div className="p-1.5 rounded bg-surface-sunken border border-border text-center min-w-[110px]">
-              <span className="text-[9px] text-muted block">Leaf #0</span>
-              <code className="text-[10px] font-mono text-text block">{formatHash(l0)}</code>
-            </div>
-          ),
-        },
-        targetPosition: Position.Top,
-      },
-      {
-        id: "l1",
-        position: { x: 170, y: 200 },
-        data: {
-          label: (
-            <div className="p-1.5 rounded bg-surface-sunken border border-border text-center min-w-[110px]">
-              <span className="text-[9px] text-muted block">Leaf #1</span>
-              <code className="text-[10px] font-mono text-text block">{formatHash(l1)}</code>
-            </div>
-          ),
-        },
-        targetPosition: Position.Top,
-      },
-      {
-        id: "l2",
-        position: { x: 320, y: 200 },
-        data: {
-          label: (
-            <div className="p-1.5 rounded bg-surface-sunken border border-border text-center min-w-[110px]">
-              <span className="text-[9px] text-muted block">Leaf #2</span>
-              <code className="text-[10px] font-mono text-text block">{formatHash(l2)}</code>
-            </div>
-          ),
-        },
-        targetPosition: Position.Top,
-      },
-      {
-        id: "l3",
-        position: { x: 460, y: 200 },
-        data: {
-          label: (
-            <div className="p-1.5 rounded bg-surface-sunken border border-border text-center min-w-[110px]">
-              <span className="text-[9px] text-muted block">Leaf #3</span>
-              <code className="text-[10px] font-mono text-text block">{formatHash(l3)}</code>
-            </div>
-          ),
-        },
-        targetPosition: Position.Top,
-      },
-    ];
-
-    const edges: Edge[] = [
-      {
-        id: "e-root-n01",
-        source: "root",
-        target: "n01",
-        animated: true,
-        style: { stroke: "#2DD4BF", strokeWidth: 2 },
-        markerEnd: { type: MarkerType.ArrowClosed, color: "#2DD4BF" },
-      },
-      {
-        id: "e-root-n23",
-        source: "root",
-        target: "n23",
-        animated: true,
-        style: { stroke: "#2DD4BF", strokeWidth: 2 },
-        markerEnd: { type: MarkerType.ArrowClosed, color: "#2DD4BF" },
-      },
-      {
-        id: "e-n01-l0",
-        source: "n01",
-        target: "l0",
-        animated: true,
-        style: { stroke: "#60A5FA", strokeWidth: 1.5 },
-      },
-      {
-        id: "e-n01-l1",
-        source: "n01",
-        target: "l1",
-        animated: true,
-        style: { stroke: "#60A5FA", strokeWidth: 1.5 },
-      },
-      {
-        id: "e-n23-l2",
-        source: "n23",
-        target: "l2",
-        animated: true,
-        style: { stroke: "#60A5FA", strokeWidth: 1.5 },
-      },
-      {
-        id: "e-n23-l3",
-        source: "n23",
-        target: "l3",
-        animated: true,
-        style: { stroke: "#60A5FA", strokeWidth: 1.5 },
-      },
-    ];
-
-    return { initialNodes: nodes, initialEdges: edges };
-  }, [effectiveLeaves, defaultRoot, batchId, isAnchored, count, totalExpected]);
-
   if (isLoading) {
     return (
-      <div className={`p-5 bg-surface border border-border rounded-xl space-y-4 ${className}`}>
-        <div className="flex items-center justify-between">
-          <Skeleton className="h-5 w-40" />
-          <Skeleton className="h-4 w-24" />
-        </div>
-        <Skeleton className="h-64 w-full rounded-lg" />
+      <div className={`p-5 rounded-card bg-surface border border-hairline shadow-card space-y-4 ${className}`}>
+        <Skeleton className="h-6 w-48 rounded-md" />
+        <Skeleton className="h-56 w-full rounded-2xl" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className={`p-4 bg-surface border border-border rounded-xl ${className}`}>
+      <div className={`p-5 rounded-card bg-surface border border-hairline shadow-card ${className}`}>
         <ErrorState title="Merkle Tree Error" message={error} onRetry={onRetry} />
       </div>
     );
   }
 
   if (isEmpty) {
-    return (
-      <div className={`p-5 bg-surface border border-border rounded-xl ${className}`}>
-        <EmptyState
-          icon={GitBranch}
-          title="No Merkle tree available"
-          description="Batch Merkle tree will be rendered when telemetry packets are sealed."
-        />
-      </div>
-    );
+    return null;
   }
+
+  const displayedHash = activeHash || defaultRoot;
 
   return (
     <div
       role="region"
       aria-label="Batch Merkle Tree Visualization"
-      className={`p-5 bg-surface border border-border rounded-xl shadow-sm ${className}`}
+      className={`p-5 rounded-card bg-surface border border-hairline shadow-card space-y-3 ${className}`}
     >
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 mb-3 border-b border-border/50">
+      {/* Header Chips Strip: ROOT, Copy, Explorer */}
+      <div className="flex flex-wrap items-center justify-between gap-2.5 pb-2 border-b border-hairline text-xs">
         <div className="flex items-center gap-2">
-          <GitBranch className="w-5 h-5 text-info" aria-hidden="true" />
-          <h3 className="text-sm font-semibold text-text">Batch Merkle Tree Inclusion</h3>
-          <span className="text-xs px-2 py-0.5 rounded-full bg-info/10 text-info border border-info/30 font-mono">
-            {count}/{totalExpected} packets
+          <span className="font-mono font-bold text-xs text-ink flex items-center gap-1.5">
+            {isQuarantined ? (
+              <ShieldAlert className="w-4 h-4 text-brand" />
+            ) : (
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            )}
+            Batch #{batchId} Root
+          </span>
+          <span className="font-mono text-[11px] text-muted-strong bg-surface-soft px-2 py-0.5 rounded-chip border border-hairline">
+            {defaultRoot.slice(0, 10)}…{defaultRoot.slice(-6)}
           </span>
         </div>
 
-        {/* Explorer link for the anchored root */}
         <div className="flex items-center gap-2">
-          {isAnchored && (
-            <div className="flex items-center gap-2">
-              <a
-                href={explorerUrl}
-                target="_blank"
-                rel="noreferrer"
-                data-testid="merkle-root-explorer-link"
-                className="inline-flex items-center gap-1 text-xs text-info hover:text-info/80 hover:underline font-mono bg-surface-raised px-2.5 py-1 rounded border border-border"
-              >
-                <span>Explorer Link</span>
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-              <button
-                type="button"
-                onClick={() => handleCopy(defaultRoot)}
-                title="Copy Merkle root"
-                className="p-1 rounded bg-surface-raised border border-border hover:border-info text-muted hover:text-text transition-colors"
-              >
-                {copied ? <Check className="w-3.5 h-3.5 text-verified" /> : <Copy className="w-3.5 h-3.5" />}
-              </button>
-            </div>
-          )}
+          <button
+            type="button"
+            data-testid="merkle-root-copy-btn"
+            onClick={handleCopyRoot}
+            aria-label="Copy full Merkle root hash"
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-chip text-xs bg-surface-soft hover:bg-hairline border border-hairline text-ink transition-colors font-medium shadow-sm"
+          >
+            {copied ? (
+              <>
+                <Check className="w-3 h-3 text-emerald-600" />
+                <span>Copied</span>
+              </>
+            ) : (
+              <>
+                <Copy className="w-3 h-3 text-muted-strong" />
+                <span>Copy</span>
+              </>
+            )}
+          </button>
+
+          <a
+            href={explorerUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-testid="merkle-root-explorer-link"
+            aria-label="View Merkle root on block explorer"
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-chip text-xs bg-surface-soft hover:bg-hairline border border-hairline text-ink transition-colors font-medium shadow-sm"
+          >
+            <ExternalLink className="w-3 h-3 text-muted-strong" />
+            <span>Explorer</span>
+          </a>
         </div>
       </div>
 
-      {/* Progress indicator when batch is filling */}
-      {!isFilled && (
-        <div className="mb-3 p-2.5 rounded bg-surface-raised border border-border text-xs text-muted flex items-center justify-between">
-          <span className="flex items-center gap-1.5">
-            <Clock className="w-4 h-4 text-warning" />
-            <span>Batch #{batchId} is acquiring telemetry ({count} of {totalExpected} packets)</span>
-          </span>
-          <div className="w-24 h-2 bg-surface-sunken rounded-full overflow-hidden border border-border">
-            <div
-              className="h-full bg-info transition-all"
-              style={{ width: `${Math.round((count / totalExpected) * 100)}%` }}
-            />
-          </div>
-        </div>
-      )}
+      {/* Selected/Hovered Node Hash Readout (Accessible for keyboard & hover) */}
+      <div
+        data-testid="merkle-tree-hash-readout"
+        className="px-3 py-1.5 rounded-chip bg-surface-soft border border-hairline flex items-center justify-between text-xs font-mono"
+      >
+        <span className="text-muted-strong font-sans text-[11px]">Hover/Focus Hash:</span>
+        <span className="text-ink font-semibold truncate ml-2 max-w-[280px] sm:max-w-md select-all">
+          {displayedHash}
+        </span>
+      </div>
 
-      <div className="h-72 w-full rounded-lg bg-surface-sunken border border-border/60 overflow-hidden">
-        <ReactFlow
-          nodes={initialNodes}
-          edges={initialEdges}
-          fitView
-          attributionPosition="bottom-right"
-          proOptions={{ hideAttribution: true }}
-          minZoom={0.6}
-          maxZoom={1.4}
+      {/* Responsive Custom SVG Tree (8 leaves, 3 levels, responsive viewBox, no zoom/controls) */}
+      <div className="w-full overflow-hidden flex items-center justify-center pt-1">
+        <svg
+          viewBox="0 0 800 225"
+          className="w-full h-auto max-w-full"
+          role="img"
+          aria-label={`Merkle Tree with 8 leaves anchored under root ${defaultRoot.slice(0, 10)}`}
         >
-          <Background color="#1F2A44" gap={16} />
-          <Controls className="!bg-surface !border-border !fill-text" />
-        </ReactFlow>
+          <g>
+            {/* Edges from Root to Level 2 (1px hairline) */}
+            <line x1={400} y1={38} x2={205} y2={72} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
+            <line x1={400} y1={38} x2={595} y2={72} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
+
+            {/* Edges from Level 2 to Level 1 */}
+            <line x1={205} y1={96} x2={115} y2={132} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
+            <line x1={205} y1={96} x2={295} y2={132} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
+            <line x1={595} y1={96} x2={505} y2={132} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
+            <line x1={595} y1={96} x2={685} y2={132} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
+
+            {/* Edges from Level 1 to Level 0 Leaves */}
+            <line x1={115} y1={156} x2={70} y2={192} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
+            <line x1={115} y1={156} x2={160} y2={192} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
+            <line x1={295} y1={156} x2={250} y2={192} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
+            <line x1={295} y1={156} x2={340} y2={192} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
+            <line x1={505} y1={156} x2={460} y2={192} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
+            <line x1={505} y1={156} x2={550} y2={192} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
+            <line x1={685} y1={156} x2={640} y2={192} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
+            <line x1={685} y1={156} x2={730} y2={192} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
+          </g>
+
+          {/* Nodes */}
+          {treeNodes.map((node) => {
+            const rx = node.x - node.width / 2;
+            const ry = node.y;
+            const isHovered = activeHash === node.hash;
+
+            // Flagged leaf styling: fraud chip colors (--flagged-bg: #FDECEC, --flagged-ink: #9B1C1C)
+            if (node.isFlagged) {
+              return (
+                <g
+                  key={node.id}
+                  data-testid={`merkle-node-${node.id}`}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`Flagged Leaf ${node.label}: ${node.hash}`}
+                  onMouseEnter={() => setActiveHash(node.hash)}
+                  onMouseLeave={() => setActiveHash(null)}
+                  onFocus={() => setActiveHash(node.hash)}
+                  onBlur={() => setActiveHash(null)}
+                  className="cursor-pointer focus:outline-none"
+                >
+                  <title>{`Flagged Leaf ${node.hash}`}</title>
+                  <rect
+                    x={rx}
+                    y={ry}
+                    width={node.width}
+                    height={node.height}
+                    rx={6}
+                    ry={6}
+                    fill="var(--flagged-bg, #FDECEC)"
+                    stroke="var(--flagged-ink, #9B1C1C)"
+                    strokeWidth={isHovered ? 2.5 : 1.5}
+                  />
+                  <text
+                    x={node.x}
+                    y={node.y + node.height / 2}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    fill="var(--flagged-ink, #9B1C1C)"
+                    fontFamily="JetBrains Mono, monospace"
+                    fontSize={10}
+                    fontWeight={700}
+                  >
+                    {node.shortHash}
+                  </text>
+                </g>
+              );
+            }
+
+            // Root Node styling: brand-red outline + "ROOT" label
+            if (node.isRoot) {
+              return (
+                <g
+                  key={node.id}
+                  data-testid={`merkle-node-${node.id}`}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`Merkle Root: ${node.hash}`}
+                  onMouseEnter={() => setActiveHash(node.hash)}
+                  onMouseLeave={() => setActiveHash(null)}
+                  onFocus={() => setActiveHash(node.hash)}
+                  onBlur={() => setActiveHash(null)}
+                  className="cursor-pointer focus:outline-none"
+                >
+                  <title>{`ROOT: ${node.hash}`}</title>
+                  <rect
+                    x={rx}
+                    y={ry}
+                    width={node.width}
+                    height={node.height}
+                    rx={6}
+                    ry={6}
+                    fill="var(--surface-card, #FFFFFF)"
+                    stroke="var(--brand, #E5383B)"
+                    strokeWidth={isHovered ? 3 : 2}
+                  />
+                  <text
+                    x={node.x}
+                    y={node.y + node.height / 2}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    fill="var(--ink, #0A0A0A)"
+                    fontFamily="JetBrains Mono, monospace"
+                    fontSize={10}
+                    fontWeight={700}
+                  >
+                    ROOT · {node.shortHash}
+                  </text>
+                </g>
+              );
+            }
+
+            // Intermediate branch or clean leaf node
+            return (
+              <g
+                key={node.id}
+                data-testid={`merkle-node-${node.id}`}
+                tabIndex={0}
+                role="button"
+                aria-label={`Node ${node.label || ""}: ${node.hash}`}
+                onMouseEnter={() => setActiveHash(node.hash)}
+                onMouseLeave={() => setActiveHash(null)}
+                onFocus={() => setActiveHash(node.hash)}
+                onBlur={() => setActiveHash(null)}
+                className="cursor-pointer focus:outline-none"
+              >
+                <title>{node.hash}</title>
+                <rect
+                  x={rx}
+                  y={ry}
+                  width={node.width}
+                  height={node.height}
+                  rx={6}
+                  ry={6}
+                  fill="var(--surface-card, #FFFFFF)"
+                  stroke={isHovered ? "var(--brand, #E5383B)" : "var(--hairline, #E5E7EB)"}
+                  strokeWidth={isHovered ? 2 : 1}
+                />
+                <text
+                  x={node.x}
+                  y={node.y + node.height / 2}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  fill="var(--ink, #0A0A0A)"
+                  fontFamily="JetBrains Mono, monospace"
+                  fontSize={10}
+                  fontWeight={500}
+                >
+                  {node.shortHash}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
       </div>
     </div>
   );

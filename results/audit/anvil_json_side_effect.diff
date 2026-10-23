@@ -1,0 +1,32 @@
+diff --git a/deployments/anvil.json b/deployments/anvil.json
+index 4eefd4a..6ab139b 100644
+--- a/deployments/anvil.json
++++ b/deployments/anvil.json
+@@ -16,20 +16,20 @@
+   },
+   "parameters": {
+     "carelessVerifierSlashBps": 1000,
+-    "challengeWindowSeconds": 60,
+-    "commitWindowSeconds": 20,
+-    "minOperatorBondWei": 1000000000000000,
+-    "minVerifierStakeWei": 500000000000000,
++    "challengeWindowSeconds": 120,
++    "commitWindowSeconds": 30,
++    "minOperatorBondWei": 1000000000000000000,
++    "minVerifierStakeWei": 500000000000000000,
+     "operatorSlashBps": 5000,
+     "requiredArbiterApprovals": 2,
+     "requiredMatches": 3,
+-    "revealWindowSeconds": 20,
++    "revealWindowSeconds": 30,
+     "unrevealedPenaltyBps": 1000,
+     "verifierCount": 5,
+     "verifierRewardShareBps": 7000,
+-    "withdrawalDelaySeconds": 60
++    "withdrawalDelaySeconds": 180
+   },
+-  "profile": "testnet",
++  "profile": "demo",
+   "treasury": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+   "verifiers": [
+     "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
-import { CheckCircle2, AlertOctagon, AlertTriangle, Info, X } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Info, X } from "lucide-react";
 
 export type ToastType = "success" | "error" | "warning" | "info";
 
@@ -46,32 +46,32 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       {/* Toast Overlay Container */}
       <div
         aria-live="polite"
-        className="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"
+        className="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm w-full pointer-events-none"
       >
         {toasts.map((toast) => {
           const typeConfig = {
             success: {
               icon: CheckCircle2,
-              border: "border-verified/40",
-              text: "text-verified",
+              border: "border-emerald-500/30",
+              text: "text-emerald-400",
               bg: "bg-surface-raised",
             },
             error: {
-              icon: AlertOctagon,
-              border: "border-flagged/40",
-              text: "text-flagged",
+              icon: AlertTriangle,
+              border: "border-red-500/30",
+              text: "text-[#FF6B6B]",
               bg: "bg-surface-raised",
             },
             warning: {
               icon: AlertTriangle,
-              border: "border-warning/40",
-              text: "text-warning",
+              border: "border-amber-500/30",
+              text: "text-amber-400",
               bg: "bg-surface-raised",
             },
             info: {
               icon: Info,
-              border: "border-info/40",
-              text: "text-info",
+              border: "border-blue-500/30",
+              text: "text-blue-400",
               bg: "bg-surface-raised",
             },
           }[toast.type];
@@ -82,18 +82,20 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             <div
               key={toast.id}
               role="alert"
-              className={`pointer-events-auto p-4 rounded-xl border ${typeConfig.border} ${typeConfig.bg} shadow-lg text-text flex items-start gap-3 transition-all animate-in fade-in slide-in-from-bottom-2 duration-200`}
+              className={`pointer-events-auto p-4 rounded-card border ${typeConfig.border} ${typeConfig.bg} shadow-lg text-ink flex items-start gap-3 transition-all animate-in fade-in slide-in-from-bottom-2 duration-200`}
             >
               <Icon className={`w-5 h-5 flex-shrink-0 ${typeConfig.text} mt-0.5`} aria-hidden="true" />
               <div className="flex-1 min-w-0">
-                <h5 className="text-sm font-semibold">{toast.title}</h5>
-                {toast.message && <p className="text-xs text-muted mt-0.5">{toast.message}</p>}
+                <h5 className="text-sm font-heading font-semibold text-ink">{toast.title}</h5>
+                {toast.message && (
+                  <p className="text-xs text-muted-strong mt-0.5">{toast.message}</p>
+                )}
               </div>
               <button
                 type="button"
                 onClick={() => removeToast(toast.id)}
                 aria-label="Dismiss notification"
-                className="p-1 rounded hover:bg-surface text-muted hover:text-text transition-colors focus-visible:ring-1 focus-visible:ring-info focus-visible:outline-none"
+                className="p-1 rounded-pill hover:bg-surface-soft text-muted hover:text-ink transition-colors focus-visible:ring-1 focus-visible:ring-brand focus-visible:outline-none"
               >
                 <X className="w-4 h-4" />
               </button>

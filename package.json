@@ -8,6 +8,6 @@
     "test": "npm --prefix web test",
     "test:e2e": "npm --prefix web run test:e2e",
     "dev": "npm --prefix web run dev",
-    "lint": "python scripts/honesty_lint.py"
+    "lint": "python scripts/honesty_lint.py && npm --prefix web run lint"
   }
 }

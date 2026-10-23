@@ -1,27 +1,23 @@
-import React, { useState } from "react";
+import React from "react";
 import { Outlet } from "react-router-dom";
-import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
-import { DemoControlBar } from "../components/DemoControlBar";
+import { EventTicker } from "./EventTicker";
 
 export const AppShell: React.FC = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
   return (
-    <div className="min-h-screen bg-background text-text flex">
-      {/* Sidebar Navigation */}
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 lg:pl-64">
-        <TopBar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-        <main className="flex-1 p-4 lg:p-6 pb-24 overflow-y-auto">
-          <Outlet />
-        </main>
+    <div className="min-h-screen bg-canvas text-ink flex flex-col transition-colors selection:bg-brand selection:text-white max-w-full [overflow-x:clip]">
+      {/* Sticky Top Navigation Bar & Event Ticker */}
+      <div className="sticky top-0 z-40 w-full shadow-sm">
+        <TopBar />
+        <EventTicker />
       </div>
 
-      {/* Floating Demo Control Bar & Caption Area */}
-      <DemoControlBar />
+      {/* Centred 1200px Main Content Column */}
+      <main className="flex-1 w-full max-w-[1200px] mx-auto px-4 sm:px-6 py-6 sm:py-8 [contain:paint]">
+        <Outlet />
+      </main>
     </div>
   );
 };
+
+export default AppShell;

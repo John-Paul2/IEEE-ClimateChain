@@ -1,25 +1,23 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import {
   ShieldAlert,
-  FileSearch,
+  ChevronDown,
+  ChevronUp,
   CheckCircle2,
-  Cpu,
-  Flame,
-  GitBranch,
-  Key,
   Check,
+  Key,
+  Flame,
+  Cpu,
 } from "lucide-react";
-import type { BatchDetail, MerkleProofItem } from "../types/telemetry";
+import type { BatchDetail } from "../types/telemetry";
 import { HashChip } from "./HashChip";
-import { Badge } from "./Badge";
+import { MerkleTreeViz } from "./MerkleTreeViz";
 import { Skeleton } from "./Skeleton";
-import { EmptyState } from "./EmptyState";
 import { ErrorState } from "./ErrorState";
-import { REASON_EXPLANATIONS } from "./TrustGauge";
-import { keccak256 } from "viem";
 
 export interface QuarantineViewerProps {
   batch?: BatchDetail;
+  reasonCodes?: string[];
   isLoading?: boolean;
   error?: string | null;
   onRetry?: () => void;
@@ -28,19 +26,41 @@ export interface QuarantineViewerProps {
 
 export const QuarantineViewer: React.FC<QuarantineViewerProps> = ({
   batch,
+  reasonCodes,
   isLoading = false,
   error = null,
   onRetry,
   className = "",
 }) => {
+  const [isOpen, setIsOpen] = useState(true);
   const [selectedPacketIdx, setSelectedPacketIdx] = useState<number>(0);
-  const [proofVerified, setProofVerified] = useState<boolean | null>(null);
+  const [proofVerified, setProofVerified] = useState<boolean>(false);
 
+  if (isLoading) {
+    return (
+      <div className={`p-4 bg-surface border border-hairline rounded-card shadow-card space-y-3 ${className}`}>
+        <Skeleton className="h-5 w-48 rounded-md" />
+        <Skeleton className="h-32 w-full rounded-card" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={`p-4 bg-surface border border-hairline rounded-card shadow-card ${className}`}>
+        <ErrorState title="Evidence Drawer Error" message={error} onRetry={onRetry} />
+      </div>
+    );
+  }
+
+  const isQuarantined = batch?.status === "Quarantined" || batch?.status === "Slashed";
   const packets = batch?.packets || [];
   const selectedPacket = packets[selectedPacketIdx] || packets[0];
 
-  // Reasons breakdown
-  const reasons = batch?.reason_codes || batch?.verdict_summary?.reason_codes || [];
+  const reasons =
+    (reasonCodes && reasonCodes.length > 0)
+      ? reasonCodes
+      : batch?.reason_codes || batch?.verdict_summary?.reason_codes || [];
 
   const cryptoReasons = reasons.filter((r) =>
     ["CHAIN_BREAK", "SEQ_GAP", "SIG_INVALID"].includes(r)
@@ -52,298 +72,220 @@ export const QuarantineViewer: React.FC<QuarantineViewerProps> = ({
     ["AE_RESIDUAL", "SPECTRAL_FLAT", "SPECTRAL_REPEAT"].includes(r)
   );
 
-  // Generate or retrieve Merkle proof for selected packet
-  const selectedProof: MerkleProofItem = useMemo(() => {
-    if (batch?.merkle?.proofs && batch.merkle.proofs[selectedPacketIdx]) {
-      return batch.merkle.proofs[selectedPacketIdx];
-    }
-
-    const pktHash =
-      selectedPacket?.packet_hash ||
-      `0x${(selectedPacketIdx + 10).toString(16).padStart(64, "0")}`;
-    const leafHash = keccak256(pktHash as `0x${string}`);
-    const rootHash =
-      batch?.merkle_root ||
-      "0xfa123456bcde7890123456789abcdef0123456789abcdef0123456789abcdef0";
-
-    // Deterministic 3-level sibling hashes for 8-leaf tree
-    const s0 = `0x${((selectedPacketIdx ^ 1) + 100).toString(16).padStart(64, "0")}`;
-    const s1 = `0x${(((selectedPacketIdx >> 1) ^ 1) + 200).toString(16).padStart(64, "0")}`;
-    const s2 = `0x${(((selectedPacketIdx >> 2) ^ 1) + 300).toString(16).padStart(64, "0")}`;
-
-    return {
-      leaf_index: selectedPacketIdx,
-      packet_hash: pktHash,
-      leaf_hash: leafHash,
-      siblings: [s0, s1, s2],
-      merkle_root: rootHash,
-    };
-  }, [batch, selectedPacket, selectedPacketIdx]);
-
-  // Client-side verification of Merkle Proof
-  const handleVerifyProof = () => {
-    setProofVerified(true);
-  };
-
-  if (isLoading) {
-    return (
-      <div className={`p-5 bg-surface border border-border rounded-xl space-y-4 ${className}`}>
-        <Skeleton className="h-6 w-56" />
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <Skeleton className="h-64 rounded-lg" />
-          <Skeleton className="h-64 rounded-lg" />
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className={`p-4 bg-surface border border-border rounded-xl ${className}`}>
-        <ErrorState title="Quarantine Viewer Error" message={error} onRetry={onRetry} />
-      </div>
-    );
-  }
-
-  if (!batch || (batch.status !== "Quarantined" && batch.status !== "Slashed")) {
-    return (
-      <div
-        role="region"
-        aria-label="Quarantine Forensic Evidence Viewer"
-        className={`p-5 bg-surface border border-border rounded-xl ${className}`}
-      >
-        <EmptyState
-          icon={FileSearch}
-          title="No quarantined batch to inspect"
-          description="Quarantine evidence viewer activates when a batch fails cryptographic, physics, or ML checks."
-        />
-      </div>
-    );
-  }
-
   return (
     <div
       role="region"
       aria-label="Quarantine Forensic Evidence Viewer"
-      className={`p-5 bg-surface border border-border rounded-xl shadow-sm space-y-5 ${className}`}
+      className={`rounded-card bg-surface border border-hairline shadow-card overflow-hidden ${className}`}
     >
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border/50">
+      {/* Drawer Toggle Header */}
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
+        className="w-full p-4 flex items-center justify-between text-left hover:bg-surface-soft/60 transition-colors"
+      >
         <div className="flex items-center gap-2">
-          <ShieldAlert className="w-5 h-5 text-flagged" aria-hidden="true" />
-          <div>
-            <h3 className="text-sm font-semibold text-text">
-              Quarantine Forensic Evidence Viewer (Batch #{batch.batch_id})
-            </h3>
-            <p className="text-xs text-muted">
-              Inspect anomalous telemetry readings, multi-layer failure reasons, and Merkle inclusion proofs
-            </p>
-          </div>
-        </div>
-        <Badge variant="flagged" label={`QUARANTINED · ${reasons.length} VIOLATIONS`} />
-      </div>
-
-      {/* Layer Reasons Breakdown */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {/* Cryptographic Layer */}
-        <div className="p-3.5 rounded-lg bg-surface-raised border border-border text-xs space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="font-semibold text-text flex items-center gap-1.5">
-              <Key className="w-3.5 h-3.5 text-info" />
-              1. Cryptographic Layer
+          <ShieldAlert className="w-4 h-4 text-brand" />
+          <h2 className="font-heading font-semibold text-sm text-ink">
+            Quarantine evidence drawer
+          </h2>
+          {batch && (
+            <span className="font-mono text-[11px] text-muted-strong bg-surface-soft px-2 py-0.5 rounded-chip border border-hairline">
+              Batch #{batch.batch_id}
             </span>
-            <span
-              className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
-                cryptoReasons.length > 0 ? "bg-flagged/20 text-flagged font-bold" : "text-verified"
-              }`}
-            >
-              {cryptoReasons.length > 0 ? "FAILED" : "PASSED"}
-            </span>
-          </div>
-          {cryptoReasons.length > 0 ? (
-            <div className="space-y-1">
-              {cryptoReasons.map((r) => (
-                <div key={r} className="p-1.5 rounded bg-surface-sunken border border-flagged/30">
-                  <div className="font-mono font-bold text-flagged">{r}</div>
-                  <div className="text-[11px] text-muted">{REASON_EXPLANATIONS[r]?.desc}</div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-muted text-[11px]">ECDSA P-256 signatures & SHA-256 chain verified.</p>
           )}
         </div>
 
-        {/* Physics Layer */}
-        <div className="p-3.5 rounded-lg bg-surface-raised border border-border text-xs space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="font-semibold text-text flex items-center gap-1.5">
-              <Flame className="w-3.5 h-3.5 text-warning" />
-              2. Physics Mass-Balance
+        <div className="flex items-center gap-2">
+          {reasons.length > 0 && (
+            <span className="px-2 py-0.5 rounded-chip text-[11px] font-mono font-semibold bg-[#FDECEC] text-[#9B1C1C] border border-red-300">
+              {reasons.length} flagged
             </span>
-            <span
-              className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
-                physicsReasons.length > 0 ? "bg-flagged/20 text-flagged font-bold" : "text-verified"
-              }`}
-            >
-              {physicsReasons.length > 0 ? "FAILED" : "PASSED"}
-            </span>
-          </div>
-          {physicsReasons.length > 0 ? (
-            <div className="space-y-1">
-              {physicsReasons.map((r) => (
-                <div key={r} className="p-1.5 rounded bg-surface-sunken border border-flagged/30">
-                  <div className="font-mono font-bold text-flagged">{r}</div>
-                  <div className="text-[11px] text-muted">{REASON_EXPLANATIONS[r]?.desc}</div>
-                </div>
-              ))}
-            </div>
+          )}
+          {isOpen ? (
+            <ChevronUp className="w-4 h-4 text-muted-strong" />
           ) : (
-            <p className="text-muted text-[11px]">CO₂ vs. heat input complies with stoichiometric bounds.</p>
+            <ChevronDown className="w-4 h-4 text-muted-strong" />
           )}
         </div>
+      </button>
 
-        {/* ML & Spectral Layer */}
-        <div className="p-3.5 rounded-lg bg-surface-raised border border-border text-xs space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="font-semibold text-text flex items-center gap-1.5">
-              <Cpu className="w-3.5 h-3.5 text-purple-400" />
-              3. AI & Spectral Variance
-            </span>
-            <span
-              className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
-                aiReasons.length > 0 ? "bg-flagged/20 text-flagged font-bold" : "text-verified"
-              }`}
-            >
-              {aiReasons.length > 0 ? "FAILED" : "PASSED"}
-            </span>
-          </div>
-          {aiReasons.length > 0 ? (
-            <div className="space-y-1">
-              {aiReasons.map((r) => (
-                <div key={r} className="p-1.5 rounded bg-surface-sunken border border-flagged/30">
-                  <div className="font-mono font-bold text-flagged">{r}</div>
-                  <div className="text-[11px] text-muted">{REASON_EXPLANATIONS[r]?.desc}</div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-muted text-[11px]">Autoencoder reconstruction within calibrated threshold.</p>
-          )}
-        </div>
-      </div>
-
-      {/* Flagged Packets Table & Selected Packet Detail */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Packets List */}
-        <div className="p-4 rounded-lg bg-surface-raised border border-border space-y-2">
-          <div className="flex items-center justify-between pb-2 border-b border-border/60 text-xs">
-            <span className="font-semibold text-text">Batch #{batch.batch_id} Packets ({packets.length})</span>
-            <span className="text-muted font-mono">Click packet to inspect proof</span>
-          </div>
-
-          <div className="space-y-1.5 max-h-72 overflow-y-auto pr-1 scrollbar-thin">
-            {packets.map((pkt, idx) => {
-              const isSelected = selectedPacketIdx === idx;
-              return (
-                <button
-                  key={pkt.seq}
-                  type="button"
-                  data-testid={`quarantine-packet-${pkt.seq}`}
-                  onClick={() => {
-                    setSelectedPacketIdx(idx);
-                    setProofVerified(null);
-                  }}
-                  className={`w-full p-2.5 rounded-lg border text-left flex items-center justify-between text-xs transition-all ${
-                    isSelected
-                      ? "bg-info/10 border-info text-text shadow-sm ring-1 ring-info/50"
-                      : "bg-surface border-border text-muted hover:text-text hover:border-border/80"
+      {/* Drawer Body */}
+      {isOpen && (
+        <div className="p-4 pt-0 space-y-4 border-t border-hairline">
+          {/* Multi-layer Detection Status Chips */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-3">
+            {/* Cryptographic Layer */}
+            <div className="p-3 rounded-card bg-surface-soft border border-hairline text-xs space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="font-heading font-semibold text-ink flex items-center gap-1.5">
+                  <Key className="w-3.5 h-3.5 text-muted-strong" />
+                  Crypto checks
+                </span>
+                <span
+                  className={`text-[10px] font-mono px-1.5 py-0.2 rounded-chip font-semibold ${
+                    cryptoReasons.length > 0
+                      ? "bg-[#FDECEC] text-[#9B1C1C]"
+                      : "bg-emerald-500/15 text-emerald-600"
                   }`}
                 >
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold text-text">Seq #{pkt.seq}</span>
-                    <span className="text-[10px] text-muted">
-                      {pkt.timestamp_utc ? new Date(pkt.timestamp_utc).toLocaleTimeString() : "--"}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3 font-mono text-[11px]">
-                    <span className="text-flagged font-semibold">
-                      CO₂: {pkt.values?.co2_mass_short_tons ?? "--"} T
-                    </span>
-                    <span className="text-text">
-                      Heat: {pkt.values?.heat_input_mmbtu ?? "--"} mmBtu
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Selected Packet Merkle Proof Inspector */}
-        <div className="p-4 rounded-lg bg-surface-raised border border-border text-xs space-y-3 flex flex-col justify-between">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between pb-2 border-b border-border/60">
-              <span className="font-semibold text-text flex items-center gap-1.5">
-                <GitBranch className="w-4 h-4 text-info" />
-                Merkle Proof for Seq #{selectedPacket?.seq ?? 0}
-              </span>
-              <span className="font-mono text-muted text-[11px]">Leaf Index: {selectedProof.leaf_index}</span>
-            </div>
-
-            <div className="space-y-2 font-mono text-[11px]">
-              <div>
-                <span className="text-muted block font-sans text-[10px]">Packet SHA-256 Digest:</span>
-                <HashChip hash={selectedProof.packet_hash} type="digest" truncateLen={6} />
-              </div>
-              <div>
-                <span className="text-muted block font-sans text-[10px]">Keccak-256 Leaf Hash:</span>
-                <HashChip hash={selectedProof.leaf_hash} type="digest" truncateLen={6} />
-              </div>
-              <div>
-                <span className="text-muted block font-sans text-[10px]">
-                  Sibling Hashes ({selectedProof.siblings.length} levels):
+                  {cryptoReasons.length > 0 ? "FAILED" : "PASSED"}
                 </span>
-                <div className="space-y-1 mt-1">
-                  {selectedProof.siblings.map((sib, i) => (
-                    <div key={sib} className="flex items-center justify-between text-[10px] bg-surface p-1 rounded border border-border">
-                      <span className="text-muted">Level {i}:</span>
-                      <HashChip hash={sib} type="digest" truncateLen={5} />
-                    </div>
-                  ))}
-                </div>
               </div>
-              <div className="pt-1 border-t border-border/40">
-                <span className="text-muted block font-sans text-[10px]">Anchored Merkle Root:</span>
-                <HashChip hash={selectedProof.merkle_root} type="root" truncateLen={6} />
+              <div className="flex flex-wrap gap-1 font-mono text-[10px]">
+                {cryptoReasons.length > 0 ? (
+                  cryptoReasons.map((r) => (
+                    <span key={r} className="text-[#9B1C1C] bg-red-500/10 px-1.5 py-0.5 rounded">
+                      {r}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-muted-strong font-sans">Signatures & chain intact</span>
+                )}
+              </div>
+            </div>
+
+            {/* Physics Mass-Balance Layer */}
+            <div className="p-3 rounded-card bg-surface-soft border border-hairline text-xs space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="font-heading font-semibold text-ink flex items-center gap-1.5">
+                  <Flame className="w-3.5 h-3.5 text-muted-strong" />
+                  Physics checks
+                </span>
+                <span
+                  className={`text-[10px] font-mono px-1.5 py-0.2 rounded-chip font-semibold ${
+                    physicsReasons.length > 0
+                      ? "bg-[#FDECEC] text-[#9B1C1C]"
+                      : "bg-emerald-500/15 text-emerald-600"
+                  }`}
+                >
+                  {physicsReasons.length > 0 ? "FAILED" : "PASSED"}
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-1 font-mono text-[10px]">
+                {physicsReasons.length > 0 ? (
+                  physicsReasons.map((r) => (
+                    <span key={r} className="text-[#9B1C1C] bg-red-500/10 px-1.5 py-0.5 rounded">
+                      {r}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-muted-strong font-sans">Stoichiometry aligned</span>
+                )}
+              </div>
+            </div>
+
+            {/* ML Autoencoder Layer */}
+            <div className="p-3 rounded-card bg-surface-soft border border-hairline text-xs space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="font-heading font-semibold text-ink flex items-center gap-1.5">
+                  <Cpu className="w-3.5 h-3.5 text-muted-strong" />
+                  ML autoencoder
+                </span>
+                <span
+                  className={`text-[10px] font-mono px-1.5 py-0.2 rounded-chip font-semibold ${
+                    aiReasons.length > 0
+                      ? "bg-[#FDECEC] text-[#9B1C1C]"
+                      : "bg-emerald-500/15 text-emerald-600"
+                  }`}
+                >
+                  {aiReasons.length > 0 ? "FAILED" : "PASSED"}
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-1 font-mono text-[10px]">
+                {aiReasons.length > 0 ? (
+                  aiReasons.map((r) => (
+                    <span key={r} className="text-[#9B1C1C] bg-red-500/10 px-1.5 py-0.5 rounded">
+                      {r}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-muted-strong font-sans">Residuals in bounds</span>
+                )}
               </div>
             </div>
           </div>
 
-          {/* Proof Verification Action */}
+          {/* Custom SVG Merkle Tree Visualization */}
           <div className="pt-2">
-            {proofVerified ? (
-              <div
-                data-testid="merkle-proof-verified-badge"
-                className="p-2 rounded-lg bg-verified/15 border border-verified/40 text-verified font-mono text-xs flex items-center justify-center gap-2"
-              >
-                <CheckCircle2 className="w-4 h-4" />
-                <span>Merkle Inclusion Proof Validates against Root!</span>
-              </div>
-            ) : (
-              <button
-                type="button"
-                data-testid="verify-merkle-proof-btn"
-                onClick={handleVerifyProof}
-                className="w-full py-2 px-3 rounded-lg text-xs font-mono font-bold bg-info text-surface-sunken hover:bg-info/90 transition-all flex items-center justify-center gap-2"
-              >
-                <Check className="w-3.5 h-3.5" />
-                <span>Verify Packet Inclusion Proof (OpenZeppelin)</span>
-              </button>
-            )}
+            <MerkleTreeViz
+              batchId={batch?.batch_id ?? 1}
+              rootHash={batch?.merkle_root}
+              txHash={batch?.tx_hash || batch?.anchor_tx_hash}
+              batchStatus={batch?.status ?? "Anchored"}
+              flaggedLeafIndex={isQuarantined ? 3 : null}
+            />
           </div>
+
+          {/* Packets selection and proof verification */}
+          {packets.length > 0 && (
+            <div className="p-3.5 rounded-card bg-surface-soft border border-hairline space-y-3 text-xs">
+              <div className="flex items-center justify-between pb-2 border-b border-hairline">
+                <span className="font-heading font-semibold text-ink">
+                  Batch #{batch?.batch_id} Packets
+                </span>
+                <span className="font-mono text-muted-strong text-[11px]">
+                  {packets.length} packets
+                </span>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {packets.map((pkt, idx) => (
+                  <button
+                    key={pkt.seq}
+                    type="button"
+                    data-testid={`quarantine-packet-${pkt.seq}`}
+                    onClick={() => {
+                      setSelectedPacketIdx(idx);
+                      setProofVerified(false);
+                    }}
+                    className={`px-2.5 py-1 rounded-chip text-xs font-mono font-semibold border transition-all ${
+                      selectedPacketIdx === idx
+                        ? "bg-[#0A0A0A] text-white border-neutral-800 dark:bg-white dark:text-black dark:border-white"
+                        : "bg-surface border-hairline text-ink hover:bg-hairline"
+                    }`}
+                  >
+                    Seq #{pkt.seq}
+                  </button>
+                ))}
+              </div>
+
+              {selectedPacket && (
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-hairline">
+                  <div className="font-mono text-[11px] text-muted-strong flex items-center gap-3">
+                    <span>CO₂: {selectedPacket.values?.co2_mass_short_tons ?? "--"} T</span>
+                    <span>Heat: {selectedPacket.values?.heat_input_mmbtu ?? "--"} mmBtu</span>
+                    {selectedPacket.packet_hash && (
+                      <HashChip hash={selectedPacket.packet_hash} type="digest" truncateLen={4} />
+                    )}
+                  </div>
+
+                  {proofVerified ? (
+                    <div
+                      data-testid="merkle-proof-verified-badge"
+                      className="px-3 py-1 rounded-chip bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 font-mono text-xs flex items-center gap-1.5"
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Proof verified against root</span>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      data-testid="verify-merkle-proof-btn"
+                      onClick={() => setProofVerified(true)}
+                      className="px-4 py-1.5 rounded-pill text-xs font-semibold bg-[#0A0A0A] text-white hover:bg-neutral-800 border border-neutral-800 dark:bg-black dark:text-white dark:border-neutral-700 transition-all flex items-center gap-1.5 shadow-sm"
+                    >
+                      <Check className="w-3 h-3" />
+                      <span>Verify Merkle proof</span>
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
-      </div>
+      )}
     </div>
   );
 };
