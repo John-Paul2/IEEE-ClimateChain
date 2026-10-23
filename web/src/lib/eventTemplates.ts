@@ -30,6 +30,9 @@ export function formatEventTickerText(event: TelemetryEvent): string {
     }
 
     case "packet": {
+      if (typeof data.seq === "number" && typeof data.first_seq !== "number") {
+        return `Packet #${data.seq} sealed`;
+      }
       const firstSeq = typeof data.first_seq === "number" ? data.first_seq : 0;
       const count = typeof data.count === "number" ? data.count : 8;
       const lastSeq = firstSeq + count - 1;

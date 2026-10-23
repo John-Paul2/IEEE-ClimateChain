@@ -50,7 +50,11 @@ export const DataStatusPill: React.FC = () => {
   };
 
   return (
-    <div className="relative inline-block">
+    <div
+      className="relative inline-block"
+      role="status"
+      aria-label="Network status and mock data provider"
+    >
       <button
         type="button"
         data-testid="data-status-pill"

@@ -7,12 +7,15 @@ import {
   Wifi,
   WifiOff,
   Settings2,
+  ExternalLink,
+  ShieldCheck,
 } from "lucide-react";
 import { Chip } from "../components/Chip";
 import { Button } from "../components/Button";
 import { Popover } from "../components/Popover";
 import { HashChip } from "../components/HashChip";
 import { SourcesDrawer } from "../components/SourcesDrawer";
+import { ArbitrumSepoliaModal } from "../components/ArbitrumSepoliaModal";
 import {
   calculateCbamComparison,
   loadCbamConfig,
@@ -32,6 +35,9 @@ import { CONTRACT_ADDRESSES } from "../chain/viemClient";
 export const ImporterPage: React.FC = () => {
   // Mode: Offline Snapshot vs Online Chain
   const [isOfflineSnapshotMode, setIsOfflineSnapshotMode] = useState<boolean>(true);
+
+  // Arbitrum Sepolia Testnet Evidence Modal
+  const [isTestnetModalOpen, setIsTestnetModalOpen] = useState<boolean>(false);
 
   // Uploaded report & verification state
   const [verificationResult, setVerificationResult] = useState<VerificationResult | null>(null);
@@ -371,6 +377,17 @@ export const ImporterPage: React.FC = () => {
           <Button
             variant="ghost"
             size="sm"
+            data-testid="testnet-evidence-importer-header-btn"
+            icon={ExternalLink}
+            onClick={() => setIsTestnetModalOpen(true)}
+            title="View Live Arbitrum Sepolia Deployment & On-Chain Proofs (Chain 421614)"
+          >
+            Arbitrum Sepolia
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
             data-testid="open-sources-btn"
             icon={BookOpen}
             onClick={() => setIsSourcesOpen(true)}
@@ -482,17 +499,20 @@ export const ImporterPage: React.FC = () => {
           {verificationResult && (
             <div
               data-testid="evidence-summary-panel"
+              data-story="verification-result-card"
               className="bg-surface border border-hairline rounded-card p-5 space-y-4 shadow-sm"
             >
               <div className="flex items-center justify-between pb-3 border-b border-hairline">
                 <h3 className="text-sm font-heading font-bold text-ink">
                   Period-End Attestation Certificate
                 </h3>
-                {isReportValid ? (
-                  <Chip variant="CLEAN" label="ATTESTED ON-CHAIN" size="sm" />
-                ) : (
-                  <Chip variant="FRAUD" label="INTEGRITY VIOLATION" size="sm" />
-                )}
+                <div data-story="attestation-chip">
+                  {isReportValid ? (
+                    <Chip variant="CLEAN" label="ATTESTED ON-CHAIN" size="sm" />
+                  ) : (
+                    <Chip variant="FRAUD" label="INTEGRITY VIOLATION" size="sm" />
+                  )}
+                </div>
               </div>
 
               {/* Status Banner */}
@@ -528,6 +548,35 @@ export const ImporterPage: React.FC = () => {
                   </p>
                 )}
               </div>
+
+              {/* Explicit Client-Side Verification Badge */}
+              {isReportValid && (
+                <div
+                  data-testid="client-side-verified-badge"
+                  className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center gap-2"
+                >
+                  <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" aria-hidden="true" />
+                  <span>Client-Side Verified (Zero Backend Server Trust — Merkle &amp; Contract Proof Checked Directly in Browser)</span>
+                </div>
+              )}
+
+              {/* Compact High-Trust Arbitrum Sepolia Deployment Banner */}
+              <button
+                type="button"
+                onClick={() => setIsTestnetModalOpen(true)}
+                data-testid="testnet-evidence-importer-btn"
+                className="w-full flex items-center justify-between p-2.5 rounded-lg bg-brand/5 hover:bg-brand/10 border border-brand/20 text-brand dark:text-brand-soft text-xs font-semibold transition-colors group cursor-pointer"
+                title="View Live Arbitrum Sepolia Deployment &amp; On-Chain Proofs (Chain 421614)"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" aria-hidden="true" />
+                  <span>Live Arbitrum Sepolia Deployment (Chain 421614)</span>
+                </div>
+                <span className="inline-flex items-center gap-1 text-[11px] font-sans opacity-80 group-hover:opacity-100">
+                  <span>6 Contracts &amp; Proofs</span>
+                  <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                </span>
+              </button>
 
               {/* Details for Valid Report */}
               {report && (
@@ -1025,6 +1074,12 @@ export const ImporterPage: React.FC = () => {
 
       {/* Sources Drawer Component */}
       <SourcesDrawer isOpen={isSourcesOpen} onClose={() => setIsSourcesOpen(false)} />
+
+      {/* Live Arbitrum Sepolia Deployment Evidence Modal */}
+      <ArbitrumSepoliaModal
+        isOpen={isTestnetModalOpen}
+        onClose={() => setIsTestnetModalOpen(false)}
+      />
     </div>
   );
 };

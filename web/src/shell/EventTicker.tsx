@@ -23,6 +23,7 @@ export const EventTicker: React.FC = () => {
   }, []);
 
   const currentStep = scenarioStatus?.current_step || 0;
+  const totalSteps = scenarioStatus?.total_steps || 8;
   const caption = formatStepCaption(currentStep);
 
   const stepIcons: Record<number, React.FC<{ className?: string }>> = {
@@ -33,6 +34,7 @@ export const EventTicker: React.FC = () => {
     5: FileCheck2,
     6: ShieldCheck,
     7: BarChart3,
+    8: FileCheck2,
   };
 
   const StepIcon = stepIcons[currentStep] || Sparkles;
@@ -73,7 +75,7 @@ export const EventTicker: React.FC = () => {
         </div>
         {currentStep > 0 ? (
           <span className="shrink-0 px-2 py-0.5 rounded-chip bg-[#FF6B6B]/20 text-[#FF6B6B] border border-[#FF6B6B]/40 font-bold text-[10.5px]">
-            STEP {currentStep}/7
+            STEP {currentStep}/{totalSteps}
           </span>
         ) : (
           <span className="shrink-0 px-2 py-0.5 rounded-chip bg-white/10 text-white/80 border border-white/20 font-semibold text-[10.5px]">
@@ -88,28 +90,45 @@ export const EventTicker: React.FC = () => {
       {/* Marquee / Reduced-Motion Event Ticker */}
       <div className="flex-1 overflow-hidden relative ml-4 hidden md:block group">
         {prefersReducedMotion ? (
-          // Static last 3 events under prefers-reduced-motion
+          // Static last 3 events under prefers-reduced-motion with static highlight on newest
           <div className="flex items-center gap-4 py-1 text-[12px] text-white/80">
-            {staticReducedMotionEvents.map((ev, i) => (
-              <span key={`static-${i}`} className="inline-flex items-center gap-1.5 truncate">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B6B] shrink-0" />
-                <span className="truncate">{ev}</span>
-                {i < staticReducedMotionEvents.length - 1 && <span className="opacity-40 ml-2">|</span>}
-              </span>
-            ))}
+            {staticReducedMotionEvents.map((ev, i) => {
+              const isNewest = i === staticReducedMotionEvents.length - 1;
+              return (
+                <span
+                  key={`static-${i}`}
+                  className={`inline-flex items-center gap-1.5 truncate ${
+                    isNewest
+                      ? "bg-[#FF6B6B]/20 text-white border border-[#FF6B6B]/40 px-2 py-0.5 rounded-chip font-semibold"
+                      : ""
+                  }`}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B6B] shrink-0" />
+                  <span className="truncate">{ev}</span>
+                  {i < staticReducedMotionEvents.length - 1 && <span className="opacity-40 ml-2">|</span>}
+                </span>
+              );
+            })}
           </div>
         ) : (
-          // Continuous marquee with pause on hover
+          // Continuous marquee with highlighted newest item
           <div className="animate-ticker-marquee flex items-center gap-8 py-1 group-hover:[animation-play-state:paused]">
-            {tickerItems.concat(tickerItems).map((ev, i) => (
-              <span
-                key={`${ev}-${i}`}
-                className="inline-flex items-center gap-2 text-white/75 hover:text-white transition-colors cursor-default whitespace-nowrap text-[12px]"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B6B]" />
-                <span>{ev}</span>
-              </span>
-            ))}
+            {tickerItems.concat(tickerItems).map((ev, i) => {
+              const isNewest = (i % tickerItems.length) === tickerItems.length - 1;
+              return (
+                <span
+                  key={`${ev}-${i}`}
+                  className={`inline-flex items-center gap-2 transition-all duration-200 cursor-default whitespace-nowrap text-[12px] ${
+                    isNewest
+                      ? "text-white font-bold bg-[#FF6B6B]/20 border border-[#FF6B6B]/50 px-2.5 py-0.5 rounded-chip shadow-[0_0_8px_rgba(255,107,107,0.35)]"
+                      : "text-white/75 hover:text-white"
+                  }`}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B6B]" />
+                  <span>{ev}</span>
+                </span>
+              );
+            })}
           </div>
         )}
       </div>

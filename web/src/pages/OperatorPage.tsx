@@ -16,6 +16,7 @@ import { Chip } from "../components/Chip";
 import { Popover } from "../components/Popover";
 import { HashChainStrip } from "../components/HashChainStrip";
 import { TelemetryCharts } from "../components/TelemetryCharts";
+import { MerkleTreeViz } from "../components/MerkleTreeViz";
 
 const ATTACK_BUTTONS = [
   { id: "constant_scaling", label: "Constant scaling", name: "Constant Scaling" },
@@ -26,7 +27,9 @@ const ATTACK_BUTTONS = [
 
 export const OperatorPage: React.FC = () => {
   const {
+    dataState,
     batches,
+    events,
     state,
     isLoading,
     error,
@@ -42,7 +45,23 @@ export const OperatorPage: React.FC = () => {
     batches.find((b) => b.status === "Quarantined" || b.status === "Slashed") ||
     batches[batches.length - 1] ||
     batches[0];
-  const allPackets = batches.flatMap((b: any) => b.packets || []);
+
+  const batchPackets: any[] = batches.flatMap((b: any) => b.packets || []);
+  const eventPackets: any[] = (events || [])
+    .filter((e) => e.type === "packet" && (e.seq !== undefined || (e.data as any)?.seq !== undefined))
+    .map((e) => {
+      const d = (e.data || {}) as Record<string, any>;
+      return {
+        device_id: String(e.device_id || d.device_id || "DEV-CAMPD-1073-3"),
+        seq: Number(e.seq ?? d.seq ?? 0),
+        timestamp_utc: String(e.timestamp_utc || e.timestamp || d.timestamp_utc || d.timestamp || ""),
+        values: (e.values || d.values || {}) as any,
+        prev_hash: String(e.prev_hash || d.prev_hash || ""),
+        signature: String(e.signature || d.signature || ""),
+        packet_hash: String(e.hash || e.packet_hash || d.hash || d.packet_hash || ""),
+      };
+    });
+  const allPackets = batchPackets.length > 0 ? batchPackets : eventPackets;
 
   // Compute Bond Status from chain / API state
   const bondStakedWei = state?.vault?.operator_bond_wei || "0";
@@ -94,7 +113,7 @@ export const OperatorPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2.5 flex-wrap">
           <h1 className="text-2xl sm:text-page-title text-ink font-heading font-bold">
-            Live telemetry
+            {dataState === "LIVE" ? "Live telemetry" : "Telemetry (recorded replay)"}
           </h1>
           <Chip variant="REAL" label="EPA replay" />
           <Popover
@@ -141,12 +160,9 @@ export const OperatorPage: React.FC = () => {
           onRetry={refresh}
         />
         <StatTile
-          label="Trust score"
-          value={
-            latestBatch?.mean_score_bp !== undefined
-              ? `${Math.round(latestBatch.mean_score_bp / 100)}%`
-              : "98%"
-          }
+          label="Latest verdict"
+          value={latestVerdict === "fraud" ? "Fraud" : "Clean"}
+          subtext="5 of 5 verifiers"
           variant={latestVerdict === "fraud" ? "flagged" : "verified"}
           icon={latestVerdict === "fraud" ? ShieldAlert : ShieldCheck}
           onBand={true}
@@ -175,6 +191,15 @@ export const OperatorPage: React.FC = () => {
           isEmpty={allPackets.length === 0}
           error={error}
           onRetry={refresh}
+        />
+      </section>
+
+      {/* Merkle Tree and Root Chip (Anchored Batches) */}
+      <section data-story="merkle-tree">
+        <MerkleTreeViz
+          batchId={latestBatch?.batch_id || 1}
+          rootHash={latestBatch?.merkle_root}
+          batchStatus={latestBatch?.status}
         />
       </section>
 
@@ -268,6 +293,7 @@ export const OperatorPage: React.FC = () => {
       <section
         role="region"
         aria-label="Operator Bond"
+        data-story="bond-card"
         className="p-4 sm:p-5 rounded-card bg-surface border border-hairline shadow-card flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs"
       >
         <div className="flex items-center gap-2">

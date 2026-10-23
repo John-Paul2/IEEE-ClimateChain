@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import { CheckCircle2, AlertTriangle, CircleSlash } from "lucide-react";
 import type { VerifierNodeStatus } from "../types/telemetry";
 import { HashChip } from "./HashChip";
@@ -61,9 +62,11 @@ export const VoteCard: React.FC<VoteCardProps> = ({
   // Staked ETH formatting (from wei)
   const stakeEth = (Number(BigInt(verifier.staked_amount_wei || "0")) / 1e18).toFixed(2);
 
-  // Short avatar label like "V1" from "VERIFIER-01"
-  const avatarLabel =
-    verifier.verifier_id?.replace(/^VERIFIER-0?/, "V") || "V";
+  // Short avatar label like "V1" and ID like "VERIFIER-01"
+  const match = verifier.verifier_id?.match(/\d+/);
+  const num = match ? match[0] : "1";
+  const formattedId = `VERIFIER-0${num}`;
+  const avatarLabel = `V${num}`;
 
   const scorePct =
     verifier.last_score_bp !== undefined
@@ -73,24 +76,31 @@ export const VoteCard: React.FC<VoteCardProps> = ({
   // Check if a lazy-verifier mode is active
   const isLazyMode = (verifier as any).mode === "lazy";
 
+  const prefersReducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   return (
-    <div
+    <motion.div
       role="region"
-      aria-label={`Verifier Node ${verifier.verifier_id}`}
+      aria-label={`Verifier Node ${formattedId}`}
       data-testid={`verifier-card-${verifier.verifier_id}`}
+      initial={prefersReducedMotion ? false : { rotateY: 90, opacity: 0.8 }}
+      animate={{ rotateY: 0, opacity: 1 }}
+      transition={{ duration: prefersReducedMotion ? 0 : 0.2, ease: "easeOut" }}
       className={`p-4 bg-surface border border-hairline rounded-card shadow-card flex flex-col justify-between space-y-3 transition-all min-w-[190px] ${className}`}
     >
       {/* Row 1: "V1" avatar circle, status chip (CLEAN or FRAUD with icon) */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <div
-            title={verifier.verifier_id}
+            title={formattedId}
             data-testid={`verifier-avatar-${avatarLabel}`}
             className="w-8 h-8 rounded-full bg-surface-soft border border-hairline flex items-center justify-center font-heading font-bold text-xs text-ink shrink-0 shadow-sm"
           >
             {avatarLabel}
           </div>
-          <span className="sr-only">{verifier.verifier_id}</span>
+          <span className="text-xs font-mono font-semibold text-ink">{formattedId}</span>
         </div>
 
         {/* Status chip: CLEAN, FRAUD, or LAZY mode */}
@@ -142,6 +152,6 @@ export const VoteCard: React.FC<VoteCardProps> = ({
         <span className="text-[11px]">Stake</span>
         <span className="font-semibold text-ink">{stakeEth} ETH</span>
       </div>
-    </div>
+    </motion.div>
   );
 };

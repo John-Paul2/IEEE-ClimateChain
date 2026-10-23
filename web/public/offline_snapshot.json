@@ -53,6 +53,7 @@
   },
   "label": "OFFLINE SNAPSHOT (recorded from a local anvil node; not live chain data)",
   "network": "local-anvil",
+  "explorer_base_url": "https://sepolia.arbiscan.io",
   "packet_inclusion": [
     {
       "batchId": "1",

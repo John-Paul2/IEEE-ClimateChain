@@ -25,6 +25,7 @@ import tempfile
 from typing import Any
 
 from backend.vericems.chain_adapter import AnvilProcess, ChainAdapter
+from backend.vericems.crypto.packet import packet_hash
 from backend.vericems.demo_clock import DemoClock
 from backend.vericems.gateway import GatewaySimulator
 from backend.vericems.orchestrator import Orchestrator
@@ -121,9 +122,114 @@ def export_snapshot(out_path: Path, *, anvil_port: int = 8545) -> dict[str, Any]
             )
             run = asyncio.run(run_real_path(orch))
             chain_id = adapter.w3.eth.chain_id
-            events = store.list_events(limit=10_000)
-            batches = store.list_batches(include_packets=False)
+            raw_batches = store.list_batches(include_packets=True)
             challenges = store.list_challenges()
+
+            batches: list[dict[str, Any]] = []
+            batch_details: dict[str, Any] = {}
+            for b in raw_batches:
+                enriched_packets: list[dict[str, Any]] = []
+                for p in b.get("packets", []):
+                    h = packet_hash(p)
+                    enriched_p = dict(p)
+                    enriched_p["hash"] = h
+                    enriched_p["packet_hash"] = h
+                    enriched_p["timestamp"] = p.get("timestamp_utc", "")
+                    enriched_p.setdefault("device_id", orch.device_id)
+                    enriched_packets.append(enriched_p)
+
+                b_copy = dict(b)
+                b_copy["packets"] = enriched_packets
+                batches.append(b_copy)
+                batch_details[str(b["batch_id"])] = {
+                    **b_copy,
+                    "packets": enriched_packets,
+                }
+
+            raw_events = store.list_events(limit=10_000)
+            events: list[dict[str, Any]] = []
+            event_id_counter = 1
+            batches_by_id = {b["batch_id"]: b for b in batches}
+            handled_batch_packets: set[int] = set()
+
+            for ev in raw_events:
+                ev_type = ev.get("type")
+                bid = ev.get("batch_id")
+
+                if ev_type == "packet":
+                    first_seq = (ev.get("data") or {}).get("first_seq", 0)
+                    matching_batch_id = 1 if first_seq == 0 else 2
+                    if matching_batch_id in batches_by_id and matching_batch_id not in handled_batch_packets:
+                        handled_batch_packets.add(matching_batch_id)
+                        for pkt in batches_by_id[matching_batch_id].get("packets", []):
+                            events.append({
+                                "id": event_id_counter,
+                                "type": "packet",
+                                "batch_id": matching_batch_id,
+                                "device_id": pkt.get("device_id", orch.device_id),
+                                "installation_id": orch.installation_id,
+                                "timestamp_utc": pkt.get("timestamp_utc", ""),
+                                "timestamp": pkt.get("timestamp", pkt.get("timestamp_utc", "")),
+                                "seq": pkt["seq"],
+                                "prev_hash": pkt["prev_hash"],
+                                "hash": pkt["hash"],
+                                "packet_hash": pkt["hash"],
+                                "signature": pkt["signature"],
+                                "values": pkt["values"],
+                                "data": {
+                                    "seq": pkt["seq"],
+                                    "timestamp": pkt.get("timestamp", pkt.get("timestamp_utc", "")),
+                                    "timestamp_utc": pkt.get("timestamp_utc", ""),
+                                    "values": pkt["values"],
+                                    "prev_hash": pkt["prev_hash"],
+                                    "hash": pkt["hash"],
+                                    "packet_hash": pkt["hash"],
+                                    "signature": pkt["signature"],
+                                    "device_id": pkt.get("device_id", orch.device_id),
+                                    "batch_id": matching_batch_id,
+                                },
+                            })
+                            event_id_counter += 1
+                    continue
+
+                if ev_type == "batch_anchored" and bid is not None and bid not in handled_batch_packets:
+                    if bid in batches_by_id:
+                        handled_batch_packets.add(bid)
+                        for pkt in batches_by_id[bid].get("packets", []):
+                            events.append({
+                                "id": event_id_counter,
+                                "type": "packet",
+                                "batch_id": bid,
+                                "device_id": pkt.get("device_id", orch.device_id),
+                                "installation_id": orch.installation_id,
+                                "timestamp_utc": pkt.get("timestamp_utc", ""),
+                                "timestamp": pkt.get("timestamp", pkt.get("timestamp_utc", "")),
+                                "seq": pkt["seq"],
+                                "prev_hash": pkt["prev_hash"],
+                                "hash": pkt["hash"],
+                                "packet_hash": pkt["hash"],
+                                "signature": pkt["signature"],
+                                "values": pkt["values"],
+                                "data": {
+                                    "seq": pkt["seq"],
+                                    "timestamp": pkt.get("timestamp", pkt.get("timestamp_utc", "")),
+                                    "timestamp_utc": pkt.get("timestamp_utc", ""),
+                                    "values": pkt["values"],
+                                    "prev_hash": pkt["prev_hash"],
+                                    "hash": pkt["hash"],
+                                    "packet_hash": pkt["hash"],
+                                    "signature": pkt["signature"],
+                                    "device_id": pkt.get("device_id", orch.device_id),
+                                    "batch_id": bid,
+                                },
+                            })
+                            event_id_counter += 1
+
+                ev_copy = dict(ev)
+                ev_copy["id"] = event_id_counter
+                events.append(ev_copy)
+                event_id_counter += 1
+
             snapshot: dict[str, Any] = {
                 "schema_version": SNAPSHOT_SCHEMA_VERSION,
                 "kind": "real-run",
@@ -131,10 +237,7 @@ def export_snapshot(out_path: Path, *, anvil_port: int = 8545) -> dict[str, Any]
                 "chain": build_chain_meta(adapter, chain_id),
                 "events": events,
                 "batches": batches,
-                "batch_details": {
-                    str(b["batch_id"]): store.get_batch(b["batch_id"], include_packets=True)
-                    for b in batches
-                },
+                "batch_details": batch_details,
                 "verifiers": orch.committee.list_status(adapter),
                 "challenges": challenges,
                 "state": {

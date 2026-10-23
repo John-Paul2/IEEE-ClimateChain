@@ -12,6 +12,7 @@ import { useVeriCEMSWebSocket } from "./useVeriCEMSWebSocket.ts";
 import { checkNetworkStatus } from "../chain/chainHelpers.ts";
 import { deploymentConfig } from "../chain/deploymentConfig.ts";
 import { formatStepCaption } from "../lib/eventTemplates.ts";
+import { STORY_STEPS } from "../story/steps.ts";
 import realRunSnapshot from "../../public/snapshots/real-run.json" with { type: "json" };
 
 const isProduction = Boolean(import.meta.env?.PROD);
@@ -24,44 +25,33 @@ if (!isProduction) {
 
 export type DataState = "LIVE" | "RECORDED REAL RUN" | "MOCK";
 
-export const STEP_NAMES: Record<number, string> = {
-  1: "Normal Batches Flow",
-  2: "Insider Attack Injection",
-  3: "Verifier Detection & Quarantine",
-  4: "Dispute & Arbiter Slashing",
-  5: "Period Report & On-Chain Attestation",
-  6: "Importer Verification & Cost Savings",
-  7: "Benchmark & Residual Weaknesses",
-};
+export const STEP_NAMES: Record<number, string> = Object.fromEntries(
+  STORY_STEPS.map((s) => [s.stepNumber, s.title])
+);
 
-export const STEP_PAGES: Record<number, string> = {
-  1: "/operator",
-  2: "/operator",
-  3: "/verifier",
-  4: "/verifier",
-  5: "/importer",
-  6: "/importer",
-  7: "/benchmark",
-};
+export const STEP_PAGES: Record<number, string> = Object.fromEntries(
+  STORY_STEPS.map((s) => [s.stepNumber, s.tab])
+);
 
 export function getRecordedStepInfoList() {
-  return [1, 2, 3, 4, 5, 6, 7].map((step) => ({
-    step,
-    name: STEP_NAMES[step],
-    caption: formatStepCaption(step),
-    page: STEP_PAGES[step],
-    base_delay_seconds: 20,
+  return STORY_STEPS.map((step) => ({
+    step: step.stepNumber,
+    name: step.title,
+    caption: step.sentence,
+    page: step.tab,
+    base_delay_seconds: 3,
   }));
 }
 
 export function buildScenarioStatus(step: number, status: "idle" | "playing" | "paused" | "completed" = "idle", speed: number = 1.0): ScenarioStatusResponse {
+  const currentStepObj = STORY_STEPS.find((s) => s.stepNumber === step);
   return {
     current_step: step,
-    total_steps: 7,
+    total_steps: STORY_STEPS.length,
     status,
     speed,
-    current_caption: formatStepCaption(step),
-    recommended_page: STEP_PAGES[step] || "/operator",
+    current_caption: currentStepObj ? currentStepObj.sentence : (step > 0 ? formatStepCaption(step) : ""),
+    recommended_page: currentStepObj ? currentStepObj.tab : "/operator",
     step_info: getRecordedStepInfoList(),
   };
 }
@@ -101,6 +91,8 @@ export interface DataContextValue {
   pauseScenario: () => Promise<ScenarioStatusResponse | undefined>;
   resetScenario: () => Promise<ScenarioStatusResponse | undefined>;
   setScenarioSpeed: (speed: number) => Promise<ScenarioStatusResponse | undefined>;
+  narrationEnabled: boolean;
+  setNarrationEnabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const DataContext = createContext<DataContextValue | undefined>(undefined);
@@ -127,10 +119,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [dataState, setDataStateInternal] = useState<DataState>(getPersistedDataState);
   const [liveConnectionFailed, setLiveConnectionFailed] = useState<boolean>(false);
 
-  // Replay step for RECORDED REAL RUN (0..7)
+  // Replay step for RECORDED REAL RUN (0..STORY_STEPS.length)
   const [recordedStep, setRecordedStep] = useState<number>(0);
   const [recordedPlayStatus, setRecordedPlayStatus] = useState<"idle" | "playing" | "paused" | "completed">("idle");
   const [recordedSpeed, setRecordedSpeed] = useState<number>(1.0);
+  const [narrationEnabled, setNarrationEnabled] = useState<boolean>(true);
 
   const [batches, setBatches] = useState<BatchSummary[]>([]);
   const [verifiers, setVerifiers] = useState<VerifierNodeStatus[]>([]);
@@ -216,30 +209,73 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       };
 
       if (recordedStep === 0) {
-        setBatches(snapBatches);
-        setVerifiers(snapVerifiers);
-        setChallenges(snapChallenges);
-        setEvents(snapEvents);
-        setState(snapState);
+        // Initial state before play: batch 1 packets streaming, clean baseline
+        const firstBatch = snapBatches.filter((b) => b.batch_id === 1);
+        setBatches(firstBatch);
+        setVerifiers(snapVerifiers.map((v) => ({ ...v, last_batch_id: 1, last_verdict: "clean" })));
+        setChallenges([]);
+        setEvents(snapEvents.filter((e) => (e.batch_id ?? 1) === 1 && e.type === "packet"));
+        setState({ ...snapState, attack: "none", batches: 1 });
       } else if (recordedStep === 1) {
+        // Step 1: Sealing each reading (packets chained)
         setBatches(snapBatches.filter((b) => b.batch_id === 1));
         setVerifiers(snapVerifiers.map((v) => ({ ...v, last_batch_id: 1, last_verdict: "clean" })));
         setChallenges([]);
-        setEvents(snapEvents.filter((e) => (e.batch_id ?? 1) === 1));
+        setEvents(snapEvents.filter((e) => (e.batch_id ?? 1) === 1 && e.type === "packet"));
         setState({ ...snapState, attack: "none", batches: 1 });
       } else if (recordedStep === 2) {
+        // Step 2: Fingerprinting the batch (batch anchored)
         setBatches(snapBatches.filter((b) => b.batch_id === 1));
-        setVerifiers(snapVerifiers);
+        setVerifiers(snapVerifiers.map((v) => ({ ...v, last_batch_id: 1, last_verdict: "clean" })));
         setChallenges([]);
-        setEvents(snapEvents.filter((e) => (e.batch_id ?? 1) === 1));
-        setState({ ...snapState, attack: "constant_scaling", batches: 1 });
+        setEvents(snapEvents.filter((e) => e.batch_id === 1 && (e.type === "packet" || e.type === "batch_anchored")));
+        setState({ ...snapState, attack: "none", batches: 1 });
       } else if (recordedStep === 3) {
+        // Step 3: Verifiers check it (vote)
+        setBatches(snapBatches.filter((b) => b.batch_id === 1));
+        setVerifiers(snapVerifiers.map((v) => ({ ...v, last_batch_id: 1, last_verdict: "clean" })));
+        setChallenges([]);
+        setEvents(snapEvents.filter((e) => e.batch_id === 1 && (e.type === "packet" || e.type === "batch_anchored" || e.type === "vote")));
+        setState({ ...snapState, attack: "none", batches: 1 });
+      } else if (recordedStep === 4) {
+        // Step 4: Majority says clean (finalized clean)
+        setBatches(snapBatches.filter((b) => b.batch_id === 1));
+        setVerifiers(snapVerifiers.map((v) => ({ ...v, last_batch_id: 1, last_verdict: "clean" })));
+        setChallenges([]);
+        setEvents(snapEvents.filter((e) => e.batch_id === 1));
+        setState({ ...snapState, attack: "none", batches: 1 });
+      } else if (recordedStep === 5) {
+        // Step 5: Flagged as suspicious (flagged fraud on batch 2)
         setBatches(snapBatches.map((b) => b.batch_id === 2 ? { ...b, status: "Quarantined" } : b));
-        setVerifiers(snapVerifiers);
+        setVerifiers(snapVerifiers.map((v) => ({ ...v, last_batch_id: 2, last_verdict: "fraud" })));
         setChallenges(snapChallenges.map((c) => ({ ...c, status: "Active" })));
         setEvents(snapEvents.filter((e) => e.type !== "slashed" && e.type !== "attestation"));
         setState({ ...snapState, attack: "constant_scaling", batches: 2 });
-      } else if (recordedStep >= 4) {
+      } else if (recordedStep === 6) {
+        // Step 6: Time to appeal (challenge window open)
+        setBatches(snapBatches.map((b) => b.batch_id === 2 ? { ...b, status: "Quarantined" } : b));
+        setVerifiers(snapVerifiers.map((v) => ({ ...v, last_batch_id: 2, last_verdict: "fraud" })));
+        setChallenges(snapChallenges.map((c) => ({ ...c, status: "Active" })));
+        setEvents(snapEvents.filter((e) => e.type !== "slashed" && e.type !== "attestation"));
+        setState({ ...snapState, attack: "constant_scaling", batches: 2 });
+      } else if (recordedStep === 7) {
+        // Step 7: Deposit slashed (slashed)
+        setBatches(snapBatches);
+        setVerifiers(snapVerifiers.map((v) => ({ ...v, last_batch_id: 2, last_verdict: "fraud" })));
+        setChallenges(snapChallenges.map((c) => ({ ...c, status: "UpheldSlashed" })));
+        setEvents(snapEvents.filter((e) => e.type !== "attestation"));
+        setState({
+          ...snapState,
+          attack: "constant_scaling",
+          vault: {
+            ...snapState.vault,
+            slashed_wei: "1000000000000000000",
+            operator_bond_wei: "0",
+          },
+          batches: 2,
+        });
+      } else if (recordedStep >= 8) {
+        // Step 8: Proof for the buyer (attestation)
         setBatches(snapBatches);
         setVerifiers(snapVerifiers);
         setChallenges(snapChallenges);
@@ -304,9 +340,22 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw new Error("Chain is unreachable");
       }
 
+      // Ensure batches in LIVE mode have packets populated from batch details if not present
+      const batchesWithPackets = await Promise.all(
+        b.map(async (batch) => {
+          if (batch.packets && batch.packets.length > 0) return batch;
+          try {
+            const detail = await apiClient.getBatch(batch.batch_id);
+            return detail ? { ...batch, packets: detail.packets || [] } : batch;
+          } catch {
+            return batch;
+          }
+        })
+      );
+
       setHealth(h);
       setState(s);
-      setBatches(b);
+      setBatches(batchesWithPackets);
       setVerifiers(v);
       setChallenges(c);
       setEvents(ws.events);
@@ -394,6 +443,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (dataState === "LIVE") {
       await apiClient.runBatchScenario();
       await loadData();
+    } else {
+      setRecordedStep(3);
     }
   }, [dataState, loadData]);
 
@@ -463,9 +514,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return res;
     }
 
-    const nextStep = Math.min(7, recordedStep + 1);
+    const nextStep = Math.min(STORY_STEPS.length, recordedStep + 1);
     setRecordedStep(nextStep);
-    const updated = buildScenarioStatus(nextStep, nextStep >= 7 ? "completed" : "paused", recordedSpeed);
+    const updated = buildScenarioStatus(nextStep, nextStep >= STORY_STEPS.length ? "completed" : "paused", recordedSpeed);
     setScenarioStatus(updated);
     return updated;
   }, [dataState, recordedStep, recordedSpeed, loadData]);
@@ -481,7 +532,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       setRecordedSpeed(spd);
       setRecordedPlayStatus("playing");
-      const updated = buildScenarioStatus(recordedStep, "playing", spd);
+      const startStep = recordedStep === 0 || recordedStep >= STORY_STEPS.length ? 1 : recordedStep;
+      if (startStep !== recordedStep) {
+        setRecordedStep(startStep);
+      }
+      const updated = buildScenarioStatus(startStep, "playing", spd);
       setScenarioStatus(updated);
       return updated;
     },
@@ -531,6 +586,22 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     },
     [dataState, recordedStep, recordedPlayStatus]
   );
+
+  // Auto-advance scenario in RECORDED REAL RUN when playing (at least 3 seconds at 1x)
+  useEffect(() => {
+    if (dataState !== "RECORDED REAL RUN" || recordedPlayStatus !== "playing") return;
+    const intervalMs = Math.max(150, Math.round(3000 / recordedSpeed));
+    const timer = window.setInterval(() => {
+      setRecordedStep((prev) => {
+        if (prev >= STORY_STEPS.length) {
+          setRecordedPlayStatus("completed");
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, intervalMs);
+    return () => window.clearInterval(timer);
+  }, [dataState, recordedPlayStatus, recordedSpeed]);
 
   // Synchronize on scenario events from WebSocket when in LIVE
   useEffect(() => {
@@ -586,6 +657,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         pauseScenario,
         resetScenario,
         setScenarioSpeed,
+        narrationEnabled,
+        setNarrationEnabled,
       }}
     >
       {children}

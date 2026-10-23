@@ -9,70 +9,14 @@ import {
   CartesianGrid,
 } from "recharts";
 import { LineChart as ChartIcon } from "lucide-react";
-import type { TelemetryPacket } from "../types/telemetry";
+import type { TelemetryPacket, ChannelConfig } from "../types/telemetry";
+import { REGISTERED_CHANNELS } from "../types/telemetry";
 import { Skeleton } from "./Skeleton";
 import { EmptyState } from "./EmptyState";
 import { ErrorState } from "./ErrorState";
 
-export interface ChannelConfig {
-  key: string;
-  label: string;
-  unit: string;
-  source: "REAL" | "SYNTHETIC";
-  color: string;
-  yAxisId: "left" | "right";
-}
-
-export const REGISTERED_CHANNELS: ChannelConfig[] = [
-  {
-    key: "co2_mass_short_tons",
-    label: "CO₂ Mass Flow",
-    unit: "short T/hr",
-    source: "REAL",
-    color: "#2DD4BF", // Teal
-    yAxisId: "left",
-  },
-  {
-    key: "gross_load_mw",
-    label: "Gross Generation Load",
-    unit: "MW",
-    source: "REAL",
-    color: "#38BDF8", // Sky Blue
-    yAxisId: "right",
-  },
-  {
-    key: "heat_input_mmbtu",
-    label: "Heat Input",
-    unit: "mmBtu/hr",
-    source: "REAL",
-    color: "#A78BFA", // Violet
-    yAxisId: "right",
-  },
-  {
-    key: "synthetic_stack_o2_pct",
-    label: "Flue Gas O₂",
-    unit: "% vol dry",
-    source: "SYNTHETIC",
-    color: "#F59E0B", // Amber
-    yAxisId: "left",
-  },
-  {
-    key: "synthetic_flue_temp_c",
-    label: "Flue Gas Temp",
-    unit: "°C",
-    source: "SYNTHETIC",
-    color: "#F43F5E", // Rose
-    yAxisId: "right",
-  },
-  {
-    key: "synthetic_stack_flow_kscfm",
-    label: "Stack Flow Rate",
-    unit: "kscfm",
-    source: "SYNTHETIC",
-    color: "#34D399", // Emerald
-    yAxisId: "right",
-  },
-];
+export type { ChannelConfig };
+export { REGISTERED_CHANNELS };
 
 export interface TelemetryChartsProps {
   packets?: TelemetryPacket[];
@@ -91,12 +35,15 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
   onRetry,
   className = "",
 }) => {
+  const prefersReducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   // Selected channel keys
   const [activeChannels, setActiveChannels] = useState<string[]>([
     "co2_mass_short_tons",
-    "gross_load_mw",
     "heat_input_mmbtu",
-    "synthetic_stack_o2_pct",
+    "gross_load_mw",
   ]);
 
   const toggleChannel = (key: string) => {
@@ -136,40 +83,122 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
         <EmptyState
           icon={ChartIcon}
           title="No telemetry"
-          description="Waiting for plant edge gateway packets."
+          description="Press Play to start the recorded run."
         />
       </div>
     );
   }
 
-  // Format chart data points from packets
-  const chartData = packets.map((pkt) => {
-    const timeStr = pkt.timestamp_utc
-      ? new Date(pkt.timestamp_utc).toLocaleTimeString([], {
+  // Base values from first packet for index = 100 calculation
+  const firstPacket = packets[0];
+  const co2Base = Number(firstPacket?.values?.co2_mass_short_tons) || 1;
+  const heatBase = Number(firstPacket?.values?.heat_input_mmbtu) || 1;
+
+  // Format chart data points from packets (indexed to 100 at first packet)
+  const chartData = packets.map((pkt: any) => {
+    const rawTime = pkt.timestamp_utc || pkt.timestamp;
+    const timeStr = rawTime
+      ? new Date(rawTime).toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
           second: "2-digit",
         })
       : `Seq #${pkt.seq}`;
 
-    const pt: Record<string, any> = {
+    const rawCo2 = pkt.values?.co2_mass_short_tons;
+    const rawHeat = pkt.values?.heat_input_mmbtu;
+
+    const co2Indexed =
+      rawCo2 !== undefined && rawCo2 !== null && co2Base > 0
+        ? Number(((Number(rawCo2) / co2Base) * 100).toFixed(2))
+        : 100;
+
+    const heatIndexed =
+      rawHeat !== undefined && rawHeat !== null && heatBase > 0
+        ? Number(((Number(rawHeat) / heatBase) * 100).toFixed(2))
+        : 100;
+
+    return {
       seq: pkt.seq,
       label: `Seq #${pkt.seq}`,
       time: timeStr,
+      co2_mass_short_tons: co2Indexed,
+      heat_input_mmbtu: heatIndexed,
+      gross_load_mw: pkt.values?.gross_load_mw ?? null,
+      raw_co2: rawCo2,
+      raw_heat: rawHeat,
     };
-
-    for (const ch of REGISTERED_CHANNELS) {
-      pt[ch.key] = pkt.values?.[ch.key] ?? null;
-    }
-
-    return pt;
   });
+
+  // Separate O2 chart data points
+  const o2ChartData = packets.map((pkt: any) => ({
+    seq: pkt.seq,
+    label: `Seq #${pkt.seq}`,
+    o2_pct: pkt.values?.synthetic_stack_o2_pct ?? null,
+  }));
+
+  // Render pulsed dot for the latest point
+  const renderPulsedDot = (props: any, color: string) => {
+    const { cx, cy, payload, index } = props;
+    if (cx === undefined || cy === undefined || isNaN(cx) || isNaN(cy)) return null;
+
+    const latestSeq = chartData[chartData.length - 1]?.seq;
+    const isLatest =
+      payload?.seq !== undefined
+        ? payload.seq === latestSeq
+        : index === chartData.length - 1;
+
+    if (!isLatest) {
+      return <circle key={`dot-${index}`} cx={cx} cy={cy} r={3} fill={color} />;
+    }
+    if (prefersReducedMotion) {
+      return (
+        <circle
+          key={`dot-${index}`}
+          cx={cx}
+          cy={cy}
+          r={5}
+          fill={color}
+          stroke="#FFFFFF"
+          strokeWidth={2}
+        />
+      );
+    }
+    return (
+      <g key={`dot-pulse-${index}`}>
+        <circle
+          cx={cx}
+          cy={cy}
+          r={7}
+          fill={color}
+          opacity={0.35}
+          style={{ transformBox: "fill-box", transformOrigin: "center" }}
+          className="animate-pulse-ring"
+        >
+          <animate attributeName="r" values="5;9;5" dur="2s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.45;0.1;0.45" dur="2s" repeatCount="indefinite" />
+        </circle>
+        <circle
+          cx={cx}
+          cy={cy}
+          r={4}
+          fill={color}
+          stroke="#FFFFFF"
+          strokeWidth={1.5}
+        />
+      </g>
+    );
+  };
+
+  const mainChannels = REGISTERED_CHANNELS.filter(
+    (ch) => ch.key !== "synthetic_stack_o2_pct" && ch.key !== "synthetic_flue_temp_c" && ch.key !== "synthetic_stack_flow_kscfm"
+  );
 
   return (
     <div
       role="region"
       aria-label="Live Telemetry Channels (Recharts)"
-      className={`p-5 bg-surface border border-hairline rounded-card shadow-card space-y-4 ${className}`}
+      className={`p-5 bg-surface border border-hairline rounded-card shadow-card space-y-5 ${className}`}
     >
       {/* Header and Channel Legend */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-hairline">
@@ -193,9 +222,9 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
         </div>
       </div>
 
-      {/* Channel Toggles with Explicit REAL or SYNTHETIC Label */}
+      {/* Channel Toggles with Explicit ON / OFF state */}
       <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Toggle telemetry channels">
-        {REGISTERED_CHANNELS.map((ch) => {
+        {mainChannels.map((ch) => {
           const isActive = activeChannels.includes(ch.key);
           return (
             <button
@@ -203,121 +232,167 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
               type="button"
               onClick={() => toggleChannel(ch.key)}
               aria-pressed={isActive}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-chip text-xs font-medium border transition-all ${
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-chip text-xs transition-all border ${
                 isActive
-                  ? "bg-surface-soft border-hairline-strong text-ink shadow-sm font-semibold"
-                  : "bg-surface border-hairline text-muted-strong hover:text-ink hover:border-hairline-strong opacity-70"
+                  ? "bg-surface-soft border-brand/60 text-ink font-bold shadow-sm ring-1 ring-brand/20"
+                  : "bg-surface border-hairline text-muted-strong opacity-40 hover:opacity-75"
               }`}
             >
               <span
-                className="w-2 h-2 rounded-full flex-shrink-0"
+                className={`w-2 h-2 rounded-full flex-shrink-0 ${isActive ? "" : "opacity-30"}`}
                 style={{ backgroundColor: ch.color }}
               />
               <span className="font-mono text-xs">{ch.label}</span>
               <span
-                className={`text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-chip border ${
-                  ch.source === "REAL"
-                    ? "bg-emerald-500/15 text-emerald-600 border-emerald-500/30"
-                    : "bg-amber-500/15 text-amber-600 border-amber-500/30"
+                className={`text-[10px] font-mono font-bold px-1 rounded ${
+                  isActive ? "bg-brand/10 text-brand" : "text-muted"
                 }`}
               >
-                {ch.source}
+                {isActive ? "ON" : "OFF"}
               </span>
             </button>
           );
         })}
       </div>
 
-      {/* Main Recharts Area */}
-      <div className="h-80 w-full pt-2">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData} margin={{ top: 10, right: 25, left: 0, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
-            <XAxis
-              dataKey="label"
-              stroke="#5B6573"
-              fontSize={11}
-              tickLine={false}
-              axisLine={{ stroke: "#E5E7EB" }}
-            />
-            {/* Left Y Axis for CO2 / O2 */}
-            <YAxis
-              yAxisId="left"
-              stroke="#5B6573"
-              fontSize={11}
-              tickLine={false}
-              axisLine={{ stroke: "#E5E7EB" }}
-              domain={["auto", "auto"]}
-            />
-            {/* Right Y Axis for MW / Heat / Temp / Flow */}
-            <YAxis
-              yAxisId="right"
-              orientation="right"
-              stroke="#5B6573"
-              fontSize={11}
-              tickLine={false}
-              axisLine={{ stroke: "#E5E7EB" }}
-              domain={["auto", "auto"]}
-            />
-            <Tooltip
-              content={({ active, payload, label }) => {
-                if (!active || !payload || payload.length === 0) return null;
-                const pt = payload[0].payload;
-                return (
-                  <div className="p-3 bg-surface border border-hairline rounded-card shadow-card text-xs space-y-1.5 min-w-[200px]">
-                    <div className="flex items-center justify-between pb-1 mb-1 border-b border-hairline">
-                      <span className="font-bold font-mono text-ink">{label}</span>
-                      <span className="text-[10px] text-muted-strong">{pt.time}</span>
-                    </div>
-                    {payload.map((entry: any) => {
-                      const cfg = REGISTERED_CHANNELS.find((c) => c.key === entry.dataKey);
-                      if (!cfg) return null;
-                      return (
-                        <div key={entry.dataKey} className="flex items-center justify-between gap-3">
-                          <div className="flex items-center gap-1.5">
-                            <span
-                              className="w-2 h-2 rounded-full"
-                              style={{ backgroundColor: cfg.color }}
-                            />
-                            <span className="text-muted-strong">{cfg.label}:</span>
-                            <span
-                              className={`text-[9px] font-mono px-1 rounded-chip ${
-                                cfg.source === "REAL"
-                                  ? "bg-emerald-500/15 text-emerald-600"
-                                  : "bg-amber-500/15 text-amber-600"
-                              }`}
-                            >
-                              {cfg.source}
+      {/* Main Indexed Telemetry Chart */}
+      <div className="space-y-1">
+        <div className="flex items-center justify-between text-xs text-muted-strong font-mono px-1">
+          <span>CO₂ Mass & Heat Input</span>
+          <span className="text-[11px] font-semibold text-brand">Index, start = 100</span>
+        </div>
+
+        <div className="h-72 w-full pt-1">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={chartData} margin={{ top: 10, right: 25, left: 10, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
+              <XAxis
+                dataKey="label"
+                stroke="#5B6573"
+                fontSize={11}
+                tickLine={false}
+                axisLine={{ stroke: "#E5E7EB" }}
+              />
+              {/* Indexed Y Axis (start = 100) */}
+              <YAxis
+                stroke="#5B6573"
+                fontSize={11}
+                tickLine={false}
+                axisLine={{ stroke: "#E5E7EB" }}
+                domain={["auto", "auto"]}
+                width={36}
+              />
+              <Tooltip
+                content={({ active, payload, label }) => {
+                  if (!active || !payload || payload.length === 0) return null;
+                  const pt = payload[0].payload;
+                  return (
+                    <div className="p-3 bg-surface border border-hairline rounded-card shadow-card text-xs space-y-1.5 min-w-[200px]">
+                      <div className="flex items-center justify-between pb-1 mb-1 border-b border-hairline">
+                        <span className="font-bold font-mono text-ink">{label}</span>
+                        <span className="text-[10px] text-muted-strong">{pt.time}</span>
+                      </div>
+                      {payload.map((entry: any) => {
+                        const cfg = REGISTERED_CHANNELS.find((c) => c.key === entry.dataKey);
+                        if (!cfg) return null;
+                        return (
+                          <div key={entry.dataKey} className="flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-1.5">
+                              <span
+                                className="w-2 h-2 rounded-full"
+                                style={{ backgroundColor: cfg.color }}
+                              />
+                              <span className="text-muted-strong">{cfg.label}:</span>
+                            </div>
+                            <span className="font-mono font-bold text-ink">
+                              {entry.value !== null && entry.value !== undefined
+                                ? `${Number(entry.value).toFixed(2)} (idx)`
+                                : "--"}
                             </span>
                           </div>
-                          <span className="font-mono font-bold text-ink">
-                            {entry.value !== null && entry.value !== undefined
-                              ? `${Number(entry.value).toFixed(2)} ${cfg.unit}`
-                              : "--"}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                );
-              }}
-            />
-            {REGISTERED_CHANNELS.filter((ch) => activeChannels.includes(ch.key)).map((ch) => (
-              <Line
-                key={ch.key}
-                type="monotone"
-                dataKey={ch.key}
-                name={`${ch.label} [${ch.source}]`}
-                stroke={ch.color}
-                yAxisId={ch.yAxisId}
-                strokeWidth={2}
-                dot={{ r: 3, fill: ch.color }}
-                activeDot={{ r: 5, stroke: "#E5383B", strokeWidth: 2 }}
-                isAnimationActive={true}
+                        );
+                      })}
+                    </div>
+                  );
+                }}
               />
-            ))}
-          </LineChart>
-        </ResponsiveContainer>
+              {mainChannels
+                .filter((ch) => activeChannels.includes(ch.key))
+                .map((ch) => (
+                  <Line
+                    key={ch.key}
+                    type="monotone"
+                    dataKey={ch.key}
+                    name={ch.label}
+                    stroke={ch.color}
+                    strokeWidth={2}
+                    dot={(props) => renderPulsedDot(props, ch.color)}
+                    activeDot={{ r: 5, stroke: "#E5383B", strokeWidth: 2 }}
+                    isAnimationActive={false}
+                  />
+                ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Small Standalone O₂ Chart with Units */}
+      <div className="p-4 bg-surface-soft border border-hairline rounded-card space-y-2">
+        <div className="flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]" />
+            <span className="font-semibold text-ink">Flue Gas O₂</span>
+            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-chip bg-amber-500/15 text-amber-600 border border-amber-500/30">
+              SYNTHETIC
+            </span>
+          </div>
+          <span className="font-mono text-xs font-semibold text-muted-strong">% vol dry</span>
+        </div>
+
+        <div className="h-28 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={o2ChartData} margin={{ top: 5, right: 15, left: -20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
+              <XAxis
+                dataKey="label"
+                stroke="#5B6573"
+                fontSize={10}
+                tickLine={false}
+                axisLine={{ stroke: "#E5E7EB" }}
+              />
+              <YAxis
+                stroke="#5B6573"
+                fontSize={10}
+                tickLine={false}
+                axisLine={{ stroke: "#E5E7EB" }}
+                domain={["auto", "auto"]}
+              />
+              <Tooltip
+                content={({ active, payload, label }) => {
+                  if (!active || !payload || payload.length === 0) return null;
+                  const val = payload[0].value;
+                  return (
+                    <div className="p-2 bg-surface border border-hairline rounded-card shadow-sm text-xs font-mono">
+                      <span>{label}: </span>
+                      <span className="font-bold text-amber-600">
+                        {val !== null && val !== undefined ? `${Number(val).toFixed(2)} %` : "--"}
+                      </span>
+                    </div>
+                  );
+                }}
+              />
+              <Line
+                type="monotone"
+                dataKey="o2_pct"
+                name="Flue Gas O₂"
+                stroke="#F59E0B"
+                strokeWidth={2}
+                dot={(props) => renderPulsedDot(props, "#F59E0B")}
+                isAnimationActive={false}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );

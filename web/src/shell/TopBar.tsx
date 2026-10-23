@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import {
   Play,
@@ -6,23 +6,26 @@ import {
   SkipForward,
   RotateCcw,
   Shield,
-  Component,
   Sun,
   Moon,
+  Volume2,
+  ExternalLink,
 } from "lucide-react";
 import { useData } from "../data/DataContext.tsx";
 import { useToast } from "../components/Toast.tsx";
 import { DataStatusPill } from "./DataStatusPill.tsx";
+import { ArbitrumSepoliaModal } from "../components/ArbitrumSepoliaModal.tsx";
 
 export const TopBar: React.FC = () => {
   const {
-    refresh,
     scenarioStatus,
     playScenario,
     pauseScenario,
     stepScenario,
     resetScenario,
     setScenarioSpeed,
+    narrationEnabled,
+    setNarrationEnabled,
   } = useData();
 
   const navigate = useNavigate();
@@ -30,6 +33,8 @@ export const TopBar: React.FC = () => {
   const { showToast } = useToast();
 
   const [isActing, setIsActing] = useState(false);
+  const [isManualMode, setIsManualMode] = useState(false);
+  const [isTestnetModalOpen, setIsTestnetModalOpen] = useState(false);
 
   // Dark mode state
   const [theme, setTheme] = useState<"light" | "dark">(() => {
@@ -59,17 +64,28 @@ export const TopBar: React.FC = () => {
   };
 
   const currentStep = scenarioStatus?.current_step || 0;
+  const totalSteps = scenarioStatus?.total_steps || 8;
   const isPlaying = scenarioStatus?.status === "playing";
   const speed = scenarioStatus?.speed || 1.0;
 
-  // Auto-navigate to page matching current demo step
+  const prevStepRef = useRef<number>(currentStep);
+
+  // Auto-navigation between tabs happens ONLY when the story moves to a new step, never on every render.
+  // If the user clicks a tab during playback, manual mode stops auto-navigation until Play is clicked again.
   useEffect(() => {
-    if (currentStep === 0 || !scenarioStatus?.step_info) return;
-    const targetPage = scenarioStatus.step_info[currentStep - 1]?.page;
-    if (targetPage && location.pathname !== targetPage) {
-      navigate(targetPage);
+    if (currentStep === 0 || !isPlaying || isManualMode || !scenarioStatus?.step_info) {
+      prevStepRef.current = currentStep;
+      return;
     }
-  }, [currentStep, scenarioStatus, location.pathname, navigate]);
+
+    if (currentStep !== prevStepRef.current) {
+      prevStepRef.current = currentStep;
+      const targetPage = scenarioStatus.step_info[currentStep - 1]?.page;
+      if (targetPage && location.pathname !== targetPage) {
+        navigate(targetPage);
+      }
+    }
+  }, [currentStep, isPlaying, isManualMode, scenarioStatus, location.pathname, navigate]);
 
   const handlePlayPause = async () => {
     setIsActing(true);
@@ -77,6 +93,8 @@ export const TopBar: React.FC = () => {
       if (isPlaying) {
         await pauseScenario();
       } else {
+        // Exiting manual mode when user explicitly presses Play
+        setIsManualMode(false);
         await playScenario();
       }
     } finally {
@@ -91,7 +109,7 @@ export const TopBar: React.FC = () => {
       if (nextStatus) {
         showToast(
           "success",
-          `Step ${nextStatus.current_step}/7 Executed`,
+          `Step ${nextStatus.current_step}/${totalSteps} Executed`,
           nextStatus.current_caption
         );
       }
@@ -104,17 +122,8 @@ export const TopBar: React.FC = () => {
     setIsActing(true);
     try {
       await resetScenario();
+      setIsManualMode(false);
       showToast("info", "Scenario Reset", "Reset story to Step 0");
-    } finally {
-      setIsActing(false);
-    }
-  };
-
-  const handleRefresh = async () => {
-    setIsActing(true);
-    try {
-      await refresh();
-      showToast("info", "State Refreshed", "Synchronized data and scenario status.");
     } finally {
       setIsActing(false);
     }
@@ -125,11 +134,20 @@ export const TopBar: React.FC = () => {
     setScenarioSpeed(newSpeed);
   };
 
+  const handleTabClick = () => {
+    // If the user clicks a tab during playback, switch to manual mode: pause the story
+    // and stop auto-navigating until they press Play again.
+    if (isPlaying) {
+      pauseScenario();
+    }
+    setIsManualMode(true);
+  };
+
   const navTabs = [
-    { to: "/operator", label: "Edge Gateway" },
-    { to: "/verifier", label: "Verifier Quorum" },
-    { to: "/importer", label: "EU Importer" },
-    { to: "/benchmark", label: "Benchmark Suite" },
+    { to: "/operator", label: "Factory" },
+    { to: "/verifier", label: "Verifiers" },
+    { to: "/importer", label: "Buyer" },
+    { to: "/benchmark", label: "Test results" },
   ];
 
   return (
@@ -162,6 +180,7 @@ export const TopBar: React.FC = () => {
           <NavLink
             key={tab.to}
             to={tab.to}
+            onClick={handleTabClick}
             className={({ isActive }) =>
               `px-3 sm:px-4 py-1.5 rounded-pill text-xs sm:text-sm font-semibold whitespace-nowrap transition-all duration-150 ${
                 isActive
@@ -179,6 +198,21 @@ export const TopBar: React.FC = () => {
       <div className="order-2 md:order-3 flex flex-wrap items-center gap-1.5 sm:gap-2 py-1 max-w-full">
         {/* Exactly one Data Status Pill per Requirement 1 */}
         <DataStatusPill />
+
+        {/* Arbitrum Sepolia Live Testnet Deployment Pill */}
+        <button
+          type="button"
+          onClick={() => setIsTestnetModalOpen(true)}
+          data-testid="testnet-evidence-topbar-btn"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill bg-brand/10 hover:bg-brand/20 border border-brand/30 text-brand dark:text-brand-soft transition-all text-xs font-semibold cursor-pointer select-none"
+          title="View Live Arbitrum Sepolia Deployment & On-Chain Proofs (Chain 421614)"
+          aria-label="Live Arbitrum Sepolia Deployment (Chain 421614)"
+        >
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" aria-hidden="true" />
+          <span className="hidden sm:inline">Arbitrum Sepolia</span>
+          <span className="sm:hidden">Sepolia</span>
+          <ExternalLink className="w-3 h-3 opacity-70 shrink-0" aria-hidden="true" />
+        </button>
 
         {/* Theme Toggle (Light / Dark Mode) */}
         <button
@@ -207,6 +241,23 @@ export const TopBar: React.FC = () => {
           data-testid="compact-demo-dock"
           className="flex items-center gap-1.5 pl-1.5 sm:pl-2 border-l border-hairline"
         >
+          {/* Narration Toggle */}
+          <button
+            type="button"
+            data-testid="narration-toggle-btn"
+            onClick={() => setNarrationEnabled((prev) => !prev)}
+            aria-pressed={narrationEnabled}
+            title={narrationEnabled ? "Narration on" : "Narration off"}
+            className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-pill text-xs font-semibold border transition-all ${
+              narrationEnabled
+                ? "bg-brand/10 text-brand border-brand/30"
+                : "bg-surface-soft text-muted-strong border-hairline opacity-60"
+            }`}
+          >
+            <Volume2 className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Narration</span>
+          </button>
+
           {/* Play / Pause Pill */}
           <button
             type="button"
@@ -239,7 +290,7 @@ export const TopBar: React.FC = () => {
             type="button"
             data-testid="demo-step-btn"
             onClick={handleStep}
-            disabled={isActing || currentStep >= 7}
+            disabled={isActing || currentStep >= totalSteps}
             className="inline-flex items-center gap-1 px-3 py-1.5 rounded-pill text-xs font-semibold bg-ink text-white hover:opacity-90 dark:bg-white dark:text-black border border-transparent disabled:opacity-30 disabled:cursor-not-allowed shadow-sm transition-all"
             title="Advance to next scenario step"
             aria-label="Advance to Next Step"
@@ -248,14 +299,14 @@ export const TopBar: React.FC = () => {
             <span>Next</span>
           </button>
 
-          {/* Reset Pill */}
+          {/* Single Reset Pill */}
           <button
             type="button"
             data-testid="demo-reset-btn"
             onClick={handleReset}
             disabled={isActing}
             className="p-1.5 rounded-pill bg-surface-soft hover:bg-hairline border border-hairline text-muted-strong hover:text-ink transition-all"
-            title="Reset story to Step 0"
+            title="Reset story to start"
             aria-label="Reset Story Scenario"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -278,30 +329,9 @@ export const TopBar: React.FC = () => {
             </select>
           </div>
 
-          {/* Refresh State */}
-          <button
-            type="button"
-            onClick={handleRefresh}
-            aria-label="Refresh telemetry data"
-            className="hidden sm:inline-flex p-1.5 rounded-pill bg-surface-soft hover:bg-hairline border border-hairline text-muted-strong hover:text-ink transition-all"
-            title="Synchronize chain & backend state"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-          </button>
-
-          {/* Component Gallery Link */}
-          <NavLink
-            to="/gallery"
-            className="hidden xl:inline-flex p-1.5 rounded-pill bg-surface-soft hover:bg-hairline border border-hairline text-muted-strong hover:text-ink transition-all"
-            title="Design System Gallery"
-            aria-label="Design System Gallery"
-          >
-            <Component className="w-3.5 h-3.5" />
-          </NavLink>
-
-          {/* Hidden 1..7 step pills for test selectors */}
+          {/* Hidden 1..totalSteps step pills for test selectors */}
           <div className="hidden" aria-hidden="true">
-            {[1, 2, 3, 4, 5, 6, 7].map((num) => (
+            {Array.from({ length: totalSteps }, (_, i) => i + 1).map((num) => (
               <span
                 key={num}
                 data-testid={`demo-step-pill-${num}`}
@@ -313,6 +343,12 @@ export const TopBar: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Live Arbitrum Sepolia Deployment Evidence Modal */}
+      <ArbitrumSepoliaModal
+        isOpen={isTestnetModalOpen}
+        onClose={() => setIsTestnetModalOpen(false)}
+      />
     </header>
   );
 };

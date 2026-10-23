@@ -58,15 +58,20 @@ export const HashChainStrip: React.FC<HashChainStripProps> = ({
         <EmptyState
           icon={Link2}
           title="No chained packets"
-          description="Hash chain sequence will appear here once telemetry packets are signed and anchored."
+          description="Press Play to start the recorded run."
         />
       </div>
     );
   }
 
+  const prefersReducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   return (
     <div
       role="region"
+      data-story="hash-chain-strip"
       aria-label="Tamper-Evident Hash Chain Telemetry Strip"
       className={`p-6 bg-surface border border-hairline rounded-card shadow-card w-full max-w-full min-w-0 overflow-hidden ${className}`}
     >
@@ -95,13 +100,17 @@ export const HashChainStrip: React.FC<HashChainStripProps> = ({
         {displayPackets.map((packet, index) => {
           const isGenesis = packet.seq === 0;
           const nextPacket = displayPackets[index + 1];
-          const isLinkValid = nextPacket ? nextPacket.prev_hash === packet.packet_hash : true;
+          const currentHash = packet.packet_hash || (packet as any).hash;
+          const isLinkValid = nextPacket ? nextPacket.prev_hash === currentHash : true;
 
           return (
             <React.Fragment key={packet.seq}>
               {/* Packet Node Card */}
-              <div
+              <motion.div
                 data-testid={`hash-chain-packet-${packet.seq}`}
+                initial={prefersReducedMotion ? false : { opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
                 className="min-w-[230px] p-4 bg-surface-soft border border-hairline rounded-card flex flex-col justify-between flex-shrink-0 transition-all hover:border-hairline-strong shadow-sm"
               >
                 <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-hairline">
@@ -153,10 +162,10 @@ export const HashChainStrip: React.FC<HashChainStripProps> = ({
                   </div>
                   <div className="flex items-center justify-between text-[11px]">
                     <span className="text-muted-strong font-mono">hash:</span>
-                    <HashChip hash={packet.packet_hash} truncateLen={3} />
+                    <HashChip hash={packet.packet_hash || (packet as any).hash} truncateLen={3} />
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Animated Drawing Connecting Link */}
               {index < displayPackets.length - 1 && (

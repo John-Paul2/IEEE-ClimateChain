@@ -114,7 +114,7 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
               {/* Chart Container */}
               <div className="h-80 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={rocData} margin={{ top: 20, right: 15, left: 10, bottom: 25 }}>
+                  <LineChart data={rocData} margin={{ top: 20, right: 15, left: 18, bottom: 25 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#1F2A44" vertical={false} />
                     <XAxis
                       dataKey="fpr"
@@ -134,12 +134,12 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
                       tick={{ fill: "#8FA0BF", fontSize: 11 }}
                       unit="%"
                       domain={[0, 100]}
-                      width={48}
+                      width={52}
                       label={{
                         value: "True Positive Rate (%)",
                         angle: -90,
                         position: "insideLeft",
-                        offset: 10,
+                        offset: -2,
                         style: { textAnchor: "middle", fill: "#8FA0BF", fontSize: 11 },
                       }}
                     />
@@ -174,12 +174,22 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
                       x={2.0}
                       stroke="#F59E0B"
                       strokeDasharray="4 4"
-                      label={{
-                        value: "2% FPR",
-                        position: "insideTopRight",
-                        fill: "#F59E0B",
-                        fontSize: 10,
-                        offset: 6,
+                      label={({ viewBox }: any) => {
+                        if (!viewBox) return null;
+                        const x = viewBox.x ?? viewBox.x1 ?? 0;
+                        const y = viewBox.y ?? viewBox.y1 ?? 0;
+                        return (
+                          <text
+                            x={x + 10}
+                            y={y + 14}
+                            fill="#F59E0B"
+                            fontSize={10}
+                            fontWeight={600}
+                            fontFamily="ui-monospace, monospace"
+                          >
+                            2% FPR
+                          </text>
+                        );
                       }}
                     />
                     <Line
@@ -272,7 +282,7 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
               {/* Chart Container */}
               <div className="h-80 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={adaptiveData} margin={{ top: 20, right: 15, left: 10, bottom: 25 }}>
+                  <LineChart data={adaptiveData} margin={{ top: 20, right: 15, left: 18, bottom: 25 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#1F2A44" vertical={false} />
                     <XAxis
                       dataKey="targetReduction"
@@ -292,12 +302,12 @@ export const BenchmarkCharts: React.FC<BenchmarkChartsProps> = ({ summary }) => 
                       tick={{ fill: "#8FA0BF", fontSize: 11 }}
                       unit="%"
                       domain={[0, 100]}
-                      width={48}
+                      width={52}
                       label={{
                         value: "Detection Probability (%)",
                         angle: -90,
                         position: "insideLeft",
-                        offset: 10,
+                        offset: -2,
                         style: { textAnchor: "middle", fill: "#8FA0BF", fontSize: 11 },
                       }}
                     />

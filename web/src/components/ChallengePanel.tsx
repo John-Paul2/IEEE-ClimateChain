@@ -166,6 +166,7 @@ export const ChallengePanel: React.FC<ChallengePanelProps> = ({
   return (
     <div
       role="region"
+      data-story="challenge-card"
       aria-label="Optimistic Quarantine Challenge Panel"
       className={`p-4 sm:p-5 rounded-card bg-surface border border-hairline shadow-card space-y-4 ${className}`}
     >
@@ -286,6 +287,7 @@ export const ChallengePanel: React.FC<ChallengePanelProps> = ({
       {isUpheld && (
         <div
           data-testid="challenge-outcome-banner"
+          data-story="bond-card"
           className="p-3.5 rounded-card bg-[#0A0A0A] dark:bg-black text-white space-y-2 border border-neutral-800 dark:border-neutral-700 shadow-md"
         >
           <div className="flex items-center gap-2 text-xs font-bold text-[#FF6B6B]">

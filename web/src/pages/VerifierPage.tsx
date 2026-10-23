@@ -140,6 +140,7 @@ export const VerifierPage: React.FC = () => {
       <section
         role="region"
         aria-label="Verifier Committee Nodes"
+        data-story="vote-cards"
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4"
       >
         {verifiers.map((v) => (
@@ -158,6 +159,7 @@ export const VerifierPage: React.FC = () => {
         role="region"
         aria-label="Batch Quorum Consensus Score"
         data-testid="quorum-status-bar"
+        data-story="quorum-bar"
         className={`p-4 rounded-card border shadow-card transition-all ${
           isQuarantined
             ? "bg-[#FDECEC] border-red-300 text-[#9B1C1C]"
@@ -215,7 +217,7 @@ export const VerifierPage: React.FC = () => {
       </section>
 
       {/* 6. Challenge Card with Countdown and 2-of-3 Arbiter Indicator */}
-      <section>
+      <section data-story="challenge-card">
         <ChallengePanel
           challenge={activeChallenge}
           onDispute={disputeChallenge}

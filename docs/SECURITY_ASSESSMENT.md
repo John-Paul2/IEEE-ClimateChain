@@ -88,21 +88,28 @@ From [`results/security/coverage.txt`](file:///c:/Users/LENOVO/Documents/Hackath
 
 All 6 production smart contracts achieved **98.18% to 100.00%** line coverage and **90.00% to 100.00%** branch coverage.
 
-### 2.4 Gas Costs for Critical Operations
-From [`results/security/gas_report.txt`](file:///c:/Users/LENOVO/Documents/Hackathons/IEEE%20Climate%20Change/results/security/gas_report.txt):
+### 2.4 Gas Costs for Critical Operations (Forge Gas Report & Arbitrum Sepolia Execution)
+From [`results/gas_report.txt`](file:///c:/Users/LENOVO/Documents/Hackathons/IEEE%20Climate%20Change/results/gas_report.txt), [`results/gas_measured.json`](file:///c:/Users/LENOVO/Documents/Hackathons/IEEE%20Climate%20Change/results/gas_measured.json), and [`docs/TESTNET_EVIDENCE.md`](file:///c:/Users/LENOVO/Documents/Hackathons/IEEE%20Climate%20Change/docs/TESTNET_EVIDENCE.md):
 
-| Contract Function | Gas (Min / Avg / Max) | Purpose |
-|---|---|---|
-| `DeviceRegistry.registerDevice` | 74,487 / 74,487 / 74,487 | Registers device public key and installation binding |
-| `BondVault.depositOperatorBond` | 46,210 / 46,210 / 46,210 | Locks operator stake in ETH |
-| `BatchAnchor.anchorBatch` | 88,432 / 88,432 / 88,432 | Anchors 32-byte Merkle root + sequence bounds |
-| `VerifierQuorum.commitVote` | 48,120 / 48,120 / 48,120 | Records sealed commitment hash in Phase 1 |
-| `VerifierQuorum.revealVote` | 52,380 / 52,380 / 52,380 | Verifies and opens commitment in Phase 2 |
-| `VerifierQuorum.finalize` | 64,210 / 64,210 / 64,210 | Reaches 3-of-5 consensus and sets batch status |
-| `Challenge.openChallenge` | 91,150 / 91,150 / 91,150 | Opens optimistic dispute window on fraud quorum |
-| `Attestation.recordAttestation` | 74,800 / 74,800 / 74,800 | Records quarterly period SEE and verified coverage |
+| Contract Function | Forge Test Gas (Min / Median / Max) | Arbitrum Sepolia Testnet Gas (Chain 421614) | Purpose & Execution Notes |
+|---|---|---|---|
+| `DeviceRegistry.registerDevice` | 26,464 / **194,115** / 238,072 | **238,041** | Registers device P-256 public key & factory installation ID (`0x905a8f52...`, Block 321580773) |
+| `BondVault.depositOperatorBond` | 28,780 / **46,333** / 117,845 | **117,845** (first) / **46,345** (top-up) | Locks operator collateral bond in ETH (`0xa7355a72...`, Block 321580907) |
+| `BondVault.depositVerifierStake` | 28,581 / **38,011** / 72,211 | **72,211** (V0) / **55,111** (V1/V2) | Locks verifier committee stake in ETH (`0x4842628c...`, Block 321580926) |
+| `BatchAnchor.anchorBatch` | 24,923 / **179,855** / 196,955 | **179,843** (median, 20 samples) | Anchors 32-byte Merkle root + sequence bounds. **$O(1)$ constant gas** regardless of batch size |
+| `VerifierQuorum.commitVote` | 26,414 / **103,410** / 120,510 | **103,410** (median) / 120,510 (max) | Records sealed commitment hash in Phase 1 (6 testnet samples) |
+| `VerifierQuorum.revealVote` | 28,036 / **176,623** / 195,379 | **177,505** (median) / 194,605 (max) | Verifies and opens commitment in Phase 2 (Clean: 176,983; Fraud: 194,605) |
+| `VerifierQuorum.finalize` | 25,896 / **147,105** / 305,234 | **127,850** (clean) / **248,504** (fraud) | Reaches 3-of-5 quorum consensus; opens challenge window on fraud quarantine |
+| `Challenge.openChallenge` | 28,555 / **32,463** / 46,518 | **120,654** | Opens optimistic dispute window on quarantined batch |
+| `Challenge.submitOperatorDispute` | 24,554 / **28,098** / 63,779 | **82,020** | Operator lodges dispute with verified Merkle proof (`0x0c28f6f6...`, Block 321585333) |
+| `Challenge.resolve` (Arbiter Council) | 27,053 / **77,348** / 343,207 | **77,704** (vote 1) / **318,914** (resolution & slash) | Arbiter 1 reached 2-of-3 quorum: executes 50% operator bond slash (`0xac83b059...`, Block 321585388) |
+| `BondVault.slashOperator` | 27,475 / **202,426** / 271,306 | *Called via `Challenge.resolve`* | Slashes 50% operator bond, distributes reward to verifiers and treasury |
+| `Attestation.recordAttestation` | 34,181 / **34,584** / 281,715 | **281,626** | Records period EU CBAM Attestation Certificate linking verified Merkle roots (`0xe139990c...`, Block 321583085) |
 
-At typical Layer-2 gas prices (e.g., 0.1 Gwei on Arbitrum/Base and ETH @ \$3,000), anchoring an hourly batch of 60 records costs less than **\$0.00003**, demonstrating extreme economic feasibility for continuous industrial compliance.
+#### $O(1)$ Constant Gas via Merkle Batching vs. Naive On-Chain Logging
+- **Naive On-Chain Logging (Linear $O(N)$):** Logging each hourly telemetry packet individually on-chain requires $24 \times 179,843 = 4,316,232\text{ gas/day}$, and scales linearly to $179,843,000\text{ gas}$ for 1,000 packets.
+- **VeriCEMS Merkle Batching ($O(1)$ Constant):** VeriCEMS aggregates an entire batch off-chain and anchors only the 32-byte cryptographic Merkle root into `BatchAnchor.anchorBatch`, requiring a constant **179,843 gas** on Arbitrum Sepolia whether the batch contains 8, 24, or 1,000 packets. This represents a **95.8% gas reduction** for a 24-hour batch ($4.32\text{M} \to 180\text{k}$) and **99.9% reduction** at scale, while enabling browser-side Merkle inclusion proof verification with zero server trust.
+- **Economic Feasibility:** Per `AGENTS.md` honesty rules, gas prices and token prices are inputs (kept null in code). Illustratively, at 0.1 Gwei Arbitrum L2 gas price and ETH @ \$3,000, anchoring an hourly batch costs **\$0.054**, demonstrating strong economic viability for industrial compliance.
 
 ---
 
@@ -152,6 +159,24 @@ From [`results/security/python_crypto_tests.txt`](file:///c:/Users/LENOVO/Docume
 
 ## 4. Findings and Disclosures Log
 
+### 4.1 Slither Static Analysis Verification Summary
+Automated static analysis was executed via Crytic Slither across all contracts (logged in [`results/slither.txt`](file:///c:/Users/LENOVO/Documents/Hackathons/IEEE%20Climate%20Change/results/slither.txt) and [`results/security/slither.txt`](file:///c:/Users/LENOVO/Documents/Hackathons/IEEE%20Climate%20Change/results/security/slither.txt)):
+- **Analysis Scope:** 16 contracts analyzed with 102 active detectors.
+- **Raw Results:** 32 findings identified across 8 detector types (0 High, 0 Critical unmitigated bugs).
+
+| Slither Detector Type | Impact / Severity | Contract(s) & Function(s) | Finding Count | Slither Reference & Technical Assessment |
+|---|---|---|:---:|---|
+| `arbitrary-send-eth` | Low | `BondVault._safeTransferETH` | 1 | Destination address `to` is restricted to authenticated depositor/operator. Protected by `nonReentrant`. |
+| `divide-before-multiply` | Low | `BondVault.slashOperator` | 1 | Deliberate integer truncation ensures rounding dust routes to treasury; verified by invariant tests. |
+| `incorrect-equality` | Informational | `Attestation`, `BatchAnchor`, `Challenge`, `DeviceRegistry` | 6 | Strict equality checks against enum status (`BatchStatus.None`) and `attestationId == 0`. Idiomatic and safe. |
+| `reentrancy-no-eth` | Low / Medium | `VerifierQuorum.finalize` | 1 | Mitigated: Protected by OpenZeppelin `ReentrancyGuard` and Checks-Effects-Interactions (CEI). |
+| `calls-loop` | Low | `Attestation.recordAttestation`, `Challenge._executeOverturned`, `VerifierQuorum.finalize` | 5 | External calls inside loop. Committee size bounded by constant `MAX_VERIFIERS = 5`. No gas exhaustion risk. |
+| `reentrancy-events` | Informational | `Challenge._executeOverturned`, `Challenge._executeUpheld`, `VerifierQuorum.finalize` | 3 | Events emitted after external calls. No reentrancy vector affecting state variables. |
+| `timestamp` | Low | `Attestation`, `BatchAnchor`, `BondVault`, `Challenge`, `DeviceRegistry`, `VerifierQuorum` | 14 | Proof of Stake timestamp drift bounded by ~12 seconds. Challenge/commit windows are coarse (60s–7d). |
+| `low-level-calls` | Informational | `BondVault._safeTransferETH` | 1 | Standard low-level `.call{value: amount}("")` pattern for native ETH transfers with reentrancy guard. |
+| **Total Slither Results** | — | **All 6 production smart contracts** | **32** | **0 Critical / High unmitigated bugs** |
+
+### 4.2 Comprehensive Findings and Disclosures Log
 The table below catalogs all findings identified during static analysis, automated testing, and threat modeling, along with their resolution status and technical justification.
 
 | Finding ID | Component | Severity | Description | Status | Rationale / Resolution |

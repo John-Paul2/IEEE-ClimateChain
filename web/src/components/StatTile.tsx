@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import type { LucideIcon } from "lucide-react";
 import { Skeleton } from "./Skeleton";
 import { ErrorState } from "./ErrorState";
@@ -8,6 +8,7 @@ export interface StatTileProps {
   label: string;
   value?: string | number | null;
   unit?: string;
+  subtext?: string;
   icon?: LucideIcon;
   variant?: "default" | "verified" | "flagged" | "warning" | "info";
   delta?: {
@@ -26,6 +27,7 @@ export const StatTile: React.FC<StatTileProps> = ({
   label,
   value,
   unit,
+  subtext,
   icon: Icon,
   variant = "default",
   delta,
@@ -36,6 +38,51 @@ export const StatTile: React.FC<StatTileProps> = ({
   onRetry,
   className = "",
 }) => {
+  const prefersReducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const [displayNum, setDisplayNum] = useState<number | null>(
+    typeof value === "number" ? value : null
+  );
+  const prevValueRef = useRef<number | null>(
+    typeof value === "number" ? value : null
+  );
+
+  useEffect(() => {
+    if (typeof value !== "number") {
+      setDisplayNum(null);
+      return;
+    }
+    if (prefersReducedMotion || prevValueRef.current === null) {
+      setDisplayNum(value);
+      prevValueRef.current = value;
+      return;
+    }
+
+    const start = prevValueRef.current;
+    const end = value;
+    if (start === end) return;
+
+    const startTime = performance.now();
+    const duration = 200; // 200ms per Requirement 7
+
+    let frameId: number;
+    const animate = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(1, elapsed / duration);
+      const current = Math.round(start + (end - start) * progress);
+      setDisplayNum(current);
+      if (progress < 1) {
+        frameId = requestAnimationFrame(animate);
+      } else {
+        prevValueRef.current = end;
+      }
+    };
+
+    frameId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frameId);
+  }, [value, prefersReducedMotion]);
   if (isLoading) {
     return (
       <div
@@ -107,12 +154,18 @@ export const StatTile: React.FC<StatTileProps> = ({
             <span
               className={`font-heading text-[28px] font-bold tracking-tight leading-none ${valueColors[variant]}`}
             >
-              {value}
+              {typeof value === "number" ? displayNum : value}
             </span>
             {unit && <span className="text-[13px] font-medium text-muted font-mono">{unit}</span>}
           </>
         )}
       </div>
+
+      {subtext && !isValEmpty && (
+        <div className="mt-1 text-xs font-mono text-muted-strong font-medium">
+          {subtext}
+        </div>
+      )}
 
       {delta && !isValEmpty && (
         <div className="mt-2 text-xs font-mono font-medium flex items-center gap-1">

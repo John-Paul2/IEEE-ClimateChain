@@ -37,24 +37,25 @@ Each item in the `channels` array is an object with:
 | `name` | `string` | Snake-case key used in `packet.values`. Synthetic channels **must** start with `synthetic_`. |
 | `unit` | `string` | Physical unit of measurement (`MW`, `mmBtu`, `short_tons`, `lb`, `pct_vol_dry`, `degC`, `kscfm`, `fraction_0_to_1`). |
 | `source` | `"real" \| "synthetic"` | `"real"` for columns directly from US EPA CAMPD; `"synthetic"` for simulated channels. |
-| `status` | `"TODO_P03_DATA_CARD" \| "DEFINED"` | Real CAMPD channels are marked `"TODO_P03_DATA_CARD"` until the data card is generated in Milestone P03. |
-| `campd_column` | `string \| null` | Exact CSV header in EPA CAMPD (set to `"TODO: ..."` until P03; `null` for synthetic channels). |
+| `status` | `"DEFINED"` | Active and verified in the channel registry (`schemas/channels.json` and `docs/DATA_CARD.md`). |
+| `campd_column` | `string \| null` | Exact CSV header in EPA CAMPD (`null` for synthetic channels). |
 | `description` | `string` | Plain-English explanation of the physical signal and its role. |
 
 ### 1.2 Registered Channels Summary
-| Channel Name | Unit | Source | Status |
-|---|---|---|---|
-| `gross_load_mw` | `MW` | `real` | `TODO_P03_DATA_CARD` |
-| `steam_load_1000_lb_hr` | `1000 lb/hr` | `real` | `TODO_P03_DATA_CARD` |
-| `heat_input_mmbtu` | `mmBtu` | `real` | `TODO_P03_DATA_CARD` |
-| `co2_mass_short_tons` | `short_tons` | `real` | `TODO_P03_DATA_CARD` |
-| `so2_mass_lbs` | `lb` | `real` | `TODO_P03_DATA_CARD` |
-| `nox_mass_lbs` | `lb` | `real` | `TODO_P03_DATA_CARD` |
-| `op_time_fraction` | `fraction_0_to_1` | `real` | `TODO_P03_DATA_CARD` |
-| `synthetic_stack_o2_pct` | `pct_vol_dry` | `synthetic` | `DEFINED` |
-| `synthetic_flue_temp_c` | `degC` | `synthetic` | `DEFINED` |
-| `synthetic_stack_flow_kscfm` | `kscfm` | `synthetic` | `DEFINED` |
-| `synthetic_fuel_flow_mmbtu_indep` | `mmBtu` | `synthetic` | `DEFINED` |
+| Channel Name | Unit | Source | Status | CAMPD Column |
+|---|---|---|---|---|
+| `gross_load_mw` | `MW` | `real` | `DEFINED` | `Gross Load (MW)` |
+| `steam_load_1000_lb_hr` | `1000 lb/hr` | `real` | `DEFINED` | `Steam Load (1000 lb/hr)` |
+| `heat_input_mmbtu` | `mmBtu` | `real` | `DEFINED` | `Heat Input (mmBtu)` |
+| `co2_mass_short_tons` | `short_tons` | `real` | `DEFINED` | `CO2 Mass (short tons)` |
+| `co2_rate_short_tons_mmbtu` | `short_tons/mmBtu` | `real` | `DEFINED` | `CO2 Rate (short tons/mmBtu)` |
+| `so2_mass_lbs` | `lb` | `real` | `DEFINED` | `SO2 Mass (lbs)` |
+| `nox_mass_lbs` | `lb` | `real` | `DEFINED` | `NOx Mass (lbs)` |
+| `op_time_fraction` | `fraction_0_to_1` | `real` | `DEFINED` | `Operating Time` |
+| `synthetic_stack_o2_pct` | `pct_vol_dry` | `synthetic` | `DEFINED` | `null` |
+| `synthetic_flue_temp_c` | `degC` | `synthetic` | `DEFINED` | `null` |
+| `synthetic_stack_flow_kscfm` | `kscfm` | `synthetic` | `DEFINED` | `null` |
+| `synthetic_fuel_flow_mmbtu_indep` | `mmBtu` | `synthetic` | `DEFINED` | `null` |
 
 ---
 

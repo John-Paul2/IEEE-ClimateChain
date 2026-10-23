@@ -203,3 +203,31 @@
 .animate-ticker-marquee:hover {
   animation-play-state: paused;
 }
+
+/* Story Target Spotlight Highlight */
+.story-target-highlight {
+  outline: 3px solid var(--brand, #E5383B) !important;
+  outline-offset: 4px !important;
+  box-shadow: 0 0 0 4px rgba(229, 56, 59, 0.25) !important;
+  position: relative !important;
+  z-index: 35 !important;
+  transition: outline 0.2s ease, box-shadow 0.2s ease;
+}
+
+@keyframes pulse-ring {
+  0%, 100% {
+    transform: scale(0.95);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 0.15;
+  }
+}
+
+.animate-pulse-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pulse-ring 2s ease-in-out infinite;
+}
+

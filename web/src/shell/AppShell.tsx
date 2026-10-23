@@ -4,12 +4,16 @@ import { AlertTriangle, X } from "lucide-react";
 import { TopBar } from "./TopBar.tsx";
 import { EventTicker } from "./EventTicker.tsx";
 import { useData } from "../data/DataContext.tsx";
+import { StorySpotlight } from "../story/StorySpotlight.tsx";
 
 export const AppShell: React.FC = () => {
   const { liveConnectionFailed, clearLiveFailure } = useData();
 
   return (
     <div className="min-h-screen bg-canvas text-ink flex flex-col transition-colors selection:bg-brand selection:text-white max-w-full [overflow-x:clip]">
+      {/* Guided Story Spotlight & Captions */}
+      <StorySpotlight />
+
       {/* Sticky Top Navigation Bar & Event Ticker */}
       <div className="sticky top-0 z-40 w-full shadow-sm">
         <TopBar />

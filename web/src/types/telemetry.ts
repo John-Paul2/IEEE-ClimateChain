@@ -39,6 +39,7 @@ export interface BatchSummary {
   last_seq: number;
   count: number;
   status: BatchStatus;
+  packets?: TelemetryPacket[];
   anchored_at?: number;
   tx_hash?: string;
   anchor_tx_hash?: string;
@@ -122,8 +123,12 @@ export interface ChallengeRecord {
 }
 
 export interface TelemetryEvent {
-  event_id: string;
-  timestamp: string;
+  event_id?: string;
+  id?: number;
+  timestamp?: string;
+  timestamp_utc?: string;
+  device_id?: string;
+  installation_id?: string;
   type:
     | "PACKET_RECORDED"
     | "BATCH_ANCHORED"
@@ -145,6 +150,12 @@ export interface TelemetryEvent {
     | "scenario_reset"
     | string;
   batch_id?: number;
+  seq?: number;
+  values?: Record<string, number | undefined>;
+  prev_hash?: string;
+  hash?: string;
+  packet_hash?: string;
+  signature?: string;
   data: Record<string, unknown>;
 }
 
@@ -160,3 +171,64 @@ export interface PeriodAttestationRecord {
   attested_by: string;
   verified_batch_ids: number[];
 }
+
+export interface ChannelConfig {
+  key: string;
+  label: string;
+  unit: string;
+  source: "REAL" | "SYNTHETIC";
+  color: string;
+  yAxisId: "left" | "right";
+}
+
+export const REGISTERED_CHANNELS: ChannelConfig[] = [
+  {
+    key: "co2_mass_short_tons",
+    label: "CO₂ Mass Flow",
+    unit: "short T/hr",
+    source: "REAL",
+    color: "#2DD4BF",
+    yAxisId: "left",
+  },
+  {
+    key: "gross_load_mw",
+    label: "Gross Generation Load",
+    unit: "MW",
+    source: "REAL",
+    color: "#38BDF8",
+    yAxisId: "right",
+  },
+  {
+    key: "heat_input_mmbtu",
+    label: "Heat Input",
+    unit: "mmBtu/hr",
+    source: "REAL",
+    color: "#A78BFA",
+    yAxisId: "right",
+  },
+  {
+    key: "synthetic_stack_o2_pct",
+    label: "Flue Gas O₂",
+    unit: "% vol dry",
+    source: "SYNTHETIC",
+    color: "#F59E0B",
+    yAxisId: "left",
+  },
+  {
+    key: "synthetic_flue_temp_c",
+    label: "Flue Gas Temp",
+    unit: "°C",
+    source: "SYNTHETIC",
+    color: "#F43F5E",
+    yAxisId: "right",
+  },
+  {
+    key: "synthetic_stack_flow_kscfm",
+    label: "Stack Flow Rate",
+    unit: "kscfm",
+    source: "SYNTHETIC",
+    color: "#34D399",
+    yAxisId: "right",
+  },
+];
+
