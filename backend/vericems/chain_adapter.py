@@ -22,6 +22,7 @@ from pathlib import Path
 import shutil
 import socket
 import subprocess
+import tempfile
 import time
 from typing import Any, Final
 
@@ -1274,6 +1275,7 @@ class AnvilProcess:
     port: int = 8545
     host: str = "127.0.0.1"
     process: subprocess.Popen[str] | None = None
+    log_path: Path | str | None = None
 
     @property
     def rpc_url(self) -> str:
@@ -1286,9 +1288,13 @@ class AnvilProcess:
 
         cmd_bin = _resolve_foundry_binary("anvil")
 
-        anvil_log_path = REPO_ROOT / "data" / "anvil.log"
-        anvil_log_path.parent.mkdir(parents=True, exist_ok=True)
-        self._log_fh = open(anvil_log_path, "a", encoding="utf-8")
+        if self.log_path is not None:
+            actual_log_path = Path(self.log_path)
+            actual_log_path.parent.mkdir(parents=True, exist_ok=True)
+            self._log_fh = open(actual_log_path, "a", encoding="utf-8")
+        else:
+            temp_log_path = Path(tempfile.gettempdir()) / f"anvil_{self.port}.log"
+            self._log_fh = open(temp_log_path, "a", encoding="utf-8")
 
         self.process = subprocess.Popen(
             [cmd_bin, "--host", self.host, "--port", str(self.port), "--accounts", "10", "--balance", "10000"],

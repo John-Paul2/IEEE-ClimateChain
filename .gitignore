@@ -30,9 +30,13 @@ data/processed/
 # Temporary results & test artifacts
 results/tmp/
 test-results/
+scratch/
 *.db
 clean_clone/
 temp_clone/
+
+# Deployments (local anvil is ephemeral)
+deployments/anvil.json
 
 # Node / Web
 node_modules/

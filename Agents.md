@@ -21,6 +21,7 @@ Build only the must-have tier in the guide (Sections 1.3 and 13). Do NOT build: 
 - Determinism: fixed seeds, pinned libraries, CPU-only inference, scores quantized to integer basis points (0..10000), canonical JSON (sorted keys, no whitespace) for hashing.
 - Every module has tests. Run them before saying a task is done, and include the real command output in your report.
 - Small commits after each green milestone with clear messages. Never rewrite history. Never commit .env, keys, keystores, or data files larger than 5 MB.
+- Tests must never modify tracked files.
 - Python: type hints. TypeScript: strict mode. Solidity: NatSpec on public functions, custom errors, no upgradeable proxies.
 - Keep dependencies minimal and maintained.
 - Directory ownership: when working in one area, do not edit another area unless fixing an interface bug, and say so in the report.

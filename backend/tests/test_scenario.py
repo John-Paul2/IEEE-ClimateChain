@@ -28,7 +28,7 @@ DEVICE_ID = "DEV-CAMPD-1073-3"
 
 @pytest.fixture()
 def scenario_env(tmp_path: Path) -> Iterator[ScenarioEngine]:
-    anvil = AnvilProcess(port=find_free_port())
+    anvil = AnvilProcess(port=find_free_port(), log_path=tmp_path / "anvil.log")
     rpc_url = anvil.start()
     try:
         adapter = ChainAdapter(mode="anvil", rpc_url=rpc_url)
