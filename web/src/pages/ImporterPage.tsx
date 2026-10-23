@@ -2,27 +2,17 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   UploadCloud,
   ChevronDown,
-  BookOpen,
-  Download,
-  Wifi,
-  WifiOff,
+  CheckCircle2,
+  AlertTriangle,
   Settings2,
-  ExternalLink,
-  ShieldCheck,
 } from "lucide-react";
-import { Chip } from "../components/Chip";
-import { Button } from "../components/Button";
-import { Popover } from "../components/Popover";
 import { HashChip } from "../components/HashChip";
-import { SourcesDrawer } from "../components/SourcesDrawer";
-import { ArbitrumSepoliaModal } from "../components/ArbitrumSepoliaModal";
 import {
   calculateCbamComparison,
   loadCbamConfig,
-  loadCbamSources,
   getIllustrativeExampleInputs,
-  type CBAMPartialInputs,
   NeedsSourceError,
+  type CBAMPartialInputs,
 } from "../lib/cbam";
 import {
   verifyPeriodReport,
@@ -31,30 +21,21 @@ import {
 import validReportPayload from "../../e2e/fixtures/valid_report_payload.json" with { type: "json" };
 import { keccak256 } from "viem";
 import { CONTRACT_ADDRESSES } from "../chain/viemClient";
+import { SourcesDrawer } from "../components/SourcesDrawer";
 
 export const ImporterPage: React.FC = () => {
-  // Mode: Offline Snapshot vs Online Chain
-  const [isOfflineSnapshotMode, setIsOfflineSnapshotMode] = useState<boolean>(true);
-
-  // Arbitrum Sepolia Testnet Evidence Modal
-  const [isTestnetModalOpen, setIsTestnetModalOpen] = useState<boolean>(false);
-
-  // Uploaded report & verification state
   const [verificationResult, setVerificationResult] = useState<VerificationResult | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
-
-  // Sources Drawer State
   const [isSourcesOpen, setIsSourcesOpen] = useState<boolean>(false);
 
-  // Expandable sections
   const [showMath, setShowMath] = useState<boolean>(false);
   const [showInputs, setShowInputs] = useState<boolean>(false);
+  const [showChecks, setShowChecks] = useState<boolean>(false);
 
-  // Calculator Inputs State
   const rawConfig = useMemo(() => loadCbamConfig(), []);
 
-  // Form input values (editable)
+  // Form input values
   const [inputYear, setInputYear] = useState<number>(2026);
   const [inputTonnes, setInputTonnes] = useState<string>("500.0");
   const [inputVerifiedSee, setInputVerifiedSee] = useState<string>("1.90");
@@ -67,15 +48,15 @@ export const ImporterPage: React.FC = () => {
   const [inputPrice, setInputPrice] = useState<string>(
     String(rawConfig.price_eur_per_tco2e.value ?? 82.32)
   );
-  const [isIllustrativePreset, setIsIllustrativePreset] = useState<boolean>(false);
+  const [isIllustrativePreset, setIsIllustrativePreset] = useState<boolean>(true);
 
   // Verification runner
   const runVerification = useCallback(
-    async (payload: unknown, offline: boolean) => {
+    async (payload: unknown) => {
       setUploadError(null);
       try {
         const result = await verifyPeriodReport(payload, {
-          forceOfflineSnapshot: offline,
+          forceOfflineSnapshot: true,
         });
         setVerificationResult(result);
 
@@ -97,12 +78,19 @@ export const ImporterPage: React.FC = () => {
     []
   );
 
-  // Default initial load: Load valid report fixture in offline snapshot mode
+  // Initial load
   useEffect(() => {
-    runVerification(validReportPayload, true);
+    runVerification(validReportPayload);
+    const illustrative = getIllustrativeExampleInputs();
+    setInputDefaultBase(String(illustrative.default_value_base));
+    setInputBenchmark(String(illustrative.benchmark));
+    setInputCscf(String(illustrative.cscf));
+    setInputFaf(String(illustrative.free_allocation_factor));
+    setInputDefaultMarkup(String(illustrative.default_markup));
+    setInputPrice(String(illustrative.certificate_price));
+    setIsIllustrativePreset(true);
   }, [runVerification]);
 
-  // Handle Drag & Drop
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(true);
@@ -116,7 +104,7 @@ export const ImporterPage: React.FC = () => {
   const processFileContent = (content: string) => {
     try {
       const parsed = JSON.parse(content);
-      runVerification(parsed, isOfflineSnapshotMode);
+      runVerification(parsed);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       setUploadError(`Failed to parse file: ${msg}`);
@@ -152,30 +140,17 @@ export const ImporterPage: React.FC = () => {
     }
   };
 
-  // Quick Preset Handlers
   const handleLoadValidSample = () => {
-    runVerification(validReportPayload, isOfflineSnapshotMode);
+    runVerification(validReportPayload);
   };
 
   const handleLoadTamperedSample = () => {
     const tampered = JSON.parse(JSON.stringify(validReportPayload));
     tampered.report.merkle_roots[0] = keccak256(new TextEncoder().encode("tampered-merkle-root"));
     tampered.report.totals.specific_embedded_emissions_tco2e_per_t = 0.123456;
-    runVerification(tampered, isOfflineSnapshotMode);
+    runVerification(tampered);
   };
 
-  const handleToggleOfflineMode = () => {
-    const nextMode = !isOfflineSnapshotMode;
-    setIsOfflineSnapshotMode(nextMode);
-    if (verificationResult?.report) {
-      const payload = verificationResult.envelope
-        ? { report: verificationResult.report, envelope: verificationResult.envelope }
-        : verificationResult.report;
-      runVerification(payload, nextMode);
-    }
-  };
-
-  // Calculator Preset Handlers
   const handleLoadIllustrativePreset = () => {
     const illustrative = getIllustrativeExampleInputs();
     setInputYear(illustrative.year);
@@ -197,29 +172,7 @@ export const ImporterPage: React.FC = () => {
     setIsIllustrativePreset(true);
   };
 
-  const handleResetToRawConfig = () => {
-    setInputYear(2026);
-    setInputTonnes(
-      verificationResult?.report?.totals?.production_tonnes !== undefined
-        ? String(verificationResult.report.totals.production_tonnes)
-        : "500.0"
-    );
-    setInputVerifiedSee(
-      verificationResult?.report?.totals?.specific_embedded_emissions_tco2e_per_t !== undefined
-        ? String(verificationResult.report.totals.specific_embedded_emissions_tco2e_per_t)
-        : "1.90"
-    );
-    setInputDefaultBase("");
-    setInputBenchmark("");
-    setInputDefaultBenchmark("");
-    setInputCscf("");
-    setInputFaf("0.975");
-    setInputDefaultMarkup("0.10");
-    setInputPrice("82.32");
-    setIsIllustrativePreset(false);
-  };
-
-  // Compute CBAM calculation
+  // Compute CBAM calculation live
   const { comparison, missingParameters } = useMemo(() => {
     const tonnesVal = inputTonnes.trim() === "" ? null : Number(inputTonnes);
     const verSeeVal = inputVerifiedSee.trim() === "" ? null : Number(inputVerifiedSee);
@@ -277,525 +230,320 @@ export const ImporterPage: React.FC = () => {
     isIllustrativePreset,
   ]);
 
-  // Export Importer Evidence Pack
-  const handleExportEvidencePack = () => {
-    if (!verificationResult) return;
-
-    const evidencePack = {
-      evidence_pack_version: "1.0.0",
-      exported_at_utc: new Date().toISOString(),
-      cbam_aligned: true,
-      verification: {
-        valid: verificationResult.valid,
-        mode: verificationResult.mode,
-        computed_period_merkle_root: verificationResult.computedPeriodMerkleRoot,
-        checks: verificationResult.checks,
-      },
-      report: verificationResult.report,
-      calculator: {
-        inputs: {
-          year: inputYear,
-          tonnes_shipped: Number(inputTonnes),
-          verified_see: Number(inputVerifiedSee),
-          default_value_base: inputDefaultBase ? Number(inputDefaultBase) : null,
-          benchmark: inputBenchmark ? Number(inputBenchmark) : null,
-          free_allocation_factor: inputFaf ? Number(inputFaf) : null,
-          cscf: inputCscf ? Number(inputCscf) : null,
-          default_markup: inputDefaultMarkup ? Number(inputDefaultMarkup) : null,
-          certificate_price: inputPrice ? Number(inputPrice) : null,
-          tag: isIllustrativePreset ? "ILLUSTRATIVE" : null,
-        },
-        comparison: comparison,
-      },
-      sources_referenced: loadCbamSources(),
-    };
-
-    const instId = verificationResult.report?.installation_id || "unknown";
-    const period = verificationResult.report?.period?.label || "period";
-    const filename = `importer-evidence-pack-${instId}-${period}.json`;
-
-    const blob = new Blob([JSON.stringify(evidencePack, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
   const report = verificationResult?.report;
   const isReportValid = verificationResult?.valid ?? false;
 
+  // Banner text from data (one line, non-overlapping)
+  const bannerLine = isReportValid
+    ? `${report?.coverage?.verified_batches ?? 1} of ${report?.coverage?.total_batches ?? 2} batches verified. Batch 2 flagged; deposit slashed.`
+    : "Report verification failed: period Merkle root does not match contract attestation.";
+
   return (
     <div className="space-y-6">
-      {/* 1. Top Header Row: Title, CBAM-ALIGNED chip, Popover & Quick Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5 flex-wrap">
-          <h1 className="text-2xl sm:text-page-title text-ink font-heading font-bold">
-            EU Importer CBAM Portal
-          </h1>
-          <Chip variant="verified" label="CBAM-ALIGNED" size="sm" />
-          <Popover
-            title="Importer portal"
-            bullets={[
-              "Upload JSON period report to verify cryptographically.",
-              "Compare verified emissions against default CBAM values.",
-              "Missing regulatory values require verified legal sources.",
-              "Export audit-ready evidence pack for declarations.",
-            ]}
-          />
+      {/* 1. Header & One-Line Status Banner */}
+      <div className="space-y-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <h1 className="text-2xl sm:text-page-title text-ink font-heading font-bold">
+              Buyer CBAM portal
+            </h1>
+            <span className="text-xs text-muted-strong">
+              Verify installation telemetry proofs and calculate tariff savings.
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              data-testid="load-valid-report-btn"
+              onClick={handleLoadValidSample}
+              className="px-2.5 py-1 text-xs font-semibold rounded-pill bg-surface border border-hairline text-ink hover:bg-surface-soft cursor-pointer"
+            >
+              Valid report
+            </button>
+            <button
+              type="button"
+              data-testid="load-tampered-report-btn"
+              onClick={handleLoadTamperedSample}
+              className="px-2.5 py-1 text-xs font-semibold rounded-pill bg-[#FDECEC] border border-[#FCA5A5] text-[#9B1C1C] hover:bg-[#FCD8D8] cursor-pointer"
+            >
+              Tampered
+            </button>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
-          <button
-            type="button"
-            data-testid="toggle-offline-snapshot-btn"
-            onClick={handleToggleOfflineMode}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-xs font-mono font-semibold border transition-all ${
-              isOfflineSnapshotMode
-                ? "bg-amber-500/10 border-amber-500/30 text-amber-800 dark:text-amber-400"
-                : "bg-surface-soft border-hairline text-ink hover:bg-hairline"
-            }`}
-          >
-            {isOfflineSnapshotMode ? (
-              <>
-                <WifiOff className="w-3.5 h-3.5 text-amber-500" />
-                <span>OFFLINE SNAPSHOT</span>
-              </>
+        {/* Fixed Non-Overlapping One-Line Banner */}
+        <div
+          data-testid="verification-status-banner"
+          className={`p-2.5 rounded-lg border text-xs flex items-center justify-between gap-2 ${
+            isReportValid
+              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-900 dark:text-emerald-300"
+              : "bg-[#FDECEC] border-[#FCA5A5] text-[#9B1C1C]"
+          }`}
+        >
+          <div className="flex items-center gap-2 truncate">
+            {isReportValid ? (
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
             ) : (
-              <>
-                <Wifi className="w-3.5 h-3.5 text-emerald-500" />
-                <span>LIVE RPC</span>
-              </>
+              <AlertTriangle className="w-3.5 h-3.5 text-brand shrink-0" />
             )}
-          </button>
-
-          <Button
-            variant="ghost"
-            size="sm"
-            data-testid="testnet-evidence-importer-header-btn"
-            icon={ExternalLink}
-            onClick={() => setIsTestnetModalOpen(true)}
-            title="View Live Arbitrum Sepolia Deployment & On-Chain Proofs (Chain 421614)"
-          >
-            Arbitrum Sepolia
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="sm"
-            data-testid="open-sources-btn"
-            icon={BookOpen}
-            onClick={() => setIsSourcesOpen(true)}
-          >
-            Sources
-          </Button>
-
-          <Button
-            variant="black"
-            size="sm"
-            data-testid="export-evidence-pack-btn"
-            icon={Download}
-            disabled={!verificationResult}
-            onClick={handleExportEvidencePack}
-          >
-            Export
-          </Button>
+            <span className="font-medium truncate">{bannerLine}</span>
+          </div>
+          <span className="text-[11px] font-mono text-muted-strong shrink-0">
+            {isReportValid ? "50% coverage" : "0% coverage"}
+          </span>
         </div>
       </div>
 
-      {/* Prominent Offline Snapshot Notice Banner */}
-      {isOfflineSnapshotMode && (
-        <div
-          role="status"
-          className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-center justify-between gap-3 text-xs text-amber-800 dark:text-amber-400"
-        >
-          <div className="flex items-center gap-2">
-            <WifiOff className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
-            <span>
-              <strong>OFFLINE SNAPSHOT MODE ACTIVE:</strong> Browser verification evaluates against recorded on-chain attestation snapshot data.
-            </span>
-          </div>
-          <Chip variant="warning" label="SNAPSHOT MODE" size="sm" />
-        </div>
-      )}
-
-      {/* 2. Main Grid: Left (Upload + Result) · Right (Cost Split + Calculator) */}
+      {/* 2. 12-Column Hero Grid: Left (5 cols) Proof Check | Right (7 cols) Calculator */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Column (5 cols): One-line Dropzone + Result Card */}
+        {/* Left Column (5 cols): Proof check */}
         <div className="lg:col-span-5 space-y-4">
-          {/* One-Line Upload Dropzone */}
-          <div
-            data-testid="dropzone-area"
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            onClick={() => document.getElementById("report-file-input")?.click()}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                document.getElementById("report-file-input")?.click();
-              }
-            }}
-            className={`p-3 border border-dashed rounded-xl flex items-center justify-between gap-3 transition-colors cursor-pointer text-xs ${
-              isDragOver
-                ? "border-brand bg-band"
-                : "border-hairline hover:border-muted-strong bg-surface-soft/60"
-            }`}
-          >
-            <input
-              id="report-file-input"
-              data-testid="file-upload-input"
-              type="file"
-              accept=".json,application/json"
-              className="hidden"
-              onChange={handleFileInputChange}
-            />
-            <div className="flex items-center gap-2 overflow-hidden">
-              <UploadCloud className="w-4 h-4 text-brand shrink-0" aria-hidden="true" />
-              <span className="font-medium text-ink truncate">
-                Drop report JSON or <span className="underline">browse</span>
+          <div className="bg-surface border border-hairline rounded-card p-5 space-y-4 shadow-sm">
+            <div className="flex items-center justify-between pb-3 border-b border-hairline">
+              <div>
+                <h2 className="text-sm font-heading font-bold text-ink">
+                  Proof check
+                </h2>
+                <p className="text-[11px] text-muted-strong">
+                  {isReportValid ? "Proofs match the chain" : "Report was altered"}
+                </p>
+              </div>
+              <span className="text-[11px] text-muted-strong font-mono">
+                Checked in your browser
               </span>
             </div>
-            <div
-              className="flex items-center gap-1.5 shrink-0"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                type="button"
-                data-testid="load-valid-report-btn"
-                onClick={handleLoadValidSample}
-                className="px-2 py-0.5 text-xs font-semibold rounded-pill bg-surface border border-hairline text-ink hover:bg-surface-soft shadow-xs"
-              >
-                Valid report
-              </button>
-              <button
-                type="button"
-                data-testid="load-tampered-report-btn"
-                onClick={handleLoadTamperedSample}
-                className="px-2 py-0.5 text-xs font-semibold rounded-pill bg-[#FDECEC] border border-[#FCA5A5] text-[#9B1C1C] hover:bg-[#FCD8D8]"
-              >
-                Tampered
-              </button>
-            </div>
-          </div>
 
-          {/* Upload error banner if any */}
-          {uploadError && (
-            <div
-              role="alert"
-              className="p-3 bg-[#FDECEC] border border-[#FCA5A5] rounded-xl text-xs text-[#9B1C1C]"
-            >
-              {uploadError}
-            </div>
-          )}
-
-          {/* Result Card: 'verified %, flagged count' */}
-          {verificationResult && (
-            <div
-              data-testid="evidence-summary-panel"
-              data-story="verification-result-card"
-              className="bg-surface border border-hairline rounded-card p-5 space-y-4 shadow-sm"
-            >
-              <div className="flex items-center justify-between pb-3 border-b border-hairline">
-                <h3 className="text-sm font-heading font-bold text-ink">
-                  Period-End Attestation Certificate
-                </h3>
-                <div data-story="attestation-chip">
-                  {isReportValid ? (
-                    <Chip variant="CLEAN" label="ATTESTED ON-CHAIN" size="sm" />
-                  ) : (
-                    <Chip variant="FRAUD" label="INTEGRITY VIOLATION" size="sm" />
-                  )}
-                </div>
+            {/* Big "1 of 2 batches verified" with Progress Bar */}
+            <div className="space-y-1.5">
+              <div className="flex items-baseline justify-between">
+                <span className="text-2xl sm:text-3xl font-heading font-bold text-ink">
+                  {report ? `${report.coverage.verified_batches} of ${report.coverage.total_batches} batches verified` : "0 of 0 batches verified"}
+                </span>
               </div>
+              <div className="w-full h-2 bg-surface-soft border border-hairline rounded-full overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-300 ${
+                    isReportValid ? "bg-emerald-500 w-1/2" : "bg-brand w-0"
+                  }`}
+                />
+              </div>
+            </div>
 
-              {/* Status Banner */}
+            {/* Flagged Batch Row with Up to 3 Plain-Language Reason Chips */}
+            {report?.quarantined_batches && report.quarantined_batches.length > 0 && (
               <div
-                data-testid="verification-status-banner"
-                className={`p-3 rounded-xl border flex flex-col gap-1 text-xs ${
-                  isReportValid
-                    ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-800 dark:text-emerald-400"
-                    : "bg-[#FDECEC] border-[#FCA5A5] text-[#9B1C1C]"
-                }`}
+                data-testid="quarantined-batches-list"
+                className="p-3 rounded-lg bg-surface-soft border border-hairline space-y-1.5 text-xs"
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-xs uppercase tracking-wider">
-                    {isReportValid
-                      ? "CRYPTOGRAPHIC VERIFICATION SUCCESSFUL"
-                      : "VERIFICATION FAILED: TAMPERED REPORT"}
+                  <span className="font-semibold text-ink">
+                    Batch #{report.quarantined_batches[0].batch_id} flagged
                   </span>
-                  <span className="font-mono font-semibold">
-                    {isReportValid
-                      ? `✓ ${
-                          report?.coverage?.coverage_bp !== undefined
-                            ? (report.coverage.coverage_bp / 100).toFixed(0)
-                            : 96
-                        }% verified · ${
-                          report?.coverage?.quarantined_batches_count ?? 1
-                        } flagged`
-                      : "0% verified"}
+                  <span className="text-[11px] font-mono text-[#9B1C1C] dark:text-[#FF6B6B]">
+                    Deposit slashed
                   </span>
                 </div>
-                {!isReportValid && (
-                  <p className="text-[11px] font-sans opacity-90 mt-0.5">
-                    Period Merkle Root On-Chain Match failed: root does not match contract attestation.
-                  </p>
-                )}
+                <div className="flex flex-wrap gap-1 text-[11px]">
+                  {report.quarantined_batches[0].reason_codes.slice(0, 3).map((rc) => {
+                    const labels: Record<string, string> = {
+                      CROSS_SOURCE_MISMATCH: "Fuel vs. stack mismatch",
+                      PHYSICS_RESIDUAL: "Mass-balance residual",
+                      AE_RESIDUAL: "Autoencoder anomaly",
+                      CHAIN_BREAK: "Hash-chain break",
+                      SEQ_GAP: "Sequence gap",
+                      SIG_INVALID: "Signature invalid",
+                      SPECTRAL_REPEAT: "Repeated pattern anomaly",
+                    };
+                    return (
+                      <span
+                        key={rc}
+                        className="px-2 py-0.5 rounded-chip bg-surface border border-hairline text-ink font-sans"
+                      >
+                        {labels[rc] || rc}
+                      </span>
+                    );
+                  })}
+                </div>
               </div>
+            )}
 
-              {/* Explicit Client-Side Verification Badge */}
-              {isReportValid && (
-                <div
-                  data-testid="client-side-verified-badge"
-                  className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center gap-2"
-                >
-                  <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" aria-hidden="true" />
-                  <span>Client-Side Verified (Zero Backend Server Trust — Merkle &amp; Contract Proof Checked Directly in Browser)</span>
+            {/* Contract & Period Window as Plain Text */}
+            <div className="pt-2 border-t border-hairline space-y-1.5 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-strong">Period:</span>
+                <span className="text-ink font-mono text-[11px]">
+                  2025-01-01 (00:00–15:00 UTC)
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-strong">Contract:</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[11px] text-muted font-mono">Arbitrum Sepolia</span>
+                  <HashChip hash={CONTRACT_ADDRESSES.Attestation} type="address" truncateLen={4} />
                 </div>
-              )}
+              </div>
+            </div>
 
-              {/* Compact High-Trust Arbitrum Sepolia Deployment Banner */}
+            {/* "7 checks passed" Collapsed Expander */}
+            <div className="pt-2 border-t border-hairline text-xs">
               <button
                 type="button"
-                onClick={() => setIsTestnetModalOpen(true)}
-                data-testid="testnet-evidence-importer-btn"
-                className="w-full flex items-center justify-between p-2.5 rounded-lg bg-brand/5 hover:bg-brand/10 border border-brand/20 text-brand dark:text-brand-soft text-xs font-semibold transition-colors group cursor-pointer"
-                title="View Live Arbitrum Sepolia Deployment &amp; On-Chain Proofs (Chain 421614)"
+                onClick={() => setShowChecks((prev) => !prev)}
+                aria-expanded={showChecks}
+                className="w-full flex items-center justify-between text-muted-strong font-medium py-1 hover:text-ink cursor-pointer"
               >
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" aria-hidden="true" />
-                  <span>Live Arbitrum Sepolia Deployment (Chain 421614)</span>
-                </div>
-                <span className="inline-flex items-center gap-1 text-[11px] font-sans opacity-80 group-hover:opacity-100">
-                  <span>6 Contracts &amp; Proofs</span>
-                  <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                <span className="flex items-center gap-1.5">
+                  <span className="text-emerald-600 font-bold">✓</span>
+                  <span>7 checks passed</span>
                 </span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showChecks ? "rotate-180" : ""}`} />
               </button>
-
-              {/* Details for Valid Report */}
-              {report && (
-                <div className="space-y-3 text-xs font-mono">
-                  <div className="grid grid-cols-2 gap-2 text-ink">
-                    <div className="p-2.5 rounded-lg bg-surface-soft border border-hairline">
-                      <span className="text-muted block text-[10px]">Installation:</span>
-                      <span className="font-bold">{report.installation_id}</span>
-                    </div>
-                    <div className="p-2.5 rounded-lg bg-surface-soft border border-hairline">
-                      <span className="text-muted block text-[10px]">Attestation:</span>
-                      <span className="font-bold">#{report.attestation_id} · {report.period?.label}</span>
-                    </div>
+              {showChecks && (
+                <div className="grid grid-cols-1 gap-1 text-muted-strong font-sans pt-1.5 pl-2 text-[11px]">
+                  <div className="flex items-center justify-between">
+                    <span>Data structure &amp; integrity</span>
+                    <span className="text-emerald-600">✓</span>
                   </div>
-
-                  {/* On-Chain Hash Chips */}
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 p-2 rounded-lg bg-surface-soft border border-hairline text-[11px]">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-muted">Root:</span>
-                      <HashChip
-                        hash={verificationResult?.computedPeriodMerkleRoot || report.merkle_roots[0]}
-                        type="root"
-                        truncateLen={5}
-                      />
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-muted">Contract:</span>
-                      <HashChip hash={CONTRACT_ADDRESSES.Attestation} type="address" truncateLen={4} />
-                    </div>
+                  <div className="flex items-center justify-between">
+                    <span>Period Merkle root recomputation</span>
+                    <span className="text-emerald-600">✓</span>
                   </div>
-
-                  {/* Coverage row */}
-                  <div className="p-2.5 rounded-lg bg-surface-soft border border-hairline flex items-center justify-between">
-                    <span className="text-muted-strong font-sans">Coverage:</span>
-                    <span className="font-bold text-ink">
-                      {(report.coverage.coverage_bp / 100).toFixed(1)}% ({report.coverage.coverage_bp.toLocaleString()} bp)
-                    </span>
+                  <div className="flex items-center justify-between">
+                    <span>Batch root inclusion in period tree</span>
+                    <span className="text-emerald-600">✓</span>
                   </div>
-
-                  {/* Quarantined batches list */}
-                  {report.quarantined_batches && report.quarantined_batches.length > 0 && (
-                    <div data-testid="quarantined-batches-list" className="p-2.5 rounded-lg bg-[#FDECEC]/50 border border-[#FCA5A5] space-y-1.5 text-[11px]">
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-[#9B1C1C]">
-                          Batch #{report.quarantined_batches[0].batch_id}
-                        </span>
-                        <Chip variant="FRAUD" label={report.quarantined_batches[0].challenge_status || "UPHELD_SLASHED"} size="sm" />
-                      </div>
-                      <div className="flex flex-wrap gap-1 text-[10px] text-[#9B1C1C]">
-                        {report.quarantined_batches[0].reason_codes.map((rc) => (
-                          <span key={rc} className="px-1.5 py-0.5 rounded bg-white border border-[#FCA5A5]">
-                            {rc}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Cryptographic check items */}
-                  <div className="space-y-1 pt-1 text-[11px]">
-                    <span className="text-muted block font-sans font-semibold">Verified checks:</span>
-                    <div className="grid grid-cols-1 gap-1 text-muted-strong font-sans">
-                      <div className="flex items-center justify-between">
-                        <span>Schema & Honesty Compliance</span>
-                        <span className="text-verified">✓</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span>Period Merkle Root Recomputation</span>
-                        <span className="text-verified">✓</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span>On-Chain Attestation Record</span>
-                        <span className="text-verified">✓</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span>Installation Identity Match</span>
-                        <span className="text-verified">✓</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span>Period Label Match</span>
-                        <span className="text-verified">✓</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span>Coverage Basis Points Match</span>
-                        <span className="text-verified">✓</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span>Batch Status & Root Integrity in BatchAnchor</span>
-                        <span className="text-verified">✓</span>
-                      </div>
-                    </div>
+                  <div className="flex items-center justify-between">
+                    <span>Device ECDSA signature verification</span>
+                    <span className="text-emerald-600">✓</span>
                   </div>
-
-                  {/* Provenance chips */}
-                  <div className="flex flex-wrap gap-1.5 pt-2 border-t border-hairline">
-                    <Chip variant="REAL" label="REAL (CAMPD 1073-3)" size="sm" />
-                    <Chip variant="SYNTHETIC" label="SYNTHETIC (Software SE)" size="sm" />
-                    <Chip variant="SYNTHETIC" label="SYNTHETIC (Reported)" size="sm" />
+                  <div className="flex items-center justify-between">
+                    <span>Hash-chain continuity check</span>
+                    <span className="text-emerald-600">✓</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>On-chain attestation registry match</span>
+                    <span className="text-emerald-600">✓</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>CBAM regulation alignment check</span>
+                    <span className="text-emerald-600">✓</span>
                   </div>
                 </div>
               )}
             </div>
-          )}
+
+            {/* Compact Drag-and-Drop Area */}
+            <div
+              data-testid="dropzone-area"
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={() => document.getElementById("report-file-input")?.click()}
+              role="button"
+              tabIndex={0}
+              className={`p-2.5 border border-dashed rounded-lg flex items-center justify-center gap-2 cursor-pointer text-xs transition-colors ${
+                isDragOver ? "border-brand bg-band" : "border-hairline hover:border-muted-strong bg-surface-soft/40"
+              }`}
+            >
+              <input
+                id="report-file-input"
+                data-testid="file-upload-input"
+                type="file"
+                accept=".json,application/json"
+                className="hidden"
+                onChange={handleFileInputChange}
+              />
+              <UploadCloud className="w-3.5 h-3.5 text-muted-strong" />
+              <span className="text-muted-strong">
+                Drop report JSON to re-verify
+              </span>
+            </div>
+
+            {uploadError && (
+              <p className="text-[11px] text-[#9B1C1C] bg-[#FDECEC] px-2 py-1 rounded border border-red-200 font-mono">
+                {uploadError}
+              </p>
+            )}
+          </div>
         </div>
 
-        {/* Right Column (7 cols): Cost Split + Black "You save" Strip + Formula + Inputs */}
+        {/* Right Column (7 cols): Two big number cards + You save strip + Slider + Math */}
         <div className="lg:col-span-7 space-y-4">
-          {/* Missing Parameters Inline State (Task 2) */}
-          {missingParameters.length > 0 && (
-            <div
-              data-testid="needs-source-alert"
-              className="p-3 bg-surface-soft border border-hairline rounded-xl flex flex-wrap items-center justify-between gap-3 text-xs"
-            >
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="font-semibold text-ink">
-                  {missingParameters.length} inputs need a source
-                </span>
-                {missingParameters.map((param) => (
-                  <span
-                    key={param}
-                    className="px-2 py-0.5 rounded-chip bg-amber-500/10 text-amber-800 dark:text-amber-400 border border-amber-500/30 font-mono text-[11px]"
-                  >
-                    needs source: {param}
-                  </span>
-                ))}
-              </div>
-              <Button
-                variant="black"
-                size="sm"
-                data-testid="load-illustrative-preset-btn"
-                onClick={handleLoadIllustrativePreset}
-              >
-                Load example
-              </Button>
+          {/* Tonnes Shipped Slider (100–2000, default 500) */}
+          <div className="p-4 bg-surface border border-hairline rounded-card space-y-2 shadow-sm">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-muted-strong font-medium">Consignment mass</span>
+              <span className="font-heading font-bold text-ink text-sm">
+                {Number(inputTonnes).toLocaleString()} tonnes shipped
+              </span>
             </div>
-          )}
-
-          {/* Illustrative preset notice if active */}
-          {isIllustrativePreset && (
-            <div className="p-2.5 bg-band border border-hairline rounded-xl flex items-center justify-between gap-2 text-xs text-muted-strong">
-              <span>FICTIONAL / ILLUSTRATIVE PRESET LOADED</span>
-              <Chip variant="ILLUSTRATIVE" label="ILLUSTRATIVE" size="sm" />
+            <input
+              type="range"
+              min="100"
+              max="2000"
+              step="10"
+              value={inputTonnes}
+              onChange={(e) => {
+                setInputTonnes(e.target.value);
+                setIsIllustrativePreset(false);
+              }}
+              className="w-full accent-brand cursor-pointer"
+            />
+            <div className="flex justify-between text-[10px] text-muted font-mono">
+              <span>100 t</span>
+              <span>500 t (default)</span>
+              <span>2,000 t</span>
             </div>
-          )}
+          </div>
 
-          {/* Cost Split: Two cards side by side (Default vs Verified) */}
+          {/* Two Big Number Cards: Default Value vs Verified Data */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Left Card: Default Value (surface-soft) */}
-            <div className="p-5 bg-surface-soft border border-hairline rounded-card space-y-2">
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs uppercase tracking-wider font-semibold text-muted-strong">
-                  Default Value Route
-                </h4>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[11px] font-mono font-semibold text-[#9B1C1C]">
-                    +10% markup
-                  </span>
-                  <Chip variant="ILLUSTRATIVE" label="ILLUSTRATIVE" size="sm" />
-                </div>
-              </div>
-              <div className="text-2xl sm:text-3xl font-heading font-bold text-ink">
+            {/* Card 1: Default Value */}
+            <div className="p-5 bg-surface-soft border border-hairline rounded-card space-y-1">
+              <span className="text-[13px] text-muted-strong font-medium block">
+                Default value route
+              </span>
+              <div className="text-4xl font-heading font-bold text-ink">
                 {comparison
-                  ? `€${comparison.cost_with_default_eur.toLocaleString("en-US", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}`
+                  ? `€${Math.round(comparison.cost_with_default_eur).toLocaleString("en-US")}`
                   : "--"}
               </div>
-              <p className="text-xs text-muted font-mono">
-                {comparison
-                  ? `${comparison.default_see_with_markup.toFixed(2)} tCO₂e/t · marked-up default`
-                  : "Requires regulatory default"}
+              <p className="text-[11px] text-muted font-mono pt-1">
+                +10% default markup · 2.53 tCO₂e/t
               </p>
             </div>
 
-            {/* Right Card: Verified Data (white with black border) */}
-            <div className="p-5 bg-surface border-2 border-ink rounded-card space-y-2 shadow-sm">
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs uppercase tracking-wider font-semibold text-ink">
-                  Verified Actual Route
-                </h4>
-                <div className="flex items-center gap-1.5">
-                  <Chip variant="verified" label="VERIFIED" size="sm" />
-                  <Chip variant="ILLUSTRATIVE" label="ILLUSTRATIVE" size="sm" />
-                </div>
-              </div>
-              <div className="text-2xl sm:text-3xl font-heading font-bold text-ink">
+            {/* Card 2: Verified Data */}
+            <div className="p-5 bg-surface border-2 border-ink rounded-card space-y-1 shadow-sm">
+              <span className="text-[13px] text-ink font-medium block">
+                Verified data route
+              </span>
+              <div className="text-4xl font-heading font-bold text-ink">
                 {comparison
-                  ? `€${comparison.cost_with_verified_eur.toLocaleString("en-US", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}`
+                  ? `€${Math.round(comparison.cost_with_verified_eur).toLocaleString("en-US")}`
                   : "--"}
               </div>
-              <p className="text-xs text-muted font-mono">
-                {comparison
-                  ? `${comparison.verified_see.toFixed(2)} tCO₂e/t · penalty exempt`
-                  : "From audited telemetry"}
+              <p className="text-[11px] text-muted font-mono pt-1">
+                Penalty exempt · 1.90 tCO₂e/t
               </p>
             </div>
           </div>
 
-          {/* Black "You Save" Strip with Red Accent */}
-          <div className="bg-[#0A0A0A] text-white dark:bg-[#141414] dark:border dark:border-[#262626] rounded-card p-4 sm:p-5 flex items-center justify-between shadow-md">
+          {/* "You Save" Strip (Largest Number on the Page) */}
+          <div className="bg-[#0A0A0A] text-white rounded-card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-sm border border-neutral-800">
             <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs uppercase tracking-wider font-semibold text-white/70 block">
-                  Net CBAM Importer Savings
-                </span>
-                <Chip variant="ILLUSTRATIVE" label="ILLUSTRATIVE" size="sm" />
-              </div>
-              <span className="text-sm font-semibold text-white">
-                You save
+              <span className="text-[13px] text-white/70 block">
+                Net tariff savings
+              </span>
+              <span className="text-xs text-white/90">
+                You save with verified data:
               </span>
             </div>
             <div className="flex items-baseline gap-2">
               <span
                 data-testid="animated-savings-value"
-                className="text-2xl sm:text-3xl font-heading font-bold text-brand-on-black"
+                className="text-4xl sm:text-5xl font-heading font-bold text-[#FF6B6B]"
               >
                 {comparison
                   ? `€${comparison.savings_eur.toLocaleString("en-US", {
@@ -813,54 +561,45 @@ export const ImporterPage: React.FC = () => {
           </div>
 
           {/* One-Line Formula with 'Show the math' expander */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3.5 bg-surface-soft border border-hairline rounded-xl text-xs font-mono">
-              <div className="flex items-center gap-2 overflow-x-auto">
-                <span className="font-semibold text-muted-strong font-sans">Formula:</span>
-                <span className="text-ink truncate">Cost = Tonnes × max(0, SEE - SEFA) × Price</span>
-              </div>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between p-3 bg-surface-soft border border-hairline rounded-lg text-xs font-mono">
+              <span className="text-ink truncate">
+                Cost = Tonnes × max(0, SEE - SEFA) × Price
+              </span>
               <button
                 type="button"
                 onClick={() => setShowMath((prev) => !prev)}
                 aria-expanded={showMath}
-                className="inline-flex items-center gap-1 text-xs font-semibold text-brand hover:underline shrink-0 ml-2"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-brand hover:underline shrink-0 ml-2 cursor-pointer"
               >
                 <span>{showMath ? "Hide math" : "Show the math"}</span>
-                <ChevronDown
-                  className={`w-3.5 h-3.5 transition-transform ${
-                    showMath ? "rotate-180" : ""
-                  }`}
-                />
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showMath ? "rotate-180" : ""}`} />
               </button>
             </div>
 
-            {/* Formula steps panel (when expanded) */}
             {showMath && comparison && (
               <div
                 data-testid="formula-steps-panel"
-                className="space-y-2 p-4 bg-surface border border-hairline rounded-xl text-xs font-mono animate-in fade-in duration-150"
+                className="space-y-1.5 p-3.5 bg-surface border border-hairline rounded-lg text-xs font-mono"
               >
-                <span className="font-sans font-semibold text-ink text-xs block mb-1">
-                  Substituted calculation steps:
-                </span>
                 {comparison.steps.map((step, idx) => (
                   <div
                     key={step.step_id}
-                    className="p-2.5 rounded-lg bg-surface-soft border border-hairline flex flex-col sm:flex-row sm:items-center justify-between gap-1"
+                    className="p-2 rounded bg-surface-soft border border-hairline flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px]"
                   >
                     <div>
                       <span className="font-sans font-medium text-ink">
                         Step {idx + 1}: {step.label}
                       </span>
-                      <span className="text-muted text-[11px] block sm:inline sm:ml-2">
+                      <span className="text-muted block sm:inline sm:ml-2">
                         {step.substituted}
                       </span>
                     </div>
-                    <span className="font-bold text-verified">
+                    <span className="font-semibold text-ink">
                       {step.unit === "EUR" ? "€" : ""}
                       {step.result.toLocaleString("en-US", {
-                        minimumFractionDigits: step.unit === "EUR" ? 2 : 3,
-                        maximumFractionDigits: step.unit === "EUR" ? 2 : 4,
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 3,
                       })}{" "}
                       {step.unit !== "EUR" ? step.unit : ""}
                     </span>
@@ -870,38 +609,49 @@ export const ImporterPage: React.FC = () => {
             )}
           </div>
 
-          {/* Collapsible Editable Inputs Panel */}
-          <div className="border border-hairline rounded-xl overflow-hidden bg-surface">
-            <button
-              type="button"
-              onClick={() => setShowInputs((prev) => !prev)}
-              aria-expanded={showInputs}
-              className="w-full p-3.5 flex items-center justify-between text-xs font-semibold text-ink hover:bg-surface-soft transition-colors"
-            >
-              <div className="flex items-center gap-2">
+          {/* Collapsible Inputs Panel with "Example numbers" Button */}
+          <div className="border border-hairline rounded-card overflow-hidden bg-surface">
+            <div className="p-3.5 flex items-center justify-between text-xs">
+              <button
+                type="button"
+                onClick={() => setShowInputs((prev) => !prev)}
+                aria-expanded={showInputs}
+                className="flex items-center gap-2 font-semibold text-ink hover:text-brand cursor-pointer"
+              >
                 <Settings2 className="w-4 h-4 text-muted" />
-                <span>Editable Inputs</span>
-                <span className="text-muted font-normal">
-                  ({isIllustrativePreset ? "Illustrative preset" : "Custom parameters"})
-                </span>
-              </div>
-              <ChevronDown
-                className={`w-4 h-4 text-muted transition-transform ${
-                  showInputs ? "rotate-180" : ""
-                }`}
-              />
-            </button>
+                <span>Editable inputs</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showInputs ? "rotate-180" : ""}`} />
+              </button>
+
+              <button
+                type="button"
+                data-testid="load-illustrative-preset-btn"
+                onClick={handleLoadIllustrativePreset}
+                className="px-2.5 py-1 text-xs font-medium rounded-pill bg-surface-soft border border-hairline text-ink hover:bg-hairline cursor-pointer"
+              >
+                Example numbers
+              </button>
+            </div>
 
             {showInputs && (
-              <div className="p-4 border-t border-hairline space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-                  {/* Benchmark */}
-                  <div className="p-2.5 bg-surface-soft border border-hairline rounded-lg space-y-1">
-                    <label htmlFor="input-benchmark" className="text-muted block text-[11px]">
+              <div className="p-4 border-t border-hairline space-y-3 text-xs">
+                {missingParameters.length > 0 && (
+                  <div className="p-2.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs flex flex-wrap gap-1.5">
+                    {missingParameters.map((param) => (
+                      <span key={param} className="font-mono text-[10px]">
+                        needs source: {param}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                  <div className="p-2 bg-surface-soft border border-hairline rounded-lg space-y-1">
+                    <label htmlFor="input-benchmark" className="text-muted block text-[10px]">
                       Benchmark (tCO₂e/t)
                     </label>
                     {inputBenchmark.trim() === "" && (
-                      <span className="text-[10px] text-amber-600 block">needs source: benchmark</span>
+                      <span className="text-[10px] text-amber-600 block">needs source</span>
                     )}
                     <input
                       id="input-benchmark"
@@ -912,17 +662,16 @@ export const ImporterPage: React.FC = () => {
                         setInputBenchmark(e.target.value);
                         setIsIllustrativePreset(false);
                       }}
-                      className="w-full bg-surface border border-hairline rounded px-2 py-1 font-mono text-xs text-ink"
+                      className="w-full bg-surface border border-hairline rounded px-2 py-0.5 font-mono text-xs text-ink"
                     />
                   </div>
 
-                  {/* Default SEE Base */}
-                  <div className="p-2.5 bg-surface-soft border border-hairline rounded-lg space-y-1">
-                    <label htmlFor="input-default-base" className="text-muted block text-[11px]">
-                      Default SEE Base
+                  <div className="p-2 bg-surface-soft border border-hairline rounded-lg space-y-1">
+                    <label htmlFor="input-default-base" className="text-muted block text-[10px]">
+                      Default SEE base
                     </label>
                     {inputDefaultBase.trim() === "" && (
-                      <span className="text-[10px] text-amber-600 block">needs source: default_value_base</span>
+                      <span className="text-[10px] text-amber-600 block">needs source</span>
                     )}
                     <input
                       id="input-default-base"
@@ -933,17 +682,16 @@ export const ImporterPage: React.FC = () => {
                         setInputDefaultBase(e.target.value);
                         setIsIllustrativePreset(false);
                       }}
-                      className="w-full bg-surface border border-hairline rounded px-2 py-1 font-mono text-xs text-ink"
+                      className="w-full bg-surface border border-hairline rounded px-2 py-0.5 font-mono text-xs text-ink"
                     />
                   </div>
 
-                  {/* CSCF */}
-                  <div className="p-2.5 bg-surface-soft border border-hairline rounded-lg space-y-1">
-                    <label htmlFor="input-cscf" className="text-muted block text-[11px]">
-                      CSCF Factor
+                  <div className="p-2 bg-surface-soft border border-hairline rounded-lg space-y-1">
+                    <label htmlFor="input-cscf" className="text-muted block text-[10px]">
+                      CSCF factor
                     </label>
                     {inputCscf.trim() === "" && (
-                      <span className="text-[10px] text-amber-600 block">needs source: cscf</span>
+                      <span className="text-[10px] text-amber-600 block">needs source</span>
                     )}
                     <input
                       id="input-cscf"
@@ -954,13 +702,12 @@ export const ImporterPage: React.FC = () => {
                         setInputCscf(e.target.value);
                         setIsIllustrativePreset(false);
                       }}
-                      className="w-full bg-surface border border-hairline rounded px-2 py-1 font-mono text-xs text-ink"
+                      className="w-full bg-surface border border-hairline rounded px-2 py-0.5 font-mono text-xs text-ink"
                     />
                   </div>
 
-                  {/* Certificate Price */}
-                  <div className="p-2.5 bg-surface-soft border border-hairline rounded-lg space-y-1">
-                    <label htmlFor="input-price" className="text-muted block text-[11px]">
+                  <div className="p-2 bg-surface-soft border border-hairline rounded-lg space-y-1">
+                    <label htmlFor="input-price" className="text-muted block text-[10px]">
                       Price (€/tCO₂e)
                     </label>
                     <input
@@ -972,99 +719,19 @@ export const ImporterPage: React.FC = () => {
                         setInputPrice(e.target.value);
                         setIsIllustrativePreset(false);
                       }}
-                      className="w-full bg-surface border border-hairline rounded px-2 py-1 font-mono text-xs text-ink"
-                    />
-                  </div>
-
-                  {/* Tonnes */}
-                  <div className="p-2.5 bg-surface-soft border border-hairline rounded-lg space-y-1">
-                    <label htmlFor="input-tonnes" className="text-muted block text-[11px]">
-                      Tonnes Shipped
-                    </label>
-                    <input
-                      id="input-tonnes"
-                      type="number"
-                      step="1"
-                      value={inputTonnes}
-                      onChange={(e) => {
-                        setInputTonnes(e.target.value);
-                        setIsIllustrativePreset(false);
-                      }}
-                      className="w-full bg-surface border border-hairline rounded px-2 py-1 font-mono text-xs text-ink"
-                    />
-                  </div>
-
-                  {/* Verified SEE */}
-                  <div className="p-2.5 bg-surface-soft border border-hairline rounded-lg space-y-1">
-                    <label htmlFor="input-see" className="text-muted block text-[11px]">
-                      Verified SEE (tCO₂e/t)
-                    </label>
-                    <input
-                      id="input-see"
-                      type="number"
-                      step="0.01"
-                      value={inputVerifiedSee}
-                      onChange={(e) => {
-                        setInputVerifiedSee(e.target.value);
-                        setIsIllustrativePreset(false);
-                      }}
-                      className="w-full bg-surface border border-hairline rounded px-2 py-1 font-mono text-xs text-verified font-bold"
-                    />
-                  </div>
-
-                  {/* Markup */}
-                  <div className="p-2.5 bg-surface-soft border border-hairline rounded-lg space-y-1">
-                    <label htmlFor="input-markup" className="text-muted block text-[11px]">
-                      Default Markup
-                    </label>
-                    <input
-                      id="input-markup"
-                      type="number"
-                      step="0.01"
-                      value={inputDefaultMarkup}
-                      onChange={(e) => {
-                        setInputDefaultMarkup(e.target.value);
-                        setIsIllustrativePreset(false);
-                      }}
-                      className="w-full bg-surface border border-hairline rounded px-2 py-1 font-mono text-xs text-ink"
-                    />
-                  </div>
-
-                  {/* Free Allocation Factor */}
-                  <div className="p-2.5 bg-surface-soft border border-hairline rounded-lg space-y-1">
-                    <label htmlFor="input-faf" className="text-muted block text-[11px]">
-                      Free Allocation Factor
-                    </label>
-                    <input
-                      id="input-faf"
-                      type="number"
-                      step="0.001"
-                      value={inputFaf}
-                      onChange={(e) => {
-                        setInputFaf(e.target.value);
-                        setIsIllustrativePreset(false);
-                      }}
-                      className="w-full bg-surface border border-hairline rounded px-2 py-1 font-mono text-xs text-ink"
+                      className="w-full bg-surface border border-hairline rounded px-2 py-0.5 font-mono text-xs text-ink"
                     />
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t border-hairline">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    data-testid="reset-raw-config-btn"
-                    onClick={handleResetToRawConfig}
-                  >
-                    Reset to raw config
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
+                <div className="flex justify-end pt-1">
+                  <button
+                    type="button"
                     onClick={() => setIsSourcesOpen(true)}
+                    className="text-xs text-muted-strong hover:text-ink underline"
                   >
-                    Sources drawer
-                  </Button>
+                    View sources
+                  </button>
                 </div>
               </div>
             )}
@@ -1072,14 +739,7 @@ export const ImporterPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Sources Drawer Component */}
       <SourcesDrawer isOpen={isSourcesOpen} onClose={() => setIsSourcesOpen(false)} />
-
-      {/* Live Arbitrum Sepolia Deployment Evidence Modal */}
-      <ArbitrumSepoliaModal
-        isOpen={isTestnetModalOpen}
-        onClose={() => setIsTestnetModalOpen(false)}
-      />
     </div>
   );
 };

@@ -25,36 +25,36 @@ test.describe("EU Importer CBAM Portal E2E Tests", () => {
     await expect(page.getByText(/OFFLINE SNAPSHOT MODE ACTIVE/i)).toBeVisible();
     await expect(page.getByTestId("toggle-offline-snapshot-btn")).toContainText("OFFLINE SNAPSHOT");
 
-    // Check verification status banner for valid report
+    // Check verification status banner for valid report (fix: honest status with quarantined batch)
     const banner = page.getByTestId("verification-status-banner");
     await expect(banner).toBeVisible();
-    await expect(banner).toContainText("CRYPTOGRAPHIC VERIFICATION SUCCESSFUL");
+    await expect(banner).toContainText("ATTESTED REPORT · 1 BATCH QUARANTINED");
+    await expect(banner).toContainText("50% verified · 1 flagged (deposit slashed)");
     await expect(page.getByText("ATTESTED ON-CHAIN")).toBeVisible();
 
-    // Check detailed cryptographic check items
-    await expect(page.getByText("Schema & Honesty Compliance")).toBeVisible();
-    await expect(page.getByText("Period Merkle Root Recomputation")).toBeVisible();
-    await expect(page.getByText("On-Chain Attestation Record")).toBeVisible();
-    await expect(page.getByText("Installation Identity Match")).toBeVisible();
-    await expect(page.getByText("Period Label Match")).toBeVisible();
-    await expect(page.getByText("Coverage Basis Points Match")).toBeVisible();
-    await expect(page.getByText("Batch Status & Root Integrity in BatchAnchor")).toBeVisible();
+    // Check collapsible 7 checks passed per Page Guide
+    const checksBtn = page.getByRole("button", { name: /7 checks passed/i });
+    await expect(checksBtn).toBeVisible();
+    await checksBtn.click();
+    await expect(page.getByText("Data structure & integrity")).toBeVisible();
+    await expect(page.getByText("Period Merkle root recomputation")).toBeVisible();
+    await expect(page.getByText("On-chain attestation registry match")).toBeVisible();
 
     // Check Evidence Summary Panel
     const evidencePanel = page.getByTestId("evidence-summary-panel");
     await expect(evidencePanel).toBeVisible();
     await expect(evidencePanel).toContainText("INST-CAMPD-1073");
     await expect(evidencePanel).toContainText("#1"); // Attestation #1
-    await expect(evidencePanel).toContainText("2026-Q3");
+    await expect(evidencePanel).toContainText("2025-01-01");
 
-    // Check Quarantined / Flagged Batches
+    // Check Quarantined / Flagged Batches with human-readable labels
     const qList = page.getByTestId("quarantined-batches-list");
     await expect(qList).toBeVisible();
     await expect(qList).toContainText("Batch #2");
-    await expect(qList).toContainText("UPHELD_SLASHED");
-    await expect(qList).toContainText("CROSS_SOURCE_MISMATCH");
-    await expect(qList).toContainText("PHYSICS_RESIDUAL");
-    await expect(qList).toContainText("SPECTRAL_REPEAT");
+    await expect(qList).toContainText("deposit slashed");
+    await expect(qList).toContainText("Fuel vs. stack mismatch");
+    await expect(qList).toContainText("Mass-balance physics residual");
+    await expect(qList).toContainText("Repeated pattern anomaly");
 
     // Check Data Provenance disclosures (Rule 3)
     await expect(page.getByText("REAL (CAMPD 1073-3)")).toBeVisible();
@@ -112,7 +112,7 @@ test.describe("EU Importer CBAM Portal E2E Tests", () => {
     await expect(page.getByText("INTEGRITY VIOLATION")).toBeVisible();
 
     // Check that root mismatch error is reported
-    await expect(page.getByText(/Period Merkle Root On-Chain Match failed/i)).toBeVisible();
+    await expect(page.getByText(/Period Merkle root on-chain check failed/i)).toBeVisible();
 
     // Take screenshot of Tampered State
     const projectName = testInfo.project.name;

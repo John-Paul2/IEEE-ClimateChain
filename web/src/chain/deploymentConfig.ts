@@ -68,6 +68,26 @@ export interface ArbitrumSepoliaDeployment {
 export const ARBITRUM_SEPOLIA_CHAIN_ID = 421614 as const;
 export const ARBITRUM_SEPOLIA_EXPLORER_BASE = "https://sepolia.arbiscan.io" as const;
 
+export const ARBITRUM_SEPOLIA_CONTRACTS: DeploymentContracts = {
+  DeviceRegistry: "0x10b6647d48888a7c3c4dc28f0df0a2e5c23b3471",
+  BondVault: "0x7ffb90cdc55c6c61b961acf2a042a804f5857c36",
+  BatchAnchor: "0x8bf14de651fa70feb3538852c2160d082255638b",
+  VerifierQuorum: "0x734849b029ddf31030cfae4a74c314f8e21dbfb9",
+  Challenge: "0x80f58f44ca8bcbeeda72a27ec2555d26bb016a34",
+  Attestation: "0x872d5ef7c6a457d1b8ed68221350236151c763b0",
+};
+
+export const TESTNET_CONTRACT_ADDRESSES = ARBITRUM_SEPOLIA_CONTRACTS;
+
+export const ARBITRUM_SEPOLIA_KEY_TXS = {
+  anchorBatchHonest4: "0x46e5be70fee08a7a093c2d522da3cc9d5a4ed16abcb4be5aed6d595e2e07df22",
+  anchorBatchTampered6: "0x043ad66ba6d788f05b9fafc96d85cbd22a9e42628f3c6b20ee8c63987bf1d2d9",
+  slashResolve: "0xac83b05905b55a0983e45fbe113f34c1a9187d5280afff2af691c7a7dc39e540",
+  recordAttestation: "0xe139990cef5ffc3e13b750925549b0e6c3839f93a49bc0e4aa875fc736fea4cd",
+} as const;
+
+export const TESTNET_KEY_TRANSACTIONS = ARBITRUM_SEPOLIA_KEY_TXS;
+
 export const arbitrumSepoliaDeployment: ArbitrumSepoliaDeployment = {
   chainId: 421614,
   chainName: "Arbitrum Sepolia",
@@ -320,7 +340,7 @@ export function getArbiscanExplorerUrl(
 export interface DeploymentConfig {
   chainName: string;
   chainId: number;
-  explorerBaseUrl: string | null;
+  explorerBaseUrl: string;
   contracts: DeploymentContracts;
   admin?: string;
   arbiters?: string[];
@@ -360,7 +380,7 @@ export function getDeploymentConfig(): DeploymentConfig {
   return {
     chainName: anvil.chainName || `Chain ${anvil.chainId}`,
     chainId: Number(anvil.chainId),
-    explorerBaseUrl: anvil.explorerBaseUrl || explorerBaseUrl,
+    explorerBaseUrl,
     contracts: anvil.contracts,
     admin: anvil.admin,
     arbiters: anvil.arbiters,

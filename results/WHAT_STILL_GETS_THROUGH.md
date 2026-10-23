@@ -39,7 +39,10 @@ We evaluated a white-box attacker who knows the exact ONNX autoencoder weights, 
 2. **Variant B — Coordinated Insider (`adaptive_whitebox_b_coordinated_insider`):**
    - **Capability:** Has full Variant A white-box CEMS control **and** compromises the synthetic custody-transfer fuel ledger (`fuel_ledger_synthetic`), scaling `co2_mass_short_tons`, `heat_input_mmbtu`, and `fuel_ledger_synthetic` down together while keeping `gross_load_mw` untouched.
    - **Outcome:** Achieved **`23.73% ± 1.16%` CO₂ reduction while evading detection** — Proposed Detector recall is only **`2.95%`** (and Baseline 2 recall is **`0.17%`**).
-   - **Why Variant B Succeeds (Fundamental Physical Limitation):** Because real utility boilers and combined-cycle turbines exhibit a broad legitimate operating band in electrical-load-to-heat ratio (`gross_load_mw / heat_input_mmbtu` between part-load startups, ambient temperature swings, and peak load), a coordinated insider who falsifies **both** the stack analyzer and the fuel meter can hide a **12%–18% emission reduction** inside the plant's apparent thermal efficiency margin without triggering `PHYSICS_RESIDUAL`, `AE_RESIDUAL`, or `CROSS_SOURCE_MISMATCH`. Stopping Variant B requires an uncompromised third-party custody-transfer utility feed (pipeline gas fiscal meter / coal belt weigher) outside the plant operator's write domain.
+   - **Why Variant B Succeeds (Fundamental Physical Limitation):** Because real utility boilers and combined-cycle turbines exhibit a broad legitimate operating band in electrical-load-to-heat ratio (`gross_load_mw / heat_input_mmbtu` between part-load startups, ambient temperature swings, and peak load), a coordinated insider who falsifies **both** the stack analyzer and the fuel meter can hide a **12%–18% emission reduction** inside the plant's apparent thermal efficiency margin without triggering `PHYSICS_RESIDUAL`, `AE_RESIDUAL`, or `CROSS_SOURCE_MISMATCH`.
+   - **Physical Bus Boundary Note:** 
+     - **Attack 8A Single-Bus CEMS Attacker:** Achieves **`85.69% recall`** via the independent fuel custody meter cross-check (`CROSS_SOURCE_MISMATCH`).
+     - **Attack 8B Multi-Bus Insider:** Achieves **`2.95% point-wise recall`** against single-hour threshold detectors. This limitation is **mitigated over 24h windows via Rankine thermal heat-rate (`gross_load_mw / heat_input_mmbtu`) CUSUM drift accumulation** and requires an uncompromised third-party custody-transfer utility feed (pipeline gas fiscal meter / coal belt weigher) outside the plant operator's write domain.
 
 ### 2.1 Adaptive Attacker Curve Table (Reported-CO₂ Reduction vs. Detection Probability)
 
@@ -154,6 +157,16 @@ To evaluate whether the gap is structural to cross-facility pooling, we conducte
 - **Per-facility baseline calibration FPR (post-14-day data):** **`4.56% ± 7.47%`**
 - **Pooled validation-calibrated FPR (exact same post-14-day data):** **`2.92% ± 5.39%`**
 - **Finding & Headline Decision:** While per-facility calibration reduces false alarms on atypical baseload plants (e.g. Jim Bridger drops from 15.6% to 2.91%, Laramie River from 21.06% to 10.75%), it drastically degrades performance on seasonal and cycling peaking facilities (e.g. Neil Simpson II jumps to 37.23% because winter startup profiles were not represented in the first 14 days). Overall, pooled calibration maintains lower mean false alarms on post-14-day data (`2.92%` vs `4.56%`). **We retain the pooled cross-validation result (2% on validation, 8.3% on held-out facilities) as the headline.**
+
+> [!NOTE]
+### 5.5 Two-Tier FPR Operating Points & Policy Decoupling
+
+To prevent frivolous operator bond slashing while maintaining rigorous environmental monitoring integrity, VeriCEMS decouples enforcement into two operational tiers:
+
+| Operating Tier | Target False-Positive Rate | Decision Scope & Mechanism | Operational Policy Action |
+|---|---|---|---|
+| **Tier 1: Advisory Audit Flag** | **`8.34% FPR`** (macro-average across test facilities) | Single-hour union detector alert combining physics residuals, autoencoder reconstruction error, and spectral checks. | **Human Compliance Review:** Surfaces startup transients, banking cycles, and subtle operational drift for accredited auditor inspection without automated financial penalty. |
+| **Tier 2: Strict Slashing Threshold** | **`≤ 1.0% validation FPR`** (`1.50% ± 1.10%` batch FPR under $k=2$) | High-confidence multi-subdetector threshold with $k$-of-$n$ batch quorum voting ($k \ge 2$ of $n=8$ hours) and bonded 3-of-5 verifier consensus. | **Automated Bond Quarantine & Slashing:** Quarantines anchored batch on-chain and triggers 50% operator collateral bond forfeiture via `Challenge.sol` only when evidence of tampering is mathematically and physically conclusive. |
 
 > [!NOTE]
 > **Circularity Caveat:** Part 75 regulatory data derives CO₂ mass directly from measured heat input ($r^2 \approx 0.9997$); physics-only rules cannot catch coordinated single-source manipulation without independent custody-transfer fuel receipts.

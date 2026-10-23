@@ -124,43 +124,13 @@ export const VerifierPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. Shared Model-Hash Line (Shown once for all five nodes) */}
-      <div className="flex flex-wrap items-center justify-between gap-2.5 px-4 py-2.5 rounded-chip bg-surface-soft border border-hairline text-xs font-mono">
-        <div className="flex items-center gap-2">
-          <span className="text-muted-strong font-sans">All run model</span>
-          <HashChip hash={sharedModelHash} type="digest" truncateLen={4} />
-          <span className="text-emerald-600 font-bold font-sans">✓ identical</span>
-        </div>
-        <span className="text-muted-strong text-[11px] font-sans">
-          Deterministic autoencoder weights
-        </span>
-      </div>
-
-      {/* 3. Five Compact Vote Cards in a Row (Section 7.1) */}
-      <section
-        role="region"
-        aria-label="Verifier Committee Nodes"
-        data-story="vote-cards"
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4"
-      >
-        {verifiers.map((v) => (
-          <VoteCard
-            key={v.verifier_id}
-            verifier={v}
-            isLoading={isLoading}
-            error={error}
-            onRetry={refresh}
-          />
-        ))}
-      </section>
-
-      {/* 4. Quorum Bar ("3 of 5 flagged" or "5 of 5 clean") */}
+      {/* 2. Quorum Bar and Model Line (Section 3 Order) */}
       <section
         role="region"
         aria-label="Batch Quorum Consensus Score"
         data-testid="quorum-status-bar"
         data-story="quorum-bar"
-        className={`p-4 rounded-card border shadow-card transition-all ${
+        className={`p-4 rounded-card border shadow-card transition-all space-y-3 ${
           isQuarantined
             ? "bg-[#FDECEC] border-red-300 text-[#9B1C1C]"
             : "bg-surface border-hairline text-ink"
@@ -201,9 +171,39 @@ export const VerifierPage: React.FC = () => {
             })}
           </div>
         </div>
+
+        {/* Shared Model-Hash Line */}
+        <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-hairline/60 text-xs font-mono">
+          <div className="flex items-center gap-2">
+            <span className="text-muted-strong font-sans">All run model</span>
+            <HashChip hash={sharedModelHash} type="digest" truncateLen={4} />
+            <span className="text-emerald-600 font-bold font-sans">✓ identical weights</span>
+          </div>
+          <span className="text-muted-strong text-[11px] font-sans">
+            Deterministic autoencoder weights
+          </span>
+        </div>
       </section>
 
-      {/* 5. Status Timeline Chips */}
+      {/* 3. Five Compact Vote Cards in a Row */}
+      <section
+        role="region"
+        aria-label="Verifier Committee Nodes"
+        data-story="vote-cards"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4"
+      >
+        {verifiers.map((v) => (
+          <VoteCard
+            key={v.verifier_id}
+            verifier={v}
+            isLoading={isLoading}
+            error={error}
+            onRetry={refresh}
+          />
+        ))}
+      </section>
+
+      {/* 4. Status Timeline Chips */}
       <section>
         <BatchTimeline
           batch={currentBatch}
@@ -216,20 +216,26 @@ export const VerifierPage: React.FC = () => {
         />
       </section>
 
-      {/* 6. Challenge Card with Countdown and 2-of-3 Arbiter Indicator */}
-      <section data-story="challenge-card">
-        <ChallengePanel
-          challenge={activeChallenge}
-          onDispute={disputeChallenge}
-          onResolve={resolveChallenge}
-          onSettle={settleChallenge}
-          isLoading={isLoading}
-          error={error}
-          onRetry={refresh}
-        />
-      </section>
+      {/* 5. Challenge Card (only when a batch is flagged) */}
+      {(currentBatch?.status === "Quarantined" ||
+        currentBatch?.status === "Slashed" ||
+        activeChallenge?.status === "Active" ||
+        activeChallenge?.status === "DisputedByOperator" ||
+        activeChallenge?.status === "UpheldSlashed") && (
+        <section data-story="challenge-card">
+          <ChallengePanel
+            challenge={activeChallenge}
+            onDispute={disputeChallenge}
+            onResolve={resolveChallenge}
+            onSettle={settleChallenge}
+            isLoading={isLoading}
+            error={error}
+            onRetry={refresh}
+          />
+        </section>
+      )}
 
-      {/* 7. Quarantine Evidence Drawer (with Custom SVG Merkle Tree) */}
+      {/* 6. Evidence Drawer (collapsed; opens automatically only for flagged batches) */}
       <section>
         <QuarantineViewer
           batch={detailedBatch || (currentBatch as BatchDetail)}

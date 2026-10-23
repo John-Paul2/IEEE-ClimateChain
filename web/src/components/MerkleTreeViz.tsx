@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Copy, ExternalLink, ShieldCheck, ShieldAlert, Check } from "lucide-react";
+import { Copy, ExternalLink, ShieldCheck, ShieldAlert, Check, ChevronDown } from "lucide-react";
 import { keccak256, stringToBytes } from "viem";
 import { Skeleton } from "./Skeleton";
 import { ErrorState } from "./ErrorState";
@@ -14,6 +14,8 @@ export interface MerkleTreeVizProps {
   txHash?: string | null;
   batchStatus?: string;
   flaggedLeafIndex?: number | null;
+  isCollapsible?: boolean;
+  defaultOpen?: boolean;
   isLoading?: boolean;
   isEmpty?: boolean;
   error?: string | null;
@@ -44,6 +46,8 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
   txHash,
   batchStatus = "Anchored",
   flaggedLeafIndex,
+  isCollapsible = false,
+  defaultOpen = true,
   isLoading = false,
   isEmpty = false,
   error = null,
@@ -52,6 +56,7 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
 }) => {
   const [copied, setCopied] = useState(false);
   const [activeHash, setActiveHash] = useState<string | null>(null);
+  const [isExpanded, setIsExpanded] = useState<boolean>(defaultOpen);
 
   const defaultRoot =
     rootHash ||
@@ -201,7 +206,7 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
       aria-label="Batch Merkle Tree Visualization"
       className={`p-5 rounded-card bg-surface border border-hairline shadow-card space-y-3 ${className}`}
     >
-      {/* Header Chips Strip: ROOT, Copy, Explorer */}
+      {/* Header Chips Strip: ROOT, Copy, Explorer, and optional Collapse */}
       <div className="flex flex-wrap items-center justify-between gap-2.5 pb-2 border-b border-hairline text-xs">
         <div className="flex items-center gap-2">
           <span className="font-mono font-bold text-xs text-ink flex items-center gap-1.5">
@@ -249,22 +254,41 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
             <ExternalLink className="w-3 h-3 text-muted-strong" />
             <span>Explorer</span>
           </a>
+
+          {isCollapsible && (
+            <button
+              type="button"
+              onClick={() => setIsExpanded((prev) => !prev)}
+              aria-expanded={isExpanded}
+              aria-label={isExpanded ? "Collapse Merkle tree" : "Expand Merkle tree"}
+              className="inline-flex items-center gap-1 px-2 py-1 rounded-chip text-xs bg-surface-soft hover:bg-hairline border border-hairline text-muted-strong hover:text-ink transition-colors"
+            >
+              <ChevronDown
+                className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                  isExpanded ? "rotate-180" : ""
+                }`}
+              />
+              <span>{isExpanded ? "Collapse" : "Expand"}</span>
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Selected/Hovered Node Hash Readout (Accessible for keyboard & hover) */}
-      <div
-        data-testid="merkle-tree-hash-readout"
-        className="px-3 py-1.5 rounded-chip bg-surface-soft border border-hairline flex items-center justify-between text-xs font-mono"
-      >
-        <span className="text-muted-strong font-sans text-[11px]">Hover/Focus Hash:</span>
-        <span className="text-ink font-semibold truncate ml-2 max-w-[280px] sm:max-w-md select-all">
-          {displayedHash}
-        </span>
-      </div>
+      {(!isCollapsible || isExpanded) && (
+        <>
+          {/* Selected/Hovered Node Hash Readout (Accessible for keyboard & hover) */}
+          <div
+            data-testid="merkle-tree-hash-readout"
+            className="px-3 py-1.5 rounded-chip bg-surface-soft border border-hairline flex items-center justify-between text-xs font-mono"
+          >
+            <span className="text-muted-strong font-sans text-[11px]">Selected node fingerprint:</span>
+            <span className="text-ink font-semibold truncate ml-2 max-w-[280px] sm:max-w-md select-all">
+              {displayedHash}
+            </span>
+          </div>
 
-      {/* Responsive Custom SVG Tree (8 leaves, 3 levels, responsive viewBox, no zoom/controls) */}
-      <div className="w-full overflow-hidden flex items-center justify-center pt-1">
+          {/* Responsive Custom SVG Tree (8 leaves, 3 levels, responsive viewBox, no zoom/controls) */}
+          <div className="w-full overflow-hidden flex items-center justify-center pt-1">
         <svg
           viewBox="0 0 800 225"
           className="w-full h-auto max-w-full"
@@ -428,6 +452,8 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
           })}
         </svg>
       </div>
+      </>
+      )}
     </div>
   );
 };

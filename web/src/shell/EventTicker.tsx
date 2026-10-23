@@ -24,15 +24,15 @@ export const EventTicker: React.FC = () => {
 
   const currentStep = scenarioStatus?.current_step || 0;
   const totalSteps = scenarioStatus?.total_steps || 8;
-  const caption = formatStepCaption(currentStep);
+  const caption = scenarioStatus?.current_caption || formatStepCaption(currentStep);
 
   const stepIcons: Record<number, React.FC<{ className?: string }>> = {
     1: Layers,
     2: Sparkles,
-    3: ShieldAlert,
-    4: Cpu,
-    5: FileCheck2,
-    6: ShieldCheck,
+    3: Cpu,
+    4: ShieldCheck,
+    5: ShieldAlert,
+    6: FileCheck2,
     7: BarChart3,
     8: FileCheck2,
   };

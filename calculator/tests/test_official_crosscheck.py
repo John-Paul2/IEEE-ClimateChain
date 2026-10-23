@@ -143,3 +143,16 @@ def test_official_cbam_worked_example_crosscheck() -> None:
     assert res.total_payable_tonnes_default - res.total_payable_tonnes_verified == 4600.0
     # Financial savings: 835,712.64 - 457,040.64 = 378,672.00 EUR
     assert res.savings_eur == 378672.00
+
+
+def test_statutory_benchmark_crosscheck_reg_2025_2620_and_2621() -> None:
+    """Verifies SEFA = 0.975 * 1.0 * 1.40 = 1.365 and 10%/20%/30% markup schedule under Reg. (EU) 2025/2620 & 2025/2621."""
+    # Statutory free allocation crosscheck: SEFA = 0.975 * 1.0 * 1.40 = 1.365
+    sefa = calculate_sefa(free_allocation_factor=0.975, cscf=1.0, benchmark=1.40)
+    assert sefa == 1.365
+
+    # Markup schedule under Reg. (EU) 2025/2621 (10% in 2026, 20% in 2027, 30% in 2028)
+    base_val = 2.00
+    assert calculate_default_see_with_markup(base_val, 0.10) == 2.20
+    assert calculate_default_see_with_markup(base_val, 0.20) == 2.40
+    assert calculate_default_see_with_markup(base_val, 0.30) == 2.60

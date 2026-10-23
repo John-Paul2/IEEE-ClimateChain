@@ -209,15 +209,15 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
           </h2>
         </div>
 
-        {/* Real vs Synthetic Summary Badges */}
-        <div className="flex items-center gap-2 text-xs">
-          <span className="flex items-center gap-1 font-mono text-[11px] px-2 py-0.5 rounded-chip bg-emerald-500/15 text-emerald-600 border border-emerald-500/30">
-            <span className="w-2 h-2 rounded-full bg-emerald-600" />
-            REAL (EPA CAMPD)
+        {/* Tiny Dot Legend */}
+        <div className="flex items-center gap-3 text-xs text-muted-strong font-mono">
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            <span>Real (CAMPD)</span>
           </span>
-          <span className="flex items-center gap-1 font-mono text-[11px] px-2 py-0.5 rounded-chip bg-amber-500/15 text-amber-600 border border-amber-500/30">
-            <span className="w-2 h-2 rounded-full bg-amber-600" />
-            SYNTHETIC (Simulated)
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+            <span>Synthetic</span>
           </span>
         </div>
       </div>
@@ -340,13 +340,11 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
       <div className="p-4 bg-surface-soft border border-hairline rounded-card space-y-2">
         <div className="flex items-center justify-between text-xs">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]" />
-            <span className="font-semibold text-ink">Flue Gas O₂</span>
-            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-chip bg-amber-500/15 text-amber-600 border border-amber-500/30">
-              SYNTHETIC
-            </span>
+            <span className="w-2 rounded-full h-2 bg-[#F59E0B]" />
+            <span className="font-semibold text-ink">Flue gas O₂</span>
+            <span className="text-[10px] text-muted-strong font-mono">(synthetic)</span>
           </div>
-          <span className="font-mono text-xs font-semibold text-muted-strong">% vol dry</span>
+          <span className="font-mono text-xs text-muted-strong">% vol dry</span>
         </div>
 
         <div className="h-28 w-full">

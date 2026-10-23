@@ -231,3 +231,26 @@
   animation: pulse-ring 2s ease-in-out infinite;
 }
 
+/* Spotlight on hover */
+.card-spotlight {
+  position: relative;
+  overflow: hidden;
+}
+.card-spotlight::before {
+  content: "";
+  position: absolute;
+  top: var(--mouse-y, -1000px);
+  left: var(--mouse-x, -1000px);
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(229, 56, 59, 0.06), transparent 70%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.card-spotlight:hover::before {
+  opacity: 1;
+}
+
+

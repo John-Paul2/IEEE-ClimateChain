@@ -41,7 +41,7 @@ export const AppShell: React.FC = () => {
       </div>
 
       {/* Centred 1200px Main Content Column */}
-      <main className="flex-1 w-full max-w-[1200px] mx-auto px-4 sm:px-6 py-6 sm:py-8 [contain:paint]">
+      <main className="flex-1 w-full max-w-[1200px] mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-48 sm:pb-12 [contain:paint]">
         <Outlet />
       </main>
     </div>

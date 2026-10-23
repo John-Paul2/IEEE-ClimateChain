@@ -40,6 +40,7 @@ contract BatchAnchor is AccessControl, Pausable {
     error InsufficientOperatorBond(bytes32 installationId);
     error InvalidSequenceRange(uint64 expectedFirstSeq, uint64 actualFirstSeq, uint64 lastSeq, uint32 count);
     error EmptyMerkleRoot();
+    error DuplicateMerkleRoot(bytes32 merkleRoot);
     error BatchNotFound(uint256 batchId);
     error InvalidStatusTransition(BatchStatus current, BatchStatus requested);
     error UnauthorizedCaller(address caller);
@@ -62,6 +63,7 @@ contract BatchAnchor is AccessControl, Pausable {
     uint256 public nextBatchId = 1;
     mapping(uint256 => BatchRecord) private _batches;
     mapping(bytes32 => uint64) public expectedFirstSeq;
+    mapping(bytes32 => bool) public anchoredMerkleRoots;
 
     /// @notice Initializes BatchAnchor with references to DeviceRegistry and BondVault.
     /// @param admin Administrator address.
@@ -93,6 +95,8 @@ contract BatchAnchor is AccessControl, Pausable {
         uint32 count
     ) external whenNotPaused returns (uint256 batchId) {
         if (merkleRoot == bytes32(0)) revert EmptyMerkleRoot();
+        if (anchoredMerkleRoots[merkleRoot]) revert DuplicateMerkleRoot(merkleRoot);
+        anchoredMerkleRoots[merkleRoot] = true;
 
         DeviceRegistry.DeviceInfo memory dev = deviceRegistry.getDevice(deviceId);
         if (dev.status != DeviceRegistry.DeviceStatus.Active) {

@@ -90,19 +90,21 @@ export function formatStepCaption(step: number, scenarioEvent?: TelemetryEvent):
 
   switch (step) {
     case 1:
-      return "Step 1/7: Telemetry batches flow and verifier quorum verifies clean emissions.";
+      return "Each reading is signed and linked to the one before it in a tamper-evident chain.";
     case 2:
-      return "Step 2/7: Insider injects constant-scaling attack before signing.";
+      return "A Merkle fingerprint of the batch readings is anchored to the blockchain.";
     case 3:
-      return "Step 3/7: Verifier committee flags residuals and batch is quarantined.";
+      return "Five independent checkers each inspect the telemetry and vote clean or fraud.";
     case 4:
-      return "Step 4/7: Operator disputes with inclusion proof; arbiters uphold; bond is slashed.";
+      return "Committee consensus reached: five of five voted clean and batch is verified.";
     case 5:
-      return "Step 5/7: Period report generated and CBAM attestation recorded.";
+      return "Synthetic scaling attack injected: committee flags residuals and quarantines batch.";
     case 6:
-      return "Step 6/7: Importer portal verifies genuine report, rejects tampered copy, and calculates savings.";
+      return "Challenge window opens: plant operator may appeal before dispute closes.";
     case 7:
-      return "Step 7/7: Benchmark suite discloses empirical evasion limits and residual weaknesses.";
+      return "Dispute resolved by arbiter council: fraud upheld and operator bond is slashed.";
+    case 8:
+      return "Period report compiled with verifiable on-chain CBAM attestation certificate.";
     default:
       return "Ready to replay recorded scenario run.";
   }

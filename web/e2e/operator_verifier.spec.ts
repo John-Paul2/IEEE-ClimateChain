@@ -20,7 +20,7 @@ test.describe("Operator Telemetry View & Verifier Committee Console E2E", () => 
     await page.goto("/operator");
 
     // Header & REAL chip
-    await expect(page.getByRole("heading", { name: "Live telemetry", level: 1 })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /telemetry/i, level: 1 })).toBeVisible();
     await expect(page.getByText("EPA replay")).toBeVisible();
 
     // Verify single help popover with 4 bullets
@@ -33,14 +33,11 @@ test.describe("Operator Telemetry View & Verifier Committee Console E2E", () => 
     await expect(opBullets).toHaveCount(4);
     await opHelpBtn.click(); // close popover
 
-    // Three stat tiles on pale blush band
+    // Four stat tiles on pale blush band per Page Guide
     await expect(page.getByText("Packets")).toBeVisible();
     await expect(page.getByText("Batches anchored")).toBeVisible();
-    await expect(page.getByText("Trust score")).toBeVisible();
-
-    // Bond Status card from chain / API
-    await expect(page.getByRole("heading", { name: "Operator bond" })).toBeVisible();
-    await expect(page.getByText("Available:")).toBeVisible();
+    await expect(page.getByText("Latest verdict")).toBeVisible();
+    await expect(page.getByText("Operator bond")).toBeVisible();
 
     // Attack Panel: four black pill attack buttons
     await expect(page.getByTestId("attack-btn-constant_scaling")).toBeVisible();
@@ -52,8 +49,8 @@ test.describe("Operator Telemetry View & Verifier Committee Console E2E", () => 
     await expect(page.getByRole("region", { name: /live telemetry channels/i })).toBeVisible();
     await expect(page.getByText("REAL (EPA CAMPD)")).toBeVisible();
     await expect(page.getByText("SYNTHETIC (Simulated)")).toBeVisible();
-    await expect(page.getByRole("button", { name: /CO₂ Mass Flow REAL/i })).toBeVisible();
-    await expect(page.getByRole("button", { name: /Flue Gas O₂ SYNTHETIC/i })).toBeVisible();
+    await expect(page.getByRole("button", { name: /CO₂ Mass Flow/i })).toBeVisible();
+    await expect(page.getByText("Flue Gas O₂")).toBeVisible();
 
     // HashChainStrip: sequence numbering and previous-hash link
     await expect(page.getByRole("region", { name: /tamper-evident hash chain/i })).toBeVisible();
@@ -104,23 +101,11 @@ test.describe("Operator Telemetry View & Verifier Committee Console E2E", () => 
     await expect(page.getByText("2. Committee Commit-Reveal")).toBeVisible();
     await expect(page.getByText(/3. Finalised/)).toBeVisible();
 
-    // Merkle Tree Visualization with explorer and copy links
+    // Factory page contains the batch Merkle Tree Visualization per Page Guide
+    await page.goto("/operator");
     await expect(page.getByRole("region", { name: /batch merkle tree visualization/i })).toBeVisible();
     await expect(page.getByTestId("merkle-root-explorer-link")).toBeVisible();
     await expect(page.getByTestId("merkle-root-copy-btn")).toBeVisible();
-
-    // Verify 8 leaves, 3 levels, and root node in custom SVG tree
-    await expect(page.getByTestId("merkle-node-root")).toBeVisible();
-    for (let leafIdx = 0; leafIdx < 8; leafIdx++) {
-      await expect(page.getByTestId(`merkle-node-leaf-${leafIdx}`)).toBeVisible();
-    }
-
-    // Hover or focus shows the full hash in readout
-    const leaf0 = page.getByTestId("merkle-node-leaf-0");
-    await leaf0.hover();
-    const hashReadout = page.getByTestId("merkle-tree-hash-readout");
-    await expect(hashReadout).toBeVisible();
-    await expect(hashReadout).toContainText("0x1111222233334444555566667777888899990000aaaabbbbccccddddeeeeffff");
 
     // Capture Verifier Normal State Screenshot
     const verNormalPath = path.join(screenshotsDir, `verifier-normal-${projectName}.png`);

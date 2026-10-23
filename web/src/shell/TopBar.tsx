@@ -8,8 +8,9 @@ import {
   Shield,
   Sun,
   Moon,
-  Volume2,
   ExternalLink,
+  Database,
+  Volume2,
 } from "lucide-react";
 import { useData } from "../data/DataContext.tsx";
 import { useToast } from "../components/Toast.tsx";
@@ -35,6 +36,7 @@ export const TopBar: React.FC = () => {
   const [isActing, setIsActing] = useState(false);
   const [isManualMode, setIsManualMode] = useState(false);
   const [isTestnetModalOpen, setIsTestnetModalOpen] = useState(false);
+  const [dataPopoverOpen, setDataPopoverOpen] = useState(false);
 
   // Dark mode state
   const [theme, setTheme] = useState<"light" | "dark">(() => {
@@ -199,20 +201,71 @@ export const TopBar: React.FC = () => {
         {/* Exactly one Data Status Pill per Requirement 1 */}
         <DataStatusPill />
 
-        {/* Arbitrum Sepolia Live Testnet Deployment Pill */}
-        <button
-          type="button"
-          onClick={() => setIsTestnetModalOpen(true)}
+        {/* Unified Data Provenance Popover Button */}
+        <div className="relative inline-block text-left">
+          <button
+            type="button"
+            data-testid="data-provenance-btn"
+            onClick={() => setDataPopoverOpen((prev) => !prev)}
+            aria-label="View data provenance"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill bg-surface-soft hover:bg-hairline border border-hairline text-ink transition-all text-xs font-semibold cursor-pointer"
+          >
+            <Database className="w-3.5 h-3.5 text-muted-strong" />
+            <span>Data</span>
+          </button>
+          {dataPopoverOpen && (
+            <>
+              <div
+                className="fixed inset-0 z-40"
+                onClick={() => setDataPopoverOpen(false)}
+                aria-hidden="true"
+              />
+              <div
+                role="dialog"
+                aria-label="Data provenance"
+                className="absolute right-0 mt-1.5 w-72 p-3 bg-surface border border-hairline rounded-xl shadow-lg z-50 text-xs space-y-2 animate-in fade-in duration-100"
+              >
+                <div className="flex items-center justify-between pb-1 border-b border-hairline">
+                  <span className="font-heading font-bold text-ink">Data provenance</span>
+                  <button
+                    type="button"
+                    onClick={() => setDataPopoverOpen(false)}
+                    className="text-muted hover:text-ink text-[11px]"
+                  >
+                    Close
+                  </button>
+                </div>
+                <ul className="space-y-1.5 text-muted-strong text-[11px]">
+                  <li>
+                    <strong className="text-ink">Real:</strong> US EPA CAMPD unit DEV-CAMPD-1073-3 hourly emissions.
+                  </li>
+                  <li>
+                    <strong className="text-ink">Synthetic:</strong> Stack O₂, temp, and independent fuel flow.
+                  </li>
+                  <li>
+                    <strong className="text-ink">Illustrative:</strong> Section 14 worked example parameters.
+                  </li>
+                </ul>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Arbitrum Sepolia Live Testnet Link */}
+        <a
+          href="https://sepolia.arbiscan.io"
+          target="_blank"
+          rel="noopener noreferrer"
           data-testid="testnet-evidence-topbar-btn"
           className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill bg-brand/10 hover:bg-brand/20 border border-brand/30 text-brand dark:text-brand-soft transition-all text-xs font-semibold cursor-pointer select-none"
-          title="View Live Arbitrum Sepolia Deployment & On-Chain Proofs (Chain 421614)"
-          aria-label="Live Arbitrum Sepolia Deployment (Chain 421614)"
+          title="Open Arbitrum Sepolia Block Explorer (Chain 421614)"
+          aria-label="Arbitrum Sepolia Block Explorer (Chain 421614)"
         >
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" aria-hidden="true" />
           <span className="hidden sm:inline">Arbitrum Sepolia</span>
           <span className="sm:hidden">Sepolia</span>
           <ExternalLink className="w-3 h-3 opacity-70 shrink-0" aria-hidden="true" />
-        </button>
+        </a>
 
         {/* Theme Toggle (Light / Dark Mode) */}
         <button

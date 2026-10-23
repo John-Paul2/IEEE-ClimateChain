@@ -22,7 +22,7 @@ test.describe("VeriCEMS Application Shell & Route Smoke Tests", () => {
 
     // Verify page header
     await expect(
-      page.getByRole("heading", { name: /Live telemetry|Operator Telemetry View/i, level: 1 })
+      page.getByRole("heading", { name: /telemetry/i, level: 1 })
     ).toBeVisible();
 
     // Verify hash chain component
@@ -30,8 +30,9 @@ test.describe("VeriCEMS Application Shell & Route Smoke Tests", () => {
       page.getByRole("region", { name: /tamper-evident hash chain/i })
     ).toBeVisible();
 
-    // Verify operator bond card and attack injection
-    await expect(page.getByRole("heading", { name: /Operator bond|Anchored Batches History/i })).toBeVisible();
+    // Verify operator bond stat tile and try to cheat panel
+    await expect(page.getByText("Operator bond")).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Try to cheat|Operator bond/i })).toBeVisible();
 
     // Take screenshot for both desktop and mobile
     const projectName = testInfo.project.name;
@@ -57,9 +58,9 @@ test.describe("VeriCEMS Application Shell & Route Smoke Tests", () => {
     await expect(page.getByText("VERIFIER-01")).toBeVisible();
     await expect(page.getByText("VERIFIER-05")).toBeVisible();
 
-    // Check Merkle Tree Visualization
+    // Check Batch Consensus Timeline & Quorum Status
     await expect(
-      page.getByRole("region", { name: /batch merkle tree visualization/i })
+      page.getByRole("region", { name: /batch consensus status timeline/i })
     ).toBeVisible();
   });
 

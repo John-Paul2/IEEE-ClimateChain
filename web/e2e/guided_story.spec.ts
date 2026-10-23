@@ -4,6 +4,11 @@ test.describe("VeriCEMS Guided Story & Navigation E2E Tests", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/operator");
     await page.waitForLoadState("domcontentloaded");
+    const resetBtn = page.getByTestId("demo-reset-btn");
+    if (await resetBtn.isVisible()) {
+      await resetBtn.click();
+      await page.waitForTimeout(200);
+    }
   });
 
   test("1. Play shows the first caption and a highlighted target", async ({ page }) => {

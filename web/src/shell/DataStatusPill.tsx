@@ -2,15 +2,12 @@ import React, { useState } from "react";
 import { Radio, Database, Activity, ChevronDown } from "lucide-react";
 import { useData, type DataState } from "../data/DataContext.tsx";
 
-const isProduction = Boolean(import.meta.env?.PROD);
-
 export const DataStatusPill: React.FC = () => {
   const { dataState, setDataState } = useData();
   const [open, setOpen] = useState(false);
 
-  const availableStates: DataState[] = isProduction
-    ? ["RECORDED REAL RUN", "LIVE"]
-    : ["RECORDED REAL RUN", "LIVE", "MOCK"];
+  // Only RECORDED REAL RUN and LIVE. Never show mock data per Page Guide & AGENTS.md rules.
+  const availableStates: DataState[] = ["RECORDED REAL RUN", "LIVE"];
 
   const config = {
     "RECORDED REAL RUN": {

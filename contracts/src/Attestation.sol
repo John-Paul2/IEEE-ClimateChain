@@ -157,6 +157,22 @@ contract Attestation is AccessControl, Pausable {
         return _attestationBatches[attestationId];
     }
 
+    /// @notice Verifies an enterprise confidential attestation commitment with a trade-secret blinding salt.
+    /// @param attestationId The attestation identifier.
+    /// @param totalTonnesMicro Blinded total emissions quantity in microtonnes (1 tonne = 1,000,000 microtonnes, 1 kg = 1,000 microtonnes).
+    /// @param salt 32-byte cryptographic blinding factor.
+    /// @return commitmentHash keccak256 commitment of the attestation parameters.
+    /// @return valid True if attestation exists and totalTonnesMicro equals totalEmissionsKgCo2e * 1,000.
+    function verifyConfidentialAttestation(
+        uint256 attestationId,
+        uint256 totalTonnesMicro,
+        bytes32 salt
+    ) external view returns (bytes32 commitmentHash, bool valid) {
+        commitmentHash = keccak256(abi.encodePacked(attestationId, totalTonnesMicro, salt));
+        PeriodAttestation memory att = _attestations[attestationId];
+        valid = (att.attestationId != 0 && att.totalEmissionsKgCo2e * 1_000 == totalTonnesMicro);
+    }
+
     /// @notice Pauses state-mutating operations. Callable only by ADMIN_ROLE.
     function pause() external onlyRole(ADMIN_ROLE) {
         _pause();
