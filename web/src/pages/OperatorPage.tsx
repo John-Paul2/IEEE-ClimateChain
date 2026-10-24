@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { NumberTicker } from "../components/ui/number-ticker";
 import {
   Radio,
   Hash,
@@ -14,7 +15,7 @@ import { Popover } from "../components/Popover";
 import { HashChainStrip } from "../components/HashChainStrip";
 import { TelemetryCharts } from "../components/TelemetryCharts";
 import { MerkleTreeViz } from "../components/MerkleTreeViz";
-import { StartHere, PageHint } from "../components/GuideLayer";
+import { PageHint } from "../components/GuideLayer";
 
 const ATTACK_BUTTONS = [
   { id: "constant_scaling", label: "Constant scaling (-20% CO₂)", name: "Constant scaling" },
@@ -23,24 +24,7 @@ const ATTACK_BUTTONS = [
   { id: "tamper_after_signing", label: "Tamper after signing", name: "Tamper" },
 ];
 
-const AnimatedCount: React.FC<{ value: number }> = ({ value }) => {
-  const [display, setDisplay] = useState(value);
-  useEffect(() => {
-    let start = display;
-    const diff = value - start;
-    if (diff === 0) return;
-    const duration = 300;
-    const startTime = performance.now();
-    const tick = (now: number) => {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      setDisplay(Math.round(start + diff * progress));
-      if (progress < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  }, [value]);
-  return <span>{display}</span>;
-};
+
 
 export const OperatorPage: React.FC = () => {
   const {
@@ -123,8 +107,7 @@ export const OperatorPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* 0. Guide Layer StartHere Card */}
-      <StartHere />
-
+      
       {/* 1. Page Header */}
       <div className="space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -163,7 +146,7 @@ export const OperatorPage: React.FC = () => {
         <div className="p-4 bg-surface border border-hairline rounded-card flex flex-col justify-between">
           <span className="text-[13px] text-muted-strong font-medium">Packets</span>
           <div className="text-4xl font-heading font-bold text-ink my-1">
-            <AnimatedCount value={allPackets.length} />
+            <NumberTicker value={allPackets.length} className="text-ink" />
           </div>
           <span className="text-[11px] text-muted-strong font-mono flex items-center gap-1">
             <Radio className="w-3 h-3 text-muted" /> Hourly readings
@@ -174,7 +157,7 @@ export const OperatorPage: React.FC = () => {
         <div className="p-4 bg-surface border border-hairline rounded-card flex flex-col justify-between">
           <span className="text-[13px] text-muted-strong font-medium">Batches anchored</span>
           <div className="text-4xl font-heading font-bold text-ink my-1">
-            <AnimatedCount value={batches.length} />
+            <NumberTicker value={batches.length} className="text-ink" />
           </div>
           <span className="text-[11px] text-muted-strong font-mono flex items-center gap-1">
             <Hash className="w-3 h-3 text-muted" /> On-chain roots

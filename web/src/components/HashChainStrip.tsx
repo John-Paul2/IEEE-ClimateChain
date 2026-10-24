@@ -46,6 +46,9 @@ export const HashChainStrip: React.FC<HashChainStripProps> = ({
   className = "",
 }) => {
   const [activeSeq, setActiveSeq] = useState<number | null>(null);
+  const prefersReducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   if (isLoading) {
     return (
@@ -155,8 +158,11 @@ export const HashChainStrip: React.FC<HashChainStripProps> = ({
           return (
             <React.Fragment key={packet.seq}>
               {/* Compact Packet Node */}
-              <div
+              <motion.div
                 data-testid={`hash-chain-packet-${packet.seq}`}
+                initial={prefersReducedMotion ? false : { opacity: 0, x: -16 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: prefersReducedMotion ? 0 : 0.2, ease: "easeOut" }}
                 onMouseEnter={() => setActiveSeq(packet.seq)}
                 onMouseLeave={() => setActiveSeq(null)}
                 onClick={() => setActiveSeq((prev) => (prev === packet.seq ? null : packet.seq))}
@@ -201,7 +207,7 @@ export const HashChainStrip: React.FC<HashChainStripProps> = ({
                     </div>
                   </div>
                 )}
-              </div>
+              </motion.div>
 
               {/* Connecting line that draws in */}
               {index < displayPackets.length - 1 && (
@@ -222,7 +228,7 @@ export const HashChainStrip: React.FC<HashChainStripProps> = ({
                       strokeDasharray="24"
                       initial={{ strokeDashoffset: 24 }}
                       animate={{ strokeDashoffset: 0 }}
-                      transition={{ duration: 0.3, ease: "easeOut" }}
+                      transition={{ duration: prefersReducedMotion ? 0 : 0.2, ease: "easeOut" }}
                     />
                   </svg>
                 </div>

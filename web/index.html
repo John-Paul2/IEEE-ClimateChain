@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
@@ -9,12 +9,14 @@
       (function() {
         try {
           var stored = localStorage.getItem('vericems-theme');
-          if (stored === 'dark') {
-            document.documentElement.classList.add('dark');
-          } else {
+          if (stored === 'light') {
             document.documentElement.classList.remove('dark');
+          } else {
+            document.documentElement.classList.add('dark');
           }
-        } catch (e) {}
+        } catch (e) {
+          document.documentElement.classList.add('dark');
+        }
       })();
     </script>
   </head>

@@ -1,5 +1,6 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import { AlertTriangle, X } from "lucide-react";
 import { TopBar } from "./TopBar.tsx";
 import { EventTicker } from "./EventTicker.tsx";
@@ -9,6 +10,10 @@ import { StoryEnd } from "../components/GuideLayer.tsx";
 
 export const AppShell: React.FC = () => {
   const { liveConnectionFailed, clearLiveFailure } = useData();
+  const location = useLocation();
+  const prefersReducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   return (
     <div className="min-h-screen bg-canvas text-ink flex flex-col transition-colors selection:bg-brand selection:text-white max-w-full [overflow-x:clip]">
@@ -44,7 +49,17 @@ export const AppShell: React.FC = () => {
       {/* Centred 1200px Main Content Column */}
       <main className="flex-1 w-full max-w-[1200px] mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-48 sm:pb-12 [contain:paint]">
         <StoryEnd />
-        <Outlet />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={prefersReducedMotion ? undefined : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={prefersReducedMotion ? undefined : { opacity: 0, y: -8 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.2, ease: "easeInOut" }}
+          >
+            <Outlet />
+          </motion.div>
+        </AnimatePresence>
       </main>
     </div>
   );

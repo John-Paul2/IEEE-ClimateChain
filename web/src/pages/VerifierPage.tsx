@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { CheckCircle2, AlertTriangle } from "lucide-react";
 import { useData } from "../data/DataContext";
 import { VoteCard } from "../components/VoteCard";
@@ -12,6 +13,9 @@ import { PageHint } from "../components/GuideLayer";
 import type { BatchDetail } from "../types/telemetry";
 
 export const VerifierPage: React.FC = () => {
+  const prefersReducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const {
     verifiers,
     challenges,
@@ -164,18 +168,23 @@ export const VerifierPage: React.FC = () => {
           <div className="flex items-center gap-1.5">
             {verifiers.map((v) => {
               const vFraud = v.last_verdict === "fraud";
+              const hasVote = v.last_verdict === "clean" || vFraud;
               return (
                 <div
                   key={v.verifier_id}
                   title={`${v.verifier_id}: ${v.last_verdict || "pending"}`}
-                  className={`w-6 h-2 rounded-full transition-colors ${
-                    vFraud
-                      ? "bg-brand"
-                      : v.last_verdict === "clean"
-                      ? "bg-emerald-600"
-                      : "bg-surface-soft border border-hairline"
-                  }`}
-                />
+                  className="w-6 h-2 rounded-full bg-surface-soft border border-hairline overflow-hidden"
+                >
+                  {hasVote && (
+                    <motion.div
+                      key={`${v.verifier_id}-${v.last_verdict}`}
+                      initial={prefersReducedMotion ? false : { scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ duration: prefersReducedMotion ? 0 : 0.2, ease: "easeOut" }}
+                      className={`w-full h-full origin-left ${vFraud ? "bg-brand" : "bg-emerald-600"}`}
+                    />
+                  )}
+                </div>
               );
             })}
           </div>
@@ -203,7 +212,7 @@ export const VerifierPage: React.FC = () => {
       >
         {verifiers.map((v) => (
           <VoteCard
-            key={v.verifier_id}
+            key={`${v.verifier_id}-${v.last_verdict || "pending"}`}
             verifier={v}
             isLoading={isLoading}
             error={error}

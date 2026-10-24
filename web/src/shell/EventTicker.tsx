@@ -2,6 +2,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import { useData } from "../data/DataContext.tsx";
 import { Sparkles, Layers, ShieldAlert, Cpu, FileCheck2, ShieldCheck, BarChart3 } from "lucide-react";
 import { formatEventTickerText, formatStepCaption } from "../lib/eventTemplates.ts";
+import { AnimatedList } from "../components/ui/animated-list";
 
 export const EventTicker: React.FC = () => {
   const { scenarioStatus, events } = useData();
@@ -111,10 +112,9 @@ export const EventTicker: React.FC = () => {
             })}
           </div>
         ) : (
-          // Continuous marquee with highlighted newest item
-          <div className="animate-ticker-marquee flex items-center gap-8 py-1 group-hover:[animation-play-state:paused]">
-            {tickerItems.concat(tickerItems).map((ev, i) => {
-              const isNewest = (i % tickerItems.length) === tickerItems.length - 1;
+          <AnimatedList delay={1500} className="flex-row items-center gap-4 overflow-hidden h-7">
+            {tickerItems.map((ev, i) => {
+              const isNewest = i === tickerItems.length - 1;
               return (
                 <span
                   key={`${ev}-${i}`}
@@ -129,7 +129,7 @@ export const EventTicker: React.FC = () => {
                 </span>
               );
             })}
-          </div>
+          </AnimatedList>
         )}
       </div>
     </div>

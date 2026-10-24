@@ -16,6 +16,7 @@ import { useData } from "../data/DataContext.tsx";
 import { useToast } from "../components/Toast.tsx";
 import { DataStatusPill } from "./DataStatusPill.tsx";
 import { ArbitrumSepoliaModal } from "../components/ArbitrumSepoliaModal.tsx";
+import { IntroModal } from "../components/IntroModal.tsx";
 
 export const TopBar: React.FC = () => {
   const {
@@ -37,14 +38,40 @@ export const TopBar: React.FC = () => {
   const [isManualMode, setIsManualMode] = useState(false);
   const [isTestnetModalOpen, setIsTestnetModalOpen] = useState(false);
   const [dataPopoverOpen, setDataPopoverOpen] = useState(false);
+  const [isIntroOpen, setIsIntroOpen] = useState<boolean>(() => {
+    try {
+      if (typeof window !== "undefined") {
+        return localStorage.getItem("vericems_intro_modal_seen") !== "true";
+      }
+    } catch {
+      // fallback
+    }
+    return true;
+  });
 
-  // Dark mode state
+  const handleCloseIntro = () => {
+    try {
+      localStorage.setItem("vericems_intro_modal_seen", "true");
+    } catch {
+      // ignore
+    }
+    setIsIntroOpen(false);
+  };
+
+  const handleStartStory = async () => {
+    handleCloseIntro();
+    setIsManualMode(false);
+    navigate("/operator");
+    await playScenario();
+  };
+
+  // Dark mode state (defaults to dark)
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("vericems-theme");
       if (stored === "dark" || stored === "light") return stored;
     }
-    return "light";
+    return "dark";
   });
 
   useEffect(() => {
@@ -289,6 +316,18 @@ export const TopBar: React.FC = () => {
           )}
         </button>
 
+        {/* Help & Intro Modal Button */}
+        <button
+          type="button"
+          data-testid="help-intro-btn"
+          onClick={() => setIsIntroOpen(true)}
+          aria-label="Help and introduction"
+          title="Help & Intro (?)"
+          className="inline-flex items-center justify-center w-7 h-7 rounded-pill bg-surface-soft hover:bg-hairline border border-hairline text-ink transition-all text-xs font-bold select-none cursor-pointer"
+        >
+          ?
+        </button>
+
         {/* Compact Demo Dock */}
         <div
           data-testid="compact-demo-dock"
@@ -401,6 +440,13 @@ export const TopBar: React.FC = () => {
       <ArbitrumSepoliaModal
         isOpen={isTestnetModalOpen}
         onClose={() => setIsTestnetModalOpen(false)}
+      />
+
+      {/* Intro Modal (opens on first visit or via ? button) */}
+      <IntroModal
+        isOpen={isIntroOpen}
+        onClose={handleCloseIntro}
+        onStartStory={handleStartStory}
       />
     </header>
   );

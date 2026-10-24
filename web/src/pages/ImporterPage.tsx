@@ -9,7 +9,6 @@ import {
 import { HashChip } from "../components/HashChip";
 import {
   calculateCbamComparison,
-  calculateSavingsEur,
   loadCbamConfig,
   getIllustrativeExampleInputs,
   NeedsSourceError,
@@ -24,6 +23,7 @@ import { keccak256 } from "viem";
 import { CONTRACT_ADDRESSES } from "../chain/viemClient";
 import { SourcesDrawer } from "../components/SourcesDrawer";
 import { PageHint } from "../components/GuideLayer";
+import { NumberTicker } from "../components/ui/number-ticker";
 
 export const ImporterPage: React.FC = () => {
   const [verificationResult, setVerificationResult] = useState<VerificationResult | null>(null);
@@ -553,12 +553,11 @@ export const ImporterPage: React.FC = () => {
                 data-testid="animated-savings-value"
                 className="text-4xl sm:text-5xl font-heading font-bold text-[#FF6B6B]"
               >
-                {comparison
-                  ? `€${comparison.savings_eur.toLocaleString("en-US", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}`
-                  : "--"}
+                {comparison ? (
+                  <>€<NumberTicker value={comparison.savings_eur} decimalPlaces={2} className="text-[#FF6B6B] dark:text-[#FF6B6B] inline" /></>
+                ) : (
+                  "--"
+                )}
               </span>
               {comparison && comparison.cost_with_default_eur > 0 && (
                 <span className="text-xs font-mono text-white/70">
