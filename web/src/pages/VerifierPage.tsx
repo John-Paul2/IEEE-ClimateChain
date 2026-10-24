@@ -8,6 +8,7 @@ import { QuarantineViewer } from "../components/QuarantineViewer";
 import { HashChip } from "../components/HashChip";
 import { Chip } from "../components/Chip";
 import { Popover } from "../components/Popover";
+import { PageHint } from "../components/GuideLayer";
 import type { BatchDetail } from "../types/telemetry";
 
 export const VerifierPage: React.FC = () => {
@@ -97,31 +98,39 @@ export const VerifierPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* 1. Title Row: Title with status chip & single Popover */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5 flex-wrap">
-          <h1 className="text-2xl sm:text-page-title text-ink font-heading font-bold">
-            Verifier Committee Console
-          </h1>
-          <Chip
-            variant={isQuarantined ? "FRAUD" : "CLEAN"}
-            label={isQuarantined ? `${fraudVotes} of ${totalVerifiers} flagged` : `${cleanVotes} of ${totalVerifiers} verified`}
-          />
-          <Popover
-            title="Verifier committee"
-            bullets={[
-              "Five independent nodes run identical models.",
-              "Consensus requires 3 of 5 votes.",
-              "Quarantine activates challenge window and arbiter.",
-              "Arbiter resolution slashes or clears bond.",
-            ]}
-          />
+      <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <h1 className="text-2xl sm:text-page-title text-ink font-heading font-bold">
+              Verifier Committee Console
+            </h1>
+            <Chip
+              variant={isQuarantined ? "FRAUD" : "CLEAN"}
+              label={isQuarantined ? `${fraudVotes} of ${totalVerifiers} flagged` : `${cleanVotes} of ${totalVerifiers} verified`}
+            />
+            <Popover
+              title="Verifier committee"
+              bullets={[
+                "Five independent nodes run identical models.",
+                "Consensus requires 3 of 5 votes.",
+                "Quarantine activates challenge window and arbiter.",
+                "Arbiter resolution slashes or clears bond.",
+              ]}
+            />
+          </div>
+
+          <div className="flex items-center gap-2 text-xs font-mono text-muted-strong">
+            <span className="bg-surface-soft border border-hairline px-2.5 py-1 rounded-chip">
+              5 Nodes · 3-of-5 Consensus
+            </span>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2 text-xs font-mono text-muted-strong">
-          <span className="bg-surface-soft border border-hairline px-2.5 py-1 rounded-chip">
-            5 Nodes · 3-of-5 Consensus
-          </span>
-        </div>
+        <PageHint
+          what="Five independent checkers vote on each batch. Three votes to flag it."
+          nextLabel="See what the buyer sees"
+          nextTo="/importer"
+        />
       </div>
 
       {/* 2. Quorum Bar and Model Line (Section 3 Order) */}

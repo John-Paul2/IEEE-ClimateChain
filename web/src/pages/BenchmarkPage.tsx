@@ -14,11 +14,21 @@ import { Popover } from "../components/Popover";
 import { EmptyState } from "../components/EmptyState";
 import { Skeleton } from "../components/Skeleton";
 import { HashChip } from "../components/HashChip";
+import { PageHint } from "../components/GuideLayer";
+import { useData } from "../data/DataContext";
+import { useNavigate } from "react-router-dom";
 
 export const BenchmarkPage: React.FC = () => {
+  const { resetScenario } = useData();
+  const navigate = useNavigate();
   const [summary, setSummary] = useState<BenchmarkSummary | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [showDetails, setShowDetails] = useState<boolean>(false);
+
+  const handleReplayStory = async () => {
+    await resetScenario();
+    navigate("/operator");
+  };
 
   useEffect(() => {
     try {
@@ -34,21 +44,29 @@ export const BenchmarkPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* 1. Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5 flex-wrap">
-          <h1 className="text-2xl sm:text-page-title text-ink font-heading font-bold">
-            Test results
-          </h1>
-          <Popover
-            title="Benchmark evaluation"
-            bullets={[
-              "Empirical evaluation across 14 industrial attack scenarios.",
-              "Five facility-grouped cross-validation splits on EPA CAMPD.",
-              "Attacks below 50% recall are prominently disclosed.",
-              "Multi-layer detector combines physics and neural autoencoder.",
-            ]}
-          />
+      <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <h1 className="text-2xl sm:text-page-title text-ink font-heading font-bold">
+              Test results
+            </h1>
+            <Popover
+              title="Benchmark evaluation"
+              bullets={[
+                "Empirical evaluation across 14 industrial attack scenarios.",
+                "Five facility-grouped cross-validation splits on EPA CAMPD.",
+                "Attacks below 50% recall are prominently disclosed.",
+                "Multi-layer detector combines physics and neural autoencoder.",
+              ]}
+            />
+          </div>
         </div>
+
+        <PageHint
+          what="How well the checker works on real EPA data, including what it misses."
+          nextLabel="Replay the story"
+          onNext={handleReplayStory}
+        />
       </div>
 
       {/* 2. Three Summary Tiles on Top (Caught well / Partly caught / Missed) */}

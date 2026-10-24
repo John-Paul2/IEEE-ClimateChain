@@ -9,6 +9,7 @@ import {
 import { HashChip } from "../components/HashChip";
 import {
   calculateCbamComparison,
+  calculateSavingsEur,
   loadCbamConfig,
   getIllustrativeExampleInputs,
   NeedsSourceError,
@@ -22,6 +23,7 @@ import validReportPayload from "../../e2e/fixtures/valid_report_payload.json" wi
 import { keccak256 } from "viem";
 import { CONTRACT_ADDRESSES } from "../chain/viemClient";
 import { SourcesDrawer } from "../components/SourcesDrawer";
+import { PageHint } from "../components/GuideLayer";
 
 export const ImporterPage: React.FC = () => {
   const [verificationResult, setVerificationResult] = useState<VerificationResult | null>(null);
@@ -271,6 +273,12 @@ export const ImporterPage: React.FC = () => {
             </button>
           </div>
         </div>
+
+        <PageHint
+          what="The EU importer. Check the proof, then see what verified data saves."
+          nextLabel="See what we catch and miss"
+          nextTo="/benchmark"
+        />
 
         {/* Fixed Non-Overlapping One-Line Banner */}
         <div

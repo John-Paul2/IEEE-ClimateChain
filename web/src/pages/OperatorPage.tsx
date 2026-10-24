@@ -14,6 +14,7 @@ import { Popover } from "../components/Popover";
 import { HashChainStrip } from "../components/HashChainStrip";
 import { TelemetryCharts } from "../components/TelemetryCharts";
 import { MerkleTreeViz } from "../components/MerkleTreeViz";
+import { StartHere, PageHint } from "../components/GuideLayer";
 
 const ATTACK_BUTTONS = [
   { id: "constant_scaling", label: "Constant scaling (-20% CO₂)", name: "Constant scaling" },
@@ -121,28 +122,39 @@ export const OperatorPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* 0. Guide Layer StartHere Card */}
+      <StartHere />
+
       {/* 1. Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5 flex-wrap">
-          <h1 className="text-2xl sm:text-page-title text-ink font-heading font-bold">
-            Factory emissions telemetry
-          </h1>
-          <Popover
-            title="Factory operator guide"
-            bullets={[
-              "Every hourly combustion reading is signed by the secure element.",
-              "Readings are hash-chained in sequence to detect deletion or reordering.",
-              "Batches of 8 readings are Merkle-anchored to Arbitrum Sepolia.",
-              "Select an attack below to simulate how verifiers catch tampering.",
-            ]}
-          />
+      <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <h1 className="text-2xl sm:text-page-title text-ink font-heading font-bold">
+              Factory emissions telemetry
+            </h1>
+            <Popover
+              title="Factory operator guide"
+              bullets={[
+                "Every hourly combustion reading is signed by the secure element.",
+                "Readings are hash-chained in sequence to detect deletion or reordering.",
+                "Batches of 8 readings are Merkle-anchored to Arbitrum Sepolia.",
+                "Select an attack below to simulate how verifiers catch tampering.",
+              ]}
+            />
+          </div>
+
+          {latestBatch && (
+            <span className="text-xs font-mono text-muted-strong bg-surface-soft px-2.5 py-1 rounded-pill border border-hairline">
+              Batch #{latestBatch.batch_id} · {latestBatch.status}
+            </span>
+          )}
         </div>
 
-        {latestBatch && (
-          <span className="text-xs font-mono text-muted-strong bg-surface-soft px-2.5 py-1 rounded-pill border border-hairline">
-            Batch #{latestBatch.batch_id} · {latestBatch.status}
-          </span>
-        )}
+        <PageHint
+          what="The plant. Each reading is sealed and chained, then one fingerprint of the batch goes on the blockchain."
+          nextLabel="See who checks it"
+          nextTo="/verifier"
+        />
       </div>
 
       {/* 2. Stat Tiles Bento Row */}

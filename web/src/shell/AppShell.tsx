@@ -5,6 +5,7 @@ import { TopBar } from "./TopBar.tsx";
 import { EventTicker } from "./EventTicker.tsx";
 import { useData } from "../data/DataContext.tsx";
 import { StorySpotlight } from "../story/StorySpotlight.tsx";
+import { StoryEnd } from "../components/GuideLayer.tsx";
 
 export const AppShell: React.FC = () => {
   const { liveConnectionFailed, clearLiveFailure } = useData();
@@ -42,6 +43,7 @@ export const AppShell: React.FC = () => {
 
       {/* Centred 1200px Main Content Column */}
       <main className="flex-1 w-full max-w-[1200px] mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-48 sm:pb-12 [contain:paint]">
+        <StoryEnd />
         <Outlet />
       </main>
     </div>
