@@ -2,7 +2,6 @@ import React, { useMemo, useState, useEffect } from "react";
 import { useData } from "../data/DataContext.tsx";
 import { Sparkles, Layers, ShieldAlert, Cpu, FileCheck2, ShieldCheck, BarChart3 } from "lucide-react";
 import { formatEventTickerText, formatStepCaption } from "../lib/eventTemplates.ts";
-import { AnimatedList } from "../components/ui/animated-list";
 
 export const EventTicker: React.FC = () => {
   const { scenarioStatus, events } = useData();
@@ -97,7 +96,7 @@ export const EventTicker: React.FC = () => {
               const isNewest = i === staticReducedMotionEvents.length - 1;
               return (
                 <span
-                  key={`static-${i}`}
+                  key={`static-${i}-${ev}`}
                   className={`inline-flex items-center gap-1.5 truncate ${
                     isNewest
                       ? "bg-[#FF6B6B]/20 text-white border border-[#FF6B6B]/40 px-2 py-0.5 rounded-chip font-semibold"
@@ -112,24 +111,26 @@ export const EventTicker: React.FC = () => {
             })}
           </div>
         ) : (
-          <AnimatedList delay={1500} className="flex-row items-center gap-4 overflow-hidden h-7">
-            {tickerItems.map((ev, i) => {
-              const isNewest = i === tickerItems.length - 1;
-              return (
-                <span
-                  key={`${ev}-${i}`}
-                  className={`inline-flex items-center gap-2 transition-all duration-200 cursor-default whitespace-nowrap text-[12px] ${
-                    isNewest
-                      ? "text-white font-bold bg-[#FF6B6B]/20 border border-[#FF6B6B]/50 px-2.5 py-0.5 rounded-chip shadow-[0_0_8px_rgba(255,107,107,0.35)]"
-                      : "text-white/75 hover:text-white"
-                  }`}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B6B]" />
-                  <span>{ev}</span>
-                </span>
-              );
-            })}
-          </AnimatedList>
+          <div className="overflow-hidden whitespace-nowrap h-7 flex items-center">
+            <div className="animate-ticker-marquee flex items-center gap-6">
+              {[...tickerItems, ...tickerItems].map((ev, i) => {
+                const isNewest = (i % tickerItems.length) === tickerItems.length - 1;
+                return (
+                  <span
+                    key={`marquee-${i}-${ev}`}
+                    className={`inline-flex items-center gap-2 cursor-default whitespace-nowrap text-[12px] ${
+                      isNewest
+                        ? "text-white font-bold bg-[#FF6B6B]/20 border border-[#FF6B6B]/50 px-2.5 py-0.5 rounded-chip shadow-[0_0_8px_rgba(255,107,107,0.35)]"
+                        : "text-white/75 hover:text-white"
+                    }`}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B6B] shrink-0" />
+                    <span>{ev}</span>
+                  </span>
+                );
+              })}
+            </div>
+          </div>
         )}
       </div>
     </div>

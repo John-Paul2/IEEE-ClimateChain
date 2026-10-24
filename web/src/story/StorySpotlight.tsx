@@ -1,18 +1,23 @@
 import React, { useEffect, useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import { BorderBeam } from "../components/ui/border-beam";
-import { X } from "lucide-react";
+import { X, Volume2, VolumeX } from "lucide-react";
 import { useData } from "../data/DataContext";
 import { STORY_STEPS, type StoryStep } from "./steps";
 
 export const StorySpotlight: React.FC = () => {
-  const { scenarioStatus, narrationEnabled } = useData();
+  const { scenarioStatus, narrationEnabled, setNarrationEnabled } = useData();
   const [dismissedForStep, setDismissedForStep] = useState<number | null>(null);
 
   const currentStepNum = scenarioStatus?.current_step || 0;
   const isPlaying = scenarioStatus?.status === "playing";
   const isPaused = scenarioStatus?.status === "paused";
-  const active = narrationEnabled && currentStepNum > 0 && (isPlaying || isPaused) && dismissedForStep !== currentStepNum;
+
+  // Captions always show during active steps regardless of whether audio is on or off
+  const active =
+    currentStepNum > 0 &&
+    (isPlaying || isPaused) &&
+    dismissedForStep !== currentStepNum;
 
   const currentStep: StoryStep | undefined = STORY_STEPS.find(
     (s) => s.stepNumber === currentStepNum
@@ -82,7 +87,11 @@ export const StorySpotlight: React.FC = () => {
 
   return (
     <>
-      {targetElement && createPortal(<BorderBeam size={140} duration={6} colorFrom="#E5383B" colorTo="#FF6B6B" />, targetElement)}
+      {targetElement &&
+        createPortal(
+          <BorderBeam size={140} duration={6} colorFrom="#E5383B" colorTo="#FF6B6B" />,
+          targetElement
+        )}
       {/* Visual dim overlay without intercepting any user clicks or focus */}
       <div
         data-testid="story-dim-overlay"
@@ -99,13 +108,28 @@ export const StorySpotlight: React.FC = () => {
         className="fixed bottom-3 left-3 sm:bottom-4 sm:left-4 z-50 w-[calc(100%-1.5rem)] sm:w-auto max-w-[340px] sm:max-w-sm p-4 rounded-card bg-surface border border-hairline shadow-2xl transition-all duration-200"
       >
         <div className="flex items-center justify-between pb-2 mb-2 border-b border-hairline">
-          <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-brand">
-            Step {currentStep.stepNumber} of {STORY_STEPS.length}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-brand">
+              Step {currentStep.stepNumber} of {STORY_STEPS.length}
+            </span>
+            <button
+              type="button"
+              onClick={() => setNarrationEnabled((prev) => !prev)}
+              className="text-muted hover:text-ink text-xs p-1 rounded-md transition-colors cursor-pointer"
+              title={narrationEnabled ? "Mute scene audio" : "Unmute scene audio"}
+              aria-label={narrationEnabled ? "Mute scene audio" : "Unmute scene audio"}
+            >
+              {narrationEnabled ? (
+                <Volume2 className="w-3.5 h-3.5 text-brand" />
+              ) : (
+                <VolumeX className="w-3.5 h-3.5 text-muted" />
+              )}
+            </button>
+          </div>
           <button
             type="button"
             onClick={() => setDismissedForStep(currentStepNum)}
-            className="text-muted hover:text-ink text-xs p-1 rounded-md transition-colors"
+            className="text-muted hover:text-ink text-xs p-1 rounded-md transition-colors cursor-pointer"
             aria-label="Exit spotlight"
             title="Press Esc to exit"
           >

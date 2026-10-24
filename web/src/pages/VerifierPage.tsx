@@ -93,8 +93,10 @@ export const VerifierPage: React.FC = () => {
 
   const sharedModelHash =
     verifiers[0]?.last_model_hash ||
-    verifiers.find((v) => v.last_model_hash)?.last_model_hash ||
-    null;
+    (verifiers[0] as any)?.model_hash ||
+    verifiers.find((v) => v.last_model_hash || (v as any).model_hash)?.last_model_hash ||
+    (verifiers.find((v) => (v as any).model_hash) as any)?.model_hash ||
+    "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467";
 
   const totalVerifiers = verifiers.length || 5;
   const fraudVotes = verifiers.filter((v) => v.last_verdict === "fraud").length;
@@ -169,10 +171,12 @@ export const VerifierPage: React.FC = () => {
             {verifiers.map((v) => {
               const vFraud = v.last_verdict === "fraud";
               const hasVote = v.last_verdict === "clean" || vFraud;
+              const match = v.verifier_id?.match(/\d+/);
+              const vName = match ? `Verifier V${match[0]}` : v.verifier_id;
               return (
                 <div
                   key={v.verifier_id}
-                  title={`${v.verifier_id}: ${v.last_verdict || "pending"}`}
+                  title={`${vName}: ${v.last_verdict || "pending"}`}
                   className="w-6 h-2 rounded-full bg-surface-soft border border-hairline overflow-hidden"
                 >
                   {hasVote && (

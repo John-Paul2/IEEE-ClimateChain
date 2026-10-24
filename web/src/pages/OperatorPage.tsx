@@ -24,8 +24,6 @@ const ATTACK_BUTTONS = [
   { id: "tamper_after_signing", label: "Tamper after signing", name: "Tamper" },
 ];
 
-
-
 export const OperatorPage: React.FC = () => {
   const {
     dataState,
@@ -106,8 +104,6 @@ export const OperatorPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* 0. Guide Layer StartHere Card */}
-      
       {/* 1. Page Header */}
       <div className="space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -287,7 +283,11 @@ export const OperatorPage: React.FC = () => {
                 data-testid="seal-batch-btn"
                 onClick={handleSealBatch}
                 disabled={isSubmittingAttack || isSealingBatch}
-                className="w-full px-4 py-2 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1.5 bg-ink text-white dark:bg-white dark:text-ink hover:opacity-90 cursor-pointer"
+                className={`w-full px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5 ${
+                  isSubmittingAttack || isSealingBatch
+                    ? "bg-surface-soft text-muted border border-hairline cursor-not-allowed opacity-60"
+                    : "bg-brand text-white hover:bg-brand-pressed active:scale-[0.99] shadow-sm cursor-pointer"
+                }`}
               >
                 {isSealingBatch ? (
                   <>

@@ -148,10 +148,15 @@ export const HashChainStrip: React.FC<HashChainStripProps> = ({
               ? Number(packet.values.synthetic_stack_o2_pct).toFixed(2)
               : null;
           const rawLoad = packet.values?.gross_load_mw;
+          const steamLoad = (packet.values as any)?.steam_load_1000_lb_hr;
           const loadStr =
-            rawLoad === undefined || rawLoad === null || Number(rawLoad) === 0
-              ? "-"
-              : `${Number(rawLoad).toFixed(1)} MW`;
+            rawLoad !== undefined && rawLoad !== null && Number(rawLoad) > 0
+              ? `${Number(rawLoad).toFixed(1)} MW`
+              : steamLoad !== undefined && steamLoad !== null && Number(steamLoad) > 0
+              ? `${Number(steamLoad).toFixed(0)} klb/h`
+              : rawLoad !== undefined && rawLoad !== null
+              ? `${Number(rawLoad).toFixed(1)} MW`
+              : "-";
 
           const isHovered = activeSeq === packet.seq;
 

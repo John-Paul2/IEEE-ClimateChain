@@ -91,8 +91,13 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
 
   // Base values from first packet for index = 100 calculation
   const firstPacket = packets[0];
-  const co2Base = Number(firstPacket?.values?.co2_mass_short_tons) || 1;
-  const heatBase = Number(firstPacket?.values?.heat_input_mmbtu) || 1;
+  const firstVals = (firstPacket as any)?.values || (firstPacket as any)?.data?.values || (firstPacket as any)?.data || firstPacket || {};
+  const co2Base = Number(firstVals.co2_mass_short_tons ?? firstVals.co2_mass ?? firstVals.co2) || 1;
+  const heatBase = Number(firstVals.heat_input_mmbtu ?? firstVals.heat_input ?? firstVals.heat) || 1;
+  const rawFirstLoad = firstVals.gross_load_mw !== undefined && Number(firstVals.gross_load_mw) > 0
+    ? Number(firstVals.gross_load_mw)
+    : Number(firstVals.steam_load_1000_lb_hr ?? firstVals.load ?? 0);
+  const loadBase = rawFirstLoad > 0 ? rawFirstLoad : 1;
 
   // Format chart data points from packets (indexed to 100 at first packet)
   const chartData = packets.map((pkt: any) => {
@@ -105,8 +110,12 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
         })
       : `Seq #${pkt.seq}`;
 
-    const rawCo2 = pkt.values?.co2_mass_short_tons;
-    const rawHeat = pkt.values?.heat_input_mmbtu;
+    const vals = pkt.values || pkt.data?.values || pkt.data || pkt || {};
+    const rawCo2 = vals.co2_mass_short_tons ?? vals.co2_mass ?? vals.co2;
+    const rawHeat = vals.heat_input_mmbtu ?? vals.heat_input ?? vals.heat;
+    const rawLoad = vals.gross_load_mw !== undefined && Number(vals.gross_load_mw) > 0
+      ? Number(vals.gross_load_mw)
+      : Number(vals.steam_load_1000_lb_hr ?? vals.load ?? 0);
 
     const co2Indexed =
       rawCo2 !== undefined && rawCo2 !== null && co2Base > 0
@@ -118,24 +127,33 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
         ? Number(((Number(rawHeat) / heatBase) * 100).toFixed(2))
         : 100;
 
+    const loadIndexed =
+      rawLoad !== undefined && rawLoad !== null && loadBase > 0
+        ? Number(((Number(rawLoad) / loadBase) * 100).toFixed(2))
+        : 100;
+
     return {
       seq: pkt.seq,
       label: `Seq #${pkt.seq}`,
       time: timeStr,
       co2_mass_short_tons: co2Indexed,
       heat_input_mmbtu: heatIndexed,
-      gross_load_mw: pkt.values?.gross_load_mw ?? null,
+      gross_load_mw: loadIndexed,
       raw_co2: rawCo2,
       raw_heat: rawHeat,
+      raw_load: rawLoad,
     };
   });
 
   // Separate O2 chart data points
-  const o2ChartData = packets.map((pkt: any) => ({
-    seq: pkt.seq,
-    label: `Seq #${pkt.seq}`,
-    o2_pct: pkt.values?.synthetic_stack_o2_pct ?? null,
-  }));
+  const o2ChartData = packets.map((pkt: any) => {
+    const vals = pkt.values || pkt.data?.values || pkt.data || pkt || {};
+    return {
+      seq: pkt.seq,
+      label: `Seq #${pkt.seq}`,
+      o2_pct: vals.synthetic_stack_o2_pct ?? null,
+    };
+  });
 
   // Render pulsed dot for the latest point
   const renderPulsedDot = (props: any, color: string) => {
@@ -304,11 +322,23 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
                               />
                               <span className="text-muted-strong">{cfg.label}:</span>
                             </div>
-                            <span className="font-mono font-bold text-ink">
-                              {entry.value !== null && entry.value !== undefined
-                                ? `${Number(entry.value).toFixed(2)} (idx)`
-                                : "--"}
-                            </span>
+                            <div className="flex items-center gap-1.5">
+                              <span className="font-mono font-bold text-ink">
+                                {entry.value !== null && entry.value !== undefined
+                                  ? `${Number(entry.value).toFixed(2)} (idx)`
+                                  : "--"}
+                              </span>
+                              {entry.dataKey === "co2_mass_short_tons" && pt.raw_co2 !== undefined && (
+                                <span className="text-[10px] font-mono text-muted-strong">
+                                  ({Number(pt.raw_co2).toFixed(1)} T)
+                                </span>
+                              )}
+                              {entry.dataKey === "heat_input_mmbtu" && pt.raw_heat !== undefined && (
+                                <span className="text-[10px] font-mono text-muted-strong">
+                                  ({Number(pt.raw_heat).toFixed(1)} mmBtu)
+                                </span>
+                              )}
+                            </div>
                           </div>
                         );
                       })}

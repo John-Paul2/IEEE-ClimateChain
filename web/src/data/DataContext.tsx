@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, useReducer } from "react";
 import type {
   BatchSummary,
   BatchDetail,
@@ -13,6 +13,11 @@ import { checkNetworkStatus } from "../chain/chainHelpers.ts";
 import { deploymentConfig } from "../chain/deploymentConfig.ts";
 import { formatStepCaption } from "../lib/eventTemplates.ts";
 import { STORY_STEPS } from "../story/steps.ts";
+import {
+  timelineReducer,
+  createInitialTimelineState,
+  sceneAudioManager,
+} from "../story/timelineStateMachine.ts";
 import realRunSnapshot from "../../public/snapshots/real-run.json" with { type: "json" };
 
 const isProduction = Boolean(import.meta.env?.PROD);
@@ -43,7 +48,11 @@ export function getRecordedStepInfoList() {
   }));
 }
 
-export function buildScenarioStatus(step: number, status: "idle" | "playing" | "paused" | "completed" = "idle", speed: number = 1.0): ScenarioStatusResponse {
+export function buildScenarioStatus(
+  step: number,
+  status: "idle" | "playing" | "paused" | "completed" = "idle",
+  speed: number = 1.0
+): ScenarioStatusResponse {
   const currentStepObj = STORY_STEPS.find((s) => s.stepNumber === step);
   return {
     current_step: step,
@@ -115,15 +124,18 @@ function getPersistedDataState(): DataState {
 }
 
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Default to RECORDED REAL RUN per Requirement 2
+  // Default to RECORDED REAL RUN
   const [dataState, setDataStateInternal] = useState<DataState>(getPersistedDataState);
   const [liveConnectionFailed, setLiveConnectionFailed] = useState<boolean>(false);
 
-  // Replay step for RECORDED REAL RUN (0..STORY_STEPS.length)
-  const [recordedStep, setRecordedStep] = useState<number>(0);
-  const [recordedPlayStatus, setRecordedPlayStatus] = useState<"idle" | "playing" | "paused" | "completed">("idle");
-  const [recordedSpeed, setRecordedSpeed] = useState<number>(1.0);
-  const [narrationEnabled, setNarrationEnabled] = useState<boolean>(true);
+  // Single source of truth Timeline state machine
+  const [timeline, dispatchTimeline] = useReducer(
+    timelineReducer,
+    undefined,
+    () => createInitialTimelineState(true, 1.0)
+  );
+
+  const [liveScenarioStatus, setLiveScenarioStatus] = useState<ScenarioStatusResponse | null>(null);
 
   const [batches, setBatches] = useState<BatchSummary[]>([]);
   const [verifiers, setVerifiers] = useState<VerifierNodeStatus[]>([]);
@@ -144,7 +156,6 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [scenarioStatus, setScenarioStatus] = useState<ScenarioStatusResponse | null>(() => buildScenarioStatus(0));
 
   const isMock = dataState === "MOCK";
 
@@ -155,7 +166,6 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const setDataState = useCallback(
     (requested: DataState) => {
       let resolved = requested;
-      // Never allow MOCK in production per Requirement 1 & 3
       if (resolved === "MOCK" && isProduction) {
         resolved = "RECORDED REAL RUN";
       }
@@ -189,7 +199,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const ws = useVeriCEMSWebSocket(dataState !== "LIVE");
 
-  // Load data according to current DataState
+  // Load data according to current DataState & timeline step
   const loadData = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -208,60 +218,80 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         batches: snapBatches.length,
       };
 
+      const cleanVerifiers = snapVerifiers.map((v) => ({
+        ...v,
+        last_batch_id: 1,
+        last_verdict: "clean" as const,
+        last_score_bp: 1216,
+        staked_amount_wei: (v as any).stake_wei || v.staked_amount_wei || "1000000000000000000",
+        last_model_hash: (v as any).model_hash || v.last_model_hash || "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+      }));
+
+      const fraudVerifiers = snapVerifiers.map((v) => ({
+        ...v,
+        last_batch_id: 2,
+        last_verdict: "fraud" as const,
+        last_score_bp: 9585,
+        staked_amount_wei: (v as any).stake_wei || v.staked_amount_wei || "1000000000000000000",
+        last_model_hash: (v as any).model_hash || v.last_model_hash || "0xf9608ef7cc239b3f844843f8b42fbf265f5e1de14a3795dd77ca7f77f06db467",
+      }));
+
+      const recordedStep = timeline.step;
+
       if (recordedStep === 0) {
         // Initial state before play: batch 1 packets streaming, clean baseline
         const firstBatch = snapBatches.filter((b) => b.batch_id === 1);
         setBatches(firstBatch);
-        setVerifiers(snapVerifiers.map((v) => ({ ...v, last_batch_id: 1, last_verdict: "clean" })));
+        setVerifiers(cleanVerifiers);
         setChallenges([]);
         setEvents(snapEvents.filter((e) => (e.batch_id ?? 1) === 1 && e.type === "packet"));
         setState({ ...snapState, attack: "none", batches: 1 });
       } else if (recordedStep === 1) {
         // Step 1: Sealing each reading (packets chained)
         setBatches(snapBatches.filter((b) => b.batch_id === 1));
-        setVerifiers(snapVerifiers.map((v) => ({ ...v, last_batch_id: 1, last_verdict: "clean" })));
+        setVerifiers(cleanVerifiers);
         setChallenges([]);
         setEvents(snapEvents.filter((e) => (e.batch_id ?? 1) === 1 && e.type === "packet"));
         setState({ ...snapState, attack: "none", batches: 1 });
       } else if (recordedStep === 2) {
         // Step 2: Fingerprinting the batch (batch anchored)
         setBatches(snapBatches.filter((b) => b.batch_id === 1));
-        setVerifiers(snapVerifiers.map((v) => ({ ...v, last_batch_id: 1, last_verdict: "clean" })));
+        setVerifiers(cleanVerifiers);
         setChallenges([]);
         setEvents(snapEvents.filter((e) => e.batch_id === 1 && (e.type === "packet" || e.type === "batch_anchored")));
         setState({ ...snapState, attack: "none", batches: 1 });
       } else if (recordedStep === 3) {
         // Step 3: Verifiers check it (vote)
         setBatches(snapBatches.filter((b) => b.batch_id === 1));
-        setVerifiers(snapVerifiers.map((v) => ({ ...v, last_batch_id: 1, last_verdict: "clean" })));
+        setVerifiers(cleanVerifiers);
         setChallenges([]);
         setEvents(snapEvents.filter((e) => e.batch_id === 1 && (e.type === "packet" || e.type === "batch_anchored" || e.type === "vote")));
         setState({ ...snapState, attack: "none", batches: 1 });
       } else if (recordedStep === 4) {
         // Step 4: Majority says clean (finalized clean)
         setBatches(snapBatches.filter((b) => b.batch_id === 1));
-        setVerifiers(snapVerifiers.map((v) => ({ ...v, last_batch_id: 1, last_verdict: "clean" })));
+        setVerifiers(cleanVerifiers);
         setChallenges([]);
         setEvents(snapEvents.filter((e) => e.batch_id === 1));
         setState({ ...snapState, attack: "none", batches: 1 });
       } else if (recordedStep === 5) {
         // Step 5: Flagged as suspicious (flagged fraud on batch 2)
         setBatches(snapBatches.map((b) => b.batch_id === 2 ? { ...b, status: "Quarantined" } : b));
-        setVerifiers(snapVerifiers.map((v) => ({ ...v, last_batch_id: 2, last_verdict: "fraud" })));
+        setVerifiers(fraudVerifiers);
         setChallenges(snapChallenges.map((c) => ({ ...c, status: "Active" })));
         setEvents(snapEvents.filter((e) => e.type !== "slashed" && e.type !== "attestation"));
         setState({ ...snapState, attack: "constant_scaling", batches: 2 });
       } else if (recordedStep === 6) {
         // Step 6: Time to appeal (challenge window open)
         setBatches(snapBatches.map((b) => b.batch_id === 2 ? { ...b, status: "Quarantined" } : b));
-        setVerifiers(snapVerifiers.map((v) => ({ ...v, last_batch_id: 2, last_verdict: "fraud" })));
+        setVerifiers(fraudVerifiers);
         setChallenges(snapChallenges.map((c) => ({ ...c, status: "Active" })));
         setEvents(snapEvents.filter((e) => e.type !== "slashed" && e.type !== "attestation"));
         setState({ ...snapState, attack: "constant_scaling", batches: 2 });
       } else if (recordedStep === 7) {
         // Step 7: Deposit slashed (slashed)
         setBatches(snapBatches);
-        setVerifiers(snapVerifiers.map((v) => ({ ...v, last_batch_id: 2, last_verdict: "fraud" })));
+        setVerifiers(fraudVerifiers);
         setChallenges(snapChallenges.map((c) => ({ ...c, status: "UpheldSlashed" })));
         setEvents(snapEvents.filter((e) => e.type !== "attestation"));
         setState({
@@ -277,7 +307,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else if (recordedStep >= 8) {
         // Step 8: Proof for the buyer (attestation)
         setBatches(snapBatches);
-        setVerifiers(snapVerifiers);
+        setVerifiers(cleanVerifiers);
         setChallenges(snapChallenges);
         setEvents(snapEvents);
         setState({
@@ -297,12 +327,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         clock: {
           wall_start_epoch: Math.floor(Date.now() / 1000) - 3600,
           scenario_time_utc: new Date().toISOString(),
-          speed_factor: recordedSpeed,
-          paused: recordedPlayStatus !== "playing",
+          speed_factor: timeline.speed,
+          paused: timeline.status !== "playing",
         },
       });
 
-      setScenarioStatus(buildScenarioStatus(recordedStep, recordedPlayStatus, recordedSpeed));
       checkNetworkStatus().then(setNetwork).catch(() => {});
       setIsLoading(false);
       return;
@@ -318,7 +347,6 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setHealth(typeof mockProvider.getSyntheticHealth === "function" ? mockProvider.getSyntheticHealth() : null);
         setState(typeof mockProvider.getSyntheticState === "function" ? mockProvider.getSyntheticState() : null);
         setEvents(callMock(["get", "Synthetic", "Events"].join("")));
-        setScenarioStatus(buildScenarioStatus(recordedStep, "idle", 1.0));
       }
       setIsLoading(false);
       return;
@@ -340,7 +368,6 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw new Error("Chain is unreachable");
       }
 
-      // Ensure batches in LIVE mode have packets populated from batch details if not present
       const batchesWithPackets = await Promise.all(
         b.map(async (batch) => {
           if (batch.packets && batch.packets.length > 0) return batch;
@@ -359,12 +386,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setVerifiers(v);
       setChallenges(c);
       setEvents(ws.events);
-      if (scn) setScenarioStatus(scn);
+      if (scn) setLiveScenarioStatus(scn);
       setNetwork(net);
       setLiveConnectionFailed(false);
     } catch (err: unknown) {
       console.warn("LIVE connection failed. Switching to RECORDED REAL RUN:", err);
-      // Requirement 3: Never fall back silently. Show banner and switch pill to RECORDED REAL RUN.
       setLiveConnectionFailed(true);
       setDataStateInternal("RECORDED REAL RUN");
       try {
@@ -374,7 +400,6 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } catch {
         // ignore
       }
-      // Replay recorded run
       const snapBatches = (realRunSnapshot.batches as unknown as BatchSummary[]) || [];
       const snapVerifiers = (realRunSnapshot.verifiers as unknown as VerifierNodeStatus[]) || [];
       const snapChallenges = (realRunSnapshot.challenges as unknown as ChallengeRecord[]) || [];
@@ -386,11 +411,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setChallenges(snapChallenges);
       setEvents(snapEvents);
       setState(snapState);
-      setScenarioStatus(buildScenarioStatus(0));
     } finally {
       setIsLoading(false);
     }
-  }, [dataState, recordedStep, recordedPlayStatus, recordedSpeed, ws.events]);
+  }, [dataState, timeline.step, timeline.status, timeline.speed, ws.events]);
 
   useEffect(() => {
     loadData();
@@ -444,7 +468,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await apiClient.runBatchScenario();
       await loadData();
     } else {
-      setRecordedStep(3);
+      dispatchTimeline({ type: "SET_STEP", step: 3 });
     }
   }, [dataState, loadData]);
 
@@ -509,99 +533,110 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const stepScenario = useCallback(async (): Promise<ScenarioStatusResponse | undefined> => {
     if (dataState === "LIVE") {
       const res = await apiClient.stepScenario();
-      setScenarioStatus(res);
+      setLiveScenarioStatus(res);
       await loadData();
       return res;
     }
 
-    const nextStep = Math.min(STORY_STEPS.length, recordedStep + 1);
-    setRecordedStep(nextStep);
-    const updated = buildScenarioStatus(nextStep, nextStep >= STORY_STEPS.length ? "completed" : "paused", recordedSpeed);
-    setScenarioStatus(updated);
+    dispatchTimeline({ type: "NEXT" });
+    const nextStep = Math.min(STORY_STEPS.length, timeline.step + 1);
+    const updated = buildScenarioStatus(nextStep, nextStep >= STORY_STEPS.length ? "completed" : "paused", timeline.speed);
     return updated;
-  }, [dataState, recordedStep, recordedSpeed, loadData]);
+  }, [dataState, timeline.step, timeline.speed, loadData]);
 
   const playScenario = useCallback(
     async (speed?: number): Promise<ScenarioStatusResponse | undefined> => {
-      const spd = speed ?? recordedSpeed;
+      const spd = speed ?? timeline.speed;
       if (dataState === "LIVE") {
         const res = await apiClient.playScenario(spd);
-        setScenarioStatus(res);
+        setLiveScenarioStatus(res);
         return res;
       }
 
-      setRecordedSpeed(spd);
-      setRecordedPlayStatus("playing");
-      const startStep = recordedStep === 0 || recordedStep >= STORY_STEPS.length ? 1 : recordedStep;
-      if (startStep !== recordedStep) {
-        setRecordedStep(startStep);
-      }
+      dispatchTimeline({ type: "PLAY", speed: spd });
+      const startStep = timeline.step === 0 || timeline.step >= STORY_STEPS.length ? 1 : timeline.step;
       const updated = buildScenarioStatus(startStep, "playing", spd);
-      setScenarioStatus(updated);
       return updated;
     },
-    [dataState, recordedSpeed, recordedStep]
+    [dataState, timeline.speed, timeline.step]
   );
 
   const pauseScenario = useCallback(async (): Promise<ScenarioStatusResponse | undefined> => {
     if (dataState === "LIVE") {
       const res = await apiClient.pauseScenario();
-      setScenarioStatus(res);
+      setLiveScenarioStatus(res);
       return res;
     }
 
-    setRecordedPlayStatus("paused");
-    const updated = buildScenarioStatus(recordedStep, "paused", recordedSpeed);
-    setScenarioStatus(updated);
+    dispatchTimeline({ type: "PAUSE" });
+    const updated = buildScenarioStatus(timeline.step, "paused", timeline.speed);
     return updated;
-  }, [dataState, recordedStep, recordedSpeed]);
+  }, [dataState, timeline.step, timeline.speed]);
 
   const resetScenario = useCallback(async (): Promise<ScenarioStatusResponse | undefined> => {
     if (dataState === "LIVE") {
       const res = await apiClient.resetScenario();
-      setScenarioStatus(res);
+      setLiveScenarioStatus(res);
       await loadData();
       return res;
     }
 
-    setRecordedStep(0);
-    setRecordedPlayStatus("idle");
-    const updated = buildScenarioStatus(0, "idle", recordedSpeed);
-    setScenarioStatus(updated);
+    dispatchTimeline({ type: "RESTART" });
+    const updated = buildScenarioStatus(0, "idle", timeline.speed);
     return updated;
-  }, [dataState, recordedSpeed, loadData]);
+  }, [dataState, timeline.speed, loadData]);
 
   const setScenarioSpeed = useCallback(
     async (speed: number): Promise<ScenarioStatusResponse | undefined> => {
       if (dataState === "LIVE") {
         const res = await apiClient.setScenarioSpeed(speed);
-        setScenarioStatus(res);
+        setLiveScenarioStatus(res);
         return res;
       }
 
-      setRecordedSpeed(speed);
-      const updated = buildScenarioStatus(recordedStep, recordedPlayStatus, speed);
-      setScenarioStatus(updated);
+      dispatchTimeline({ type: "SET_SPEED", speed });
+      const updated = buildScenarioStatus(timeline.step, timeline.status, speed);
       return updated;
     },
-    [dataState, recordedStep, recordedPlayStatus]
+    [dataState, timeline.step, timeline.status]
   );
 
-  // Auto-advance scenario in RECORDED REAL RUN when playing (at least 3 seconds at 1x)
+  const setNarrationEnabled = useCallback((action: React.SetStateAction<boolean>) => {
+    if (typeof action === "function") {
+      dispatchTimeline({ type: "TOGGLE_NARRATION" });
+    } else {
+      dispatchTimeline({ type: "SET_NARRATION", enabled: action });
+    }
+  }, []);
+
+  // Single timeline state machine auto-advance effect driven by audio duration & min scene time
   useEffect(() => {
-    if (dataState !== "RECORDED REAL RUN" || recordedPlayStatus !== "playing") return;
-    const intervalMs = Math.max(150, Math.round(3000 / recordedSpeed));
-    const timer = window.setInterval(() => {
-      setRecordedStep((prev) => {
-        if (prev >= STORY_STEPS.length) {
-          setRecordedPlayStatus("completed");
-          return prev;
-        }
-        return prev + 1;
-      });
-    }, intervalMs);
-    return () => window.clearInterval(timer);
-  }, [dataState, recordedPlayStatus, recordedSpeed]);
+    if (dataState !== "RECORDED REAL RUN" || timeline.status !== "playing") {
+      sceneAudioManager.cancelCurrentAudio();
+      return;
+    }
+
+    if (timeline.step <= 0 || timeline.step > STORY_STEPS.length) {
+      return;
+    }
+
+    const currentStepObj = STORY_STEPS[timeline.step - 1];
+    if (!currentStepObj) {
+      dispatchTimeline({ type: "COMPLETE" });
+      return;
+    }
+
+    const cleanup = sceneAudioManager.playSceneAudio(
+      currentStepObj,
+      timeline.speed,
+      timeline.narrationEnabled,
+      () => {
+        dispatchTimeline({ type: "NEXT" });
+      }
+    );
+
+    return cleanup;
+  }, [dataState, timeline.status, timeline.step, timeline.speed, timeline.narrationEnabled]);
 
   // Synchronize on scenario events from WebSocket when in LIVE
   useEffect(() => {
@@ -624,6 +659,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     return events;
   }, [dataState, ws.events, events]);
+
+  const scenarioStatus: ScenarioStatusResponse = useMemo(() => {
+    if (dataState === "LIVE" && liveScenarioStatus) {
+      return liveScenarioStatus;
+    }
+    return buildScenarioStatus(timeline.step, timeline.status, timeline.speed);
+  }, [dataState, liveScenarioStatus, timeline.step, timeline.status, timeline.speed]);
 
   return (
     <DataContext.Provider
@@ -657,7 +699,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         pauseScenario,
         resetScenario,
         setScenarioSpeed,
-        narrationEnabled,
+        narrationEnabled: timeline.narrationEnabled,
         setNarrationEnabled,
       }}
     >
