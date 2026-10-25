@@ -6,15 +6,29 @@ export const DataStatusPill: React.FC = () => {
   const { dataState, setDataState } = useData();
   const [open, setOpen] = useState(false);
 
-  // Only RECORDED REAL RUN and LIVE. Never show mock data per Page Guide & AGENTS.md rules.
-  const availableStates: DataState[] = ["RECORDED REAL RUN", "LIVE"];
+  const availableStates: Array<{
+    state: DataState;
+    title: string;
+    desc: string;
+  }> = [
+    {
+      state: "RECORDED REAL RUN",
+      title: "RECORDED REAL RUN",
+      desc: "Offline snapshot of real US EPA CAMPD telemetry & Arbitrum Sepolia tx hashes. Works instantly without running local servers.",
+    },
+    {
+      state: "LIVE",
+      title: "LIVE",
+      desc: "Real-time WebSocket & REST connection to local Python backend (port 8000) and live Arbitrum Sepolia / Anvil chain.",
+    },
+  ];
 
   const config = {
     "RECORDED REAL RUN": {
       label: "RECORDED REAL RUN",
       shortLabel: "RECORDED",
-      color: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30",
-      dot: "bg-blue-500",
+      color: "bg-surface-soft text-ink border-hairline",
+      dot: "bg-brand",
       icon: Database,
     },
     LIVE: {
@@ -34,8 +48,8 @@ export const DataStatusPill: React.FC = () => {
   }[dataState] || {
     label: "RECORDED REAL RUN",
     shortLabel: "RECORDED",
-    color: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30",
-    dot: "bg-blue-500",
+    color: "bg-surface-soft text-ink border-hairline",
+    dot: "bg-brand",
     icon: Database,
   };
 
@@ -50,17 +64,17 @@ export const DataStatusPill: React.FC = () => {
     <div
       className="relative inline-block shrink-0"
       role="status"
-      aria-label="Network status and mock data provider"
+      aria-label="Network status and data source selector"
     >
       <button
         type="button"
         data-testid="data-status-pill"
         data-state={dataState}
         onClick={() => setOpen((prev) => !prev)}
-        aria-label={`Data status: ${dataState}. Click to toggle data source.`}
-        className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-pill text-xs font-mono font-semibold border transition-all ${config.color} hover:opacity-90 shadow-sm cursor-pointer shrink-0`}
+        aria-label={`Data status: ${dataState}. Click to switch between Recorded Real Run and Live mode.`}
+        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-xs font-mono font-semibold border transition-all ${config.color} hover:border-ink cursor-pointer shrink-0`}
       >
-        <span className={`w-2 h-2 rounded-full ${config.dot} animate-pulse`} aria-hidden="true" />
+        <span className={`w-2 h-2 rounded-full ${config.dot}`} aria-hidden="true" />
         <Icon className="w-3.5 h-3.5 flex-shrink-0" aria-hidden="true" />
         <span className="hidden xl:inline">{config.label}</span>
         <span className="xl:hidden">{config.shortLabel}</span>
@@ -77,23 +91,33 @@ export const DataStatusPill: React.FC = () => {
           <div
             role="menu"
             aria-label="Select data source"
-            className="absolute right-0 mt-1.5 w-48 rounded-xl bg-surface border border-hairline shadow-lg py-1 z-50 text-xs font-mono"
+            className="absolute right-0 mt-1.5 w-72 rounded-2xl bg-surface border border-hairline-strong shadow-2xl p-2 z-50 text-xs space-y-1"
           >
-            {availableStates.map((st) => {
-              const active = st === dataState;
+            <div className="px-2.5 py-1 text-[10px] font-mono uppercase text-muted font-bold border-b border-hairline">
+              Data Source Mode
+            </div>
+            {availableStates.map((item) => {
+              const active = item.state === dataState;
               return (
                 <button
-                  key={st}
+                  key={item.state}
                   role="menuitem"
                   type="button"
-                  data-testid={`data-state-option-${st.toLowerCase().replace(/\s+/g, "-")}`}
-                  onClick={() => handleSelect(st)}
-                  className={`w-full text-left px-3 py-2 flex items-center justify-between hover:bg-surface-soft transition-colors ${
-                    active ? "font-bold text-ink" : "text-muted hover:text-ink"
+                  data-testid={`data-state-option-${item.state.toLowerCase().replace(/\s+/g, "-")}`}
+                  onClick={() => handleSelect(item.state)}
+                  className={`w-full text-left p-2.5 rounded-xl flex flex-col gap-1 transition-colors cursor-pointer ${
+                    active
+                      ? "bg-brand/10 border border-brand/30 text-ink"
+                      : "hover:bg-surface-soft text-muted-strong hover:text-ink border border-transparent"
                   }`}
                 >
-                  <span>{st}</span>
-                  {active && <span className="w-1.5 h-1.5 rounded-full bg-brand" />}
+                  <div className="flex items-center justify-between font-mono font-bold text-xs">
+                    <span className="text-ink">{item.title}</span>
+                    {active && <span className="w-2 h-2 rounded-full bg-brand" />}
+                  </div>
+                  <p className="text-[11px] font-sans text-muted-strong leading-snug">
+                    {item.desc}
+                  </p>
                 </button>
               );
             })}

@@ -1,9 +1,12 @@
-import React, { useState, useMemo } from "react";
-import { Copy, ExternalLink, ShieldCheck, ShieldAlert, Check, ChevronDown } from "lucide-react";
+import React, { useState, useMemo, useEffect } from "react";
+import { Copy, ExternalLink, ShieldCheck, ShieldAlert, Check, ChevronDown, Network, X } from "lucide-react";
+import { motion } from "framer-motion";
 import { keccak256, stringToBytes } from "viem";
 import { Skeleton } from "./Skeleton";
 import { ErrorState } from "./ErrorState";
+import { HashChip } from "./HashChip";
 import { deploymentConfig } from "../chain/deploymentConfig.ts";
+import { buildMerkleTree } from "../lib/merkle";
 
 export interface MerkleTreeVizProps {
   rootHash?: string | null;
@@ -14,6 +17,10 @@ export interface MerkleTreeVizProps {
   txHash?: string | null;
   batchStatus?: string;
   flaggedLeafIndex?: number | null;
+  selectedLeafIndex?: number | null;
+  tamperedLeafIndex?: number | null;
+  tamperedLeafHash?: string | null;
+  onClearSelectedLeaf?: () => void;
   isCollapsible?: boolean;
   defaultOpen?: boolean;
   isLoading?: boolean;
@@ -34,6 +41,8 @@ interface TreeNode {
   level: number;
   isRoot?: boolean;
   isFlagged?: boolean;
+  isOnProofPath?: boolean;
+  isSibling?: boolean;
   label?: string;
 }
 
@@ -46,6 +55,10 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
   txHash,
   batchStatus = "Anchored",
   flaggedLeafIndex,
+  selectedLeafIndex = null,
+  tamperedLeafIndex = null,
+  tamperedLeafHash = null,
+  onClearSelectedLeaf,
   isCollapsible = false,
   defaultOpen = true,
   isLoading = false,
@@ -58,32 +71,77 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
   const [activeHash, setActiveHash] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState<boolean>(defaultOpen);
 
-  const defaultRoot =
-    rootHash ||
-    deploymentConfig.contracts.BatchAnchor;
+  // Auto-expand whenever a leaf is selected or tampered so the user always sees the Merkle tree
+  useEffect(() => {
+    if (selectedLeafIndex !== null || tamperedLeafIndex !== null) {
+      setIsExpanded(true);
+    }
+  }, [selectedLeafIndex, tamperedLeafIndex]);
 
-  const isQuarantined = batchStatus === "Quarantined" || batchStatus === "Slashed";
+  const prefersReducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // Deterministic 8 leaves
+  const defaultRoot = rootHash || deploymentConfig.contracts.BatchAnchor;
+
+  const isQuarantined =
+    batchStatus === "Quarantined" ||
+    batchStatus === "Slashed" ||
+    tamperedLeafIndex !== null;
+
+  // Deterministic 8 leaves (incorporating tamperedLeafHash if edited)
   const effectiveLeaves = useMemo(() => {
     const out: string[] = [];
     for (let i = 0; i < 8; i++) {
-      out.push(leaves[i] || keccak256(stringToBytes(`packet-${i}`)));
+      if (tamperedLeafIndex !== null && ((tamperedLeafIndex % 8) + 8) % 8 === i && tamperedLeafHash) {
+        out.push(tamperedLeafHash);
+      } else {
+        out.push(leaves[i] || keccak256(stringToBytes(`packet-${i}`)));
+      }
     }
     return out;
-  }, [leaves]);
+  }, [leaves, tamperedLeafIndex, tamperedLeafHash]);
 
-  // Intermediate node hashes (pseudo deterministic)
+  // Merkle tree proof computation
+  const merkleTreeData = useMemo(() => {
+    try {
+      return buildMerkleTree(effectiveLeaves);
+    } catch {
+      return null;
+    }
+  }, [effectiveLeaves]);
+
+  // Leaf index normalized to 0..7
+  const activeLeafIdx =
+    selectedLeafIndex !== null && selectedLeafIndex !== undefined
+      ? ((selectedLeafIndex % 8) + 8) % 8
+      : tamperedLeafIndex !== null && tamperedLeafIndex !== undefined
+      ? ((tamperedLeafIndex % 8) + 8) % 8
+      : null;
+
+  // Selected proof siblings
+  const activeProof =
+    activeLeafIdx !== null && merkleTreeData?.proofs?.[activeLeafIdx]
+      ? merkleTreeData.proofs[activeLeafIdx]
+      : null;
+
   const treeNodes = useMemo(() => {
     const nodes: TreeNode[] = [];
 
-    // Flagged leaf resolution: if explicitly given or batch is quarantined, flag leaf 3 (or specified index)
     const activeFlaggedIdx =
-      flaggedLeafIndex !== undefined && flaggedLeafIndex !== null
+      tamperedLeafIndex !== undefined && tamperedLeafIndex !== null
+        ? ((tamperedLeafIndex % 8) + 8) % 8
+        : flaggedLeafIndex !== undefined && flaggedLeafIndex !== null
         ? flaggedLeafIndex
-        : isQuarantined
+        : batchStatus === "Quarantined" || batchStatus === "Slashed"
         ? 3
         : -1;
+
+    const p1Idx = activeLeafIdx !== null ? Math.floor(activeLeafIdx / 2) : -1;
+    const p2Idx = p1Idx !== -1 ? Math.floor(p1Idx / 2) : -1;
+    const s0Idx = activeLeafIdx !== null ? activeLeafIdx ^ 1 : -1;
+    const s1Idx = p1Idx !== -1 ? p1Idx ^ 1 : -1;
+    const s2Idx = p2Idx !== -1 ? p2Idx ^ 1 : -1;
 
     // Level 0: 8 leaves
     const leafX = [70, 160, 250, 340, 460, 550, 640, 730];
@@ -101,11 +159,13 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
         height: 24,
         level: 0,
         isFlagged: i === activeFlaggedIdx,
+        isOnProofPath: i === activeLeafIdx,
+        isSibling: i === s0Idx,
         label: `L${i}`,
       });
     }
 
-    // Level 1: 4 branch nodes (midpoints of child pairs)
+    // Level 1: 4 branch nodes
     const l1X = [115, 295, 505, 685];
     const l1Hashes = [0, 1, 2, 3].map((i) =>
       keccak256(stringToBytes(effectiveLeaves[i * 2] + effectiveLeaves[i * 2 + 1]))
@@ -122,11 +182,13 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
         width: 74,
         height: 24,
         level: 1,
+        isOnProofPath: i === p1Idx,
+        isSibling: i === s1Idx,
         label: `H${i * 2},${i * 2 + 1}`,
       });
     }
 
-    // Level 2: 2 branch nodes (midpoints of l1 pairs)
+    // Level 2: 2 branch nodes
     const l2X = [205, 595];
     const l2Hashes = [0, 1].map((i) =>
       keccak256(stringToBytes(l1Hashes[i * 2] + l1Hashes[i * 2 + 1]))
@@ -143,26 +205,29 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
         width: 78,
         height: 24,
         level: 2,
+        isOnProofPath: i === p2Idx,
+        isSibling: i === s2Idx,
         label: `H${i * 4}-${i * 4 + 3}`,
       });
     }
 
-    // Level 3: Root node (center 400)
+    // Level 3: Root node
     nodes.push({
       id: "root",
       hash: defaultRoot,
       shortHash: defaultRoot.slice(0, 6),
       x: 400,
       y: 12,
-      width: 104,
+      width: 112,
       height: 26,
       level: 3,
       isRoot: true,
+      isOnProofPath: activeLeafIdx !== null,
       label: "ROOT",
     });
 
     return nodes;
-  }, [defaultRoot, effectiveLeaves, flaggedLeafIndex, isQuarantined]);
+  }, [defaultRoot, effectiveLeaves, flaggedLeafIndex, batchStatus, activeLeafIdx, tamperedLeafIndex]);
 
   const handleCopyRoot = () => {
     navigator.clipboard.writeText(defaultRoot);
@@ -172,10 +237,31 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
 
   const explorerBase = deploymentConfig.explorerBaseUrl;
   const explorerUrl = explorerBase
-    ? (txHash
-        ? `${explorerBase}/tx/${txHash}`
-        : `${explorerBase}/search?q=${defaultRoot}`)
+    ? txHash
+      ? `${explorerBase}/tx/${txHash}`
+      : `${explorerBase}/search?q=${defaultRoot}`
     : undefined;
+
+  const proofPathD = useMemo(() => {
+    if (activeLeafIdx === null) return null;
+    const leafX = [70, 160, 250, 340, 460, 550, 640, 730];
+    const l1X = [115, 295, 505, 685];
+    const l2X = [205, 595];
+
+    const p1Idx = Math.floor(activeLeafIdx / 2);
+    const p2Idx = Math.floor(p1Idx / 2);
+
+    const x0 = leafX[activeLeafIdx];
+    const y0 = 192;
+    const x1 = l1X[p1Idx];
+    const y1 = 132;
+    const x2 = l2X[p2Idx];
+    const y2 = 72;
+    const x3 = 400;
+    const y3 = 38;
+
+    return `M ${x0} ${y0} L ${x1} ${y1 + 24} M ${x1} ${y1} L ${x2} ${y2 + 24} M ${x2} ${y2} L ${x3} ${y3}`;
+  }, [activeLeafIdx]);
 
   if (isLoading) {
     return (
@@ -199,26 +285,40 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
   }
 
   const displayedHash = activeHash || defaultRoot;
+  const isTamperedTree = tamperedLeafIndex !== null;
 
   return (
     <div
       role="region"
       aria-label="Batch Merkle Tree Visualization"
-      className={`p-5 rounded-card bg-surface border border-hairline shadow-card space-y-3 ${className}`}
+      className={`p-5 rounded-card bg-surface border transition-colors shadow-card space-y-3 ${
+        isTamperedTree ? "border-brand/60" : "border-hairline"
+      } ${className}`}
     >
-      {/* Header Chips Strip: ROOT, Copy, Explorer, and optional Collapse */}
+      {/* Header Chips Strip */}
       <div className="flex flex-wrap items-center justify-between gap-2.5 pb-2 border-b border-hairline text-xs">
-        <div className="flex items-center gap-2">
-          <span className="font-mono font-bold text-xs text-ink flex items-center gap-1.5">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="font-heading font-bold text-sm text-ink flex items-center gap-1.5">
             {isQuarantined ? (
               <ShieldAlert className="w-4 h-4 text-brand" />
             ) : (
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <ShieldCheck className="w-4 h-4 text-verified" />
             )}
-            Batch #{batchId} Root
+            Batch #{batchId} Merkle Tree
           </span>
-          <span className="font-mono text-[11px] text-muted-strong bg-surface-soft px-2 py-0.5 rounded-chip border border-hairline">
-            {defaultRoot.slice(0, 10)}…{defaultRoot.slice(-6)}
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded-pill bg-brand/10 text-brand font-semibold">
+            Browser demo
+          </span>
+          <span
+            className={`font-mono text-[11px] px-2.5 py-0.5 rounded-pill border ${
+              isTamperedTree
+                ? "bg-flagged-bg text-flagged-ink border-brand/40 font-bold"
+                : "bg-surface-soft text-muted-strong border-hairline"
+            }`}
+          >
+            {isTamperedTree
+              ? "Root Mismatch (Tampered)"
+              : `${defaultRoot.slice(0, 10)}…${defaultRoot.slice(-6)}`}
           </span>
         </div>
 
@@ -228,11 +328,11 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
             data-testid="merkle-root-copy-btn"
             onClick={handleCopyRoot}
             aria-label="Copy full Merkle root hash"
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-chip text-xs bg-surface-soft hover:bg-hairline border border-hairline text-ink transition-colors font-medium shadow-sm"
+            className="inline-flex items-center gap-1 px-3 py-1 rounded-pill text-xs bg-surface-soft hover:bg-hairline border border-hairline text-ink transition-colors font-medium cursor-pointer"
           >
             {copied ? (
               <>
-                <Check className="w-3 h-3 text-emerald-600" />
+                <Check className="w-3 h-3 text-verified" />
                 <span>Copied</span>
               </>
             ) : (
@@ -249,7 +349,7 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
             rel="noopener noreferrer"
             data-testid="merkle-root-explorer-link"
             aria-label="View Merkle root on block explorer"
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-chip text-xs bg-surface-soft hover:bg-hairline border border-hairline text-ink transition-colors font-medium shadow-sm"
+            className="inline-flex items-center gap-1 px-3 py-1 rounded-pill text-xs bg-surface-soft hover:bg-hairline border border-hairline text-ink transition-colors font-medium"
           >
             <ExternalLink className="w-3 h-3 text-muted-strong" />
             <span>Explorer</span>
@@ -261,7 +361,7 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
               onClick={() => setIsExpanded((prev) => !prev)}
               aria-expanded={isExpanded}
               aria-label={isExpanded ? "Collapse Merkle tree" : "Expand Merkle tree"}
-              className="inline-flex items-center gap-1 px-2 py-1 rounded-chip text-xs bg-surface-soft hover:bg-hairline border border-hairline text-muted-strong hover:text-ink transition-colors"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-pill text-xs bg-surface-soft hover:bg-hairline border border-hairline text-muted-strong hover:text-ink transition-colors cursor-pointer"
             >
               <ChevronDown
                 className={`w-3.5 h-3.5 transition-transform duration-200 ${
@@ -274,12 +374,65 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
         </div>
       </div>
 
+      {/* Tampered Alert Banner inside Merkle Tree */}
+      {isTamperedTree && (
+        <div className="p-3 rounded-xl bg-flagged-bg border border-brand/40 text-xs flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 text-flagged-ink font-medium">
+            <ShieldAlert className="w-4 h-4 text-brand shrink-0" />
+            <span>
+              <strong>Tamper Propagated to Root:</strong> Editing Leaf L{activeLeafIdx} changed its hash and every parent branch above it, so the recomputed root no longer matches the blockchain!
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Packet Inspector Sibling Hashes Panel */}
+      {activeLeafIdx !== null && activeProof && (
+        <div className="p-3.5 bg-surface-soft border border-hairline rounded-xl text-xs space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Network className="w-4 h-4 text-brand" />
+              <span className="font-heading font-bold text-ink">
+                Packet Inspector: Proof Path for Leaf #{activeLeafIdx}
+              </span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-pill bg-brand/10 text-brand font-semibold">
+                Browser demo
+              </span>
+            </div>
+            {onClearSelectedLeaf && (
+              <button
+                type="button"
+                onClick={onClearSelectedLeaf}
+                className="text-muted-strong hover:text-ink p-1 cursor-pointer"
+                title="Clear selected proof"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+
+          <p className="text-[11px] text-muted-strong">
+            3 sibling hashes required to reconstruct the Merkle root on-chain:
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 font-mono text-[11px]">
+            {activeProof.siblings.map((sib, sIdx) => (
+              <div key={sIdx} className="p-2 bg-surface border border-hairline rounded-lg flex flex-col gap-1">
+                <span className="text-[10px] text-muted uppercase font-sans font-medium">
+                  Sibling {sIdx + 1} (Level {sIdx})
+                </span>
+                <HashChip hash={sib} truncateLen={6} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {(!isCollapsible || isExpanded) && (
         <>
-          {/* Selected/Hovered Node Hash Readout (Accessible for keyboard & hover) */}
           <div
             data-testid="merkle-tree-hash-readout"
-            className="px-3 py-1.5 rounded-chip bg-surface-soft border border-hairline flex items-center justify-between text-xs font-mono"
+            className="px-3 py-1.5 rounded-pill bg-surface-soft border border-hairline flex items-center justify-between text-xs font-mono"
           >
             <span className="text-muted-strong font-sans text-[11px]">Selected node fingerprint:</span>
             <span className="text-ink font-semibold truncate ml-2 max-w-[280px] sm:max-w-md select-all">
@@ -287,172 +440,201 @@ export const MerkleTreeViz: React.FC<MerkleTreeVizProps> = ({
             </span>
           </div>
 
-          {/* Responsive Custom SVG Tree (8 leaves, 3 levels, responsive viewBox, no zoom/controls) */}
           <div className="w-full overflow-hidden flex items-center justify-center pt-1">
-        <svg
-          viewBox="0 0 800 225"
-          className="w-full h-auto max-w-full"
-          role="img"
-          aria-label={`Merkle Tree with 8 leaves anchored under root ${defaultRoot.slice(0, 10)}`}
-        >
-          <g>
-            {/* Edges from Root to Level 2 (1px hairline) */}
-            <line x1={400} y1={38} x2={205} y2={72} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
-            <line x1={400} y1={38} x2={595} y2={72} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
+            <svg
+              viewBox="0 0 800 225"
+              className="w-full h-auto max-w-full"
+              role="img"
+              aria-label={`Merkle Tree with 8 leaves anchored under root ${defaultRoot.slice(0, 10)}`}
+            >
+              <g>
+                {/* Edges from Root to Level 2 */}
+                <line x1={400} y1={38} x2={205} y2={72} stroke="var(--hairline-strong, #38383D)" strokeWidth="1.2" />
+                <line x1={400} y1={38} x2={595} y2={72} stroke="var(--hairline-strong, #38383D)" strokeWidth="1.2" />
 
-            {/* Edges from Level 2 to Level 1 */}
-            <line x1={205} y1={96} x2={115} y2={132} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
-            <line x1={205} y1={96} x2={295} y2={132} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
-            <line x1={595} y1={96} x2={505} y2={132} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
-            <line x1={595} y1={96} x2={685} y2={132} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
+                {/* Edges from Level 2 to Level 1 */}
+                <line x1={205} y1={96} x2={115} y2={132} stroke="var(--hairline-strong, #38383D)" strokeWidth="1.2" />
+                <line x1={205} y1={96} x2={295} y2={132} stroke="var(--hairline-strong, #38383D)" strokeWidth="1.2" />
+                <line x1={595} y1={96} x2={505} y2={132} stroke="var(--hairline-strong, #38383D)" strokeWidth="1.2" />
+                <line x1={595} y1={96} x2={685} y2={132} stroke="var(--hairline-strong, #38383D)" strokeWidth="1.2" />
 
-            {/* Edges from Level 1 to Level 0 Leaves */}
-            <line x1={115} y1={156} x2={70} y2={192} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
-            <line x1={115} y1={156} x2={160} y2={192} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
-            <line x1={295} y1={156} x2={250} y2={192} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
-            <line x1={295} y1={156} x2={340} y2={192} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
-            <line x1={505} y1={156} x2={460} y2={192} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
-            <line x1={505} y1={156} x2={550} y2={192} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
-            <line x1={685} y1={156} x2={640} y2={192} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
-            <line x1={685} y1={156} x2={730} y2={192} stroke="var(--hairline, #E5E7EB)" strokeWidth="1" />
-          </g>
-
-          {/* Nodes */}
-          {treeNodes.map((node) => {
-            const rx = node.x - node.width / 2;
-            const ry = node.y;
-            const isHovered = activeHash === node.hash;
-
-            // Flagged leaf styling: fraud chip colors (--flagged-bg: #FDECEC, --flagged-ink: #9B1C1C)
-            if (node.isFlagged) {
-              return (
-                <g
-                  key={node.id}
-                  data-testid={`merkle-node-${node.id}`}
-                  tabIndex={0}
-                  role="button"
-                  aria-label={`Flagged Leaf ${node.label}: ${node.hash}`}
-                  onMouseEnter={() => setActiveHash(node.hash)}
-                  onMouseLeave={() => setActiveHash(null)}
-                  onFocus={() => setActiveHash(node.hash)}
-                  onBlur={() => setActiveHash(null)}
-                  className="cursor-pointer focus:outline-none"
-                >
-                  <title>{`Flagged Leaf ${node.hash}`}</title>
-                  <rect
-                    x={rx}
-                    y={ry}
-                    width={node.width}
-                    height={node.height}
-                    rx={6}
-                    ry={6}
-                    fill="var(--flagged-bg, #FDECEC)"
-                    stroke="var(--flagged-ink, #9B1C1C)"
-                    strokeWidth={isHovered ? 2.5 : 1.5}
-                  />
-                  <text
-                    x={node.x}
-                    y={node.y + node.height / 2}
-                    textAnchor="middle"
-                    dominantBaseline="central"
-                    fill="var(--flagged-ink, #9B1C1C)"
-                    fontFamily="JetBrains Mono, monospace"
-                    fontSize={10}
-                    fontWeight={700}
-                  >
-                    {node.shortHash}
-                  </text>
-                </g>
-              );
-            }
-
-            // Root Node styling: brand-red outline + "ROOT" label
-            if (node.isRoot) {
-              return (
-                <g
-                  key={node.id}
-                  data-testid={`merkle-node-${node.id}`}
-                  tabIndex={0}
-                  role="button"
-                  aria-label={`Merkle Root: ${node.hash}`}
-                  onMouseEnter={() => setActiveHash(node.hash)}
-                  onMouseLeave={() => setActiveHash(null)}
-                  onFocus={() => setActiveHash(node.hash)}
-                  onBlur={() => setActiveHash(null)}
-                  className="cursor-pointer focus:outline-none"
-                >
-                  <title>{`ROOT: ${node.hash}`}</title>
-                  <rect
-                    x={rx}
-                    y={ry}
-                    width={node.width}
-                    height={node.height}
-                    rx={6}
-                    ry={6}
-                    fill="var(--surface-card, #FFFFFF)"
-                    stroke="var(--brand, #E5383B)"
-                    strokeWidth={isHovered ? 3 : 2}
-                  />
-                  <text
-                    x={node.x}
-                    y={node.y + node.height / 2}
-                    textAnchor="middle"
-                    dominantBaseline="central"
-                    fill="var(--ink, #0A0A0A)"
-                    fontFamily="JetBrains Mono, monospace"
-                    fontSize={10}
-                    fontWeight={700}
-                  >
-                    ROOT · {node.shortHash}
-                  </text>
-                </g>
-              );
-            }
-
-            // Intermediate branch or clean leaf node
-            return (
-              <g
-                key={node.id}
-                data-testid={`merkle-node-${node.id}`}
-                tabIndex={0}
-                role="button"
-                aria-label={`Node ${node.label || ""}: ${node.hash}`}
-                onMouseEnter={() => setActiveHash(node.hash)}
-                onMouseLeave={() => setActiveHash(null)}
-                onFocus={() => setActiveHash(node.hash)}
-                onBlur={() => setActiveHash(null)}
-                className="cursor-pointer focus:outline-none"
-              >
-                <title>{node.hash}</title>
-                <rect
-                  x={rx}
-                  y={ry}
-                  width={node.width}
-                  height={node.height}
-                  rx={6}
-                  ry={6}
-                  fill="var(--surface-card, #FFFFFF)"
-                  stroke={isHovered ? "var(--brand, #E5383B)" : "var(--hairline, #E5E7EB)"}
-                  strokeWidth={isHovered ? 2 : 1}
-                />
-                <text
-                  x={node.x}
-                  y={node.y + node.height / 2}
-                  textAnchor="middle"
-                  dominantBaseline="central"
-                  fill="var(--ink, #0A0A0A)"
-                  fontFamily="JetBrains Mono, monospace"
-                  fontSize={10}
-                  fontWeight={500}
-                >
-                  {node.shortHash}
-                </text>
+                {/* Edges from Level 1 to Level 0 Leaves */}
+                <line x1={115} y1={156} x2={70} y2={192} stroke="var(--hairline-strong, #38383D)" strokeWidth="1.2" />
+                <line x1={115} y1={156} x2={160} y2={192} stroke="var(--hairline-strong, #38383D)" strokeWidth="1.2" />
+                <line x1={295} y1={156} x2={250} y2={192} stroke="var(--hairline-strong, #38383D)" strokeWidth="1.2" />
+                <line x1={295} y1={156} x2={340} y2={192} stroke="var(--hairline-strong, #38383D)" strokeWidth="1.2" />
+                <line x1={505} y1={156} x2={460} y2={192} stroke="var(--hairline-strong, #38383D)" strokeWidth="1.2" />
+                <line x1={505} y1={156} x2={550} y2={192} stroke="var(--hairline-strong, #38383D)" strokeWidth="1.2" />
+                <line x1={685} y1={156} x2={640} y2={192} stroke="var(--hairline-strong, #38383D)" strokeWidth="1.2" />
+                <line x1={685} y1={156} x2={730} y2={192} stroke="var(--hairline-strong, #38383D)" strokeWidth="1.2" />
               </g>
-            );
-          })}
-        </svg>
-      </div>
-      </>
+
+              {/* Animated Proof Path Line (400 ms) */}
+              {proofPathD && (
+                <motion.path
+                  key={`proof-path-${activeLeafIdx}-${isTamperedTree}`}
+                  d={proofPathD}
+                  fill="none"
+                  stroke="var(--brand, #E5383B)"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeDasharray={isTamperedTree ? "6 4" : "400"}
+                  initial={prefersReducedMotion ? false : { strokeDashoffset: 400 }}
+                  animate={{ strokeDashoffset: 0 }}
+                  transition={{ duration: prefersReducedMotion ? 0 : 0.4, ease: "easeOut" }}
+                />
+              )}
+
+              {/* Nodes */}
+              {treeNodes.map((node) => {
+                const rx = node.x - node.width / 2;
+                const ry = node.y;
+                const isHovered = activeHash === node.hash;
+                const isOnPath = node.isOnProofPath;
+                const isSib = node.isSibling;
+
+                if (node.isFlagged) {
+                  return (
+                    <g
+                      key={node.id}
+                      data-testid={`merkle-node-${node.id}`}
+                      tabIndex={0}
+                      role="button"
+                      aria-label={`Flagged Leaf ${node.label}: ${node.hash}`}
+                      onMouseEnter={() => setActiveHash(node.hash)}
+                      onMouseLeave={() => setActiveHash(null)}
+                      onFocus={() => setActiveHash(node.hash)}
+                      onBlur={() => setActiveHash(null)}
+                      className="cursor-pointer focus:outline-none"
+                    >
+                      <title>{`Flagged Leaf ${node.hash}`}</title>
+                      <rect
+                        x={rx}
+                        y={ry}
+                        width={node.width}
+                        height={node.height}
+                        rx={6}
+                        ry={6}
+                        fill="var(--flagged-bg)"
+                        stroke="var(--brand, #E5383B)"
+                        strokeWidth={isOnPath ? 3 : isHovered ? 2.5 : 1.5}
+                      />
+                      <text
+                        x={node.x}
+                        y={node.y + node.height / 2}
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                        fill="var(--flagged-ink)"
+                        fontFamily="JetBrains Mono, monospace"
+                        fontSize={10}
+                        fontWeight={700}
+                      >
+                        {node.shortHash}
+                      </text>
+                    </g>
+                  );
+                }
+
+                if (node.isRoot) {
+                  return (
+                    <g
+                      key={node.id}
+                      data-testid={`merkle-node-${node.id}`}
+                      tabIndex={0}
+                      role="button"
+                      aria-label={`Merkle Root: ${node.hash}`}
+                      onMouseEnter={() => setActiveHash(node.hash)}
+                      onMouseLeave={() => setActiveHash(null)}
+                      onFocus={() => setActiveHash(node.hash)}
+                      onBlur={() => setActiveHash(null)}
+                      className="cursor-pointer focus:outline-none"
+                    >
+                      <title>{`ROOT: ${node.hash}`}</title>
+                      <rect
+                        x={rx}
+                        y={ry}
+                        width={node.width}
+                        height={node.height}
+                        rx={6}
+                        ry={6}
+                        fill={isTamperedTree ? "var(--flagged-bg)" : isOnPath ? "var(--band)" : "var(--surface-soft)"}
+                        stroke="var(--brand, #E5383B)"
+                        strokeWidth={isOnPath ? 3 : isHovered ? 2.5 : 2}
+                      />
+                      <text
+                        x={node.x}
+                        y={node.y + node.height / 2}
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                        fill={isTamperedTree ? "var(--flagged-ink)" : "var(--ink)"}
+                        fontFamily="JetBrains Mono, monospace"
+                        fontSize={10}
+                        fontWeight={700}
+                      >
+                        {isTamperedTree ? "MISMATCH" : `ROOT · ${node.shortHash}`}
+                      </text>
+                    </g>
+                  );
+                }
+
+                return (
+                  <g
+                    key={node.id}
+                    data-testid={`merkle-node-${node.id}`}
+                    tabIndex={0}
+                    role="button"
+                    aria-label={`Node ${node.label || ""}: ${node.hash}`}
+                    onMouseEnter={() => setActiveHash(node.hash)}
+                    onMouseLeave={() => setActiveHash(null)}
+                    onFocus={() => setActiveHash(node.hash)}
+                    onBlur={() => setActiveHash(null)}
+                    className="cursor-pointer focus:outline-none"
+                  >
+                    <title>{node.hash}</title>
+                    <rect
+                      x={rx}
+                      y={ry}
+                      width={node.width}
+                      height={node.height}
+                      rx={6}
+                      ry={6}
+                      fill={
+                        isOnPath
+                          ? "var(--flagged-bg)"
+                          : isSib
+                          ? "rgba(16, 185, 129, 0.14)"
+                          : "var(--surface-soft)"
+                      }
+                      stroke={
+                        isOnPath
+                          ? "var(--brand, #E5383B)"
+                          : isSib
+                          ? "#10B981"
+                          : isHovered
+                          ? "var(--brand, #E5383B)"
+                          : "var(--hairline-strong)"
+                      }
+                      strokeWidth={isOnPath ? 2.5 : isSib ? 2 : isHovered ? 2 : 1}
+                    />
+                    <text
+                      x={node.x}
+                      y={node.y + node.height / 2}
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                      fill={isOnPath ? "var(--flagged-ink)" : isSib ? "#10B981" : "var(--ink)"}
+                      fontFamily="JetBrains Mono, monospace"
+                      fontSize={10}
+                      fontWeight={isOnPath || isSib ? 700 : 500}
+                    >
+                      {node.shortHash}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+          </div>
+        </>
       )}
     </div>
   );

@@ -25,6 +25,7 @@ export interface TelemetryChartsProps {
   error?: string | null;
   onRetry?: () => void;
   className?: string;
+  co2Scale?: number;
 }
 
 export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
@@ -34,6 +35,7 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
   error = null,
   onRetry,
   className = "",
+  co2Scale = 1.0,
 }) => {
   const prefersReducedMotion =
     typeof window !== "undefined" &&
@@ -112,14 +114,15 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
 
     const vals = pkt.values || pkt.data?.values || pkt.data || pkt || {};
     const rawCo2 = vals.co2_mass_short_tons ?? vals.co2_mass ?? vals.co2;
+    const scaledCo2 = rawCo2 !== undefined && rawCo2 !== null ? Number(rawCo2) * co2Scale : rawCo2;
     const rawHeat = vals.heat_input_mmbtu ?? vals.heat_input ?? vals.heat;
     const rawLoad = vals.gross_load_mw !== undefined && Number(vals.gross_load_mw) > 0
       ? Number(vals.gross_load_mw)
       : Number(vals.steam_load_1000_lb_hr ?? vals.load ?? 0);
 
     const co2Indexed =
-      rawCo2 !== undefined && rawCo2 !== null && co2Base > 0
-        ? Number(((Number(rawCo2) / co2Base) * 100).toFixed(2))
+      scaledCo2 !== undefined && scaledCo2 !== null && co2Base > 0
+        ? Number(((Number(scaledCo2) / co2Base) * 100).toFixed(2))
         : 100;
 
     const heatIndexed =
@@ -139,7 +142,7 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
       co2_mass_short_tons: co2Indexed,
       heat_input_mmbtu: heatIndexed,
       gross_load_mw: loadIndexed,
-      raw_co2: rawCo2,
+      raw_co2: scaledCo2,
       raw_heat: rawHeat,
       raw_load: rawLoad,
     };
@@ -208,9 +211,27 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
     );
   };
 
-  const mainChannels = REGISTERED_CHANNELS.filter(
-    (ch) => ch.key !== "synthetic_stack_o2_pct" && ch.key !== "synthetic_flue_temp_c" && ch.key !== "synthetic_stack_flow_kscfm"
-  );
+  const mainChannels = REGISTERED_CHANNELS.filter((ch) => {
+    if (
+      ch.key === "synthetic_stack_o2_pct" ||
+      ch.key === "synthetic_flue_temp_c" ||
+      ch.key === "synthetic_stack_flow_kscfm"
+    ) {
+      return false;
+    }
+    // Hide telemetry series that are all 0 or missing across all packets
+    return packets.some((pkt: any) => {
+      const vals = pkt.values || pkt.data?.values || pkt.data || pkt || {};
+      const val = vals[ch.key];
+      return val !== undefined && val !== null && Number(val) !== 0;
+    });
+  });
+
+  const hasO2Data = packets.some((pkt: any) => {
+    const vals = pkt.values || pkt.data?.values || pkt.data || pkt || {};
+    const val = vals.synthetic_stack_o2_pct;
+    return val !== undefined && val !== null && Number(val) !== 0;
+  });
 
   return (
     <div
@@ -283,20 +304,20 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
         <div className="h-72 w-full pt-1">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 10, right: 25, left: 10, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--hairline)" vertical={false} />
               <XAxis
                 dataKey="label"
-                stroke="#5B6573"
+                stroke="var(--muted-strong)"
                 fontSize={11}
                 tickLine={false}
-                axisLine={{ stroke: "#E5E7EB" }}
+                axisLine={{ stroke: "var(--hairline)" }}
               />
               {/* Indexed Y Axis (start = 100) */}
               <YAxis
-                stroke="#5B6573"
+                stroke="var(--muted-strong)"
                 fontSize={11}
                 tickLine={false}
-                axisLine={{ stroke: "#E5E7EB" }}
+                axisLine={{ stroke: "var(--hairline)" }}
                 domain={["auto", "auto"]}
                 width={36}
               />
@@ -366,62 +387,64 @@ export const TelemetryCharts: React.FC<TelemetryChartsProps> = ({
         </div>
       </div>
 
-      {/* Small Standalone O₂ Chart with Units */}
-      <div className="p-4 bg-surface-soft border border-hairline rounded-card space-y-2">
-        <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2">
-            <span className="w-2 rounded-full h-2 bg-[#F59E0B]" />
-            <span className="font-semibold text-ink">Flue gas O₂</span>
-            <span className="text-[10px] text-muted-strong font-mono">(synthetic)</span>
+      {/* Small Standalone O₂ Chart with Units (hide if all 0 or missing) */}
+      {hasO2Data && (
+        <div className="p-4 bg-surface-soft border border-hairline rounded-card space-y-2">
+          <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2">
+              <span className="w-2 rounded-full h-2 bg-[#F59E0B]" />
+              <span className="font-semibold text-ink">Flue gas O₂</span>
+              <span className="text-[10px] text-muted-strong font-mono">(synthetic)</span>
+            </div>
+            <span className="font-mono text-xs text-muted-strong">% vol dry</span>
           </div>
-          <span className="font-mono text-xs text-muted-strong">% vol dry</span>
-        </div>
 
-        <div className="h-28 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={o2ChartData} margin={{ top: 5, right: 15, left: -20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
-              <XAxis
-                dataKey="label"
-                stroke="#5B6573"
-                fontSize={10}
-                tickLine={false}
-                axisLine={{ stroke: "#E5E7EB" }}
-              />
-              <YAxis
-                stroke="#5B6573"
-                fontSize={10}
-                tickLine={false}
-                axisLine={{ stroke: "#E5E7EB" }}
-                domain={["auto", "auto"]}
-              />
-              <Tooltip
-                content={({ active, payload, label }) => {
-                  if (!active || !payload || payload.length === 0) return null;
-                  const val = payload[0].value;
-                  return (
-                    <div className="p-2 bg-surface border border-hairline rounded-card shadow-sm text-xs font-mono">
-                      <span>{label}: </span>
-                      <span className="font-bold text-amber-600">
-                        {val !== null && val !== undefined ? `${Number(val).toFixed(2)} %` : "--"}
-                      </span>
-                    </div>
-                  );
-                }}
-              />
-              <Line
-                type="monotone"
-                dataKey="o2_pct"
-                name="Flue Gas O₂"
-                stroke="#F59E0B"
-                strokeWidth={2}
-                dot={(props) => renderPulsedDot(props, "#F59E0B")}
-                isAnimationActive={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          <div className="h-28 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={o2ChartData} margin={{ top: 5, right: 15, left: -20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--hairline)" vertical={false} />
+                <XAxis
+                  dataKey="label"
+                  stroke="var(--muted-strong)"
+                  fontSize={10}
+                  tickLine={false}
+                  axisLine={{ stroke: "var(--hairline)" }}
+                />
+                <YAxis
+                  stroke="var(--muted-strong)"
+                  fontSize={10}
+                  tickLine={false}
+                  axisLine={{ stroke: "var(--hairline)" }}
+                  domain={["auto", "auto"]}
+                />
+                <Tooltip
+                  content={({ active, payload, label }) => {
+                    if (!active || !payload || payload.length === 0) return null;
+                    const val = payload[0].value;
+                    return (
+                      <div className="p-2 bg-surface border border-hairline rounded-card shadow-sm text-xs font-mono">
+                        <span>{label}: </span>
+                        <span className="font-bold text-amber-600">
+                          {val !== null && val !== undefined ? `${Number(val).toFixed(2)} %` : "--"}
+                        </span>
+                      </div>
+                    );
+                  }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="o2_pct"
+                  name="Flue Gas O₂"
+                  stroke="#F59E0B"
+                  strokeWidth={2}
+                  dot={(props) => renderPulsedDot(props, "#F59E0B")}
+                  isAnimationActive={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

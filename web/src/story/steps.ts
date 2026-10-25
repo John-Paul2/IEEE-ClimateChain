@@ -131,7 +131,7 @@ export function buildStorySteps(
       tab: "/verifier",
       target: "bond-card",
       title: "Deposit slashed",
-      sentence: "The flag stood, so part of the deposit is taken.",
+      sentence: "The flag stood; operator deposit is slashed.",
     });
   }
 

@@ -9,7 +9,7 @@
 
 import { STORY_STEPS, type StoryStep } from "./steps";
 
-export type TimelineStatus = "idle" | "playing" | "paused" | "completed";
+export type TimelineStatus = "idle" | "playing" | "paused" | "ended" | "completed";
 
 export interface TimelineState {
   step: number;
@@ -30,6 +30,7 @@ export type TimelineAction =
   | { type: "SET_STEP"; step: number }
   | { type: "SET_NARRATION"; enabled: boolean }
   | { type: "TOGGLE_NARRATION" }
+  | { type: "END" }
   | { type: "COMPLETE" };
 
 export function getCaptionForStep(step: number): string {
@@ -64,7 +65,6 @@ export function timelineReducer(state: TimelineState, action: TimelineAction): T
     }
 
     case "PAUSE": {
-      if (state.status !== "playing") return state;
       return {
         ...state,
         status: "paused",
@@ -76,7 +76,7 @@ export function timelineReducer(state: TimelineState, action: TimelineAction): T
       if (nextStep > state.totalSteps) {
         return {
           ...state,
-          status: "completed",
+          status: "ended",
           step: state.totalSteps,
           currentCaption: getCaptionForStep(state.totalSteps),
         };
@@ -93,7 +93,7 @@ export function timelineReducer(state: TimelineState, action: TimelineAction): T
       return {
         ...state,
         step: prevStep,
-        status: prevStep === 0 ? "idle" : state.status === "completed" ? "paused" : state.status,
+        status: prevStep === 0 ? "idle" : state.status === "ended" || state.status === "completed" ? "paused" : state.status,
         currentCaption: getCaptionForStep(prevStep),
       };
     }
@@ -119,7 +119,7 @@ export function timelineReducer(state: TimelineState, action: TimelineAction): T
       return {
         ...state,
         step: clamped,
-        status: clamped >= state.totalSteps ? "completed" : clamped === 0 ? "idle" : state.status,
+        status: clamped >= state.totalSteps ? "ended" : clamped === 0 ? "idle" : state.status,
         currentCaption: getCaptionForStep(clamped),
       };
     }
@@ -138,10 +138,11 @@ export function timelineReducer(state: TimelineState, action: TimelineAction): T
       };
     }
 
+    case "END":
     case "COMPLETE": {
       return {
         ...state,
-        status: "completed",
+        status: "ended",
         step: state.totalSteps,
         currentCaption: getCaptionForStep(state.totalSteps),
       };

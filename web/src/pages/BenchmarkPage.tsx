@@ -17,6 +17,7 @@ import { HashChip } from "../components/HashChip";
 import { PageHint } from "../components/GuideLayer";
 import { useData } from "../data/DataContext";
 import { useNavigate } from "react-router-dom";
+import { arbitrumSepoliaDeployment } from "../chain/deploymentConfig";
 
 export const BenchmarkPage: React.FC = () => {
   const { resetScenario } = useData();
@@ -212,12 +213,12 @@ export const BenchmarkPage: React.FC = () => {
                   On-chain gas benchmark
                 </h2>
                 <p className="text-xs text-muted-strong font-sans">
-                  Measured execution gas on Arbitrum Sepolia.
+                  Measured execution gas on L2 testnet ({arbitrumSepoliaDeployment.chainId}).
                 </p>
               </div>
             </div>
             <span className="px-2.5 py-0.5 rounded-pill text-[11px] font-mono text-muted-strong bg-surface-soft border border-hairline">
-              Arbitrum Sepolia
+              {arbitrumSepoliaDeployment.chainName}
             </span>
           </div>
 
@@ -240,7 +241,7 @@ export const BenchmarkPage: React.FC = () => {
                   <td className="py-2.5 px-3 text-muted">DeviceRegistry</td>
                   <td className="py-2.5 px-3 text-right font-semibold text-ink">238,041</td>
                   <td className="py-2.5 px-3 text-right">
-                    <HashChip hash="0x905a8f529d5503ab973f12af51c801c9ab067f8147943c7bc450c35347e308ce" type="tx" truncateLen={4} />
+                    <HashChip hash={arbitrumSepoliaDeployment.keyTransactions.registerDevice.txHash} type="tx" truncateLen={4} />
                   </td>
                 </tr>
 
@@ -251,7 +252,7 @@ export const BenchmarkPage: React.FC = () => {
                   <td className="py-2.5 px-3 text-muted">BondVault</td>
                   <td className="py-2.5 px-3 text-right font-semibold text-ink">117,845</td>
                   <td className="py-2.5 px-3 text-right">
-                    <HashChip hash="0xa7355a72955137f88d78a096108d47df73b4edacc93b47967afd483e23c33621" type="tx" truncateLen={4} />
+                    <HashChip hash={arbitrumSepoliaDeployment.keyTransactions.depositOperatorBond.txHash} type="tx" truncateLen={4} />
                   </td>
                 </tr>
 
@@ -262,7 +263,7 @@ export const BenchmarkPage: React.FC = () => {
                   <td className="py-2.5 px-3 text-muted">BatchAnchor</td>
                   <td className="py-2.5 px-3 text-right font-semibold text-ink">179,843</td>
                   <td className="py-2.5 px-3 text-right">
-                    <HashChip hash="0x46e5be70fee08a7a093c2d522da3cc9d5a4ed16abcb4be5aed6d595e2e07df22" type="tx" truncateLen={4} />
+                    <HashChip hash={arbitrumSepoliaDeployment.keyTransactions.anchorBatchHonest4.txHash} type="tx" truncateLen={4} />
                   </td>
                 </tr>
 
@@ -273,7 +274,7 @@ export const BenchmarkPage: React.FC = () => {
                   <td className="py-2.5 px-3 text-muted">VerifierQuorum</td>
                   <td className="py-2.5 px-3 text-right font-semibold text-ink">103,410</td>
                   <td className="py-2.5 px-3 text-right">
-                    <HashChip hash="0xf1987522e0f28a5e2f742e30bf88959f2fcadd9a51d0d231d6f4671a012c35c5" type="tx" truncateLen={4} />
+                    <HashChip hash={arbitrumSepoliaDeployment.keyTransactions.commitVoteHonestV0.txHash} type="tx" truncateLen={4} />
                   </td>
                 </tr>
 
@@ -284,7 +285,7 @@ export const BenchmarkPage: React.FC = () => {
                   <td className="py-2.5 px-3 text-muted">VerifierQuorum</td>
                   <td className="py-2.5 px-3 text-right font-semibold text-ink">177,505</td>
                   <td className="py-2.5 px-3 text-right">
-                    <HashChip hash="0x0e00b82a3c8b5844a6e55b51c50c0a639c395b40eace829b1d0e78687b34065f" type="tx" truncateLen={4} />
+                    <HashChip hash={arbitrumSepoliaDeployment.keyTransactions.revealVoteHonestV0.txHash} type="tx" truncateLen={4} />
                   </td>
                 </tr>
 
@@ -295,7 +296,7 @@ export const BenchmarkPage: React.FC = () => {
                   <td className="py-2.5 px-3 text-muted">VerifierQuorum</td>
                   <td className="py-2.5 px-3 text-right font-semibold text-ink">127,850</td>
                   <td className="py-2.5 px-3 text-right">
-                    <HashChip hash="0x88739782d8290af52131418b63bf76808b2244714b79095fa2f2cc8d0bd23722" type="tx" truncateLen={4} />
+                    <HashChip hash={arbitrumSepoliaDeployment.keyTransactions.finalizeHonest.txHash} type="tx" truncateLen={4} />
                   </td>
                 </tr>
 
@@ -306,7 +307,7 @@ export const BenchmarkPage: React.FC = () => {
                   <td className="py-2.5 px-3 text-muted">Challenge</td>
                   <td className="py-2.5 px-3 text-right font-semibold text-[#9B1C1C] dark:text-[#FF6B6B]">318,914</td>
                   <td className="py-2.5 px-3 text-right">
-                    <HashChip hash="0xac83b05905b55a0983e45fbe113f34c1a9187d5280afff2af691c7a7dc39e540" type="tx" truncateLen={4} />
+                    <HashChip hash={arbitrumSepoliaDeployment.keyTransactions.resolveSlash.txHash} type="tx" truncateLen={4} />
                   </td>
                 </tr>
 
@@ -317,7 +318,7 @@ export const BenchmarkPage: React.FC = () => {
                   <td className="py-2.5 px-3 text-muted">Attestation</td>
                   <td className="py-2.5 px-3 text-right font-semibold text-ink">281,626</td>
                   <td className="py-2.5 px-3 text-right">
-                    <HashChip hash="0xe139990cef5ffc3e13b750925549b0e6c3839f93a49bc0e4aa875fc736fea4cd" type="tx" truncateLen={4} />
+                    <HashChip hash={arbitrumSepoliaDeployment.keyTransactions.recordAttestation.txHash} type="tx" truncateLen={4} />
                   </td>
                 </tr>
               </tbody>

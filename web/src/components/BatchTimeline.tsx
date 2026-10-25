@@ -115,7 +115,7 @@ export const BatchTimeline: React.FC<BatchTimelineProps> = ({
               key={step.id}
               className={`p-3 rounded-card border transition-all text-xs flex flex-col justify-between ${
                 step.isFlagged
-                  ? "bg-[#FDECEC] border-red-300 text-[#9B1C1C]"
+                  ? "bg-flagged-bg border-brand/40 text-flagged-ink"
                   : step.isDone
                   ? "bg-surface-soft border-hairline text-ink"
                   : "bg-surface-soft/50 border-hairline/60 text-muted-strong"
@@ -124,7 +124,7 @@ export const BatchTimeline: React.FC<BatchTimelineProps> = ({
               <div className="flex items-center justify-between gap-2 mb-1.5">
                 <span className="font-heading font-bold text-xs truncate">{step.title}</span>
                 {step.isFlagged ? (
-                  <ShieldAlert className="w-3.5 h-3.5 text-[#9B1C1C] shrink-0" />
+                  <ShieldAlert className="w-3.5 h-3.5 text-flagged-ink shrink-0" />
                 ) : step.isDone ? (
                   <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                 ) : (

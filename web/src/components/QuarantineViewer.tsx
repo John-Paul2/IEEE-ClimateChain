@@ -13,6 +13,10 @@ import type { BatchDetail } from "../types/telemetry";
 import { HashChip } from "./HashChip";
 import { Skeleton } from "./Skeleton";
 import { ErrorState } from "./ErrorState";
+import validReportPayload from "../../e2e/fixtures/valid_report_payload.json" with { type: "json" };
+
+const DEFAULT_SAMPLE_PROOF =
+  validReportPayload.envelope.merkle_proofs[0].sample_proof;
 
 export interface QuarantineViewerProps {
   batch?: BatchDetail;
@@ -42,16 +46,14 @@ export const QuarantineViewer: React.FC<QuarantineViewerProps> = ({
   onRetry,
   className = "",
 }) => {
-  const isQuarantined = batch?.status === "Quarantined" || batch?.status === "Slashed";
-  // Collapsed by default; opens automatically only for flagged batches per Page Guide
+  const isQuarantined = Boolean(batch?.status === "Quarantined" || batch?.status === "Slashed");
+  // Collapsed unless the batch is flagged
   const [isOpen, setIsOpen] = useState(isQuarantined);
   const [selectedPacketIdx, setSelectedPacketIdx] = useState<number>(0);
   const [proofVerified, setProofVerified] = useState<boolean>(false);
 
   React.useEffect(() => {
-    if (isQuarantined) {
-      setIsOpen(true);
-    }
+    setIsOpen(isQuarantined);
   }, [isQuarantined, batch?.batch_id]);
 
   if (isLoading) {
@@ -105,7 +107,7 @@ export const QuarantineViewer: React.FC<QuarantineViewerProps> = ({
         <div className="flex items-center gap-2">
           <ShieldAlert className="w-4 h-4 text-brand" />
           <h2 className="font-heading font-semibold text-sm text-ink">
-            Quarantine evidence drawer
+            Evidence
           </h2>
           {batch && (
             <span className="font-mono text-[11px] text-muted-strong bg-surface-soft px-2 py-0.5 rounded-chip border border-hairline">
@@ -116,7 +118,7 @@ export const QuarantineViewer: React.FC<QuarantineViewerProps> = ({
 
         <div className="flex items-center gap-2">
           {reasons.length > 0 && (
-            <span className="px-2 py-0.5 rounded-chip text-[11px] font-mono font-semibold bg-[#FDECEC] text-[#9B1C1C] border border-red-300">
+            <span className="px-2.5 py-0.5 rounded-pill text-[11px] font-mono font-semibold bg-flagged-bg text-flagged-ink border border-brand/40">
               {reasons.length} flagged
             </span>
           )}
@@ -143,7 +145,7 @@ export const QuarantineViewer: React.FC<QuarantineViewerProps> = ({
                 <span
                   className={`text-[10px] font-mono px-1.5 py-0.2 rounded-chip font-semibold ${
                     cryptoReasons.length > 0
-                      ? "bg-[#FDECEC] text-[#9B1C1C]"
+                      ? "bg-flagged-bg text-flagged-ink"
                       : "bg-emerald-500/15 text-emerald-600"
                   }`}
                 >
@@ -153,7 +155,7 @@ export const QuarantineViewer: React.FC<QuarantineViewerProps> = ({
               <div className="flex flex-wrap gap-1 font-mono text-[10px]">
                 {cryptoReasons.length > 0 ? (
                   cryptoReasons.map((r) => (
-                    <span key={r} className="text-[#9B1C1C] bg-red-500/10 px-1.5 py-0.5 rounded">
+                    <span key={r} className="text-flagged-ink bg-flagged-bg px-1.5 py-0.5 rounded">
                       {r}
                     </span>
                   ))
@@ -173,7 +175,7 @@ export const QuarantineViewer: React.FC<QuarantineViewerProps> = ({
                 <span
                   className={`text-[10px] font-mono px-1.5 py-0.2 rounded-chip font-semibold ${
                     physicsReasons.length > 0
-                      ? "bg-[#FDECEC] text-[#9B1C1C]"
+                      ? "bg-flagged-bg text-flagged-ink"
                       : "bg-emerald-500/15 text-emerald-600"
                   }`}
                 >
@@ -183,7 +185,7 @@ export const QuarantineViewer: React.FC<QuarantineViewerProps> = ({
               <div className="flex flex-wrap gap-1 font-mono text-[10px]">
                 {physicsReasons.length > 0 ? (
                   physicsReasons.map((r) => (
-                    <span key={r} className="text-[#9B1C1C] bg-red-500/10 px-2 py-0.5 rounded font-sans font-medium">
+                    <span key={r} className="text-flagged-ink bg-flagged-bg px-2 py-0.5 rounded font-sans font-medium">
                       {REASON_LABELS[r] || r}
                     </span>
                   ))
@@ -203,7 +205,7 @@ export const QuarantineViewer: React.FC<QuarantineViewerProps> = ({
                 <span
                   className={`text-[10px] font-mono px-1.5 py-0.2 rounded-chip font-semibold ${
                     aiReasons.length > 0
-                      ? "bg-[#FDECEC] text-[#9B1C1C]"
+                      ? "bg-flagged-bg text-flagged-ink"
                       : "bg-emerald-500/15 text-emerald-600"
                   }`}
                 >
@@ -213,7 +215,7 @@ export const QuarantineViewer: React.FC<QuarantineViewerProps> = ({
               <div className="flex flex-wrap gap-1 font-mono text-[10px]">
                 {aiReasons.length > 0 ? (
                   aiReasons.map((r) => (
-                    <span key={r} className="text-[#9B1C1C] bg-red-500/10 px-2 py-0.5 rounded font-sans font-medium">
+                    <span key={r} className="text-flagged-ink bg-flagged-bg px-2 py-0.5 rounded font-sans font-medium">
                       {REASON_LABELS[r] || r}
                     </span>
                   ))
@@ -248,7 +250,11 @@ export const QuarantineViewer: React.FC<QuarantineViewerProps> = ({
                   <span className="text-brand font-mono">#{selectedPacket?.seq ?? 0}</span>
                 </div>
                 <HashChip
-                  hash={selectedPacket?.packet_hash || batch?.merkle?.leaves?.[selectedPacketIdx] || "0x3847be1fd98e3693bd3f8d26af2aa4f21452f798dd5915c2e4bd9aa058cdeb03"}
+                  hash={
+                    selectedPacket?.packet_hash ||
+                    batch?.merkle?.leaves?.[selectedPacketIdx] ||
+                    DEFAULT_SAMPLE_PROOF.leaf_hash
+                  }
                   type="digest"
                   truncateLen={4}
                 />
@@ -261,7 +267,10 @@ export const QuarantineViewer: React.FC<QuarantineViewerProps> = ({
                   <span className="text-[9px] bg-brand text-white px-1 rounded">L0</span>
                 </div>
                 <HashChip
-                  hash={batch?.merkle?.proofs?.[selectedPacketIdx]?.siblings?.[0] || "0xf3108a7df6d7fc66b6c7234fc59d75a880184cb0d7cab7c90c85ccb64c3843e2"}
+                  hash={
+                    batch?.merkle?.proofs?.[selectedPacketIdx]?.siblings?.[0] ||
+                    DEFAULT_SAMPLE_PROOF.siblings[0]
+                  }
                   type="digest"
                   truncateLen={4}
                 />
@@ -274,7 +283,10 @@ export const QuarantineViewer: React.FC<QuarantineViewerProps> = ({
                   <span className="text-[9px] bg-brand text-white px-1 rounded">L1</span>
                 </div>
                 <HashChip
-                  hash={batch?.merkle?.proofs?.[selectedPacketIdx]?.siblings?.[1] || "0x384052126a7c1a9fd9b74af0f8b3fe61db249b4dc537a9a0713fb2318e286bcd"}
+                  hash={
+                    batch?.merkle?.proofs?.[selectedPacketIdx]?.siblings?.[1] ||
+                    DEFAULT_SAMPLE_PROOF.siblings[1]
+                  }
                   type="digest"
                   truncateLen={4}
                 />
@@ -287,7 +299,10 @@ export const QuarantineViewer: React.FC<QuarantineViewerProps> = ({
                   <span className="text-[9px] bg-brand text-white px-1 rounded">L2</span>
                 </div>
                 <HashChip
-                  hash={batch?.merkle?.proofs?.[selectedPacketIdx]?.siblings?.[2] || "0x7a83d1c4e92b894103fa72ce4512b07e594b29381029c78fa38192a0e4b89321"}
+                  hash={
+                    batch?.merkle?.proofs?.[selectedPacketIdx]?.siblings?.[2] ||
+                    DEFAULT_SAMPLE_PROOF.siblings[2]
+                  }
                   type="digest"
                   truncateLen={4}
                 />
@@ -300,7 +315,7 @@ export const QuarantineViewer: React.FC<QuarantineViewerProps> = ({
                   <span className="text-emerald-600 font-sans font-bold">✓ Chain</span>
                 </div>
                 <HashChip
-                  hash={batch?.merkle_root || "0xd1da075c8f2e454e26ce9ef8a40c4cf13a0dc6361759ddcc186a82b0db463d90"}
+                  hash={batch?.merkle_root || DEFAULT_SAMPLE_PROOF.merkle_root}
                   type="root"
                   truncateLen={4}
                 />

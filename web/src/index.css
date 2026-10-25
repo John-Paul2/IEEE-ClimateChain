@@ -14,36 +14,36 @@
 
 @layer base {
   :root {
-    /* Brand (Section 2) */
-    --brand: #E5383B;          /* primary red: buttons, logo, active tab */
+    /* Jobright Design Language adapted to Signature Electric Red (#E5383B) */
+    --brand: #E5383B;          /* primary electric accent: logo, signature pills, active tab */
     --brand-pressed: #BA1F22;
     --on-brand: #FFFFFF;
-    --brand-on-black: #FF6B6B; /* readable red on black bands */
+    --brand-on-black: #FF6B6B; /* high-punch red on black bands */
 
-    /* Neutrals (Section 2 - Light Design System) */
+    /* Neutrals (Light Mode: Crisp Ink, Pure White Canvas, Pale Blush Band) */
     --ink: #0A0A0A;
     --canvas: #FFFFFF;
-    --band: #FFF0F0;           /* pale blush band */
+    --band: #FFF0F0;           /* pale-blush section band (red counterpart to Jobright canvas-mint) */
     --surface-soft: #F2F4F5;
     --surface-card: #FFFFFF;
     --surface-raised: #FFFFFF;
     --hairline: #E5E7EB;
     --hairline-strong: #CBD5E1;
-    --muted: #86909C;          /* large text and icons only */
-    --muted-strong: #5B6573;   /* use for all small text (contrast) */
+    --muted: #86909C;
+    --muted-strong: #5B6573;
 
-    /* Status (small chips only, always with icon + word) */
+    /* Status tokens (never rely on colour alone; always pair with icon + label) */
     --verified: #0E9F6E;
     --warning: #D97706;
     --flagged-bg: #FDECEC;
     --flagged-ink: #9B1C1C;
 
-    /* Shape and space */
+    /* Shape & 8px Spacing Scale (DESIGN-jobright.md) */
     --radius-chip: 12px;
-    --radius-card: 24px;
+    --radius-card: 28px;
     --radius-pill: 9999px;
-    --space: 8px;              /* 8 px grid */
-    --section: 48px;
+    --space: 8px;
+    --section: 64px;
 
     color-scheme: light;
   }
@@ -55,22 +55,22 @@
     --on-brand: #FFFFFF;
     --brand-on-black: #FF6B6B;
 
-    /* Neutrals (Dark Theme Mode - Pure Neutral / #0E0E0E Charcoal) */
+    /* Neutrals (Dark Mode: Deep Charcoal #0E0E0E, Crisp Surfaces, Subtle Hairlines) */
     --ink: #F5F5F7;
-    --canvas: #0E0E0E;              /* Exact color requested by user */
-    --band: #141414;
-    --surface-soft: #1C1C1C;
-    --surface-card: #161616;
-    --surface-raised: #222222;
-    --hairline: #262626;
-    --hairline-strong: #383838;
+    --canvas: #0E0E0E;
+    --band: #161112;           /* subtle warm-crimson dark wash band */
+    --surface-soft: #1A1A1C;
+    --surface-card: #141416;
+    --surface-raised: #1F1F22;
+    --hairline: #262629;
+    --hairline-strong: #38383D;
     --muted: #8E8E93;
     --muted-strong: #AEAEB2;
 
     /* Status Dark */
-    --verified: #0E9F6E;
-    --warning: #D97706;
-    --flagged-bg: rgba(229, 56, 59, 0.2);
+    --verified: #10B981;
+    --warning: #F59E0B;
+    --flagged-bg: rgba(229, 56, 59, 0.14);
     --flagged-ink: #FF6B6B;
 
     color-scheme: dark;
@@ -86,7 +86,7 @@
     color: var(--ink);
     font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     font-size: 15px;
-    line-height: 1.5;
+    line-height: 1.6;
     max-width: 100%;
     overflow-x: clip;
     -webkit-font-smoothing: antialiased;
@@ -98,12 +98,12 @@
     overflow-x: clip;
   }
 
-  /* App type scale (DESIGN.MD: Titillium Web headings, Inter UI, JetBrains Mono numbers) */
+  /* Typography Hierarchy (DESIGN-jobright.md: Titillium Web Display + Inter UI + JetBrains Mono) */
   h1, .text-page-title {
     font-family: "Titillium Web", Inter, sans-serif;
-    font-size: 36px;
+    font-size: 38px;
     font-weight: 700;
-    line-height: 1.15;
+    line-height: 1.12;
     letter-spacing: -0.02em;
     color: var(--ink);
   }
@@ -112,7 +112,7 @@
     font-family: "Titillium Web", Inter, sans-serif;
     font-size: 28px;
     font-weight: 700;
-    line-height: 1.2;
+    line-height: 1.18;
     letter-spacing: -0.01em;
     color: var(--ink);
   }
@@ -128,14 +128,14 @@
   .text-body {
     font-family: Inter, sans-serif;
     font-size: 15px;
-    line-height: 1.5;
+    line-height: 1.6;
     color: var(--ink);
   }
 
   .text-caption {
     font-family: Inter, sans-serif;
     font-size: 13px;
-    line-height: 1.4;
+    line-height: 1.45;
     color: var(--muted-strong);
   }
 
@@ -208,13 +208,13 @@
   animation-play-state: paused;
 }
 
-/* Story Target Spotlight Highlight */
-.story-target-highlight {
-  outline: 3px solid var(--brand, #E5383B) !important;
+/* Native DOM Target Highlight for Interactive Guide (120fps native scroll, zero lag) */
+.story-target-highlight,
+[data-guide-highlight="true"] {
+  outline: 2px solid var(--brand, #E5383B) !important;
   outline-offset: 4px !important;
-  box-shadow: 0 0 0 4px rgba(229, 56, 59, 0.25) !important;
-  position: relative !important;
-  z-index: 35 !important;
+  box-shadow: 0 0 0 4px rgba(229, 56, 59, 0.18), 0 0 28px 4px rgba(229, 56, 59, 0.28) !important;
+  border-radius: 16px;
   transition: outline 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -235,46 +235,25 @@
   animation: pulse-ring 2s ease-in-out infinite;
 }
 
-/* Spotlight on hover */
-.card-spotlight {
-  position: relative;
-  overflow: hidden;
-}
-.card-spotlight::before {
-  content: "";
-  position: absolute;
-  top: var(--mouse-y, -1000px);
-  left: var(--mouse-x, -1000px);
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(229, 56, 59, 0.06), transparent 70%);
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-.card-spotlight:hover::before {
-  opacity: 1;
-}
-
 @theme inline {
   @keyframes marquee {
-  from {
-    transform: translateX(0);
+    from {
+      transform: translateX(0);
     }
-  to {
-    transform: translateX(calc(-100% - var(--gap)));
+    to {
+      transform: translateX(calc(-100% - var(--gap)));
     }
   }
   @keyframes marquee-vertical {
-  from {
-    transform: translateY(0);
+    from {
+      transform: translateY(0);
     }
-  to {
-    transform: translateY(calc(-100% - var(--gap)));
+    to {
+      transform: translateY(calc(-100% - var(--gap)));
     }
   }
 }
+
 @keyframes shimmer {
   100% {
     transform: translateX(100%);

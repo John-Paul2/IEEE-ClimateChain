@@ -96,6 +96,7 @@ Extracted from live on-chain Arbitrum Sepolia deployment (`Chain ID: 421614`) re
 | `ARCHITECTURE.md:27` | Verifier Stake Amount | 0.1 ETH | `[CONFIG]` | `config/params.yaml:contracts.verifier_stake_eth` | `BondVault.sol` constructor |
 | `ARCHITECTURE.md:92` | Dispute Challenge Window | 24 hours (86,400s) | `[CONFIG]` | `config/params.yaml:contracts.challenge_window_seconds` | `Challenge.sol` constructor |
 | `ARCHITECTURE.md:95` | Operator Bond Slash Fraction | 50% (5,000 basis points) | `[CONFIG]` | `config/params.yaml:contracts.operator_slash_basis_points` | `BondVault.slashOperator()` |
+| `web/src/pages/VerifierPage.tsx:356` | Slashed Operator Bond Demo Amount | 0.50 ETH | `[CONFIG]` | `config/params.yaml:contracts.operator_bond_eth` × `0.50` | 50% slash of 1.00 ETH demo bond |
 | `ARCHITECTURE.md:80` | Score Quantization Scale | 0 to 10,000 basis points | `[CONFIG]` | `docs/INTERFACES.md` | Fixed-point integer range |
 | `README.md:24` | Browser Merkle Proof Verification Delay | <5 ms (typical 1.2–1.8 ms) | `[RESULT]` | `results/security/golden_vectors_typescript.txt` | Vitest / Node.js test timer |
 
@@ -162,3 +163,4 @@ The following values are explicitly designated for educational demonstration and
 | `docs/ADOPTION_STRATEGY.md:163` | Illustrative Consignment ROI | €100,000+ per shipment | `[ILLUSTRATIVE]` | Economic adoption incentive example |
 | `docs/THREAT_MODEL.md:25` | Illustrative Historical EU ETS Allowance Range | €40–€100 / tCO2e | `[ILLUSTRATIVE]` | Market price fluctuation reference |
 | `docs/CLIMATE_IMPACT.md:63` | EU-Wide Import Scope Macro Sensitivity | 180,000,000 tCO2e/year | `[ASSUMPTION]` | European Commission Impact Assessment SWD(2021) 643 |
+| `docs/CLIMATE_IMPACT.md:90` | Standard Calendar Hours per Year | 8,760 hours/year | `[CONFIG]` | Calendar identity (`24 hours/day × 365 days/year`) |

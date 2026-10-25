@@ -46,7 +46,7 @@ export const ArbitrumSepoliaModal: React.FC<ArbitrumSepoliaModalProps> = ({
     {
       name: "DeviceRegistry",
       label: "Device Registry",
-      desc: "ECDSA pubkey registration & cryptographic identity authorization for CEMS hardware",
+      desc: "ECDSA pubkey registration & cryptographic identity authorization for CEMS device",
       icon: Cpu,
       detail: arbitrumSepoliaDeployment.contractsDetail.DeviceRegistry,
     },
@@ -81,11 +81,15 @@ export const ArbitrumSepoliaModal: React.FC<ArbitrumSepoliaModalProps> = ({
     {
       name: "Attestation",
       label: "Attestation Registry",
-      desc: "Period-end EU CBAM compliant attestation certificate registry linking verified Merkle roots",
+      desc: "Period-end EU CBAM-aligned attestation certificate registry linking verified Merkle roots",
       icon: FileCheck2,
       detail: arbitrumSepoliaDeployment.contractsDetail.Attestation,
     },
   ];
+
+  const kt = arbitrumSepoliaDeployment.keyTransactions;
+  const fmtGas = (g?: number) => (g ? g.toLocaleString("en-US") : "0");
+  const fmtBlock = (b?: number) => (b ? String(b) : "");
 
   const keyProofs = [
     {
@@ -93,21 +97,21 @@ export const ArbitrumSepoliaModal: React.FC<ArbitrumSepoliaModalProps> = ({
       action: "BatchAnchor.anchorBatch",
       tag: "HONEST FLOW",
       tagColor: "bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/30",
-      txHash: arbitrumSepoliaDeployment.keyTransactions.anchorBatchHonest4.txHash,
-      explorerUrl: arbitrumSepoliaDeployment.keyTransactions.anchorBatchHonest4.explorerUrl,
-      gasUsed: "179,843",
-      block: "321582952",
-      notes: "Authentic CAMPD telemetry Merkle root anchored on Arbitrum Sepolia",
+      txHash: kt.anchorBatchHonest4.txHash,
+      explorerUrl: kt.anchorBatchHonest4.explorerUrl,
+      gasUsed: fmtGas(kt.anchorBatchHonest4.gasUsed),
+      block: fmtBlock(kt.anchorBatchHonest4.block),
+      notes: "Authentic CAMPD telemetry Merkle root anchored on L2 testnet",
     },
     {
-      title: "EU CBAM Attestation Certificate #4",
+      title: "EU CBAM-Aligned Attestation #4",
       action: "Attestation.recordAttestation",
       tag: "BUYER PROOF",
       tagColor: "bg-blue-500/10 text-blue-800 dark:text-blue-300 border-blue-500/30",
-      txHash: arbitrumSepoliaDeployment.keyTransactions.recordAttestation.txHash,
-      explorerUrl: arbitrumSepoliaDeployment.keyTransactions.recordAttestation.explorerUrl,
-      gasUsed: "281,626",
-      block: "321583085",
+      txHash: kt.recordAttestation.txHash,
+      explorerUrl: kt.recordAttestation.explorerUrl,
+      gasUsed: fmtGas(kt.recordAttestation.gasUsed),
+      block: fmtBlock(kt.recordAttestation.block),
       notes: "On-chain record created after 3-of-5 quorum consensus verified",
     },
     {
@@ -115,10 +119,10 @@ export const ArbitrumSepoliaModal: React.FC<ArbitrumSepoliaModalProps> = ({
       action: "BatchAnchor.anchorBatch",
       tag: "ATTACK INJECTED",
       tagColor: "bg-amber-500/10 text-amber-800 dark:text-amber-300 border-amber-500/30",
-      txHash: arbitrumSepoliaDeployment.keyTransactions.anchorBatchTampered6.txHash,
-      explorerUrl: arbitrumSepoliaDeployment.keyTransactions.anchorBatchTampered6.explorerUrl,
-      gasUsed: "179,843",
-      block: "321584995",
+      txHash: kt.anchorBatchTampered6.txHash,
+      explorerUrl: kt.anchorBatchTampered6.explorerUrl,
+      gasUsed: fmtGas(kt.anchorBatchTampered6.gasUsed),
+      block: fmtBlock(kt.anchorBatchTampered6.block),
       notes: "Synthetic scale reduction attack anchored by rogue operator",
     },
     {
@@ -126,21 +130,21 @@ export const ArbitrumSepoliaModal: React.FC<ArbitrumSepoliaModalProps> = ({
       action: "Challenge.resolve",
       tag: "SLASH EXECUTED",
       tagColor: "bg-red-500/10 text-red-800 dark:text-red-300 border-red-500/30",
-      txHash: arbitrumSepoliaDeployment.keyTransactions.resolveSlash.txHash,
-      explorerUrl: arbitrumSepoliaDeployment.keyTransactions.resolveSlash.explorerUrl,
-      gasUsed: "318,914",
-      block: "321585388",
-      notes: "Arbiter 1 completed 2-of-3 quorum: Slashed 50% operator bond on Arbitrum Sepolia",
+      txHash: kt.resolveSlash.txHash,
+      explorerUrl: kt.resolveSlash.explorerUrl,
+      gasUsed: fmtGas(kt.resolveSlash.gasUsed),
+      block: fmtBlock(kt.resolveSlash.block),
+      notes: "Arbiter 1 completed 2-of-3 quorum: Slashed 50% operator bond on L2 testnet",
     },
     {
-      title: "CEMS Hardware Device Registered",
+      title: "CEMS Device Registered",
       action: "DeviceRegistry.registerDevice",
       tag: "REGISTRATION",
       tagColor: "bg-slate-500/10 text-slate-800 dark:text-slate-300 border-slate-500/30",
-      txHash: arbitrumSepoliaDeployment.keyTransactions.registerDevice.txHash,
-      explorerUrl: arbitrumSepoliaDeployment.keyTransactions.registerDevice.explorerUrl,
-      gasUsed: "238,041",
-      block: "321580773",
+      txHash: kt.registerDevice.txHash,
+      explorerUrl: kt.registerDevice.explorerUrl,
+      gasUsed: fmtGas(kt.registerDevice.gasUsed),
+      block: fmtBlock(kt.registerDevice.block),
       notes: "Device public key registered with factory installation ID",
     },
     {
@@ -148,10 +152,10 @@ export const ArbitrumSepoliaModal: React.FC<ArbitrumSepoliaModalProps> = ({
       action: "BondVault.depositOperatorBond",
       tag: "COLLATERAL",
       tagColor: "bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/30",
-      txHash: arbitrumSepoliaDeployment.keyTransactions.depositOperatorBond.txHash,
-      explorerUrl: arbitrumSepoliaDeployment.keyTransactions.depositOperatorBond.explorerUrl,
-      gasUsed: "117,845",
-      block: "321580907",
+      txHash: kt.depositOperatorBond.txHash,
+      explorerUrl: kt.depositOperatorBond.explorerUrl,
+      gasUsed: fmtGas(kt.depositOperatorBond.gasUsed),
+      block: fmtBlock(kt.depositOperatorBond.block),
       notes: "Operator deposited 0.002 ETH bond required for telemetry anchoring",
     },
     {
@@ -159,10 +163,10 @@ export const ArbitrumSepoliaModal: React.FC<ArbitrumSepoliaModalProps> = ({
       action: "VerifierQuorum.revealVote",
       tag: "CONSENSUS",
       tagColor: "bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/30",
-      txHash: arbitrumSepoliaDeployment.keyTransactions.revealVoteHonestV0.txHash,
-      explorerUrl: arbitrumSepoliaDeployment.keyTransactions.revealVoteHonestV0.explorerUrl,
-      gasUsed: "194,083",
-      block: "321583050",
+      txHash: kt.revealVoteHonestV0.txHash,
+      explorerUrl: kt.revealVoteHonestV0.explorerUrl,
+      gasUsed: fmtGas(kt.revealVoteHonestV0.gasUsed),
+      block: fmtBlock(kt.revealVoteHonestV0.block),
       notes: "Verifier 0 revealed Clean verdict with 0bp anomaly score",
     },
     {
@@ -170,10 +174,10 @@ export const ArbitrumSepoliaModal: React.FC<ArbitrumSepoliaModalProps> = ({
       action: "VerifierQuorum.revealVote",
       tag: "FRAUD DETECTED",
       tagColor: "bg-red-500/10 text-red-800 dark:text-red-300 border-red-500/30",
-      txHash: arbitrumSepoliaDeployment.keyTransactions.revealVoteAttackV0.txHash,
-      explorerUrl: arbitrumSepoliaDeployment.keyTransactions.revealVoteAttackV0.explorerUrl,
-      gasUsed: "194,605",
-      block: "321585097",
+      txHash: kt.revealVoteAttackV0.txHash,
+      explorerUrl: kt.revealVoteAttackV0.explorerUrl,
+      gasUsed: fmtGas(kt.revealVoteAttackV0.gasUsed),
+      block: fmtBlock(kt.revealVoteAttackV0.block),
       notes: "Verifier 0 revealed Fraud with score=8500bp & physics residual mismatch",
     },
     {
@@ -181,10 +185,10 @@ export const ArbitrumSepoliaModal: React.FC<ArbitrumSepoliaModalProps> = ({
       action: "Challenge.submitOperatorDispute",
       tag: "DISPUTE",
       tagColor: "bg-amber-500/10 text-amber-800 dark:text-amber-300 border-amber-500/30",
-      txHash: arbitrumSepoliaDeployment.keyTransactions.submitOperatorDispute.txHash,
-      explorerUrl: arbitrumSepoliaDeployment.keyTransactions.submitOperatorDispute.explorerUrl,
-      gasUsed: "82,020",
-      block: "321585333",
+      txHash: kt.submitOperatorDispute.txHash,
+      explorerUrl: kt.submitOperatorDispute.explorerUrl,
+      gasUsed: fmtGas(kt.submitOperatorDispute.gasUsed),
+      block: fmtBlock(kt.submitOperatorDispute.block),
       notes: "Operator lodged dispute providing Merkle proof to initiate Arbiter review",
     },
     {
@@ -192,11 +196,11 @@ export const ArbitrumSepoliaModal: React.FC<ArbitrumSepoliaModalProps> = ({
       action: "Challenge.resolve",
       tag: "ARBITER VOTE",
       tagColor: "bg-red-500/10 text-red-800 dark:text-red-300 border-red-500/30",
-      txHash: arbitrumSepoliaDeployment.keyTransactions.resolveVote.txHash,
-      explorerUrl: arbitrumSepoliaDeployment.keyTransactions.resolveVote.explorerUrl,
-      gasUsed: "77,704",
-      block: "321585379",
-      notes: "Arbiter 0 cast 1st vote confirming UPHELD_FRAUD verdict",
+      txHash: kt.resolveVote.txHash,
+      explorerUrl: kt.resolveVote.explorerUrl,
+      gasUsed: fmtGas(kt.resolveVote.gasUsed),
+      block: fmtBlock(kt.resolveVote.block),
+      notes: "Arbiter 0 cast 1st vote upholding UPHELD_FRAUD verdict",
     },
   ];
 
@@ -224,14 +228,14 @@ export const ArbitrumSepoliaModal: React.FC<ArbitrumSepoliaModalProps> = ({
                 id="arbitrum-sepolia-modal-title"
                 className="text-base sm:text-lg font-heading font-bold text-ink"
               >
-                Live Arbitrum Sepolia Deployment (Chain {ARBITRUM_SEPOLIA_CHAIN_ID})
+                Live {arbitrumSepoliaDeployment.chainName} Deployment (Chain {ARBITRUM_SEPOLIA_CHAIN_ID})
               </h2>
               <span className="px-2 py-0.5 rounded-pill text-[11px] font-semibold font-mono bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300">
                 LIVE TESTNET
               </span>
             </div>
             <p className="text-xs text-muted-strong font-sans">
-              All 6 VeriCEMS smart contracts and full lifecycle on-chain fraud challenge transaction proofs deployed to Arbitrum Sepolia.
+              All 6 VeriCEMS smart contracts and full lifecycle on-chain fraud challenge transaction proofs deployed to {arbitrumSepoliaDeployment.chainName}.
             </p>
           </div>
 
@@ -242,7 +246,7 @@ export const ArbitrumSepoliaModal: React.FC<ArbitrumSepoliaModalProps> = ({
               rel="noopener noreferrer"
               className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-pill text-xs font-semibold bg-surface hover:bg-hairline border border-hairline text-ink transition-colors"
             >
-              <span>sepolia.arbiscan.io</span>
+              <span>Arbiscan Explorer</span>
               <ArrowUpRight className="w-3.5 h-3.5 text-muted-strong" />
             </a>
             <button
@@ -310,10 +314,10 @@ export const ArbitrumSepoliaModal: React.FC<ArbitrumSepoliaModalProps> = ({
             <div className="space-y-3">
               <div className="p-3 rounded-lg bg-surface-soft border border-hairline text-xs flex items-center justify-between">
                 <span className="text-muted-strong">
-                  Empirically executed and verified on Arbitrum Sepolia testnet. Click any transaction chip or explorer button to view on Arbiscan.
+                  Empirically executed and verified on L2 testnet. Click any transaction chip or explorer button to view on Arbiscan.
                 </span>
                 <span className="font-mono text-brand font-semibold hidden sm:inline">
-                  Chain 421614
+                  Chain {ARBITRUM_SEPOLIA_CHAIN_ID}
                 </span>
               </div>
 
@@ -347,7 +351,7 @@ export const ArbitrumSepoliaModal: React.FC<ArbitrumSepoliaModalProps> = ({
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 px-2.5 py-1 rounded-pill text-xs font-semibold bg-brand/10 hover:bg-brand/20 border border-brand/30 text-brand dark:text-brand-soft transition-colors"
-                        title="Open transaction on sepolia.arbiscan.io"
+                        title="Open transaction on block explorer"
                       >
                         <span>Arbiscan</span>
                         <ExternalLink className="w-3 h-3" />
@@ -363,7 +367,7 @@ export const ArbitrumSepoliaModal: React.FC<ArbitrumSepoliaModalProps> = ({
           {activeTab === "contracts" && (
             <div className="space-y-3">
               <div className="p-3 rounded-lg bg-surface-soft border border-hairline text-xs text-muted-strong">
-                The 6 deployed core contracts on Arbitrum Sepolia. NatSpec documented, immutably bound, and verified.
+                The 6 deployed core contracts on {arbitrumSepoliaDeployment.chainName}. NatSpec documented, immutably bound, and verified.
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -420,7 +424,7 @@ export const ArbitrumSepoliaModal: React.FC<ArbitrumSepoliaModalProps> = ({
           {activeTab === "all" && (
             <div className="space-y-2">
               <div className="p-3 rounded-lg bg-surface-soft border border-hairline text-xs text-muted-strong">
-                All {arbitrumSepoliaDeployment.allTransactions.length} recorded on-chain CREATE and CALL transactions logged in <code className="font-mono text-brand">deployments/testnet.json</code>.
+                All {arbitrumSepoliaDeployment.allTransactions.length} recorded on-chain CREATE and CALL transactions logged in the testnet deployment manifest.
               </div>
 
               <div className="border border-hairline rounded-xl overflow-hidden shadow-sm">
@@ -482,7 +486,7 @@ export const ArbitrumSepoliaModal: React.FC<ArbitrumSepoliaModalProps> = ({
 
           <div className="flex items-center gap-2">
             <span className="text-muted-strong font-sans">
-              Documentation: <a href="file:///docs/TESTNET_EVIDENCE.md" className="text-brand hover:underline font-mono">docs/TESTNET_EVIDENCE.md</a>
+              Verified L2 Testnet Deployment
             </span>
             <button
               type="button"

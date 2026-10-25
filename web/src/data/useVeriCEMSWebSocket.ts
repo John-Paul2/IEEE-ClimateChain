@@ -20,11 +20,25 @@ export function useVeriCEMSWebSocket(isMock: boolean = true) {
   const mockIntervalRef = useRef<number | null>(null);
 
   const handleEvent = useCallback((event: TelemetryEvent) => {
-    setState((prev) => ({
-      ...prev,
-      lastEvent: event,
-      events: [event, ...prev.events].slice(0, 100),
-    }));
+    setState((prev) => {
+      const getEventId = (ev: TelemetryEvent): string => {
+        return (
+          ev.event_id ||
+          (ev.data as any)?.event_id ||
+          (ev.seq !== undefined ? `seq-${ev.batch_id ?? 0}-${ev.seq}` : "") ||
+          `${ev.type}-${ev.timestamp || ev.timestamp_utc || ""}-${ev.batch_id ?? ""}`
+        );
+      };
+      const id = getEventId(event);
+      if (prev.events.some((e) => getEventId(e) === id)) {
+        return prev;
+      }
+      return {
+        ...prev,
+        lastEvent: event,
+        events: [event, ...prev.events].slice(0, 100),
+      };
+    });
   }, []);
 
   useEffect(() => {

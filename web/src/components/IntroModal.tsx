@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { X, ArrowRight, ArrowLeft, Play } from "lucide-react";
+import { X, ArrowRight, ArrowLeft, Play, Pause, Compass } from "lucide-react";
 import { deploymentConfig } from "../chain/deploymentConfig";
 import rawSummary from "../../../results/benchmark_summary.json" with { type: "json" };
 
@@ -14,7 +14,9 @@ export const IntroModal: React.FC<IntroModalProps> = ({
   onClose,
   onStartStory,
 }) => {
-  const [slide, setSlide] = useState(0);
+  const [scene, setScene] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [progress, setProgress] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
   const prevFocusRef = useRef<HTMLElement | null>(null);
 
@@ -41,6 +43,43 @@ export const IntroModal: React.FC<IntroModalProps> = ({
   } catch {
     // leave as null
   }
+
+  // Reset progress on scene change
+  useEffect(() => {
+    setProgress(0);
+  }, [scene]);
+
+  // Reset to scene 0 when opening
+  useEffect(() => {
+    if (isOpen) {
+      setScene(0);
+      setProgress(0);
+      setIsPaused(false);
+    }
+  }, [isOpen]);
+
+  // 4-second auto-advance timer with smooth progress
+  useEffect(() => {
+    if (!isOpen || isPaused || prefersReducedMotion) return;
+
+    const intervalMs = 40;
+    const stepIncrement = (intervalMs / 4000) * 100;
+
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          if (scene < 4) {
+            setScene((s) => s + 1);
+            return 0;
+          }
+          return 100;
+        }
+        return prev + stepIncrement;
+      });
+    }, intervalMs);
+
+    return () => clearInterval(interval);
+  }, [isOpen, isPaused, scene, prefersReducedMotion]);
 
   // Focus trap & Escape listener
   useEffect(() => {
@@ -107,283 +146,354 @@ export const IntroModal: React.FC<IntroModalProps> = ({
 
   if (!isOpen) return null;
 
-  const slides = [
+  // 5 Scenes according to prompt specifications
+  const scenes = [
     {
-      title: "Seal",
-      text: "Each reading is signed and linked to the last.",
+      id: "sensor-reports",
+      caption: "A sensor reports a number.",
       svg: (
         <svg
-          viewBox="0 0 340 120"
-          className="w-full h-32 sm:h-36 select-none"
-          aria-label="Packets dropping into a hash chain"
+          viewBox="0 0 360 140"
+          className="w-full h-36 select-none"
+          aria-label="A sensor reports a number"
         >
           <style>{`
-            @keyframes s1Drop1 {
-              0% { transform: translateY(-20px); opacity: 0; }
-              15%, 85% { transform: translateY(0); opacity: 1; }
-              95%, 100% { transform: translateY(0); opacity: 0.2; }
+            @keyframes puff1 {
+              0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+              30% { opacity: 0.7; }
+              100% { transform: translate(12px, -36px) scale(1.4); opacity: 0; }
             }
-            @keyframes s1Draw1 {
-              0%, 15% { stroke-dashoffset: 40; opacity: 0; }
-              30%, 85% { stroke-dashoffset: 0; opacity: 1; }
-              95%, 100% { stroke-dashoffset: 0; opacity: 0.2; }
+            @keyframes puff2 {
+              0% { transform: translate(0, 0) scale(0.5); opacity: 0; }
+              40% { opacity: 0.6; }
+              100% { transform: translate(18px, -44px) scale(1.5); opacity: 0; }
             }
-            @keyframes s1Drop2 {
-              0%, 25% { transform: translateY(-20px); opacity: 0; }
-              40%, 85% { transform: translateY(0); opacity: 1; }
-              95%, 100% { transform: translateY(0); opacity: 0.2; }
+            @keyframes numCount {
+              0%, 15% { opacity: 0; }
+              30%, 100% { opacity: 1; }
             }
-            @keyframes s1Draw2 {
-              0%, 40% { stroke-dashoffset: 40; opacity: 0; }
-              55%, 85% { stroke-dashoffset: 0; opacity: 1; }
-              95%, 100% { stroke-dashoffset: 0; opacity: 0.2; }
+            @keyframes packetEmit {
+              0%, 20% { transform: translate(95px, 68px) scale(0); opacity: 0; }
+              50% { transform: translate(160px, 68px) scale(1); opacity: 1; }
+              100% { transform: translate(250px, 68px) scale(1); opacity: 1; }
             }
-            @keyframes s1Drop3 {
-              0%, 50% { transform: translateY(-20px); opacity: 0; }
-              65%, 85% { transform: translateY(0); opacity: 1; }
-              95%, 100% { transform: translateY(0); opacity: 0.2; }
-            }
-            @keyframes s1Badge {
-              0%, 65% { opacity: 0; transform: scale(0.6); }
-              75%, 85% { opacity: 1; transform: scale(1); }
-              95%, 100% { opacity: 0.2; }
-            }
-            .s1-p1 { animation: ${prefersReducedMotion ? "none" : "s1Drop1 4s ease-in-out infinite"}; }
-            .s1-l1 { stroke-dasharray: 40; animation: ${prefersReducedMotion ? "none" : "s1Draw1 4s ease-in-out infinite"}; }
-            .s1-p2 { animation: ${prefersReducedMotion ? "none" : "s1Drop2 4s ease-in-out infinite"}; }
-            .s1-l2 { stroke-dasharray: 40; animation: ${prefersReducedMotion ? "none" : "s1Draw2 4s ease-in-out infinite"}; }
-            .s1-p3 { animation: ${prefersReducedMotion ? "none" : "s1Drop3 4s ease-in-out infinite"}; }
-            .s1-bd { transform-origin: 290px 40px; animation: ${prefersReducedMotion ? "none" : "s1Badge 4s ease-in-out infinite"}; }
+            .s1-puff1 { transform-origin: 65px 40px; animation: ${prefersReducedMotion ? "none" : "puff1 2.2s infinite ease-out"}; }
+            .s1-puff2 { transform-origin: 65px 40px; animation: ${prefersReducedMotion ? "none" : "puff2 2.6s 0.8s infinite ease-out"}; }
+            .s1-num { animation: ${prefersReducedMotion ? "none" : "numCount 4s infinite"}; }
+            .s1-pkt { animation: ${prefersReducedMotion ? "none" : "packetEmit 4s infinite ease-in-out"}; }
             @media (prefers-reduced-motion: reduce) {
-              .s1-p1, .s1-p2, .s1-p3 { transform: none !important; opacity: 1 !important; animation: none !important; }
-              .s1-l1, .s1-l2 { stroke-dashoffset: 0 !important; opacity: 1 !important; animation: none !important; }
-              .s1-bd { opacity: 1 !important; transform: none !important; animation: none !important; }
+              .s1-puff1, .s1-puff2 { opacity: 0.4 !important; transform: none !important; animation: none !important; }
+              .s1-num { opacity: 1 !important; animation: none !important; }
+              .s1-pkt { transform: translate(220px, 68px) scale(1) !important; opacity: 1 !important; animation: none !important; }
+            }
+          `}</style>
+          {/* Industrial Chimney Stack */}
+          <path d="M45 125 L55 52 L75 52 L85 125 Z" fill="#262626" stroke="#404040" strokeWidth="1.5" />
+          <line x1="50" y1="52" x2="80" y2="52" stroke="#E5383B" strokeWidth="2.5" strokeLinecap="round" />
+          {/* Chimney Puffs */}
+          <circle cx="65" cy="40" r="10" fill="#737373" className="s1-puff1" />
+          <circle cx="68" cy="36" r="14" fill="#525252" className="s1-puff2" />
+
+          {/* Sensor Unit on Stack */}
+          <rect x="74" y="65" width="22" height="20" rx="3" fill="#171717" stroke="#E5383B" strokeWidth="1.5" />
+          <circle cx="85" cy="75" r="2.5" fill="#E5383B" />
+
+          {/* White Data Packet in transit */}
+          <g className="s1-pkt">
+            <rect x="0" y="0" width="18" height="18" rx="4" fill="#FFFFFF" />
+            <text x="9" y="12.5" textAnchor="middle" fontSize="7" fontWeight="bold" fill="#0A0A0A" fontFamily="monospace">CO₂</text>
+          </g>
+
+          {/* Reported Number Readout */}
+          <g className="s1-num">
+            <rect x="230" y="52" width="105" height="42" rx="6" fill="#171717" stroke="#333333" strokeWidth="1.5" />
+            <text x="242" y="68" fontSize="9" fill="#A3A3A3" fontFamily="sans-serif">STACK SENSOR</text>
+            <text x="242" y="86" fontSize="16" fontWeight="bold" fill="#FFFFFF" fontFamily="monospace">37.9</text>
+            <text x="286" y="86" fontSize="10" fill="#737373" fontFamily="monospace">tCO₂/h</text>
+          </g>
+        </svg>
+      ),
+    },
+    {
+      id: "anyone-can-change",
+      caption: "Anyone can change it.",
+      svg: (
+        <svg
+          viewBox="0 0 720 280"
+          className="w-full h-36 select-none"
+          textRendering="geometricPrecision"
+          shapeRendering="geometricPrecision"
+          aria-label="Anyone can change it"
+        >
+          <style>{`
+            @keyframes pulseRed {
+              0%, 25% { stroke: #404040; stroke-width: 2; }
+              45%, 65% { stroke: #E5383B; stroke-width: 4; }
+              85%, 100% { stroke: #E5383B; stroke-width: 2; }
+            }
+            @keyframes strikethrough {
+              0%, 30% { stroke-dashoffset: 120; opacity: 0; }
+              45%, 100% { stroke-dashoffset: 0; opacity: 1; }
+            }
+            @keyframes newNumber {
+              0%, 35% { opacity: 0; }
+              50%, 100% { opacity: 1; }
+            }
+            @keyframes packetTamper {
+              0%, 30% { fill: #FFFFFF; }
+              50%, 100% { fill: #E5383B; }
+            }
+            .s2-box { animation: ${prefersReducedMotion ? "none" : "pulseRed 4s infinite ease-in-out"}; }
+            .s2-strike { stroke-dasharray: 120; animation: ${prefersReducedMotion ? "none" : "strikethrough 4s infinite ease-out"}; }
+            .s2-new { animation: ${prefersReducedMotion ? "none" : "newNumber 4s infinite ease-out"}; }
+            .s2-pkt { animation: ${prefersReducedMotion ? "none" : "packetTamper 4s infinite"}; }
+            @media (prefers-reduced-motion: reduce) {
+              .s2-box { stroke: #E5383B !important; stroke-width: 3 !important; animation: none !important; }
+              .s2-strike { stroke-dashoffset: 0 !important; opacity: 1 !important; animation: none !important; }
+              .s2-new { opacity: 1 !important; animation: none !important; }
+              .s2-pkt { fill: #E5383B !important; animation: none !important; }
+            }
+          `}</style>
+          {/* Central editable number panel */}
+          <g className="s2-box">
+            <rect x="180" y="60" width="360" height="152" rx="14" fill="#171717" stroke="#E5383B" strokeWidth="2.5" />
+            <text x="360" y="96" textAnchor="middle" fontSize="16" fontWeight="bold" letterSpacing="0.08em" fill="#E5383B" fontFamily="sans-serif">
+              UNPROTECTED TELEMETRY
+            </text>
+
+            {/* Original 37.9 with strike */}
+            <text x="270" y="156" textAnchor="middle" fontSize="36" fontWeight="bold" fill="#737373" fontFamily="monospace">
+              37.9
+            </text>
+            <line x1="220" y1="144" x2="320" y2="144" stroke="#E5383B" strokeWidth="4" strokeLinecap="round" className="s2-strike" />
+
+            {/* Changed to 26.5 */}
+            <g className="s2-new">
+              <text x="430" y="156" textAnchor="middle" fontSize="40" fontWeight="bold" fill="#E5383B" fontFamily="monospace">
+                26.5
+              </text>
+              <text x="430" y="188" textAnchor="middle" fontSize="15" fontWeight="bold" letterSpacing="0.05em" fill="#E5383B" fontFamily="sans-serif">
+                ALTERED (-30%)
+              </text>
+            </g>
+          </g>
+
+          {/* Tampered Data Packet: turns red */}
+          <g transform="translate(84, 116)">
+            <rect x="0" y="0" width="40" height="40" rx="8" className="s2-pkt" fill="#E5383B" />
+            <text x="20" y="27" textAnchor="middle" fontSize="15" fontWeight="bold" fill="#FFFFFF" fontFamily="monospace">!</text>
+          </g>
+        </svg>
+      ),
+    },
+    {
+      id: "we-seal-it",
+      caption: "We seal it.",
+      svg: (
+        <svg
+          viewBox="0 0 360 140"
+          className="w-full h-36 select-none"
+          aria-label="We seal it"
+        >
+          <style>{`
+            @keyframes linkDraw {
+              0%, 15% { stroke-dashoffset: 30; opacity: 0; }
+              35%, 100% { stroke-dashoffset: 0; opacity: 1; }
+            }
+            @keyframes flyHash {
+              0%, 35% { transform: translate(165px, 68px) scale(0.6); opacity: 0; }
+              60% { opacity: 1; transform: translate(220px, 50px) scale(1); }
+              90%, 100% { transform: translate(280px, 68px) scale(0.8); opacity: 0.3; }
+            }
+            @keyframes lockSnap {
+              0%, 20% { transform: scale(0.5); opacity: 0; }
+              40%, 100% { transform: scale(1); opacity: 1; }
+            }
+            .s3-link { stroke-dasharray: 30; animation: ${prefersReducedMotion ? "none" : "linkDraw 4s infinite ease-out"}; }
+            .s3-fly { animation: ${prefersReducedMotion ? "none" : "flyHash 4s infinite ease-in-out"}; }
+            .s3-lock { transform-origin: 165px 42px; animation: ${prefersReducedMotion ? "none" : "lockSnap 4s infinite ease-out"}; }
+            @media (prefers-reduced-motion: reduce) {
+              .s3-link { stroke-dashoffset: 0 !important; opacity: 1 !important; animation: none !important; }
+              .s3-fly { transform: translate(280px, 68px) scale(0.8) !important; opacity: 1 !important; animation: none !important; }
+              .s3-lock { transform: none !important; opacity: 1 !important; animation: none !important; }
             }
           `}</style>
           {/* Packet 1 */}
-          <g className="s1-p1">
-            <rect x="25" y="38" width="65" height="46" rx="8" fill="var(--surface-soft)" stroke="var(--hairline-strong)" strokeWidth="1.5" />
-            <text x="57" y="58" textAnchor="middle" fontSize="10" fontWeight="bold" fill="var(--ink)">#001</text>
-            <text x="57" y="72" textAnchor="middle" fontSize="8" fontFamily="monospace" fill="var(--muted-strong)">e8a2..f1</text>
+          <g transform="translate(30, 48)">
+            <rect x="0" y="0" width="55" height="44" rx="6" fill="#171717" stroke="#404040" strokeWidth="1.5" />
+            <text x="27" y="20" textAnchor="middle" fontSize="9" fontWeight="bold" fill="#FFFFFF" fontFamily="monospace">#001</text>
+            <text x="27" y="34" textAnchor="middle" fontSize="7" fill="#A3A3A3" fontFamily="monospace">0x7a..c2</text>
           </g>
+
           {/* Link 1 */}
-          <line x1="90" y1="61" x2="135" y2="61" stroke="#E5383B" strokeWidth="2" strokeLinecap="round" className="s1-l1" />
-          <polygon points="135,61 129,57 129,65" fill="#E5383B" className="s1-l1" />
-          {/* Packet 2 */}
-          <g className="s1-p2">
-            <rect x="135" y="38" width="65" height="46" rx="8" fill="var(--surface-soft)" stroke="var(--hairline-strong)" strokeWidth="1.5" />
-            <text x="167" y="58" textAnchor="middle" fontSize="10" fontWeight="bold" fill="var(--ink)">#002</text>
-            <text x="167" y="72" textAnchor="middle" fontSize="8" fontFamily="monospace" fill="var(--muted-strong)">3b49..c4</text>
+          <line x1="85" y1="70" x2="115" y2="70" stroke="#E5383B" strokeWidth="2" strokeLinecap="round" className="s3-link" />
+
+          {/* Packet 2 with Padlock */}
+          <g transform="translate(115, 48)">
+            <rect x="0" y="0" width="55" height="44" rx="6" fill="#171717" stroke="#E5383B" strokeWidth="1.5" />
+            <text x="27" y="20" textAnchor="middle" fontSize="9" fontWeight="bold" fill="#FFFFFF" fontFamily="monospace">#002</text>
+            <text x="27" y="34" textAnchor="middle" fontSize="7" fill="#E5383B" fontFamily="monospace">SEALED</text>
           </g>
-          {/* Link 2 */}
-          <line x1="200" y1="61" x2="245" y2="61" stroke="#E5383B" strokeWidth="2" strokeLinecap="round" className="s1-l2" />
-          <polygon points="245,61 239,57 239,65" fill="#E5383B" className="s1-l2" />
-          {/* Packet 3 */}
-          <g className="s1-p3">
-            <rect x="245" y="38" width="65" height="46" rx="8" fill="var(--surface-soft)" stroke="#E5383B" strokeWidth="1.5" />
-            <text x="277" y="58" textAnchor="middle" fontSize="10" fontWeight="bold" fill="var(--ink)">#003</text>
-            <text x="277" y="72" textAnchor="middle" fontSize="8" fontFamily="monospace" fill="var(--muted-strong)">9f71..a0</text>
+
+          {/* Padlock Icon */}
+          <g className="s3-lock" transform="translate(134, 28)">
+            <rect x="3" y="8" width="14" height="11" rx="2" fill="#E5383B" />
+            <path d="M6 8 V5 A4 4 0 0 1 14 5 V8" fill="none" stroke="#FFFFFF" strokeWidth="1.8" />
           </g>
-          {/* Signed Seal Badge */}
-          <g className="s1-bd">
-            <circle cx="295" cy="40" r="10" fill="#E5383B" />
-            <path d="M291 40 L294 43 L299 37" fill="none" stroke="#FFFFFF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+
+          {/* Fingerprint / Hash Flying */}
+          <g className="s3-fly">
+            <rect x="-8" y="-8" width="16" height="16" rx="4" fill="#FFFFFF" />
+            <text x="0" y="3" textAnchor="middle" fontSize="7" fontWeight="bold" fill="#0A0A0A" fontFamily="monospace">#</text>
           </g>
-        </svg>
-      ),
-    },
-    {
-      title: "Check",
-      text: "Physics and AI test every batch.",
-      svg: (
-        <svg
-          viewBox="0 0 340 120"
-          className="w-full h-32 sm:h-36 select-none"
-          aria-label="Telemetry points on a line with one drifting off"
-        >
-          <style>{`
-            @keyframes s2Drift {
-              0%, 20% { transform: translateY(0); }
-              50%, 85% { transform: translateY(-38px); }
-              95%, 100% { transform: translateY(0); }
-            }
-            @keyframes s2Color {
-              0%, 20% { fill: #0E9F6E; }
-              50%, 85% { fill: #E5383B; }
-              95%, 100% { fill: #0E9F6E; }
-            }
-            @keyframes s2Alert {
-              0%, 35% { opacity: 0; transform: scale(0.6); }
-              50%, 85% { opacity: 1; transform: scale(1); }
-              95%, 100% { opacity: 0; }
-            }
-            @keyframes s2Guide {
-              0%, 25% { opacity: 0; }
-              50%, 85% { opacity: 1; }
-              95%, 100% { opacity: 0; }
-            }
-            .s2-drifter { animation: ${prefersReducedMotion ? "none" : "s2Drift 4s ease-in-out infinite"}; }
-            .s2-dot { animation: ${prefersReducedMotion ? "none" : "s2Color 4s ease-in-out infinite"}; }
-            .s2-alt { transform-origin: 220px 24px; animation: ${prefersReducedMotion ? "none" : "s2Alert 4s ease-in-out infinite"}; }
-            .s2-gd { animation: ${prefersReducedMotion ? "none" : "s2Guide 4s ease-in-out infinite"}; }
-            @media (prefers-reduced-motion: reduce) {
-              .s2-drifter { transform: translateY(-38px) !important; animation: none !important; }
-              .s2-dot { fill: #E5383B !important; animation: none !important; }
-              .s2-alt { opacity: 1 !important; transform: none !important; animation: none !important; }
-              .s2-gd { opacity: 1 !important; animation: none !important; }
-            }
-          `}</style>
-          {/* Safe physical corridor */}
-          <rect x="25" y="52" width="290" height="32" rx="4" fill="var(--surface-soft)" opacity="0.6" />
-          <line x1="25" y1="68" x2="315" y2="68" stroke="var(--hairline-strong)" strokeWidth="1" strokeDasharray="3 3" />
-          {/* Normal points on line */}
-          <circle cx="50" cy="68" r="5" fill="#0E9F6E" />
-          <circle cx="105" cy="65" r="5" fill="#0E9F6E" />
-          <circle cx="160" cy="71" r="5" fill="#0E9F6E" />
-          <circle cx="275" cy="67" r="5" fill="#0E9F6E" />
-          {/* Drifting point */}
-          <g className="s2-drifter">
-            <line x1="220" y1="68" x2="220" y2="68" stroke="#E5383B" strokeWidth="1.5" strokeDasharray="2 2" className="s2-gd" />
-            <circle cx="220" cy="68" r="6" fill="#0E9F6E" className="s2-dot" />
-          </g>
-          {/* Alert flag */}
-          <g className="s2-alt">
-            <rect x="185" y="14" width="70" height="18" rx="4" fill="#E5383B" />
-            <text x="220" y="26" textAnchor="middle" fontSize="9" fontWeight="bold" fill="#FFFFFF">Anomalous</text>
+
+          {/* Blockchain Icon */}
+          <g transform="translate(270, 48)">
+            <rect x="0" y="0" width="60" height="44" rx="6" fill="#171717" stroke="#525252" strokeWidth="1.5" />
+            <path d="M18 16 L30 10 L42 16 L30 22 Z M18 24 L30 30 L42 24" fill="none" stroke="#A3A3A3" strokeWidth="1.5" strokeLinejoin="round" />
+            <text x="30" y="38" textAnchor="middle" fontSize="7" fontWeight="bold" fill="#737373" fontFamily="sans-serif">CHAIN</text>
           </g>
         </svg>
       ),
     },
     {
-      title: "Judge",
-      text: "Five verifiers vote. A flagged cheat loses a deposit.",
+      id: "checkers-judge",
+      caption: "Five checkers judge it.",
       svg: (
         <svg
-          viewBox="0 0 340 120"
-          className="w-full h-32 sm:h-36 select-none"
-          aria-label="Five verifiers voting, deposit bar shrinking"
+          viewBox="0 0 360 140"
+          className="w-full h-36 select-none"
+          aria-label="Five checkers judge it"
         >
           <style>{`
-            @keyframes s3Vote {
-              0%, 30% { fill: var(--surface-soft); stroke: var(--hairline-strong); }
-              45%, 85% { fill: #E5383B; stroke: #E5383B; }
-              95%, 100% { fill: var(--surface-soft); stroke: var(--hairline-strong); }
+            @keyframes vClean {
+              0%, 20% { fill: #262626; stroke: #404040; }
+              40%, 100% { fill: #0E9F6E; stroke: #0E9F6E; }
             }
-            @keyframes s3Clean {
-              0%, 20% { fill: var(--surface-soft); stroke: var(--hairline-strong); }
-              35%, 85% { fill: #0E9F6E; stroke: #0E9F6E; }
-              95%, 100% { fill: var(--surface-soft); stroke: var(--hairline-strong); }
+            @keyframes vFraud {
+              0%, 20% { fill: #262626; stroke: #404040; }
+              45%, 100% { fill: #E5383B; stroke: #E5383B; }
             }
-            @keyframes s3Bar {
-              0%, 45% { width: 250px; fill: #0E9F6E; }
-              60%, 85% { width: 50px; fill: #E5383B; }
-              95%, 100% { width: 250px; fill: #0E9F6E; }
+            @keyframes shrinkBar {
+              0%, 45% { width: 260px; fill: #0E9F6E; }
+              65%, 100% { width: 70px; fill: #E5383B; }
             }
-            @keyframes s3Text {
-              0%, 50% { opacity: 0; }
-              60%, 85% { opacity: 1; }
-              95%, 100% { opacity: 0; }
+            @keyframes slashTag {
+              0%, 55% { opacity: 0; transform: translateY(4px); }
+              70%, 100% { opacity: 1; transform: translateY(0); }
             }
-            .s3-vclean { animation: ${prefersReducedMotion ? "none" : "s3Clean 4s ease-in-out infinite"}; }
-            .s3-vflag { animation: ${prefersReducedMotion ? "none" : "s3Vote 4s ease-in-out infinite"}; }
-            .s3-bar { animation: ${prefersReducedMotion ? "none" : "s3Bar 4s ease-in-out infinite"}; }
-            .s3-slash { animation: ${prefersReducedMotion ? "none" : "s3Text 4s ease-in-out infinite"}; }
+            .s4-vc { animation: ${prefersReducedMotion ? "none" : "vClean 4s infinite ease-in-out"}; }
+            .s4-vf { animation: ${prefersReducedMotion ? "none" : "vFraud 4s infinite ease-in-out"}; }
+            .s4-bar { animation: ${prefersReducedMotion ? "none" : "shrinkBar 4s infinite ease-in-out"}; }
+            .s4-tag { animation: ${prefersReducedMotion ? "none" : "slashTag 4s infinite ease-out"}; }
             @media (prefers-reduced-motion: reduce) {
-              .s3-vclean { fill: #0E9F6E !important; stroke: #0E9F6E !important; animation: none !important; }
-              .s3-vflag { fill: #E5383B !important; stroke: #E5383B !important; animation: none !important; }
-              .s3-bar { width: 50px !important; fill: #E5383B !important; animation: none !important; }
-              .s3-slash { opacity: 1 !important; animation: none !important; }
+              .s4-vc { fill: #0E9F6E !important; stroke: #0E9F6E !important; animation: none !important; }
+              .s4-vf { fill: #E5383B !important; stroke: #E5383B !important; animation: none !important; }
+              .s4-bar { width: 70px !important; fill: #E5383B !important; animation: none !important; }
+              .s4-tag { opacity: 1 !important; transform: none !important; animation: none !important; }
             }
           `}</style>
-          {/* 5 Verifiers */}
+          {/* Five Verifier Dots */}
           {[
-            { id: "V0", cx: 45, isFlag: false },
-            { id: "V1", cx: 105, isFlag: false },
-            { id: "V2", cx: 165, isFlag: true },
-            { id: "V3", cx: 225, isFlag: true },
-            { id: "V4", cx: 285, isFlag: true },
+            { id: "V1", cx: 50, isFlag: false },
+            { id: "V2", cx: 115, isFlag: false },
+            { id: "V3", cx: 180, isFlag: true },
+            { id: "V4", cx: 245, isFlag: true },
+            { id: "V5", cx: 310, isFlag: true },
           ].map((v) => (
             <g key={v.id}>
               <circle
                 cx={v.cx}
-                cy={32}
+                cy={42}
                 r="16"
                 strokeWidth="2"
-                className={v.isFlag ? "s3-vflag" : "s3-vclean"}
+                className={v.isFlag ? "s4-vf" : "s4-vc"}
+                fill="#262626"
               />
-              <text x={v.cx} y={36} textAnchor="middle" fontSize="10" fontWeight="bold" fill="var(--ink)">
+              <text x={v.cx} y={46} textAnchor="middle" fontSize="10" fontWeight="bold" fill="#FFFFFF" fontFamily="monospace">
                 {v.id}
               </text>
             </g>
           ))}
-          {/* Deposit Bar Background */}
-          <rect x="45" y="78" width="250" height="18" rx="5" fill="var(--surface-soft)" stroke="var(--hairline)" />
+
+          {/* Deposit Bar Container */}
+          <rect x="50" y="80" width="260" height="16" rx="4" fill="#171717" stroke="#333333" strokeWidth="1" />
           {/* Shrinking Deposit Bar */}
-          <rect x="45" y="78" width="250" height="18" rx="5" className="s3-bar" />
-          {/* Slashed Label */}
-          <text x="170" y="112" textAnchor="middle" fontSize="10" fontWeight="bold" fill="#E5383B" className="s3-slash">
-            3/5 Fraud Votes · Deposit Slashed
-          </text>
+          <rect x="50" y="80" width="260" height="16" rx="4" className="s4-bar" fill="#0E9F6E" />
+
+          {/* Slashed Indicator Label */}
+          <g className="s4-tag">
+            <text x="180" y="116" textAnchor="middle" fontSize="10" fontWeight="bold" fill="#E5383B" fontFamily="monospace">
+              3/5 Fraud Votes · Operator Slashed
+            </text>
+          </g>
         </svg>
       ),
     },
     {
-      title: "Prove",
-      text: "Buyers re-check the proof in their browser.",
+      id: "buyers-verify",
+      caption: "Buyers verify it themselves.",
       svg: (
         <svg
-          viewBox="0 0 340 120"
-          className="w-full h-32 sm:h-36 select-none"
-          aria-label="Browser checking valid and tampered reports"
+          viewBox="0 0 360 140"
+          className="w-full h-36 select-none"
+          aria-label="Buyers verify it themselves"
         >
           <style>{`
-            @keyframes s4Tick {
-              0%, 15% { stroke-dashoffset: 24; opacity: 0; }
-              35%, 85% { stroke-dashoffset: 0; opacity: 1; }
-              95%, 100% { stroke-dashoffset: 24; opacity: 0; }
+            @keyframes tickIn {
+              0%, 25% { stroke-dashoffset: 24; opacity: 0; }
+              45%, 100% { stroke-dashoffset: 0; opacity: 1; }
             }
-            @keyframes s4Cross {
-              0%, 35% { stroke-dashoffset: 24; opacity: 0; }
-              55%, 85% { stroke-dashoffset: 0; opacity: 1; }
-              95%, 100% { stroke-dashoffset: 24; opacity: 0; }
+            @keyframes savingsCount {
+              0%, 30% { opacity: 0; transform: translateY(4px); }
+              50%, 100% { opacity: 1; transform: translateY(0); }
             }
-            .s4-t { stroke-dasharray: 24; animation: ${prefersReducedMotion ? "none" : "s4Tick 4s ease-in-out infinite"}; }
-            .s4-c { stroke-dasharray: 24; animation: ${prefersReducedMotion ? "none" : "s4Cross 4s ease-in-out infinite"}; }
+            .s5-tick { stroke-dasharray: 24; animation: ${prefersReducedMotion ? "none" : "tickIn 4s infinite ease-out"}; }
+            .s5-sav { animation: ${prefersReducedMotion ? "none" : "savingsCount 4s infinite ease-out"}; }
             @media (prefers-reduced-motion: reduce) {
-              .s4-t, .s4-c { stroke-dashoffset: 0 !important; opacity: 1 !important; animation: none !important; }
+              .s5-tick { stroke-dashoffset: 0 !important; opacity: 1 !important; animation: none !important; }
+              .s5-sav { opacity: 1 !important; transform: none !important; animation: none !important; }
             }
           `}</style>
-          {/* Authentic Document */}
-          <g>
-            <rect x="45" y="16" width="95" height="82" rx="8" fill="var(--surface-soft)" stroke="var(--hairline-strong)" strokeWidth="1.5" />
-            <line x1="60" y1="34" x2="110" y2="34" stroke="var(--ink)" strokeWidth="2" strokeLinecap="round" />
-            <line x1="60" y1="46" x2="125" y2="46" stroke="var(--muted-strong)" strokeWidth="1.5" strokeLinecap="round" />
-            <line x1="60" y1="58" x2="105" y2="58" stroke="var(--muted-strong)" strokeWidth="1.5" strokeLinecap="round" />
-            <circle cx="92" cy="78" r="11" fill="#0E9F6E" />
-            <path d="M87 78 L90 81 L97 75" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="s4-t" />
-          </g>
-          {/* Tampered Document */}
-          <g>
-            <rect x="200" y="16" width="95" height="82" rx="8" fill="var(--surface-soft)" stroke="#E5383B" strokeWidth="1.5" />
-            <line x1="215" y1="34" x2="265" y2="34" stroke="var(--ink)" strokeWidth="2" strokeLinecap="round" />
-            <line x1="215" y1="46" x2="280" y2="46" stroke="#E5383B" strokeWidth="1.8" strokeLinecap="round" />
-            <line x1="215" y1="58" x2="260" y2="58" stroke="var(--muted-strong)" strokeWidth="1.5" strokeLinecap="round" />
-            <circle cx="247" cy="78" r="11" fill="#E5383B" />
-            <path d="M243 74 L251 82 M251 74 L243 82" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" className="s4-c" />
+          {/* Browser Window Mockup */}
+          <g transform="translate(60, 20)">
+            <rect x="0" y="0" width="240" height="100" rx="6" fill="#171717" stroke="#333333" strokeWidth="1.5" />
+            {/* Window title bar */}
+            <rect x="0" y="0" width="240" height="20" rx="6" fill="#262626" />
+            <circle cx="12" cy="10" r="3" fill="#E5383B" />
+            <circle cx="22" cy="10" r="3" fill="#D97706" />
+            <circle cx="32" cy="10" r="3" fill="#0E9F6E" />
+            <text x="120" y="14" textAnchor="middle" fontSize="8" fill="#A3A3A3" fontFamily="monospace">vericems.app/importer</text>
+
+            {/* Verified Green Badge & Tick */}
+            <g transform="translate(25, 45)">
+              <circle cx="15" cy="15" r="14" fill="#0E9F6E" />
+              <path d="M9 15 L13 19 L21 11" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="s5-tick" />
+              <text x="38" y="14" fontSize="11" fontWeight="bold" fill="#FFFFFF" fontFamily="sans-serif">CBAM Report Verified</text>
+              <text x="38" y="26" fontSize="8" fill="#0E9F6E" fontFamily="monospace">Merkle proof matched</text>
+            </g>
+
+            {/* Savings Number Counting Up */}
+            <g className="s5-sav" transform="translate(145, 68)">
+              <rect x="0" y="0" width="80" height="20" rx="3" fill="#0E9F6E/20" stroke="#0E9F6E/40" strokeWidth="1" />
+              <text x="40" y="14" textAnchor="middle" fontSize="9" fontWeight="bold" fill="#0E9F6E" fontFamily="monospace">
+                €42,850 saved
+              </text>
+            </g>
           </g>
         </svg>
       ),
     },
   ];
 
-  const current = slides[slide];
+  const current = scenes[scene];
 
   return (
     <div
       role="dialog"
       aria-modal="true"
-      aria-labelledby="intro-slide-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs select-none"
+      aria-label="VeriCEMS Guided Introduction"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md select-none"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           onClose();
@@ -393,57 +503,95 @@ export const IntroModal: React.FC<IntroModalProps> = ({
       <div
         ref={modalRef}
         tabIndex={-1}
-        className="w-full max-w-lg bg-surface border border-hairline rounded-card shadow-2xl overflow-hidden flex flex-col focus:outline-none"
+        className="w-full max-w-lg bg-[#0F0F0F] border border-[#262626] rounded-card shadow-2xl overflow-hidden flex flex-col focus:outline-none text-white"
       >
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 pt-4 pb-2 border-b border-hairline">
+        {/* Header with Step indicator, click-to-pause status, and close */}
+        <div className="flex items-center justify-between px-5 pt-4 pb-2 border-b border-[#262626]">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-brand" />
-            <span
-              id="intro-slide-title"
-              className="text-xs font-mono font-semibold text-muted-strong uppercase tracking-wider"
-            >
-              Step {slide + 1} of {slides.length} · {current.title}
+            <span className="w-2 h-2 rounded-full bg-[#E5383B]" />
+            <span className="text-xs font-mono font-semibold text-[#A3A3A3] uppercase tracking-wider">
+              Scene {scene + 1} of {scenes.length}
             </span>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close intro modal"
-            className="p-1 rounded-lg text-muted hover:text-ink hover:bg-surface-soft border border-transparent hover:border-hairline transition-colors cursor-pointer"
-          >
-            <X className="w-4 h-4" />
-          </button>
+
+          <div className="flex items-center gap-2">
+            {/* Click to pause indicator */}
+            <button
+              type="button"
+              onClick={() => setIsPaused((p) => !p)}
+              className="text-[11px] font-mono text-[#A3A3A3] hover:text-white px-2 py-0.5 rounded border border-transparent hover:border-[#333333] flex items-center gap-1 transition-colors cursor-pointer"
+              aria-label={isPaused ? "Resume animation" : "Pause animation"}
+            >
+              {isPaused ? (
+                <>
+                  <Play className="w-3 h-3 fill-current text-[#E5383B]" />
+                  <span>Paused</span>
+                </>
+              ) : (
+                <>
+                  <Pause className="w-3 h-3" />
+                  <span>Auto-advancing</span>
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close intro modal"
+              className="p-1 rounded-lg text-[#737373] hover:text-white hover:bg-[#262626] border border-transparent hover:border-[#333333] transition-colors cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
-        {/* Content */}
+        {/* 4-second Progress Bar per Scene */}
+        <div className="w-full h-1 bg-[#262626] overflow-hidden">
+          <div
+            className="h-full bg-[#E5383B] transition-all duration-75 ease-linear"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+
+        {/* Content Area with Click-to-Pause toggle */}
         <div className="p-5 sm:p-6 space-y-4">
-          <h2 className="text-lg sm:text-xl font-heading font-bold text-ink tracking-tight text-center">
-            {current.text}
+          {/* Exactly one caption per scene (max 10 words) */}
+          <h2 className="text-lg sm:text-xl font-heading font-bold text-white tracking-tight text-center">
+            {current.caption}
           </h2>
 
-          <div className="rounded-xl bg-surface-soft/60 border border-hairline p-2 sm:p-3 flex items-center justify-center">
+          <div
+            onClick={() => setIsPaused((p) => !p)}
+            title="Click animation to pause or resume"
+            className="rounded-xl bg-[#171717] border border-[#262626] p-2 sm:p-3 flex items-center justify-center cursor-pointer hover:border-[#404040] transition-colors relative"
+          >
             {current.svg}
+            {isPaused && (
+              <span className="absolute bottom-2 right-2 text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-black/80 text-[#E5383B] border border-[#E5383B]/40">
+                Paused (click to resume)
+              </span>
+            )}
           </div>
 
-          {/* Slide 4 stats row from data, hiding any that are missing */}
-          {slide === 3 && (
-            <div className="pt-2 border-t border-hairline flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs font-mono text-muted-strong">
+          {/* Scene 5 Stats Row from data (hidden if missing) */}
+          {scene === 4 && (
+            <div className="pt-2 border-t border-[#262626] flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs font-mono text-[#A3A3A3]">
               {contractCount > 0 && (
-                <div className="px-2.5 py-1 rounded-lg bg-surface-soft border border-hairline flex items-center gap-1.5">
-                  <strong className="text-ink font-semibold">{contractCount}</strong>
+                <div className="px-2.5 py-1 rounded-lg bg-[#171717] border border-[#262626] flex items-center gap-1.5">
+                  <strong className="text-white font-semibold">{contractCount}</strong>
                   <span>contracts deployed</span>
                 </div>
               )}
               {attacksTotal !== null && (
-                <div className="px-2.5 py-1 rounded-lg bg-surface-soft border border-hairline flex items-center gap-1.5">
-                  <strong className="text-ink font-semibold">{attacksTotal}</strong>
+                <div className="px-2.5 py-1 rounded-lg bg-[#171717] border border-[#262626] flex items-center gap-1.5">
+                  <strong className="text-white font-semibold">{attacksTotal}</strong>
                   <span>attacks tested</span>
                 </div>
               )}
               {attacksBelow50 !== null && (
-                <div className="px-2.5 py-1 rounded-lg bg-surface-soft border border-hairline flex items-center gap-1.5">
-                  <strong className="text-flagged-ink dark:text-red-400 font-semibold">{attacksBelow50}</strong>
+                <div className="px-2.5 py-1 rounded-lg bg-[#171717] border border-[#262626] flex items-center gap-1.5">
+                  <strong className="text-[#FF6B6B] font-semibold">{attacksBelow50}</strong>
                   <span>attacks below 50%</span>
                 </div>
               )}
@@ -452,63 +600,73 @@ export const IntroModal: React.FC<IntroModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3.5 bg-surface-soft/40 border-t border-hairline flex items-center justify-between gap-3">
+        <div className="px-5 py-3.5 bg-[#141414] border-t border-[#262626] flex items-center justify-between gap-3">
           <button
             type="button"
             onClick={onClose}
-            className="text-xs font-semibold text-muted-strong hover:text-ink transition-colors cursor-pointer"
+            className="text-xs font-semibold text-[#A3A3A3] hover:text-white transition-colors cursor-pointer"
           >
             Skip
           </button>
 
-          {/* Progress dots */}
-          <div className="flex items-center gap-1.5" aria-label="Progress dots">
-            {slides.map((_, i) => (
+          {/* Progress dots for 5 scenes */}
+          <div className="flex items-center gap-1.5" aria-label="Scene progress dots">
+            {scenes.map((_, i) => (
               <button
                 key={i}
                 type="button"
-                onClick={() => setSlide(i)}
-                aria-label={`Go to slide ${i + 1}`}
+                onClick={() => setScene(i)}
+                aria-label={`Go to scene ${i + 1}`}
                 className={`transition-all rounded-pill ${
-                  i === slide
-                    ? "w-5 h-2 bg-brand"
-                    : "w-2 h-2 bg-hairline-strong hover:bg-muted"
+                  i === scene
+                    ? "w-5 h-2 bg-[#E5383B]"
+                    : "w-2 h-2 bg-[#404040] hover:bg-[#737373]"
                 }`}
               />
             ))}
           </div>
 
-          {/* Next / Back / Start the story */}
+          {/* Navigation controls */}
           <div className="flex items-center gap-2">
-            {slide > 0 && (
+            {scene > 0 && (
               <button
                 type="button"
-                onClick={() => setSlide((prev) => prev - 1)}
-                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-hairline text-xs font-semibold text-ink bg-surface hover:bg-hairline/60 transition-colors cursor-pointer"
+                onClick={() => setScene((s) => Math.max(0, s - 1))}
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#333333] text-xs font-semibold text-white bg-[#171717] hover:bg-[#262626] transition-colors cursor-pointer"
               >
                 <ArrowLeft className="w-3 h-3" />
                 <span>Back</span>
               </button>
             )}
 
-            {slide < slides.length - 1 ? (
+            {scene < 4 ? (
               <button
                 type="button"
-                onClick={() => setSlide((prev) => prev + 1)}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-ink text-white dark:bg-white dark:text-black text-xs font-semibold hover:opacity-90 transition-opacity cursor-pointer shadow-sm"
+                onClick={() => setScene((s) => Math.min(4, s + 1))}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white text-black text-xs font-semibold hover:bg-neutral-200 transition-colors cursor-pointer shadow-sm"
               >
                 <span>Next</span>
                 <ArrowRight className="w-3 h-3" />
               </button>
             ) : (
-              <button
-                type="button"
-                onClick={onStartStory}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-brand text-white text-xs font-semibold hover:bg-brand-pressed transition-colors cursor-pointer shadow-sm"
-              >
-                <Play className="w-3 h-3 fill-current" />
-                <span>Start the story</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#333333] text-xs font-semibold text-[#A3A3A3] hover:text-white bg-[#171717] hover:bg-[#262626] transition-colors cursor-pointer"
+                >
+                  <Compass className="w-3 h-3" />
+                  <span>Explore on my own</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={onStartStory}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#E5383B] text-white text-xs font-semibold hover:bg-[#c92a2a] transition-colors cursor-pointer shadow-sm"
+                >
+                  <Play className="w-3 h-3 fill-current" />
+                  <span>Start the story</span>
+                </button>
+              </div>
             )}
           </div>
         </div>

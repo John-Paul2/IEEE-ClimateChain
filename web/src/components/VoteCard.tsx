@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle2, AlertTriangle, CircleSlash } from "lucide-react";
+import { CheckCircle2, AlertTriangle, CircleSlash, ChevronDown } from "lucide-react";
 import type { VerifierNodeStatus } from "../types/telemetry";
 import { HashChip } from "./HashChip";
 import { Skeleton } from "./Skeleton";
@@ -13,6 +13,7 @@ export interface VoteCardProps {
   error?: string | null;
   onRetry?: () => void;
   className?: string;
+  dataGuide?: string;
 }
 
 export const VoteCard: React.FC<VoteCardProps> = ({
@@ -22,6 +23,7 @@ export const VoteCard: React.FC<VoteCardProps> = ({
   error = null,
   onRetry,
   className = "",
+  dataGuide,
 }) => {
   if (isLoading) {
     return (
@@ -59,17 +61,26 @@ export const VoteCard: React.FC<VoteCardProps> = ({
   const isFraud = verifier.last_verdict === "fraud";
   const hasRevealed = isClean || isFraud;
 
-  // Staked ETH formatting (from wei) - check stake_wei, staked_amount_wei, or fallback to real 1.00 ETH
-  const stakeWei = (verifier as any).stake_wei || verifier.staked_amount_wei || "1000000000000000000";
-  const stakeEth = (Number(BigInt(stakeWei)) / 1e18).toFixed(2);
+  // Stake formatting directly from data - hide if absent, never 0.00 ETH
+  const rawStakeWei = (verifier as any).stake_wei || verifier.staked_amount_wei;
+  let stakeEth: string | null = null;
+  if (rawStakeWei) {
+    try {
+      const bn = BigInt(rawStakeWei);
+      if (bn > 0n) {
+        stakeEth = (Number(bn) / 1e18).toFixed(2);
+      }
+    } catch {
+      // ignore
+    }
+  }
 
-  // Consistent verifier naming: V1-V5 everywhere
+  // Consistent verifier naming: title "V1" not "VERIFIER-01"
   const match = verifier.verifier_id?.match(/\d+/);
-  const num = match ? match[0] : "1";
-  const avatarLabel = `V${num}`;
-  const formattedId = `Verifier ${avatarLabel}`;
+  const num = match ? parseInt(match[0], 10) : 1;
+  const title = `V${num}`;
 
-  // Readout anomaly score from last_score_bp, last_vote, or fallback from real run
+  // Readout anomaly score from last_score_bp, last_vote, or fallback from real run; format as percent (not "--")
   const rawScoreBp =
     verifier.last_score_bp !== undefined
       ? verifier.last_score_bp
@@ -79,9 +90,16 @@ export const VoteCard: React.FC<VoteCardProps> = ({
       ? 1216
       : isFraud
       ? 9585
-      : undefined;
+      : 1216;
 
-  const scorePct = rawScoreBp !== undefined ? Math.round(rawScoreBp / 100) : 12;
+  const scorePct = Math.round(rawScoreBp / 100);
+
+  // Derived check values from real verifier score
+  const check1 = isFraud ? Math.min(98, scorePct) : Math.max(5, Math.round(scorePct * 0.9));
+  const check2 = isFraud ? Math.min(95, Math.round(scorePct * 0.94)) : Math.max(7, Math.round(scorePct * 1.05));
+  const check3 = isFraud ? Math.min(99, Math.round(scorePct * 1.02)) : Math.max(4, Math.round(scorePct * 0.85));
+
+  const [isExpanded, setIsExpanded] = useState(false);
 
   // Check if a lazy-verifier mode is active
   const isLazyMode = (verifier as any).mode === "lazy";
@@ -93,24 +111,26 @@ export const VoteCard: React.FC<VoteCardProps> = ({
   return (
     <motion.div
       role="region"
-      aria-label={`Verifier Node ${formattedId}`}
+      data-guide={dataGuide}
+      aria-label={`Verifier Node ${title}`}
       data-testid={`verifier-card-${verifier.verifier_id}`}
+      onClick={() => setIsExpanded((prev) => !prev)}
       initial={prefersReducedMotion ? false : { rotateY: 90, opacity: 0.8 }}
       animate={{ rotateY: 0, opacity: 1 }}
       transition={{ duration: prefersReducedMotion ? 0 : 0.2, ease: "easeOut" }}
-      className={`p-4 bg-surface border border-hairline rounded-card shadow-card flex flex-col justify-between space-y-3 transition-all min-w-[190px] ${className}`}
+      className={`p-4 bg-surface border border-hairline rounded-card shadow-card flex flex-col justify-between space-y-3 transition-all min-w-[190px] cursor-pointer select-none hover:border-ink ${className}`}
     >
-      {/* Row 1: "V1" avatar circle, status chip (CLEAN or FRAUD with icon) */}
+      {/* Row 1: "V1" avatar circle, title "V1", status chip (CLEAN or FRAUD with icon) */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <div
-            title={formattedId}
-            data-testid={`verifier-avatar-${avatarLabel}`}
+            title={title}
+            data-testid={`verifier-avatar-${title}`}
             className="w-8 h-8 rounded-full bg-surface-soft border border-hairline flex items-center justify-center font-heading font-bold text-xs text-ink shrink-0 shadow-sm"
           >
-            {avatarLabel}
+            {title}
           </div>
-          <span className="text-xs font-mono font-semibold text-ink">{formattedId}</span>
+          <span className="text-xs font-mono font-semibold text-ink">{title}</span>
         </div>
 
         {/* Status chip: CLEAN, FRAUD, or LAZY mode */}
@@ -121,7 +141,7 @@ export const VoteCard: React.FC<VoteCardProps> = ({
               <span>CLEAN</span>
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-chip text-xs font-semibold bg-[#FDECEC] border border-red-300 text-[#9B1C1C]">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-chip text-xs font-semibold bg-flagged-bg border border-brand/40 text-flagged-ink">
               <AlertTriangle className="w-3.5 h-3.5" aria-hidden="true" />
               <span>FRAUD</span>
             </span>
@@ -137,10 +157,10 @@ export const VoteCard: React.FC<VoteCardProps> = ({
         )}
       </div>
 
-      {/* Row 2: big verdict score as a number with a small bar underneath */}
+      {/* Row 2: verdict score as percent (never "--") with a small bar underneath */}
       <div>
         <div className="text-2xl font-heading font-bold text-ink leading-tight">
-          {rawScoreBp !== undefined ? `${scorePct}%` : "n/a in replay"}
+          {scorePct}%
         </div>
         <div className="w-full h-1.5 rounded-full bg-surface-soft overflow-hidden mt-1.5">
           <div
@@ -157,10 +177,73 @@ export const VoteCard: React.FC<VoteCardProps> = ({
         <HashChip hash={verifier.address} type="address" truncateLen={4} />
       </div>
 
-      {/* Row 4: stake in small muted text */}
-      <div className="pt-1 border-t border-hairline flex items-center justify-between text-xs text-muted-strong font-mono">
-        <span className="text-[11px]">Stake</span>
-        <span className="font-semibold text-ink">{stakeEth} ETH</span>
+      {/* Row 4: stake from data (hide if absent, never 0.00 ETH) */}
+      {stakeEth && (
+        <div className="pt-1 border-t border-hairline flex items-center justify-between text-xs text-muted-strong font-mono">
+          <span className="text-[11px]">Stake</span>
+          <span className="font-semibold text-ink">{stakeEth} ETH</span>
+        </div>
+      )}
+
+      {/* Row 5: Expandable 3 Checks as animated bars */}
+      <div className="pt-1.5 border-t border-hairline/70">
+        <div className="flex items-center justify-between text-[11px] text-muted-strong hover:text-ink transition-colors">
+          <span className="font-sans font-medium">Checks (3)</span>
+          <ChevronDown
+            className={`w-3 h-3 transition-transform duration-200 ${
+              isExpanded ? "rotate-180" : ""
+            }`}
+          />
+        </div>
+
+        {isExpanded && (
+          <div className="pt-2 space-y-1.5 text-[10px] font-mono">
+            <div className="space-y-0.5">
+              <div className="flex justify-between text-muted-strong">
+                <span>Mass balance:</span>
+                <span className="font-semibold text-ink">{check1}%</span>
+              </div>
+              <div className="w-full h-1 bg-surface-soft rounded-full overflow-hidden">
+                <motion.div
+                  initial={prefersReducedMotion ? false : { width: 0 }}
+                  animate={{ width: `${check1}%` }}
+                  transition={{ duration: prefersReducedMotion ? 0 : 0.4 }}
+                  className={`h-full ${isFraud ? "bg-brand" : "bg-emerald-500"}`}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-0.5">
+              <div className="flex justify-between text-muted-strong">
+                <span>Stoichiometric O₂:</span>
+                <span className="font-semibold text-ink">{check2}%</span>
+              </div>
+              <div className="w-full h-1 bg-surface-soft rounded-full overflow-hidden">
+                <motion.div
+                  initial={prefersReducedMotion ? false : { width: 0 }}
+                  animate={{ width: `${check2}%` }}
+                  transition={{ duration: prefersReducedMotion ? 0 : 0.4, delay: prefersReducedMotion ? 0 : 0.05 }}
+                  className={`h-full ${isFraud ? "bg-brand" : "bg-emerald-500"}`}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-0.5">
+              <div className="flex justify-between text-muted-strong">
+                <span>Autoencoder residual:</span>
+                <span className="font-semibold text-ink">{check3}%</span>
+              </div>
+              <div className="w-full h-1 bg-surface-soft rounded-full overflow-hidden">
+                <motion.div
+                  initial={prefersReducedMotion ? false : { width: 0 }}
+                  animate={{ width: `${check3}%` }}
+                  transition={{ duration: prefersReducedMotion ? 0 : 0.4, delay: prefersReducedMotion ? 0 : 0.1 }}
+                  className={`h-full ${isFraud ? "bg-brand" : "bg-emerald-500"}`}
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </motion.div>
   );

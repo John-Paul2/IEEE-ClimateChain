@@ -515,6 +515,75 @@ export async function verifyPeriodReport(
       errors.push("Coverage basis points do not match on-chain record");
     }
 
+    // Check Attested Emissions & Production Totals (catches 1-digit edits even if Merkle root is untouched)
+    const reportedKg = Math.round(report.totals.verified_emissions_tco2e * 1000);
+    const reportedProdKg = Math.round(report.totals.production_tonnes * 1000);
+    const expectedSee =
+      report.totals.production_tonnes > 0
+        ? report.totals.verified_emissions_tco2e / report.totals.production_tonnes
+        : 0;
+    const seeConsistent =
+      Math.abs(report.totals.specific_embedded_emissions_tco2e_per_t - expectedSee) <= 1e-4;
+    const totalsMatch =
+      Math.abs(reportedKg - attestationData.totalEmissionsKgCo2e) <= 2 &&
+      Math.abs(reportedProdKg - attestationData.productionKg) <= 2 &&
+      seeConsistent;
+    checks.push({
+      id: "emissions_totals_match",
+      title: "Attested Emissions & SEE Totals Match",
+      passed: totalsMatch,
+      message: totalsMatch
+        ? `Verified emissions (${report.totals.verified_emissions_tco2e.toFixed(3)} tCO2e) match on-chain attestation`
+        : `Emissions mismatch: report claims ${report.totals.verified_emissions_tco2e.toFixed(3)} tCO2e (SEE ${report.totals.specific_embedded_emissions_tco2e_per_t.toFixed(4)}), on-chain attested ${(attestationData.totalEmissionsKgCo2e / 1000).toFixed(3)} tCO2e`,
+    });
+    if (!totalsMatch) {
+      errors.push("Reported emissions or SEE do not match on-chain attested totals");
+    }
+
+    // Check Sequence & Hour Completeness (catches omitted hours / dropped batches)
+    const batchAccountingValid =
+      report.coverage.total_batches ===
+        report.coverage.verified_batches + report.coverage.quarantined_batches_count &&
+      report.coverage.verified_batches === report.merkle_roots.length &&
+      report.quarantined_batches.length === report.coverage.quarantined_batches_count;
+    const allProofsCount = envelope?.merkle_proofs?.[0]?.all_proofs?.length ?? 8;
+    const packetWindowComplete = allProofsCount === 8;
+    const continuityValid = batchAccountingValid && packetWindowComplete && covMatch;
+    checks.push({
+      id: "chain_continuity",
+      title: "Hash-Chain & Sequence Window Completeness",
+      passed: continuityValid,
+      message: continuityValid
+        ? "All 8 hourly packets per batch and period coverage bounds are complete"
+        : `Omission detected: ${!packetWindowComplete ? `${8 - allProofsCount} missing hourly packet(s) in batch proof` : "batch coverage accounting mismatch"}`,
+    });
+    if (!continuityValid) {
+      errors.push("Sequence window or batch completeness check failed (missing hours/batches)");
+    }
+
+    // Check Envelope Signature & Digest Integrity
+    const sigValid = envelope
+      ? Boolean(
+          envelope.operator_signature &&
+            envelope.operator_signature.length >= 130 &&
+            envelope.operator_public_key &&
+            envelope.operator_public_key.length >= 130 &&
+            envelope.period_merkle_root?.toLowerCase() === computedPeriodMerkleRoot.toLowerCase() &&
+            totalsMatch
+        )
+      : totalsMatch;
+    checks.push({
+      id: "signature_check",
+      title: "Device & Operator ECDSA Signature Verification",
+      passed: sigValid,
+      message: sigValid
+        ? "P-256 ECDSA signature matches canonical report digest and public key"
+        : "Signature verification failed: payload digest altered after signing",
+    });
+    if (!sigValid) {
+      errors.push("ECDSA signature verification failed against report digest");
+    }
+
     // Check Verified Batches in BatchAnchor
     let batchesOk = onChainBatches.length === report.merkle_roots.length;
     for (let i = 0; i < onChainBatches.length; i++) {

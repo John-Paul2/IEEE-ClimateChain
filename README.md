@@ -7,7 +7,8 @@
 
 > **IEEE Global ClimateChain Hackathon 2026 — Track 4 (Climate Data & Environmental Monitoring)**  
 > **Tagline:** *Don't trust the sensor. Verify the physics and the chain.*  
-> **Standards Alignment:** Informed by **IEEE 2413-2019** (IoT Architecture), **IEEE draft P3218** (Blockchain for Carbon Trading), **IEEE draft P3219** (Zero-Trust IoT Framework), and **IEEE draft P2418.1** (Blockchain for Connected IoT Devices). *VeriCEMS is informed by these standards; not a formal certification.*
+> **Standards Alignment:** Informed by **IEEE 2413-2019** (IoT Architecture), **IEEE draft P3218** (Blockchain for Carbon Trading), **IEEE draft P3219** (Zero-Trust IoT Framework), and **IEEE draft P2418.1** (Blockchain for Connected IoT Devices). *VeriCEMS is informed by these standards; not a formal certification.*  
+> **Quick Judge Walkthrough:** See [`docs/JUDGE_GUIDE.md`](docs/JUDGE_GUIDE.md) for a 2-minute interactive guide to the 4 screens, browser tamper/omission presets, and live Arbitrum Sepolia contracts.
 
 ---
 
@@ -27,23 +28,19 @@ Continuous emission monitoring systems (CEMS) measure these emissions at the smo
 
 ## One-Command Quickstart
 
-To run the complete system locally:
+To run the complete system locally from the repository root:
 
 ```bash
-# 1. Clone repository
-git clone https://github.com/your-org/vericems.git
-cd vericems
-
-# 2. Setup Python virtual environment & dependencies
+# 1. Setup Python virtual environment & dependencies
 python -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 
-# 3. Install web dependencies
+# 2. Install web dependencies
 npm --prefix web install
 
-# 4. Run End-to-End Test Suite (Contracts + Python + Browser Tests)
-make test
+# 3. Start the interactive web portal (or run `make test` for the full suite)
+npm --prefix web run dev
 ```
 
 ### Live Testnet Explorer Verification

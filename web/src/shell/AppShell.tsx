@@ -4,8 +4,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { AlertTriangle, X } from "lucide-react";
 import { TopBar } from "./TopBar.tsx";
 import { EventTicker } from "./EventTicker.tsx";
+import { StoryStage } from "./StoryStage.tsx";
 import { useData } from "../data/DataContext.tsx";
-import { StorySpotlight } from "../story/StorySpotlight.tsx";
+import { GuideEngine } from "../guide/GuideEngine.tsx";
 import { StoryEnd } from "../components/GuideLayer.tsx";
 
 export const AppShell: React.FC = () => {
@@ -17,13 +18,14 @@ export const AppShell: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-canvas text-ink flex flex-col transition-colors selection:bg-brand selection:text-white max-w-full [overflow-x:clip]">
-      {/* Guided Story Spotlight & Captions */}
-      <StorySpotlight />
+      {/* Learn-by-doing Interactive Guide Engine with Ghost Cursor */}
+      <GuideEngine />
 
       {/* Sticky Top Navigation Bar & Event Ticker */}
       <div className="sticky top-0 z-40 w-full shadow-sm">
         <TopBar />
         <EventTicker />
+        <StoryStage />
         {liveConnectionFailed && (
           <div
             role="alert"

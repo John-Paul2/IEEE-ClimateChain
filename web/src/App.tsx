@@ -7,7 +7,6 @@ import { OperatorPage } from "./pages/OperatorPage";
 import { VerifierPage } from "./pages/VerifierPage";
 import { ImporterPage } from "./pages/ImporterPage";
 import { BenchmarkPage } from "./pages/BenchmarkPage";
-import { GalleryPage } from "./pages/GalleryPage";
 
 export const App: React.FC = () => {
   return (
@@ -21,7 +20,6 @@ export const App: React.FC = () => {
               <Route path="verifier" element={<VerifierPage />} />
               <Route path="importer" element={<ImporterPage />} />
               <Route path="benchmark" element={<BenchmarkPage />} />
-              <Route path="gallery" element={<GalleryPage />} />
               <Route path="*" element={<Navigate to="/operator" replace />} />
             </Route>
           </Routes>

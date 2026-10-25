@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useData } from "../data/DataContext";
 import { deploymentConfig, arbitrumSepoliaDeployment } from "../chain/deploymentConfig";
+import { startGuideMission } from "../guide/GuideEngine";
 import rawSummary from "../../../results/benchmark_summary.json" with { type: "json" };
 import rawManifest from "../../../results/run_manifest.json" with { type: "json" };
 import dataInspection from "../../../results/data_inspection.json" with { type: "json" };
@@ -26,7 +27,6 @@ import dataInspection from "../../../results/data_inspection.json" with { type: 
  */
 export const StartHere: React.FC = () => {
   const navigate = useNavigate();
-  const { playScenario } = useData();
   const [dismissed, setDismissed] = useState<boolean>(() => {
     try {
       if (typeof window !== "undefined") {
@@ -50,7 +50,7 @@ export const StartHere: React.FC = () => {
   const handleWatchStory = async () => {
     handleDismiss();
     navigate("/operator");
-    await playScenario();
+    startGuideMission(0);
   };
 
   if (dismissed) {
@@ -246,16 +246,15 @@ export const PageHint: React.FC<PageHintProps> = ({ what, nextLabel, nextTo, onN
     <div
       role="note"
       aria-label="Page navigation hint"
-      className="p-3 sm:px-4 sm:py-2.5 rounded-xl bg-surface-soft/80 border border-hairline flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-muted-strong"
+      className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-muted-strong pb-1"
     >
-      <div className="flex items-center gap-2">
-        <span className="font-semibold text-ink shrink-0">You are looking at:</span>
-        <span className="leading-snug">{what}</span>
-      </div>
+      <p className="leading-relaxed">
+        {what}
+      </p>
       <button
         type="button"
         onClick={handleNextClick}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface border border-hairline hover:border-brand/40 hover:text-brand text-ink font-medium shrink-0 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand cursor-pointer self-start sm:self-auto shadow-2xs"
+        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill bg-surface-soft border border-hairline hover:border-brand/50 hover:text-brand text-ink font-semibold shrink-0 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand cursor-pointer self-start sm:self-auto"
       >
         <span>{nextLabel}</span>
         <ArrowRight className="w-3 h-3" />

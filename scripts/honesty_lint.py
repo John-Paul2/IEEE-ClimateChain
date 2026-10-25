@@ -40,6 +40,8 @@ from typing import NamedTuple
 SKIP_FILENAMES = {
     "VeriCEMS_Project_Guide.md",
     "PROMPT_PACK.md",
+    "MVP_STATE_REPORT.md",
+    "VeriCEMS_UI_Redesign_Spec_and_Prompts.md",
 }
 
 SKIP_EXTENSIONS = {

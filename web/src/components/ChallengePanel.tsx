@@ -227,7 +227,7 @@ export const ChallengePanel: React.FC<ChallengePanelProps> = ({
               key={idx}
               className={`p-2 rounded-chip border flex items-center justify-between text-xs font-mono ${
                 arb.approved
-                  ? "bg-[#FDECEC] border-red-300 text-[#9B1C1C]"
+                  ? "bg-flagged-bg border-brand/40 text-flagged-ink"
                   : "bg-surface border-hairline text-muted-strong"
               }`}
             >
