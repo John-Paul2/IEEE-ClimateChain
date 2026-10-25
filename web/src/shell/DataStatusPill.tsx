@@ -48,7 +48,7 @@ export const DataStatusPill: React.FC = () => {
 
   return (
     <div
-      className="relative inline-block"
+      className="relative inline-block shrink-0"
       role="status"
       aria-label="Network status and mock data provider"
     >
@@ -58,12 +58,12 @@ export const DataStatusPill: React.FC = () => {
         data-state={dataState}
         onClick={() => setOpen((prev) => !prev)}
         aria-label={`Data status: ${dataState}. Click to toggle data source.`}
-        className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-pill text-xs font-mono font-semibold border transition-all ${config.color} hover:opacity-90 shadow-sm cursor-pointer`}
+        className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-pill text-xs font-mono font-semibold border transition-all ${config.color} hover:opacity-90 shadow-sm cursor-pointer shrink-0`}
       >
         <span className={`w-2 h-2 rounded-full ${config.dot} animate-pulse`} aria-hidden="true" />
         <Icon className="w-3.5 h-3.5 flex-shrink-0" aria-hidden="true" />
-        <span className="hidden sm:inline">{config.label}</span>
-        <span className="sm:hidden">{config.shortLabel}</span>
+        <span className="hidden xl:inline">{config.label}</span>
+        <span className="xl:hidden">{config.shortLabel}</span>
         <ChevronDown className="w-3 h-3 opacity-60 ml-0.5" aria-hidden="true" />
       </button>
 

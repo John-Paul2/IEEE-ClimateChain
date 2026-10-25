@@ -180,15 +180,15 @@ export const TopBar: React.FC = () => {
   ];
 
   return (
-    <header className="min-h-16 px-3 sm:px-6 lg:px-8 bg-canvas border-b border-hairline flex flex-wrap items-center justify-between gap-2 sm:gap-3 select-none shadow-[0_1px_2px_0_rgba(0,0,0,0.03)] transition-colors max-w-full">
-      {/* Left: Brand Logo */}
-      <div className="flex items-center gap-2 sm:gap-3 shrink-0 py-2">
+    <header className="min-h-16 px-3 sm:px-6 bg-canvas border-b border-hairline flex flex-wrap md:flex-nowrap items-center justify-between gap-2 sm:gap-3 select-none shadow-[0_1px_2px_0_rgba(0,0,0,0.03)] transition-colors w-full">
+      {/* Left: Brand Logo + Nav Tabs together */}
+      <div className="flex items-center gap-3 sm:gap-6 shrink-0 py-2">
         <NavLink
           to="/operator"
-          className="flex items-center gap-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-lg"
+          className="flex items-center gap-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-lg shrink-0"
           aria-label="VeriCEMS Home"
         >
-          <div className="w-8 h-8 rounded-xl bg-brand text-white flex items-center justify-center shadow-sm">
+          <div className="w-8 h-8 rounded-xl bg-brand text-white flex items-center justify-center shadow-sm shrink-0">
             <Shield className="w-4 h-4 fill-current" />
           </div>
           <div className="flex items-baseline">
@@ -198,47 +198,47 @@ export const TopBar: React.FC = () => {
             <span className="text-brand font-bold text-xl leading-none">.</span>
           </div>
         </NavLink>
+
+        {/* Primary Nav Tabs */}
+        <nav
+          aria-label="Primary navigation"
+          className="flex items-center p-1 rounded-pill bg-surface-soft border border-hairline overflow-x-auto shrink-0"
+        >
+          {navTabs.map((tab) => (
+            <NavLink
+              key={tab.to}
+              to={tab.to}
+              onClick={handleTabClick}
+              className={({ isActive }) =>
+                `px-3 sm:px-4 py-1.5 rounded-pill text-xs sm:text-sm font-semibold whitespace-nowrap transition-all duration-150 ${
+                  isActive
+                    ? "bg-brand text-white shadow-sm"
+                    : "text-muted-strong hover:text-ink hover:bg-canvas"
+                }`
+              }
+            >
+              {tab.label}
+            </NavLink>
+          ))}
+        </nav>
       </div>
 
-      {/* Center: Four Pill Tabs */}
-      <nav
-        aria-label="Primary navigation"
-        className="order-3 md:order-2 flex items-center p-1 rounded-pill bg-surface-soft border border-hairline overflow-x-auto max-w-full"
-      >
-        {navTabs.map((tab) => (
-          <NavLink
-            key={tab.to}
-            to={tab.to}
-            onClick={handleTabClick}
-            className={({ isActive }) =>
-              `px-3 sm:px-4 py-1.5 rounded-pill text-xs sm:text-sm font-semibold whitespace-nowrap transition-all duration-150 ${
-                isActive
-                  ? "bg-brand text-white shadow-sm"
-                  : "text-muted-strong hover:text-ink hover:bg-canvas"
-              }`
-            }
-          >
-            {tab.label}
-          </NavLink>
-        ))}
-      </nav>
-
       {/* Right Side: Data Status Pill, Dark Mode, & Compact Demo Dock */}
-      <div className="order-2 md:order-3 flex flex-wrap items-center gap-1.5 sm:gap-2 py-1 max-w-full">
-        {/* Exactly one Data Status Pill per Requirement 1 */}
+      <div className="flex items-center gap-1.5 sm:gap-2 py-1 shrink-0 max-w-full">
+        {/* Exactly one Data Status Pill */}
         <DataStatusPill />
 
         {/* Unified Data Provenance Popover Button */}
-        <div className="relative inline-block text-left">
+        <div className="relative inline-block text-left shrink-0">
           <button
             type="button"
             data-testid="data-provenance-btn"
             onClick={() => setDataPopoverOpen((prev) => !prev)}
             aria-label="View data provenance"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill bg-surface-soft hover:bg-hairline border border-hairline text-ink transition-all text-xs font-semibold cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill bg-surface-soft hover:bg-hairline border border-hairline text-ink transition-all text-xs font-semibold cursor-pointer shrink-0"
           >
             <Database className="w-3.5 h-3.5 text-muted-strong" />
-            <span>Data</span>
+            <span className="hidden xl:inline">Data</span>
           </button>
           {dataPopoverOpen && (
             <>
@@ -284,35 +284,29 @@ export const TopBar: React.FC = () => {
           target="_blank"
           rel="noopener noreferrer"
           data-testid="testnet-evidence-topbar-btn"
-          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill bg-brand/10 hover:bg-brand/20 border border-brand/30 text-brand dark:text-brand-soft transition-all text-xs font-semibold cursor-pointer select-none"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill bg-brand/10 hover:bg-brand/20 border border-brand/30 text-brand dark:text-brand-soft transition-all text-xs font-semibold cursor-pointer select-none shrink-0"
           title="Open Arbitrum Sepolia Block Explorer (Chain 421614)"
           aria-label="Arbitrum Sepolia Block Explorer (Chain 421614)"
         >
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" aria-hidden="true" />
-          <span className="hidden sm:inline">Arbitrum Sepolia</span>
-          <span className="sm:hidden">Sepolia</span>
+          <span className="hidden 2xl:inline">Arbitrum Sepolia</span>
+          <span className="2xl:hidden">Sepolia</span>
           <ExternalLink className="w-3 h-3 opacity-70 shrink-0" aria-hidden="true" />
         </a>
 
-        {/* Theme Toggle (Light / Dark Mode) */}
+        {/* Theme Toggle (Light / Dark Mode Icon) */}
         <button
           type="button"
           onClick={toggleTheme}
           data-testid="theme-toggle-btn"
           aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
           title={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill bg-surface-soft hover:bg-hairline border border-hairline text-ink transition-all shadow-sm font-sans text-xs font-semibold select-none cursor-pointer"
+          className="inline-flex items-center justify-center w-7 h-7 rounded-pill bg-surface-soft hover:bg-hairline border border-hairline text-ink transition-all shadow-sm select-none cursor-pointer shrink-0"
         >
           {theme === "dark" ? (
-            <>
-              <Sun className="w-3.5 h-3.5 text-amber-500" aria-hidden="true" />
-              <span>Dark</span>
-            </>
+            <Sun className="w-3.5 h-3.5 text-amber-500 shrink-0" aria-hidden="true" />
           ) : (
-            <>
-              <Moon className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" aria-hidden="true" />
-              <span>Light</span>
-            </>
+            <Moon className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300 shrink-0" aria-hidden="true" />
           )}
         </button>
 
@@ -323,7 +317,7 @@ export const TopBar: React.FC = () => {
           onClick={() => setIsIntroOpen(true)}
           aria-label="Help and introduction"
           title="Help & Intro (?)"
-          className="inline-flex items-center justify-center w-7 h-7 rounded-pill bg-surface-soft hover:bg-hairline border border-hairline text-ink transition-all text-xs font-bold select-none cursor-pointer"
+          className="inline-flex items-center justify-center w-7 h-7 rounded-pill bg-surface-soft hover:bg-hairline border border-hairline text-ink transition-all text-xs font-bold select-none cursor-pointer shrink-0"
         >
           ?
         </button>
@@ -331,23 +325,23 @@ export const TopBar: React.FC = () => {
         {/* Compact Demo Dock */}
         <div
           data-testid="compact-demo-dock"
-          className="flex items-center gap-1.5 pl-1.5 sm:pl-2 border-l border-hairline"
+          className="flex items-center gap-1.5 pl-1.5 sm:pl-2 border-l border-hairline shrink-0"
         >
-          {/* Narration Toggle */}
+          {/* Narration Toggle (captions) */}
           <button
             type="button"
             data-testid="narration-toggle-btn"
             onClick={() => setNarrationEnabled((prev) => !prev)}
             aria-pressed={narrationEnabled}
-            title={narrationEnabled ? "Narration on" : "Narration off"}
-            className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-pill text-xs font-semibold border transition-all ${
+            title={narrationEnabled ? "Captions on" : "Captions off"}
+            className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-pill text-xs font-semibold border transition-all shrink-0 ${
               narrationEnabled
                 ? "bg-brand/10 text-brand border-brand/30"
                 : "bg-surface-soft text-muted-strong border-hairline opacity-60"
             }`}
           >
-            <Volume2 className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Narration</span>
+            <Volume2 className="w-3.5 h-3.5 shrink-0" />
+            <span className="hidden xl:inline">Captions</span>
           </button>
 
           {/* Play / Pause Pill */}
@@ -356,7 +350,7 @@ export const TopBar: React.FC = () => {
             data-testid={isPlaying ? "demo-pause-btn" : "demo-play-btn"}
             onClick={handlePlayPause}
             disabled={isActing}
-            className={`inline-flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-pill text-xs font-semibold transition-all shadow-sm ${
+            className={`inline-flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-pill text-xs font-semibold transition-all shadow-sm shrink-0 ${
               isPlaying
                 ? "bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/40 hover:bg-amber-500/30"
                 : "bg-brand text-white hover:bg-brand-pressed"
@@ -366,12 +360,12 @@ export const TopBar: React.FC = () => {
           >
             {isPlaying ? (
               <>
-                <Pause className="w-3 h-3 fill-current" />
+                <Pause className="w-3 h-3 fill-current shrink-0" />
                 <span className="hidden md:inline">Pause</span>
               </>
             ) : (
               <>
-                <Play className="w-3 h-3 fill-current" />
+                <Play className="w-3 h-3 fill-current shrink-0" />
                 <span className="hidden md:inline">Play</span>
               </>
             )}
@@ -383,11 +377,11 @@ export const TopBar: React.FC = () => {
             data-testid="demo-step-btn"
             onClick={handleStep}
             disabled={isActing || currentStep >= totalSteps}
-            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-pill text-xs font-semibold bg-ink text-white hover:opacity-90 dark:bg-white dark:text-black border border-transparent disabled:opacity-30 disabled:cursor-not-allowed shadow-sm transition-all"
+            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-pill text-xs font-semibold bg-ink text-white hover:opacity-90 dark:bg-white dark:text-black border border-transparent disabled:opacity-30 disabled:cursor-not-allowed shadow-sm transition-all shrink-0"
             title="Advance to next scenario step"
             aria-label="Advance to Next Step"
           >
-            <SkipForward className="w-3.5 h-3.5" />
+            <SkipForward className="w-3.5 h-3.5 shrink-0" />
             <span>Next</span>
           </button>
 
@@ -397,15 +391,15 @@ export const TopBar: React.FC = () => {
             data-testid="demo-reset-btn"
             onClick={handleReset}
             disabled={isActing}
-            className="p-1.5 rounded-pill bg-surface-soft hover:bg-hairline border border-hairline text-muted-strong hover:text-ink transition-all"
+            className="p-1.5 rounded-pill bg-surface-soft hover:bg-hairline border border-hairline text-muted-strong hover:text-ink transition-all shrink-0"
             title="Reset story to start"
             aria-label="Reset Story Scenario"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
+            <RotateCcw className="w-3.5 h-3.5 shrink-0" />
           </button>
 
           {/* Speed Selector */}
-          <div className="hidden lg:flex items-center">
+          <div className="flex items-center shrink-0">
             <select
               data-testid="demo-speed-select"
               value={speed}

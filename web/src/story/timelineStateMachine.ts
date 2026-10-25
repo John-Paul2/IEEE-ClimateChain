@@ -3,7 +3,8 @@
  *
  * Single source of truth scene-timeline state machine for VeriCEMS story playback.
  * Coordinates play/pause/next/back/speed/restart, scene progression,
- * captions, and audio drivers (pre-generated audio files with speech synthesis fallback).
+ * captions, and deterministic visual playback timing.
+ * Speech synthesis is completely removed to prevent unwanted audio playback.
  */
 
 import { STORY_STEPS, type StoryStep } from "./steps";
@@ -109,7 +110,7 @@ export function timelineReducer(state: TimelineState, action: TimelineAction): T
     case "SET_SPEED": {
       return {
         ...state,
-        speed: Math.max(0.5, Math.min(3.0, action.speed)),
+        speed: Math.max(0.5, Math.min(20.0, action.speed)),
       };
     }
 
@@ -152,165 +153,43 @@ export function timelineReducer(state: TimelineState, action: TimelineAction): T
 }
 
 /**
- * Scene Audio Manager: handles playback of scene audio with speech synthesis and captions-only fallback.
- * Strictly driven BY the timeline state machine:
- * - Cancels audio on every scene change
- * - Computes duration = max(audio end, min scene duration)
- * - Safe fallback timeout to prevent hangs
+ * Scene Audio Manager: strictly driven BY the timeline state machine.
+ * Captions-only fallback mode: deterministic, silent scene progression based on minSceneDurationMs.
+ * Speech synthesis is completely disabled to prevent robotic browser speech.
  */
 class SceneAudioManager {
-  private currentAudio: HTMLAudioElement | null = null;
-  private currentUtterance: SpeechSynthesisUtterance | null = null;
-  private activeStep = -1;
+  private currentTimer: number | null = null;
 
   public cancelCurrentAudio(): void {
-    if (this.currentAudio) {
-      try {
-        this.currentAudio.pause();
-        this.currentAudio.currentTime = 0;
-        this.currentAudio.onended = null;
-        this.currentAudio.onerror = null;
-      } catch {
-        // ignore
-      }
-      this.currentAudio = null;
-    }
-
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      try {
-        window.speechSynthesis.cancel();
-      } catch {
-        // ignore
-      }
-      this.currentUtterance = null;
+    if (this.currentTimer !== null) {
+      window.clearTimeout(this.currentTimer);
+      this.currentTimer = null;
     }
   }
 
   /**
-   * Plays audio for a given step. Invokes onDone when max(audio end, min scene duration) is reached.
+   * Advances the scene after the target duration.
+   * Speed-adjusted: 1x = 2800ms, 2x = 1400ms, 4x = 700ms, etc.
    */
   public playSceneAudio(
-    step: StoryStep,
+    _step: StoryStep,
     speed: number,
-    narrationEnabled: boolean,
+    _narrationEnabled: boolean,
     onDone: () => void
   ): () => void {
     this.cancelCurrentAudio();
-    this.activeStep = step.stepNumber;
 
-    let isDisposed = false;
-    let audioEnded = false;
-    let minTimePassed = false;
+    // Minimum scene display time (at 1x: 2800ms, clamped between 500ms and 6000ms)
+    const durationMs = Math.max(500, Math.round(2800 / speed));
 
-    // Minimum scene display time (at 1x: 2800ms)
-    const minSceneDurationMs = Math.max(800, Math.round(2800 / speed));
-    // Maximum safety timeout fallback (at 1x: 8000ms)
-    const maxSafetyTimeoutMs = Math.max(2000, Math.round(8000 / speed));
-
-    const checkAdvance = () => {
-      if (isDisposed) return;
-      if (audioEnded && minTimePassed) {
-        onDone();
-      }
-    };
-
-    const minTimer = window.setTimeout(() => {
-      minTimePassed = true;
-      checkAdvance();
-    }, minSceneDurationMs);
-
-    const safetyTimer = window.setTimeout(() => {
-      if (!isDisposed) {
-        onDone();
-      }
-    }, maxSafetyTimeoutMs);
-
-    // If narration is disabled, audio is considered immediately ended (captions only fallback)
-    if (!narrationEnabled) {
-      audioEnded = true;
-      checkAdvance();
-      return () => {
-        isDisposed = true;
-        clearTimeout(minTimer);
-        clearTimeout(safetyTimer);
-      };
-    }
-
-    // Try pre-generated audio file first: e.g. /audio/scene-${stepNumber}.mp3
-    const audioPath = `/audio/scene-${step.stepNumber}.mp3`;
-    let triedFile = false;
-
-    try {
-      const audio = new Audio(audioPath);
-      audio.playbackRate = speed;
-      this.currentAudio = audio;
-
-      audio.onended = () => {
-        audioEnded = true;
-        checkAdvance();
-      };
-
-      audio.onerror = () => {
-        // Pre-generated audio not present on disk, fallback to Web SpeechSynthesis
-        this.fallbackToSpeech(step.sentence, speed, () => {
-          audioEnded = true;
-          checkAdvance();
-        });
-      };
-
-      const playPromise = audio.play();
-      triedFile = true;
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          // Playback blocked or file 404: fallback to Web Speech
-          this.fallbackToSpeech(step.sentence, speed, () => {
-            audioEnded = true;
-            checkAdvance();
-          });
-        });
-      }
-    } catch {
-      // Audio tag failure: fallback to speech
-      if (!triedFile) {
-        this.fallbackToSpeech(step.sentence, speed, () => {
-          audioEnded = true;
-          checkAdvance();
-        });
-      }
-    }
+    this.currentTimer = window.setTimeout(() => {
+      this.currentTimer = null;
+      onDone();
+    }, durationMs);
 
     return () => {
-      isDisposed = true;
-      clearTimeout(minTimer);
-      clearTimeout(safetyTimer);
       this.cancelCurrentAudio();
     };
-  }
-
-  private fallbackToSpeech(text: string, speed: number, onEnd: () => void): void {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
-      onEnd();
-      return;
-    }
-
-    try {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = Math.max(0.8, Math.min(1.8, speed));
-      utterance.pitch = 1.0;
-
-      utterance.onend = () => {
-        onEnd();
-      };
-      utterance.onerror = () => {
-        onEnd();
-      };
-
-      this.currentUtterance = utterance;
-      window.speechSynthesis.speak(utterance);
-    } catch {
-      onEnd();
-    }
   }
 }
 
