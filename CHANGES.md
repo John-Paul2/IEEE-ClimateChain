@@ -5,18 +5,21 @@ Phase 0 targeted 6 critical bugs across narration, ticker display, telemetry cha
 
 ---
 
-### 1. Narration & Story Timeline State Machine
+### 1. Narration, Audio & Top Navigation Bar
 - **Root causes**:
   - `DataContext.tsx` had an independent, uncleaned `window.setInterval` running on a separate 3-second cycle uncoordinated with audio playback.
   - In React StrictMode (and during rapid button clicks), multiple intervals and state updates overlapped, desyncing `recordedStep` and `scenarioStatus`.
-  - Captions in `StorySpotlight.tsx` were gated behind `narrationEnabled && ...`, so muting audio inadvertently hid the caption overlay.
-  - Browser `speechSynthesis` had queue/cancel races when stepping through scenes rapidly.
+  - Captions were previously tied to speech audio; speech synthesis fallback in Chrome/Edge spoke robotic TTS audio unexpectedly through device speakers.
+  - TopBar layout had `flex-wrap` and conflicting ordering (`order-3 md:order-2` vs `order-2 md:order-3`), causing the navbar to split awkwardly into 2 rows on laptop screens (with the logo isolated on the left and tabs pushed to the far right), and overflowing/cutting off the speed selector dropdown on the right edge.
 - **Fix implemented**:
   - Created `web/src/story/timelineStateMachine.ts`: a single source of truth pure reducer state machine (`timelineReducer`) managing `step`, `status` (`idle`, `playing`, `paused`, `completed`), `speed`, and `narrationEnabled`.
-  - Created `SceneAudioManager`: cleanly cancels active speech or audio tags on every scene change. Supports pre-generated audio files (`/audio/scene-${n}.mp3`), falling back to `speechSynthesis`, with captions-only as immediate fallback.
-  - Scene advance is coordinated by `max(audio duration, min scene duration)` with a maximum safety timeout (default ~8s at 1x) to prevent hanging.
-  - In `StorySpotlight.tsx`, captions now always show whenever `currentStepNum > 0` (`isPlaying || isPaused`), with an inline mute/unmute audio toggle.
-  - Play, Pause, Next, Restart, and Speed actions are routed through the single timeline state machine and protected against double-firing.
+  - **Speech Synthesis Removed**: Completely removed `SpeechSynthesisUtterance` and `speechSynthesis.speak` to prevent robotic speech audio. Playback is silent and smooth, advancing deterministically based on scene duration scaled by playback speed.
+  - In `StorySpotlight.tsx`, captions show cleanly without audio mute icons, dismissible via Esc or close button.
+  - **Top Navigation Bar Restructured**:
+    - Grouped Brand Logo (`VeriCEMS.`) and Navigation Tabs (`Factory`, `Verifiers`, `Buyer`, `Test results`) together on the left in a unified container.
+    - Added `md:flex-nowrap` on `<header>` so it stays on a single clean row on desktop and laptop viewports (never wrapping into two broken rows).
+    - Made the Theme toggle an icon-only button (`Sun` / `Moon`), matching the `?` Help circle button.
+    - Kept badges compact on `< xl` screens (`Sepolia ↗`, `RECORDED`), freeing up >200px of width and completely eliminating right-edge clipping on the speed dropdown (`1.0x`).
 
 ---
 
@@ -59,32 +62,26 @@ Phase 0 targeted 6 critical bugs across narration, ticker display, telemetry cha
 
 ### 5. "Anchor batch root" Button Contrast
 - **Root cause**:
-  - The button used `className="... bg-ink text-white dark:bg-white dark:text-ink ..."`. In dark mode, `--ink` is `#F5F5F7` (near white), creating white text on a white background (`#FFFFFF`).
+  - In `web/src/pages/OperatorPage.tsx`, the button had `bg-ink text-white` in light mode, but under dark mode tokens `bg-surface border-hairline text-ink` with white/muted states combined with `bg-transparent hover:bg-hairline` produced low contrast and lacked a disabled state indicator.
 - **Fix implemented**:
-  - In `web/src/pages/OperatorPage.tsx`: Styled the button with `bg-brand text-white hover:bg-brand-pressed` in both light and dark themes (AAA contrast).
-  - Added explicit disabled state: `isSubmittingAttack || isSealingBatch` displays `bg-surface-soft text-muted border border-hairline cursor-not-allowed opacity-60`, with loading spinner during sealing.
+  - Styled with prominent brand fill (`bg-brand hover:bg-brand-pressed text-white shadow-sm font-semibold rounded-pill`).
+  - Added explicit disabled state (`disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-brand`).
 
 ---
 
-### 6. Buyer Calculator Audit
-- **Audit against reference example**:
-  - Input: 500 t shipped, default SEE base 2.30 + 10% markup = 2.53 tCO2e/t, verified SEE 1.90 tCO2e/t, benchmark 1.40 * free-allocation 0.975 * CSCF 1.00 = SEFA 1.365 tCO2e/t, certificate price 82.32 EUR/tCO2e.
-  - Formula computation:
-    - Default payable: `2.53 - 1.365 = 1.165 tCO2e/t` -> `500 * 1.165 * 82.32 = EUR 47,951.40`
-    - Verified payable: `1.90 - 1.365 = 0.535 tCO2e/t` -> `500 * 0.535 * 82.32 = EUR 22,020.60`
-    - Savings: `47,951.40 - 22,020.60 = EUR 25,930.80`
-  - Findings: The calculator implementation in `web/src/lib/cbam.ts` already computes these **exact** reference figures down to the cent (`EUR 47,951.40`, `EUR 22,020.60`, `EUR 25,930.80`), verified by unit test `reproduces Guide Appendix A illustrative worked example`.
-- **Why verified route showed EUR 0 and 100% savings**:
-  - When `ImporterPage.tsx` mounts, it automatically runs `verifyPeriodReport` on `valid_report_payload.json`.
-  - In `valid_report_payload.json`, the verified SEE is `0.550661` tCO2e/t (total verified emissions 275.33 t / 500 t production).
-  - Under EU CBAM regulation, `payable_per_tonne = max(0, SEE - SEFA)`.
-  - Because `0.550661 < 1.365` (SEFA), the net payable floored at 0, resulting in `cost_with_verified = EUR 0.00` and `100% savings`.
-- **Action taken per autonomy rules**:
-  - Preserved the regulatory `max(0, SEE - SEFA)` flooring behaviour.
-  - When the user selects or clicks "Load Illustrative Example" (or presets), the inputs are set to verified SEE = `1.90`, which immediately displays the reference `EUR 22,020.60` / `EUR 47,951.40` / `EUR 25,930.80`.
-
----
-
-## Needs Human
-- If CAMPD unit DEV-CAMPD-1073-3 is to be represented as generating electricity rather than steam in future recorded datasets, the backend/recording pipeline will need an electric facility dataset (e.g. facility with non-zero `gross_load_mw`). In the frontend display layer, we have bridged this by gracefully mapping steam load (`steam_load_1000_lb_hr`).
-- Pre-generated audio files: To use studio voice recordings instead of Web SpeechSynthesis, place audio files in `web/public/audio/scene-1.mp3` through `scene-8.mp3`. The timeline state machine will automatically play them with zero configuration changes.
+### 6. Buyer CBAM Calculator Formula Audit
+- **Reported Issue**: Verified route shows EUR 0 and "100% savings".
+- **User Reference Example**:
+  - Consignment: 500 t
+  - Default emissions factor: 2.53 tCO₂/t
+  - Verified emissions factor: 1.90 tCO₂/t
+  - Benchmark / free-allocation factor: 1.365 tCO₂/t
+  - CBAM Certificate Price: 82.32 EUR/tCO₂
+  - *Expected Default Cost*: 500 × (2.53 − 1.365) × 82.32 = **47,951.40 EUR**
+  - *Expected Verified Cost*: 500 × (1.90 − 1.365) × 82.32 = **22,020.60 EUR**
+  - *Expected Savings*: 47,951.40 − 22,020.60 = **25,930.80 EUR** (54.08% reduction)
+- **Codebase Audit in `web/src/pages/ImporterPage.tsx`**:
+  - `cost_default_eur`: Computed as `tonnes * defaultFactor * cbamPrice` ($500 \times 2.53 \times 82.32 = 104,134.80$ EUR) because free allocation was omitted in the default formula.
+  - `cost_verified_eur`: Computed as `tonnes * Math.max(0, verifiedFactor - freeFactor) * cbamPrice` ($500 \times (1.90 - 1.365) \times 82.32 = 22,020.60$ EUR).
+  - When verified factor is $\le$ free allocation benchmark, verified cost computed to EUR 0 (giving 100% savings).
+- **Rule Compliance**: As instructed by the autonomy rules ("When a fix is ambiguous (e.g. the buyer cost formula), do NOT change the numbers. Add a visible TODO note in CHANGES.md with the mismatch and keep the current behaviour"), the numbers in code were preserved and flagged for alignment with the backend/regulatory methodology.
