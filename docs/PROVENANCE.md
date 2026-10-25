@@ -78,12 +78,12 @@ Extracted from live on-chain Arbitrum Sepolia deployment (`Chain ID: 421614`) re
 | Location | Contract / Function | Stated Value | Category | Primary Provenance Source | Verification Method |
 |---|---|---|---|---|---|
 | `README.md:23` | Arbitrum Sepolia Chain ID | `421614` | `[CONFIG]` | `deployments/testnet.json:chainId` | Network RPC `eth_chainId` |
-| `README.md:51` | `Attestation.sol` Address | `0x872D5EF7C6a457d1B8eD68221350236151c763B0` | `[RESULT]` | `deployments/testnet.json:contracts.Attestation` | Arbiscan verified contract |
-| `README.md:52` | `BatchAnchor.sol` Address | `0x8Bf14de651FA70FeB3538852c2160d082255638B` | `[RESULT]` | `deployments/testnet.json:contracts.BatchAnchor` | Arbiscan verified contract |
-| `README.md:53` | `BondVault.sol` Address | `0x7FFB90Cdc55C6C61B961AcF2a042A804F5857C36` | `[RESULT]` | `deployments/testnet.json:contracts.BondVault` | Arbiscan verified contract |
-| `README.md:54` | `Challenge.sol` Address | `0x80f58f44Ca8BCBEEDa72a27ec2555D26BB016A34` | `[RESULT]` | `deployments/testnet.json:contracts.Challenge` | Arbiscan verified contract |
-| `README.md:55` | `DeviceRegistry.sol` Address | `0x10B6647D48888a7C3C4DC28f0df0a2E5c23b3471` | `[RESULT]` | `deployments/testnet.json:contracts.DeviceRegistry` | Arbiscan verified contract |
-| `README.md:56` | `VerifierQuorum.sol` Address | `0x734849b029dDF31030CfaE4A74c314f8E21DBfB9` | `[RESULT]` | `deployments/testnet.json:contracts.VerifierQuorum` | Arbiscan verified contract |
+| `README.md:51` | `Attestation.sol` Address | `0x872D5EF7C6a457d1B8eD68221350236151c763B0` | `[RESULT]` | `deployments/testnet.json:contracts.Attestation` | Deployed on Arbitrum Sepolia |
+| `README.md:52` | `BatchAnchor.sol` Address | `0x8Bf14de651FA70FeB3538852c2160d082255638B` | `[RESULT]` | `deployments/testnet.json:contracts.BatchAnchor` | Deployed on Arbitrum Sepolia |
+| `README.md:53` | `BondVault.sol` Address | `0x7FFB90Cdc55C6C61B961AcF2a042A804F5857C36` | `[RESULT]` | `deployments/testnet.json:contracts.BondVault` | Deployed on Arbitrum Sepolia |
+| `README.md:54` | `Challenge.sol` Address | `0x80f58f44Ca8BCBEEDa72a27ec2555D26BB016A34` | `[RESULT]` | `deployments/testnet.json:contracts.Challenge` | Deployed on Arbitrum Sepolia |
+| `README.md:55` | `DeviceRegistry.sol` Address | `0x10B6647D48888a7C3C4DC28f0df0a2E5c23b3471` | `[RESULT]` | `deployments/testnet.json:contracts.DeviceRegistry` | Deployed on Arbitrum Sepolia |
+| `README.md:56` | `VerifierQuorum.sol` Address | `0x734849b029dDF31030CfaE4A74c314f8E21DBfB9` | `[RESULT]` | `deployments/testnet.json:contracts.VerifierQuorum` | Deployed on Arbitrum Sepolia |
 | `ARCHITECTURE.md:28` | `anchorBatch` gas (median) | 179,843 gas | `[RESULT]` | `results/gas_measured.json:measurements.anchorBatch.median` | 20 testnet tx executions |
 | `ARCHITECTURE.md:30` | `commitVote` gas (median) | 103,410 gas | `[RESULT]` | `results/gas_measured.json:measurements.commitVote.median` | 6 testnet tx executions |
 | `ARCHITECTURE.md:30` | `revealVote` gas (median) | 177,505 gas | `[RESULT]` | `results/gas_measured.json:measurements.revealVote.median` | 6 testnet tx executions |

@@ -58,6 +58,14 @@
       "commission_url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
       "status": "VERIFIED_SECONDARY",
       "last_verified": "2026-10-20"
+    },
+    "2026/1862": {
+      "id": "2026/1862",
+      "citation": "Commission Implementing Decision (EU) 2026/1862",
+      "role": "Cross-Sectoral Correction Factor (CSCF = 1.00) determining free allocation adjustment for the 2026 CBAM definitive application period",
+      "commission_url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
+      "status": "VERIFIED_SECONDARY",
+      "last_verified": "2026-10-25"
     }
   },
   "variables": {

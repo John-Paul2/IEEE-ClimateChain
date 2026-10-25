@@ -7,6 +7,7 @@ import { OperatorPage } from "./pages/OperatorPage";
 import { VerifierPage } from "./pages/VerifierPage";
 import { ImporterPage } from "./pages/ImporterPage";
 import { BenchmarkPage } from "./pages/BenchmarkPage";
+import { VideoPage } from "./pages/VideoPage";
 
 export const App: React.FC = () => {
   return (
@@ -14,6 +15,7 @@ export const App: React.FC = () => {
       <ToastProvider>
         <BrowserRouter>
           <Routes>
+            <Route path="/video" element={<VideoPage />} />
             <Route path="/" element={<AppShell />}>
               <Route index element={<Navigate to="/operator" replace />} />
               <Route path="operator" element={<OperatorPage />} />

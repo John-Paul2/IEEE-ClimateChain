@@ -114,7 +114,7 @@ A staged rollout mitigates industrial deployment friction, hardware retrofitting
 ### Phase 0: Hackathon Prototype (Current Milestone)
 - **Status:** Complete.
 - Evaluated on real industrial telemetry from 30 combustion power facilities in US EPA CAMPD (2025 calendar year).
-- 6 Solidity smart contracts deployed and verified on Arbitrum Sepolia (`Chain ID: 421614`).
+- 6 Solidity smart contracts deployed on Arbitrum Sepolia (`Chain ID: 421614`).
 - Tri-language golden vector compliance across Python, Solidity, and TypeScript.
 - Comprehensive benchmark reporting 75.64% detection recall across 8 adversarial attack classes.
 

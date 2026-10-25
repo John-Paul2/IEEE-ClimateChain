@@ -9,6 +9,8 @@
 
 ## 1. Deployed Smart Contracts
 
+Explorer source verification: not done in this prototype; contract source is in contracts/src.
+
 | Contract | Address | Deployment Tx | Explorer Link |
 | :--- | :--- | :--- | :--- |
 | **Attestation** | [`0x872D5EF7C6a457d1B8eD68221350236151c763B0`](https://sepolia.arbiscan.io/address/0x872D5EF7C6a457d1B8eD68221350236151c763B0) | [`0x0810228d5f53...`](https://sepolia.arbiscan.io/tx/0x0810228d5f538f32830b4b6068f287e807ececeda865c9d979e2b3d2c09b2ef9) | [View Contract](https://sepolia.arbiscan.io/address/0x872D5EF7C6a457d1B8eD68221350236151c763B0#code) |

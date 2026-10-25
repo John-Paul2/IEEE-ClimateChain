@@ -183,7 +183,7 @@ Solidity 0.8.24, OpenZeppelin (git submodule), `via_ir = false`, fuzz runs 256, 
 - **Files:** `deployments/anvil.json` (chain 31337, profile `demo`), `deployments/testnet.json` (chain **421614 = Arbitrum Sepolia**, profile `testnet`), `deployments/deploy_anvil.ps1`. [V]
 - **Committed `anvil.json` is inconsistent:** profile says `demo`, but its parameter block (`challengeWindowSeconds 60`, `commitWindowSeconds 20`, bonds of 0.001 ETH) matches the testnet profile; running the tests regenerates it with `120 / 30 / 1 ETH`. [V] (`results/audit/anvil_json_side_effect.diff`)
 - **Public testnet addresses (from `deployments/testnet.json`):** DeviceRegistry `0x10b6647d48888a7c3c4dc28f0df0a2e5c23b3471`; BondVault `0x7ffb90cdc55c6c61b961acf2a042a804f5857c36`; BatchAnchor `0x8bf14de651fa70feb3538852c2160d082255638b`; VerifierQuorum `0x734849b029ddf31030cfae4a74c314f8e21dbfb9`; Challenge `0x80f58f44ca8bcbeeda72a27ec2555d26bb016a34`; Attestation `0x872d5ef7c6a457d1b8ed68221350236151c763b0`. Deployer/admin/treasury `0x55f1a7F7cc829C842Ce71A2552E5DD46bb7C9b89`. [V]
-- **Explorer verification:** `README.md` and `docs/TESTNET_EVIDENCE.md` state that all six are "deployed and verified on Arbitrum Sepolia" with explorer links and transaction hashes; `scripts/verify_contracts.py` exists. I made **no network call**, so I cannot confirm the contracts are actually verified on the explorer. [V] (docs read) / unknown (reality)
+- **Explorer verification:** `README.md` and `docs/TESTNET_EVIDENCE.md` state that all six are "deployed on Arbitrum Sepolia" with explorer links and transaction hashes; `scripts/verify_contracts.py` exists. I made **no network call**, so I cannot confirm the contracts are actually verified on the explorer. [V] (docs read) / unknown (reality)
 - Testnet evidence also uses an **admin = treasury = deployer** address, so slashed funds go to the deployer. [V] (`testnet.json`)
 
 ---
@@ -382,7 +382,7 @@ Effort: S = under 1 hour, M = a few hours, L = a day or more. "Model" = what kin
 | proposed | 0.8830 | 0.0834 | 0.7759 | 0.7564 | 49.7 |
 Proposed recall: replay/dropping/scaling≥10 % ≈ 1.00; slow drift 0.1 %/day 0.081, 0.3 %/day 0.291; coordinated insider 0.030.
 
-**Deployment:** local Anvil (`deployments/anvil.json`); Arbitrum Sepolia (421614) `deployments/testnet.json` with 6 addresses (docs claim explorer-verified; NOT checked by me). UI defaults to Anvil addresses.
+**Deployment:** local Anvil (`deployments/anvil.json`); Arbitrum Sepolia (421614) `deployments/testnet.json` with 6 addresses (docs state explorer verification not done in prototype; NOT checked by me). UI defaults to Anvil addresses.
 
 **Top problems:** (1) no video; (2) MOCK default + silent fallback; (3) hard-coded ticker claims (Sepolia, "3 of 5 FRAUD", €25,930.80); (4) uncommitted redesign vs tag; (5) 14/19 CBAM values null, cross-check skipped; (6) test FPR 8.3 %; (7) circular physics signal, slow-drift/insider evade; (8) testnet unverified/unwired; (9) manifest commit mismatch; (10) tests mutate `anvil.json`; (11) contract gaps (duplicate roots, stuck dispute); (12) backend swallowed errors/ABI mismatch; (13) e2e stale; (14) reproducibility friction; (15) bundle size, hand-rolled crypto, obvious fake hashes.
 

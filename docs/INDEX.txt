@@ -1,0 +1,43 @@
+================================================================================
+VeriCEMS Documentation & Evidence Index (docs/INDEX.txt)
+Track 4: Climate Data & Environmental Monitoring - IEEE ClimateChain Hackathon 2026
+================================================================================
+
+This index catalogs every documentation file, architecture diagram, threat model,
+regulatory provenance record, and automated verification evidence artifact in docs/.
+
+File Name                           Description & Coverage
+--------------------------------------------------------------------------------
+ADAPTIVE_ATTACKER.md                Adversarial evaluation modeling: 6 evasion attack classes, mathematical formulation, detector recall rates, and empirical test vectors.
+ADOPTION_STRATEGY.md                Commercialization and adoption strategy: stakeholder pain points (importers vs exporters), economic incentives, pilot roadmap, and phased EU CBAM rollout.
+AGENT_BRIEF.md                      Developer and auditor quick reference: repository layout, core subsystems, testing protocols, and design invariants.
+ARCHITECTURE.md                     High-level architectural overview: subsystem boundaries, telemetry pipeline, Merkle batching, quorum consensus, and CBAM portal workflows.
+architecture.mmd                    Mermaid source specification for end-to-end telemetry and verification architecture diagram.
+architecture.png                    High-resolution rendered architecture diagram: CEMS sensor ingestion to on-chain attestation and importer verification portal.
+architecture.svg                    Scalable vector graphics render of the complete VeriCEMS system architecture.
+CLIMATE_IMPACT.md                   Quantified environmental deterrence model: sensitivity analysis (€12.4M-€164.6M protected across Turkish export baseline) and carbon market integrity.
+CRYPTO_NOTES.md                     Cryptographic design notes: secp256k1 ECDSA signatures, canonical JSON formatting, and keccak256 Merkle inclusion proofs.
+DATA_CARD.md                        Dataset documentation for US EPA Clean Air Markets Program Data (CAMPD): 26,280 hourly observations, schema definition, and preprocessing pipeline.
+evidence/benchmark_summary.json     Benchmark evaluation results across 6 evasion attacks, baseline performance, latency, and resource metrics.
+evidence/forge_test.txt             Foundry contract test execution logs: unit tests, scenario workflows, fuzzing (256 runs), and state invariants.
+evidence/pytest.txt                 Pytest suite execution logs: backend telemetry services, ML anomaly detector, physics checks, and CBAM calculations.
+evidence/slither.txt                Static analysis security audit report produced by Crytic Slither across all 16 Solidity smart contracts.
+evidence/testnet.json               Live Arbitrum Sepolia deployment manifest: contract addresses, transaction hashes, and initialization parameters.
+FUTURE_WORK.md                      Formal catalog of out-of-scope post-hackathon initiatives (zk-SNARK validity proofs, hardware TEEs, direct satellite cross-verification).
+HUMAN_TODO.md                       Operational checklist: video production, submission metadata, slide deck assets, and final package verification.
+INDEX.txt                           Master directory index and manifest of all documentation and verification evidence files.
+INTERFACES.md                       Normative cross-component interface specification: data schemas, smart contract ABIs, REST endpoints, and byte layouts.
+JUDGE_GUIDE.md                      Executive navigation guide and evaluation rubric walkthrough tailored for hackathon judges and technical reviewers.
+MVP_STATE_REPORT.md                 Comprehensive codebase audit report: subsystem implementation status, test run outputs, gas measurements, and provenance audit.
+PROBLEM_STATEMENT.md                Formal problem statement: the smokestack oracle problem, unmonitored hours, EU CBAM default markups, and economic necessity.
+PROVENANCE.md                       Normative regulatory provenance matrix: EU directives, Commission implementing regulations, benchmark sources, and validation rules.
+SCALABILITY_ROADMAP.md              Throughput calculations (78.8 MB/yr per stack off-chain), measured Arbitrum Sepolia gas consumption, and scaling roadmap.
+SECURITY_ASSESSMENT.md              Security architecture assessment: STRIDE threat matrix, 51% verifier quorum attack costs, and cryptographic mitigation controls.
+SUBMISSION_CHECKLIST.md             Compliance checklist tracking all required submission deliverables for IEEE ClimateChain Track 4.
+TECH_SPEC.md                        Exhaustive technical specification detailing the four core subsystems (Edge Agent, ML Detector, EVM Contracts, Importer Portal).
+TESTNET_EVIDENCE.md                 On-chain verification evidence: contract addresses, transaction hashes, and block explorer links on Arbitrum Sepolia (Chain ID: 421614).
+threat_model.json                   Machine-readable STRIDE threat model defining threat categories, attack vectors, severity scores, and mitigations.
+THREAT_MODEL.md                     Narrative threat model: comprehensive analysis of physical, network, algorithmic, smart contract, and economic threats.
+VeriCEMS_Project_Guide.md           Master engineering blueprint, regulatory context, normative requirements, and design specification.
+VIDEO_SCRIPT.md                     3-minute hackathon video walkthrough script: problem narrative, live demo flow, and impact summary.
+================================================================================

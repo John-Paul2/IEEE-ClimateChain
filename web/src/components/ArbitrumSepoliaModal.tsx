@@ -314,7 +314,7 @@ export const ArbitrumSepoliaModal: React.FC<ArbitrumSepoliaModalProps> = ({
             <div className="space-y-3">
               <div className="p-3 rounded-lg bg-surface-soft border border-hairline text-xs flex items-center justify-between">
                 <span className="text-muted-strong">
-                  Empirically executed and verified on L2 testnet. Click any transaction chip or explorer button to view on Arbiscan.
+                  Empirically executed and deployed on Arbitrum Sepolia. Click any transaction chip or explorer button to view on Arbiscan.
                 </span>
                 <span className="font-mono text-brand font-semibold hidden sm:inline">
                   Chain {ARBITRUM_SEPOLIA_CHAIN_ID}
@@ -367,7 +367,7 @@ export const ArbitrumSepoliaModal: React.FC<ArbitrumSepoliaModalProps> = ({
           {activeTab === "contracts" && (
             <div className="space-y-3">
               <div className="p-3 rounded-lg bg-surface-soft border border-hairline text-xs text-muted-strong">
-                The 6 deployed core contracts on {arbitrumSepoliaDeployment.chainName}. NatSpec documented, immutably bound, and verified.
+                The 6 deployed core contracts on {arbitrumSepoliaDeployment.chainName}. NatSpec documented, immutably bound, and deployed on Arbitrum Sepolia.
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -486,7 +486,7 @@ export const ArbitrumSepoliaModal: React.FC<ArbitrumSepoliaModalProps> = ({
 
           <div className="flex items-center gap-2">
             <span className="text-muted-strong font-sans">
-              Verified L2 Testnet Deployment
+              Deployed on Arbitrum Sepolia
             </span>
             <button
               type="button"

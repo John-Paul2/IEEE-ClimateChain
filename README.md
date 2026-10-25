@@ -1,3 +1,27 @@
+# VeriCEMS
+**Don't trust the sensor. Verify the physics and the chain.**
+Tamper-evident emissions telemetry for EU CBAM, built for the IEEE ClimateChain Hackathon 2026 (Climate Data & Environmental Monitoring track).
+
+| | |
+|---|---|
+| Live demo | https://ieee-climate-chain.vercel.app/ |
+| 3-minute video | VIDEO_URL_HERE |
+| 2-minute judge guide | [docs/JUDGE_GUIDE.md](docs/JUDGE_GUIDE.md) |
+| Docs | [Problem statement](docs/PROBLEM_STATEMENT.md) · [Architecture](docs/ARCHITECTURE.md) · [Security](docs/SECURITY_ASSESSMENT.md) · [Climate impact](docs/CLIMATE_IMPACT.md) · [Adoption](docs/ADOPTION_STRATEGY.md) · [Roadmap](docs/SCALABILITY_ROADMAP.md) |
+
+**Contracts on Arbitrum Sepolia (chain 421614)**
+
+| Contract | Address |
+|---|---|
+| DeviceRegistry | [0x10B6647D48888a7C3C4DC28f0df0a2E5c23b3471](https://sepolia.arbiscan.io/address/0x10B6647D48888a7C3C4DC28f0df0a2E5c23b3471) |
+| BondVault | [0x7FFB90Cdc55C6C61B961AcF2a042A804F5857C36](https://sepolia.arbiscan.io/address/0x7FFB90Cdc55C6C61B961AcF2a042A804F5857C36) |
+| BatchAnchor | [0x8Bf14de651FA70FeB3538852c2160d082255638B](https://sepolia.arbiscan.io/address/0x8Bf14de651FA70FeB3538852c2160d082255638B) |
+| VerifierQuorum | [0x734849b029dDF31030CfaE4A74c314f8E21DBfB9](https://sepolia.arbiscan.io/address/0x734849b029dDF31030CfaE4A74c314f8E21DBfB9) |
+| Challenge | [0x80f58f44Ca8BCBEEDa72a27ec2555D26BB016A34](https://sepolia.arbiscan.io/address/0x80f58f44Ca8BCBEEDa72a27ec2555D26BB016A34) |
+| Attestation | [0x872D5EF7C6a457d1B8eD68221350236151c763B0](https://sepolia.arbiscan.io/address/0x872D5EF7C6a457d1B8eD68221350236151c763B0) |
+
+Source code for all contracts is in contracts/src. Explorer source verification is not done in this prototype.
+
 # VeriCEMS: Tamper-Evident Industrial Telemetry Verification for EU CBAM
 
 [![Arbitrum Sepolia](https://img.shields.io/badge/Network-Arbitrum%20Sepolia-blue)](https://sepolia.arbiscan.io)
@@ -43,8 +67,8 @@ npm --prefix web install
 npm --prefix web run dev
 ```
 
-### Live Testnet Explorer Verification
-All 6 core contracts are deployed and verified on **Arbitrum Sepolia**:
+### Live Testnet Contracts
+All 6 core contracts are deployed on Arbitrum Sepolia:
 - **`Attestation.sol`:** [`0x872D5EF7C6a457d1B8eD68221350236151c763B0`](https://sepolia.arbiscan.io/address/0x872D5EF7C6a457d1B8eD68221350236151c763B0)
 - **`BatchAnchor.sol`:** [`0x8Bf14de651FA70FeB3538852c2160d082255638B`](https://sepolia.arbiscan.io/address/0x8Bf14de651FA70FeB3538852c2160d082255638B)
 - **`BondVault.sol`:** [`0x7FFB90Cdc55C6C61B961AcF2a042A804F5857C36`](https://sepolia.arbiscan.io/address/0x7FFB90Cdc55C6C61B961AcF2a042A804F5857C36)

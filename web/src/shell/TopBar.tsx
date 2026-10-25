@@ -6,6 +6,7 @@ import {
   SkipForward,
   RotateCcw,
   Shield,
+  ShieldCheck,
   Sun,
   Moon,
   ExternalLink,
@@ -18,6 +19,7 @@ import { useToast } from "../components/Toast.tsx";
 import { DataStatusPill } from "./DataStatusPill.tsx";
 import { ArbitrumSepoliaModal } from "../components/ArbitrumSepoliaModal.tsx";
 import { IntroModal } from "../components/IntroModal.tsx";
+import { ProofModal } from "../components/ProofModal.tsx";
 import { arbitrumSepoliaDeployment } from "../chain/deploymentConfig.ts";
 import { startGuideMission } from "../guide/GuideEngine.tsx";
 import { GUIDE_MISSIONS } from "../guide/missions.ts";
@@ -41,6 +43,7 @@ export const TopBar: React.FC = () => {
   const [isActing, setIsActing] = useState(false);
   const [isManualMode, setIsManualMode] = useState(false);
   const [isTestnetModalOpen, setIsTestnetModalOpen] = useState(false);
+  const [isProofOpen, setIsProofOpen] = useState(false);
   const [dataPopoverOpen, setDataPopoverOpen] = useState(false);
   const [guideMenuOpen, setGuideMenuOpen] = useState(false);
   const [isIntroOpen, setIsIntroOpen] = useState<boolean>(() => {
@@ -314,6 +317,19 @@ export const TopBar: React.FC = () => {
           )}
         </div>
 
+        {/* Proof & Verification Panel Button */}
+        <button
+          type="button"
+          data-testid="header-proof-btn"
+          onClick={() => setIsProofOpen(true)}
+          aria-label="Proof and verification"
+          title="View Proof & Verification"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-pill bg-surface-soft hover:bg-hairline border border-hairline text-ink transition-all text-xs font-semibold cursor-pointer shrink-0"
+        >
+          <ShieldCheck className="w-3.5 h-3.5 text-verified" />
+          <span>Proof</span>
+        </button>
+
         {/* Unified Guide Menu: Merges Guide and Story */}
         <div className="relative inline-block text-left shrink-0">
           <button
@@ -535,6 +551,11 @@ export const TopBar: React.FC = () => {
       <ArbitrumSepoliaModal
         isOpen={isTestnetModalOpen}
         onClose={() => setIsTestnetModalOpen(false)}
+      />
+
+      <ProofModal
+        isOpen={isProofOpen}
+        onClose={() => setIsProofOpen(false)}
       />
 
       <IntroModal

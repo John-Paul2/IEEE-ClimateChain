@@ -60,7 +60,7 @@ VeriCEMS addresses the oracle problem through a layered, multi-party verificatio
 
 VeriCEMS is evaluated on real industrial monitoring data:
 - **Real Baseline Telemetry:** 30 combustion power facilities selected deterministically from the US EPA Clean Air Markets Program Data (CAMPD) 2025 archive (40 CFR Part 75), spanning Iowa, Utah, and Wyoming [EPA CAMPD, calendar year 2025].
-- **Live Testnet Contracts:** All six core contracts (`DeviceRegistry`, `BondVault`, `BatchAnchor`, `VerifierQuorum`, `Challenge`, `Attestation`) are deployed and verified on Arbitrum Sepolia (`Chain ID: 421614`).
+- **Live Testnet Contracts:** All six core contracts (`DeviceRegistry`, `BondVault`, `BatchAnchor`, `VerifierQuorum`, `Challenge`, `Attestation`) are deployed on Arbitrum Sepolia (`Chain ID: 421614`).
 - **Adversarial Benchmark:** Evaluated against 8 distinct attack classes across 5 facility-grouped cross-validation splits. The proposed detector achieves **75.64% macro-average recall** with an **8.34% false-positive rate** (AUROC: 0.8830) compared to 53.11% recall for baseline physics rules and 43.85% recall for static threshold checks.
 
 ---

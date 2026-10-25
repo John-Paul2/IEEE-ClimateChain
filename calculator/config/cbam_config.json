@@ -1,18 +1,24 @@
 {
   "schema_version": "1.0.0",
   "description": "Configuration-driven EU CBAM net liability parameters. Values without verified primary/secondary sources are kept null with status NEEDS_SOURCE per AGENTS.md honesty rules.",
+  "product": {
+    "name": "Pig iron",
+    "cn_code": "7201",
+    "status": "VERIFIED_SECONDARY",
+    "source": "Regulation (EU) 2023/956 Annex I"
+  },
   "price_eur_per_tco2e": {
     "value": 82.32,
     "quarter": "2026-Q3",
     "status": "VERIFIED_SECONDARY",
-    "last_verified": "2026-10-20",
-    "source": "European Commission CBAM price page / Q3 2026 quarterly average (€82.32/tCO2e; https://cbamguide.com/news/2026-10-05-q3-2026-cbam-certificate-price/)"
+    "last_verified": "2026-10-25",
+    "source": "Commission Implementing Regulation (EU) 2025/2548 (Q3 2026 quarterly average €82.32/tCO2e)"
   },
   "free_allocation_factor_by_year": {
     "2026": {
       "value": 0.975,
       "status": "VERIFIED_SECONDARY",
-      "last_verified": "2026-10-20",
+      "last_verified": "2026-10-25",
       "source": "Regulation (EU) 2023/956 Article 31 (2.5% CBAM factor / 97.5% free allocation factor for 2026)"
     },
     "2027": {
@@ -27,106 +33,109 @@
       "last_verified": null,
       "source": "Regulation (EU) 2023/956 Article 31 (verify exact annual phase-out schedule from primary text)"
     },
-    "2029": {
-      "value": null,
-      "status": "NEEDS_SOURCE",
-      "last_verified": null,
-      "source": "Regulation (EU) 2023/956 Article 31 (verify exact annual phase-out schedule from primary text)"
-    },
-    "2030": {
-      "value": null,
-      "status": "NEEDS_SOURCE",
-      "last_verified": null,
-      "source": "Regulation (EU) 2023/956 Article 31 (verify exact annual phase-out schedule from primary text)"
-    },
-    "2031": {
-      "value": null,
-      "status": "NEEDS_SOURCE",
-      "last_verified": null,
-      "source": "Regulation (EU) 2023/956 Article 31 (verify exact annual phase-out schedule from primary text)"
-    },
-    "2032": {
-      "value": null,
-      "status": "NEEDS_SOURCE",
-      "last_verified": null,
-      "source": "Regulation (EU) 2023/956 Article 31 (verify exact annual phase-out schedule from primary text)"
-    },
-    "2033": {
-      "value": null,
-      "status": "NEEDS_SOURCE",
-      "last_verified": null,
-      "source": "Regulation (EU) 2023/956 Article 31 (verify exact annual phase-out schedule from primary text)"
-    },
-    "2034": {
-      "value": null,
-      "status": "NEEDS_SOURCE",
-      "last_verified": null,
-      "source": "Regulation (EU) 2023/956 Article 31 (verify exact annual phase-out schedule from primary text)"
-    },
-    "note": "Fill later years from Regulation (EU) 2023/956 Article 31 (payable share expected: 2.5% in 2026 rising to 100% in 2034; verify each year)"
+    "note": "Fill later years from Regulation (EU) 2023/956 Article 31 (payable share expected: 2.5% in 2026 rising to 100% in 2034)"
   },
   "cscf_by_year": {
     "2026": {
-      "value": null,
-      "status": "NEEDS_SOURCE",
-      "last_verified": null,
-      "source": "European Commission Cross-Sectoral Correction Factor decision / Implementing Regulation (EU) 2025/2620 (look up in official decision; do not assume)"
+      "value": 1.00,
+      "status": "VERIFIED_SECONDARY",
+      "last_verified": "2026-10-25",
+      "source": "Commission Implementing Decision (EU) 2026/1862"
     },
     "2027": {
       "value": null,
       "status": "NEEDS_SOURCE",
       "last_verified": null,
-      "source": "European Commission Cross-Sectoral Correction Factor decision / Implementing Regulation (EU) 2025/2620 (look up in official decision; do not assume)"
+      "source": "European Commission Cross-Sectoral Correction Factor decision"
     },
     "2028": {
       "value": null,
       "status": "NEEDS_SOURCE",
       "last_verified": null,
-      "source": "European Commission Cross-Sectoral Correction Factor decision / Implementing Regulation (EU) 2025/2620 (look up in official decision; do not assume)"
+      "source": "European Commission Cross-Sectoral Correction Factor decision"
     },
     "note": "Look up in the official decision; do not assume"
   },
+  "benchmark_actual": {
+    "route": "actual",
+    "value": 1.089,
+    "status": "VERIFIED_SECONDARY",
+    "last_verified": "2026-10-25",
+    "source": "Commission Implementing Regulation (EU) 2025/2620 Annex"
+  },
+  "benchmark_default": {
+    "route": "default",
+    "value": 1.210,
+    "status": "VERIFIED_SECONDARY",
+    "last_verified": "2026-10-25",
+    "source": "Commission Implementing Regulation (EU) 2025/2620 Annex"
+  },
   "benchmark_tco2e_per_t": {
-    "route": null,
-    "value": null,
-    "status": "NEEDS_SOURCE",
-    "last_verified": null,
-    "source": "Implementing Regulation (EU) 2025/2620"
+    "route": "actual",
+    "value": 1.089,
+    "status": "VERIFIED_SECONDARY",
+    "last_verified": "2026-10-25",
+    "source": "Commission Implementing Regulation (EU) 2025/2620 Annex"
   },
   "default_benchmark_tco2e_per_t": {
-    "route": null,
-    "value": null,
-    "status": "NEEDS_SOURCE",
-    "last_verified": null,
-    "source": "Implementing Regulation (EU) 2025/2620 (verify whether a separate default benchmark applies when default SEE values are used [VERIFY])"
+    "route": "default",
+    "value": 1.210,
+    "status": "VERIFIED_SECONDARY",
+    "last_verified": "2026-10-25",
+    "source": "Commission Implementing Regulation (EU) 2025/2620 Annex"
+  },
+  "default_value_base_by_origin": {
+    "India": {
+      "country": "India",
+      "country_code": "IN",
+      "cn_code": "7201",
+      "value": 2.53,
+      "status": "VERIFIED_SECONDARY",
+      "last_verified": "2026-10-25",
+      "source": "Commission Implementing Regulation (EU) 2025/2621 as corrected by 2026/1740 Annex"
+    },
+    "Türkiye": {
+      "country": "Türkiye",
+      "country_code": "TR",
+      "cn_code": "7201",
+      "value": 2.87,
+      "status": "VERIFIED_SECONDARY",
+      "last_verified": "2026-10-25",
+      "source": "Commission Implementing Regulation (EU) 2025/2621 as corrected by 2026/1740 Annex"
+    }
   },
   "default_value_base_tco2e_per_t": {
-    "cn_code": null,
-    "country": null,
-    "value": null,
-    "status": "NEEDS_SOURCE",
-    "last_verified": null,
-    "source": "Implementing Regulation (EU) 2025/2621 as corrected by 2026/1740"
+    "cn_code": "7201",
+    "country": "India",
+    "value": 2.53,
+    "status": "VERIFIED_SECONDARY",
+    "last_verified": "2026-10-25",
+    "source": "Commission Implementing Regulation (EU) 2025/2621 as corrected by 2026/1740 Annex"
+  },
+  "example_plant_verified_see": {
+    "value": 2.10,
+    "status": "EXAMPLE",
+    "source": "Plant emissions: example"
   },
   "default_markup_by_year": {
     "2026": {
       "value": 0.10,
       "status": "VERIFIED_SECONDARY",
-      "last_verified": "2026-10-20",
-      "source": "Implementing Regulation (EU) 2025/2621 as corrected by 2026/1740 (secondary source: 10% markup in 2026)"
+      "last_verified": "2026-10-25",
+      "source": "Commission Implementing Regulation (EU) 2025/2621 as corrected by 2026/1740 (secondary source: 10% markup in 2026)"
     },
     "2027": {
       "value": 0.20,
       "status": "VERIFIED_SECONDARY",
-      "last_verified": "2026-10-20",
-      "source": "Implementing Regulation (EU) 2025/2621 as corrected by 2026/1740 (secondary source: 20% markup in 2027)"
+      "last_verified": "2026-10-25",
+      "source": "Commission Implementing Regulation (EU) 2025/2621 as corrected by 2026/1740 (secondary source: 20% markup in 2027)"
     },
     "2028": {
       "value": 0.30,
       "status": "VERIFIED_SECONDARY",
-      "last_verified": "2026-10-20",
-      "source": "Implementing Regulation (EU) 2025/2621 as corrected by 2026/1740 (secondary source: 30% markup from 2028)"
+      "last_verified": "2026-10-25",
+      "source": "Commission Implementing Regulation (EU) 2025/2621 as corrected by 2026/1740 (secondary source: 30% markup from 2028)"
     },
-    "note": "Default value markups: 10% in 2026, 20% in 2027, 30% from 2028 (VERIFIED_SECONDARY; verify primary text of 2025/2621 and 2026/1740)"
+    "note": "Default value markups: 10% in 2026, 20% in 2027, 30% from 2028"
   }
 }

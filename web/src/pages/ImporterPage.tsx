@@ -16,6 +16,7 @@ import {
   getIllustrativeExampleInputs,
   NeedsSourceError,
   type CBAMPartialInputs,
+  type OriginCountry,
 } from "../lib/cbam";
 import {
   verifyPeriodReport,
@@ -54,13 +55,16 @@ export const ImporterPage: React.FC = () => {
 
   const rawConfig = useMemo(() => loadCbamConfig(), []);
 
-  // Form input values (preset from illustrative example: 500 tonnes, verified SEE 1.90)
+  // Origin country selection: India (default) or Türkiye
+  const [origin, setOrigin] = useState<OriginCountry>("India");
+
+  // Form input values (Pig iron CN 7201: 500 tonnes, verified SEE 2.10)
   const [inputYear, setInputYear] = useState<number>(2026);
   const [inputTonnes, setInputTonnes] = useState<string>("500.0");
-  const [inputVerifiedSee, setInputVerifiedSee] = useState<string>("1.90");
-  const [inputDefaultBase, setInputDefaultBase] = useState<string>("2.30");
-  const [inputBenchmark, setInputBenchmark] = useState<string>("1.40");
-  const [inputDefaultBenchmark, setInputDefaultBenchmark] = useState<string>("");
+  const [inputVerifiedSee, setInputVerifiedSee] = useState<string>("2.10");
+  const [inputDefaultBase, setInputDefaultBase] = useState<string>("2.53");
+  const [inputBenchmarkActual, setInputBenchmarkActual] = useState<string>("1.089");
+  const [inputBenchmarkDefault, setInputBenchmarkDefault] = useState<string>("1.210");
   const [inputFaf, setInputFaf] = useState<string>("0.975");
   const [inputCscf, setInputCscf] = useState<string>("1.00");
   const [inputDefaultMarkup, setInputDefaultMarkup] = useState<string>("0.10");
@@ -93,9 +97,10 @@ export const ImporterPage: React.FC = () => {
   // Initial load
   useEffect(() => {
     runVerification(validReportPayload);
-    const illustrative = getIllustrativeExampleInputs();
+    const illustrative = getIllustrativeExampleInputs("India");
     setInputDefaultBase(String(illustrative.default_value_base));
-    setInputBenchmark(String(illustrative.benchmark));
+    setInputBenchmarkActual(String(illustrative.benchmark_actual ?? 1.089));
+    setInputBenchmarkDefault(String(illustrative.benchmark_default ?? 1.210));
     setInputCscf(String(illustrative.cscf));
     setInputFaf(String(illustrative.free_allocation_factor));
     setInputDefaultMarkup(String(illustrative.default_markup));
@@ -201,16 +206,19 @@ export const ImporterPage: React.FC = () => {
     setVerifyPulseKey((k) => k + 1);
   };
 
+  const handleSelectOrigin = (newOrigin: OriginCountry) => {
+    setOrigin(newOrigin);
+    setInputDefaultBase(newOrigin === "Türkiye" ? "2.87" : "2.53");
+  };
+
   const handleLoadIllustrativePreset = () => {
-    const illustrative = getIllustrativeExampleInputs();
+    const illustrative = getIllustrativeExampleInputs(origin);
     setInputYear(illustrative.year);
     setInputTonnes(String(illustrative.tonnes_shipped));
     setInputVerifiedSee(String(illustrative.verified_see));
     setInputDefaultBase(String(illustrative.default_value_base));
-    setInputBenchmark(String(illustrative.benchmark));
-    setInputDefaultBenchmark(
-      illustrative.default_benchmark !== null ? String(illustrative.default_benchmark) : ""
-    );
+    setInputBenchmarkActual(String(illustrative.benchmark_actual ?? 1.089));
+    setInputBenchmarkDefault(String(illustrative.benchmark_default ?? 1.210));
     setInputFaf(String(illustrative.free_allocation_factor));
     setInputCscf(String(illustrative.cscf));
     setInputDefaultMarkup(String(illustrative.default_markup));
@@ -221,7 +229,7 @@ export const ImporterPage: React.FC = () => {
 
   // Compute effective verified SEE with the plant reduction slider
   const effectiveVerifiedSee = useMemo(() => {
-    const base = inputVerifiedSee.trim() === "" ? 1.90 : Number(inputVerifiedSee);
+    const base = inputVerifiedSee.trim() === "" ? 2.10 : Number(inputVerifiedSee);
     const cutMultiplier = 1 - plantCutPercent / 100;
     return Math.max(0, base * cutMultiplier);
   }, [inputVerifiedSee, plantCutPercent]);
@@ -230,9 +238,10 @@ export const ImporterPage: React.FC = () => {
   const { comparison, missingParameters } = useMemo(() => {
     const tonnesVal = inputTonnes.trim() === "" ? null : Number(inputTonnes);
     const defBaseVal = inputDefaultBase.trim() === "" ? null : Number(inputDefaultBase);
-    const benchVal = inputBenchmark.trim() === "" ? null : Number(inputBenchmark);
-    const defBenchVal =
-      inputDefaultBenchmark.trim() === "" ? null : Number(inputDefaultBenchmark);
+    const benchActualVal =
+      inputBenchmarkActual.trim() === "" ? null : Number(inputBenchmarkActual);
+    const benchDefVal =
+      inputBenchmarkDefault.trim() === "" ? null : Number(inputBenchmarkDefault);
     const fafVal = inputFaf.trim() === "" ? null : Number(inputFaf);
     const cscfVal = inputCscf.trim() === "" ? null : Number(inputCscf);
     const markupVal = inputDefaultMarkup.trim() === "" ? null : Number(inputDefaultMarkup);
@@ -240,17 +249,20 @@ export const ImporterPage: React.FC = () => {
 
     const partialParams: CBAMPartialInputs = {
       year: inputYear,
+      origin,
       tonnes_shipped: tonnesVal,
       verified_see: effectiveVerifiedSee,
       default_value_base: defBaseVal,
-      benchmark: benchVal,
-      default_benchmark: defBenchVal,
+      benchmark: benchActualVal,
+      benchmark_actual: benchActualVal,
+      default_benchmark: benchDefVal,
+      benchmark_default: benchDefVal,
       free_allocation_factor: fafVal,
       cscf: cscfVal,
       default_markup: markupVal,
       certificate_price: priceVal,
       price_quarter: rawConfig.price_eur_per_tco2e.quarter || "2026-Q3",
-      tag: isIllustrativePreset ? "ILLUSTRATIVE" : null,
+      tag: isIllustrativePreset ? "EXAMPLE" : null,
     };
 
     try {
@@ -270,11 +282,12 @@ export const ImporterPage: React.FC = () => {
     }
   }, [
     inputYear,
+    origin,
     inputTonnes,
     effectiveVerifiedSee,
     inputDefaultBase,
-    inputBenchmark,
-    inputDefaultBenchmark,
+    inputBenchmarkActual,
+    inputBenchmarkDefault,
     inputFaf,
     inputCscf,
     inputDefaultMarkup,
@@ -454,7 +467,36 @@ export const ImporterPage: React.FC = () => {
             </div>
 
             {/* Boarding-Pass Data Points */}
-            <div className="pt-1 space-y-1.5">
+            <div className="pt-1 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase font-mono text-muted">Origin country</span>
+                <div data-guide="origin-toggle" className="inline-flex rounded border border-hairline p-0.5 bg-surface-soft">
+                  <button
+                    type="button"
+                    data-testid="origin-india-btn"
+                    onClick={() => handleSelectOrigin("India")}
+                    className={`px-2 py-0.5 text-xs font-semibold rounded cursor-pointer transition-colors ${
+                      origin === "India"
+                        ? "bg-surface border border-hairline text-ink shadow-sm font-bold"
+                        : "text-muted-strong hover:text-ink"
+                    }`}
+                  >
+                    India (default)
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="origin-turkiye-btn"
+                    onClick={() => handleSelectOrigin("Türkiye")}
+                    className={`px-2 py-0.5 text-xs font-semibold rounded cursor-pointer transition-colors ${
+                      origin === "Türkiye"
+                        ? "bg-surface border border-hairline text-ink shadow-sm font-bold"
+                        : "text-muted-strong hover:text-ink"
+                    }`}
+                  >
+                    Türkiye
+                  </button>
+                </div>
+              </div>
               <div className="flex items-center justify-between">
                 <span className="text-[10px] uppercase font-mono text-muted">Routing</span>
                 <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/30">
@@ -482,7 +524,7 @@ export const ImporterPage: React.FC = () => {
             <div className="grid grid-cols-2 gap-3 text-xs pt-2 border-t border-hairline">
               <div>
                 <span className="text-[10px] uppercase font-mono text-muted block">Product Line</span>
-                <span className="font-medium text-ink text-[11px] block">Crude Steel (Agglomerated)</span>
+                <span className="font-medium text-ink text-[11px] block">Pig iron (CN 7201)</span>
               </div>
               <div>
                 <span className="text-[10px] uppercase font-mono text-muted block">Period Window</span>
@@ -724,7 +766,7 @@ export const ImporterPage: React.FC = () => {
             <div className="flex items-baseline justify-between border-b border-hairline pb-2">
               <div>
                 <span className="text-sm font-heading font-bold text-ink">
-                  Estimated CBAM cost (example)
+                  Estimated CBAM cost (indicative)
                 </span>
               </div>
               <span className="text-[11px] font-mono text-muted-strong">
@@ -750,7 +792,12 @@ export const ImporterPage: React.FC = () => {
                 transition={{ duration: 0.2, delay: 0.02 }}
                 className="flex items-baseline justify-between"
               >
-                <span className="text-muted-strong shrink-0">Emissions per tonne</span>
+                <div className="shrink-0">
+                  <span className="text-muted-strong block">Emissions per tonne</span>
+                  <span className="text-[10px] text-muted font-mono block">
+                    Default: Reg. 2025/2621 Annex II (+10% markup)
+                  </span>
+                </div>
                 <span className="flex-1 border-b border-dotted border-hairline mx-2" />
                 <div className="grid grid-cols-2 gap-3 text-right w-48 sm:w-56 font-mono shrink-0">
                   <span className="text-muted-strong">
@@ -769,7 +816,12 @@ export const ImporterPage: React.FC = () => {
                 transition={{ duration: 0.2, delay: prefersReducedMotion ? 0 : 0.05 }}
                 className="flex items-baseline justify-between"
               >
-                <span className="text-muted-strong shrink-0">Minus free allocation</span>
+                <div className="shrink-0">
+                  <span className="text-muted-strong block">Minus free allocation</span>
+                  <span className="text-[10px] text-muted font-mono block">
+                    SEFA: Reg. 2025/2620 Annex I &amp; Dec. 2026/1862
+                  </span>
+                </div>
                 <span className="flex-1 border-b border-dotted border-hairline mx-2" />
                 <div className="grid grid-cols-2 gap-3 text-right w-48 sm:w-56 font-mono shrink-0">
                   <span className="text-muted-strong">
@@ -826,7 +878,12 @@ export const ImporterPage: React.FC = () => {
                 transition={{ duration: 0.2, delay: prefersReducedMotion ? 0 : 0.14 }}
                 className="flex items-baseline justify-between"
               >
-                <span className="text-muted-strong shrink-0">Price</span>
+                <div className="shrink-0">
+                  <span className="text-muted-strong block">Price</span>
+                  <span className="text-[10px] text-muted font-mono block">
+                    Reg. 2025/2548 (Q3 2026)
+                  </span>
+                </div>
                 <span className="flex-1 border-b border-dotted border-hairline mx-2" />
                 <div className="grid grid-cols-2 gap-3 text-right w-48 sm:w-56 font-mono shrink-0">
                   <span className="text-muted-strong">
@@ -847,7 +904,7 @@ export const ImporterPage: React.FC = () => {
                 transition={{ duration: 0.2, delay: prefersReducedMotion ? 0 : 0.17 }}
                 className="flex items-baseline justify-between pt-1"
               >
-                <span className="text-ink font-bold shrink-0 text-sm">Total</span>
+                <span className="text-ink font-bold shrink-0 text-sm">Total (indicative)</span>
                 <span className="flex-1 border-b border-dotted border-hairline mx-2" />
                 <div className="grid grid-cols-2 gap-3 text-right w-48 sm:w-56 font-mono shrink-0">
                   <span className="text-ink font-bold text-base">
@@ -870,9 +927,14 @@ export const ImporterPage: React.FC = () => {
               </motion.div>
             </div>
 
-            {/* Disclosed note directly under the total */}
-            <div className="text-[11px] text-muted font-mono pt-1 text-right sm:text-left">
-              Example numbers, not real product values
+            {/* Regulatory and emissions source chips */}
+            <div className="flex flex-wrap items-center gap-2 pt-2">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+                Legal parameters: from EU regulations
+              </span>
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/30">
+                Plant emissions: example
+              </span>
             </div>
           </div>
 
@@ -880,10 +942,10 @@ export const ImporterPage: React.FC = () => {
           <div className="bg-[#0A0A0A] text-white rounded-card p-5 border border-neutral-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
             <div>
               <span className="text-[11px] uppercase tracking-wider text-white/70 block font-mono">
-                Customs assessment savings
+                Customs assessment savings (indicative)
               </span>
               <span className="text-xs text-white/90">
-                You save with verified data:
+                You save with verified data (indicative):
               </span>
             </div>
             <div className="flex items-baseline gap-2">
@@ -931,7 +993,7 @@ export const ImporterPage: React.FC = () => {
               className="w-full accent-brand cursor-pointer"
             />
             <div className="flex justify-between text-[10px] text-muted font-mono">
-              <span>0% (actual 1.90 tCO₂e/t)</span>
+              <span>0% (actual 2.10 tCO₂e/t)</span>
               <span>15%</span>
               <span>30%</span>
             </div>
@@ -1022,21 +1084,47 @@ export const ImporterPage: React.FC = () => {
                   </div>
                 )}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
                   <div className="p-2 bg-surface-soft border border-hairline rounded-lg space-y-1">
-                    <label htmlFor="input-benchmark" className="text-muted block text-[10px]">
-                      Benchmark (tCO₂e/t)
+                    <label htmlFor="input-benchmark-actual" className="text-muted block text-[10px]">
+                      Benchmark actual (tCO₂e/t)
                     </label>
-                    {inputBenchmark.trim() === "" && (
+                    <span className="text-[9px] text-muted-strong font-mono block">
+                      Reg. 2025/2620, Annex I
+                    </span>
+                    {inputBenchmarkActual.trim() === "" && (
                       <span className="text-[10px] text-amber-600 block">needs source</span>
                     )}
                     <input
-                      id="input-benchmark"
+                      id="input-benchmark-actual"
                       type="number"
-                      step="0.01"
-                      value={inputBenchmark}
+                      step="0.001"
+                      value={inputBenchmarkActual}
                       onChange={(e) => {
-                        setInputBenchmark(e.target.value);
+                        setInputBenchmarkActual(e.target.value);
+                        setIsIllustrativePreset(false);
+                      }}
+                      className="w-full bg-surface border border-hairline rounded px-2 py-0.5 font-mono text-xs text-ink"
+                    />
+                  </div>
+
+                  <div className="p-2 bg-surface-soft border border-hairline rounded-lg space-y-1">
+                    <label htmlFor="input-benchmark-default" className="text-muted block text-[10px]">
+                      Benchmark default (tCO₂e/t)
+                    </label>
+                    <span className="text-[9px] text-muted-strong font-mono block">
+                      Reg. 2025/2620, Annex I
+                    </span>
+                    {inputBenchmarkDefault.trim() === "" && (
+                      <span className="text-[10px] text-amber-600 block">needs source</span>
+                    )}
+                    <input
+                      id="input-benchmark-default"
+                      type="number"
+                      step="0.001"
+                      value={inputBenchmarkDefault}
+                      onChange={(e) => {
+                        setInputBenchmarkDefault(e.target.value);
                         setIsIllustrativePreset(false);
                       }}
                       className="w-full bg-surface border border-hairline rounded px-2 py-0.5 font-mono text-xs text-ink"
@@ -1045,8 +1133,11 @@ export const ImporterPage: React.FC = () => {
 
                   <div className="p-2 bg-surface-soft border border-hairline rounded-lg space-y-1">
                     <label htmlFor="input-default-base" className="text-muted block text-[10px]">
-                      Default SEE base
+                      Default SEE base ({origin})
                     </label>
+                    <span className="text-[9px] text-muted-strong font-mono block">
+                      Reg. 2025/2621, Annex II
+                    </span>
                     {inputDefaultBase.trim() === "" && (
                       <span className="text-[10px] text-amber-600 block">needs source</span>
                     )}
@@ -1067,6 +1158,9 @@ export const ImporterPage: React.FC = () => {
                     <label htmlFor="input-cscf" className="text-muted block text-[10px]">
                       CSCF factor
                     </label>
+                    <span className="text-[9px] text-muted-strong font-mono block">
+                      Dec. 2026/1862
+                    </span>
                     {inputCscf.trim() === "" && (
                       <span className="text-[10px] text-amber-600 block">needs source</span>
                     )}
@@ -1084,9 +1178,35 @@ export const ImporterPage: React.FC = () => {
                   </div>
 
                   <div className="p-2 bg-surface-soft border border-hairline rounded-lg space-y-1">
+                    <label htmlFor="input-faf" className="text-muted block text-[10px]">
+                      Free share factor (2026)
+                    </label>
+                    <span className="text-[9px] text-muted-strong font-mono block">
+                      Reg. 2023/956, Art. 31
+                    </span>
+                    {inputFaf.trim() === "" && (
+                      <span className="text-[10px] text-amber-600 block">needs source</span>
+                    )}
+                    <input
+                      id="input-faf"
+                      type="number"
+                      step="0.001"
+                      value={inputFaf}
+                      onChange={(e) => {
+                        setInputFaf(e.target.value);
+                        setIsIllustrativePreset(false);
+                      }}
+                      className="w-full bg-surface border border-hairline rounded px-2 py-0.5 font-mono text-xs text-ink"
+                    />
+                  </div>
+
+                  <div className="p-2 bg-surface-soft border border-hairline rounded-lg space-y-1">
                     <label htmlFor="input-price" className="text-muted block text-[10px]">
                       Price (€/tCO₂e)
                     </label>
+                    <span className="text-[9px] text-muted-strong font-mono block">
+                      Reg. 2025/2548 (Q3 2026)
+                    </span>
                     {inputPrice.trim() === "" && (
                       <span className="text-[10px] text-amber-600 block">needs source</span>
                     )}

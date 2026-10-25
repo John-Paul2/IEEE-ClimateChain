@@ -12,6 +12,7 @@ import {
   ArrowLeft,
   Minimize2,
   Maximize2,
+  GripHorizontal,
 } from "lucide-react";
 import {
   GUIDE_MISSIONS,
@@ -190,6 +191,69 @@ export const GuideEngine: React.FC = () => {
   const timerRef = useRef<number | null>(null);
   const lastNavigatedMissionRef = useRef<number | null>(null);
   const cardRef = useRef<HTMLDivElement | null>(null);
+  const userPosRef = useRef<{ x: number; y: number } | null>(null);
+  const dragSessionRef = useRef<{
+    pointerId: number;
+    startClientX: number;
+    startClientY: number;
+    origX: number;
+    origY: number;
+  } | null>(null);
+
+  const applyCardTransform = useCallback((left: number, top: number) => {
+    const card = cardRef.current;
+    if (!card) return;
+    card.style.transform = `translate3d(${left}px, ${top}px, 0)`;
+  }, []);
+
+  const handleDragPointerDown = useCallback((e: React.PointerEvent<HTMLElement>) => {
+    if (e.button !== 0) return;
+    if ((e.target as HTMLElement).closest("button") || (e.target as HTMLElement).closest("a")) return;
+    const card = cardRef.current;
+    if (!card) return;
+
+    e.currentTarget.setPointerCapture(e.pointerId);
+    const rect = card.getBoundingClientRect();
+    const startX = rect.left;
+    const startY = rect.top;
+    dragSessionRef.current = {
+      pointerId: e.pointerId,
+      startClientX: e.clientX,
+      startClientY: e.clientY,
+      origX: startX,
+      origY: startY,
+    };
+  }, []);
+
+  const handleDragPointerMove = useCallback(
+    (e: React.PointerEvent<HTMLElement>) => {
+      const session = dragSessionRef.current;
+      const card = cardRef.current;
+      if (!session || session.pointerId !== e.pointerId || !card) return;
+
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const cardW = card.offsetWidth || 320;
+      const cardH = card.offsetHeight || 60;
+
+      const nextLeft = Math.round(
+        Math.max(8, Math.min(vw - cardW - 8, session.origX + (e.clientX - session.startClientX)))
+      );
+      const nextTop = Math.round(
+        Math.max(8, Math.min(vh - cardH - 8, session.origY + (e.clientY - session.startClientY)))
+      );
+
+      userPosRef.current = { x: nextLeft, y: nextTop };
+      applyCardTransform(nextLeft, nextTop);
+    },
+    [applyCardTransform]
+  );
+
+  const handleDragPointerUp = useCallback((e: React.PointerEvent<HTMLElement>) => {
+    if (dragSessionRef.current?.pointerId === e.pointerId) {
+      dragSessionRef.current = null;
+    }
+  }, []);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -492,10 +556,26 @@ export const GuideEngine: React.FC = () => {
       {/* Minimized Pill View */}
       {state.isMinimized ? (
         <div
+          ref={cardRef}
           role="dialog"
           aria-label="Guide minimized"
-          className="fixed sm:bottom-4 sm:right-4 bottom-2 right-2 z-40 bg-surface border-2 border-brand/50 rounded-pill py-2 px-3.5 shadow-2xl flex items-center gap-2 text-xs font-sans"
+          onPointerDown={handleDragPointerDown}
+          onPointerMove={handleDragPointerMove}
+          onPointerUp={handleDragPointerUp}
+          onPointerCancel={handleDragPointerUp}
+          style={
+            userPosRef.current
+              ? {
+                  top: 0,
+                  left: 0,
+                  transform: `translate3d(${userPosRef.current.x}px, ${userPosRef.current.y}px, 0)`,
+                  willChange: "transform",
+                }
+              : undefined
+          }
+          className={`fixed ${userPosRef.current ? "" : "sm:bottom-4 sm:right-4 bottom-2 right-2"} z-40 bg-white/85 dark:bg-[#141416]/85 backdrop-blur-md border-2 border-brand/50 rounded-pill py-2 px-3.5 shadow-2xl flex items-center gap-2 text-xs font-sans cursor-grab active:cursor-grabbing select-none touch-none`}
         >
+          <GripHorizontal className="w-3.5 h-3.5 text-muted shrink-0" aria-hidden="true" />
           <span className="w-5 h-5 rounded-full bg-brand text-white flex items-center justify-center font-mono font-bold text-[10px]">
             {currentMission.missionNumber}
           </span>
@@ -520,16 +600,35 @@ export const GuideEngine: React.FC = () => {
           </button>
         </div>
       ) : (
-        /* Bottom-Right Docked / Mobile Bottom-Sheet Coach HUD */
+        /* Target-Anchored / User-Draggable Coach HUD */
         <div
           ref={cardRef}
           role="dialog"
           aria-label={`Guide: ${currentMission.missionTitle}`}
-          className="fixed z-40 sm:bottom-4 sm:right-4 sm:left-auto sm:top-auto sm:w-[320px] sm:max-w-[320px] sm:rounded-2xl inset-x-0 bottom-0 w-full max-sm:rounded-t-2xl max-sm:rounded-b-none p-3.5 bg-surface border-2 border-brand/50 shadow-2xl space-y-2.5 font-sans max-h-[85vh] overflow-y-auto"
+          style={
+            userPosRef.current
+              ? {
+                  top: 0,
+                  left: 0,
+                  transform: `translate3d(${userPosRef.current.x}px, ${userPosRef.current.y}px, 0)`,
+                  willChange: "transform",
+                }
+              : undefined
+          }
+          className={`fixed z-40 ${userPosRef.current ? "" : "sm:bottom-4 sm:right-4 sm:left-auto sm:top-auto inset-x-0 bottom-0 max-sm:rounded-t-2xl max-sm:rounded-b-none"} w-full sm:w-[320px] sm:max-w-[320px] sm:rounded-2xl p-3.5 bg-white/85 dark:bg-[#141416]/85 backdrop-blur-md border-2 border-brand/50 shadow-2xl space-y-2.5 font-sans max-h-[85vh] overflow-y-auto`}
         >
-          {/* Compact Header Row */}
-          <div className="flex items-center justify-between gap-2 pb-2 border-b border-hairline">
+          {/* Draggable Compact Header Row */}
+          <div
+            data-testid="guide-drag-handle"
+            onPointerDown={handleDragPointerDown}
+            onPointerMove={handleDragPointerMove}
+            onPointerUp={handleDragPointerUp}
+            onPointerCancel={handleDragPointerUp}
+            title="Drag to move guide anywhere on screen"
+            className="flex items-center justify-between gap-2 pb-2 border-b border-hairline cursor-grab active:cursor-grabbing select-none touch-none"
+          >
             <div className="flex items-center gap-1.5 min-w-0">
+              <GripHorizontal className="w-3.5 h-3.5 text-muted shrink-0" aria-hidden="true" />
               <span className="w-5 h-5 rounded-full bg-brand text-white flex items-center justify-center font-mono font-bold text-[11px] shrink-0">
                 {currentMission.missionNumber}
               </span>

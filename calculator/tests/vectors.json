@@ -3,6 +3,74 @@
   "description": "Shared deterministic test vectors for the VeriCEMS CBAM cost calculator (tested identically in Python and TypeScript). All numerical test vectors are tagged ILLUSTRATIVE per AGENTS.md honesty rules.",
   "valid_vectors": [
     {
+      "name": "pig_iron_india_500t",
+      "tag": "EXAMPLE",
+      "description": "Pig iron (CN 7201) India origin (500 t, benchmark actual 1.089, benchmark default 1.210, free share 0.975, CSCF 1.00, verified SEE 2.10, default base 2.53 with 10% markup, price 82.32).",
+      "inputs": {
+        "year": 2026,
+        "origin": "India",
+        "tonnes_shipped": 500.0,
+        "verified_see": 2.10,
+        "default_value_base": 2.53,
+        "benchmark": 1.089,
+        "benchmark_actual": 1.089,
+        "default_benchmark": 1.210,
+        "benchmark_default": 1.210,
+        "free_allocation_factor": 0.975,
+        "cscf": 1.00,
+        "default_markup": 0.10,
+        "certificate_price": 82.32,
+        "price_quarter": "2026-Q3"
+      },
+      "expected": {
+        "sefa_verified": 1.061775,
+        "sefa_default": 1.17975,
+        "default_see_with_markup": 2.783,
+        "payable_per_tonne_verified": 1.038225,
+        "payable_per_tonne_default": 1.60325,
+        "total_payable_tonnes_verified": 519.1125,
+        "total_payable_tonnes_default": 801.625,
+        "cost_with_verified_eur": 42733.34,
+        "cost_with_default_eur": 65989.77,
+        "savings_per_tonne_tco2e": 0.565025,
+        "savings_eur": 23256.43
+      }
+    },
+    {
+      "name": "pig_iron_turkiye_500t",
+      "tag": "EXAMPLE",
+      "description": "Pig iron (CN 7201) Türkiye origin (500 t, benchmark actual 1.089, benchmark default 1.210, free share 0.975, CSCF 1.00, verified SEE 2.10, default base 2.87 with 10% markup, price 82.32).",
+      "inputs": {
+        "year": 2026,
+        "origin": "Türkiye",
+        "tonnes_shipped": 500.0,
+        "verified_see": 2.10,
+        "default_value_base": 2.87,
+        "benchmark": 1.089,
+        "benchmark_actual": 1.089,
+        "default_benchmark": 1.210,
+        "benchmark_default": 1.210,
+        "free_allocation_factor": 0.975,
+        "cscf": 1.00,
+        "default_markup": 0.10,
+        "certificate_price": 82.32,
+        "price_quarter": "2026-Q3"
+      },
+      "expected": {
+        "sefa_verified": 1.061775,
+        "sefa_default": 1.17975,
+        "default_see_with_markup": 3.157,
+        "payable_per_tonne_verified": 1.038225,
+        "payable_per_tonne_default": 1.97725,
+        "total_payable_tonnes_verified": 519.1125,
+        "total_payable_tonnes_default": 988.625,
+        "cost_with_verified_eur": 42733.34,
+        "cost_with_default_eur": 81383.61,
+        "savings_per_tonne_tco2e": 0.939025,
+        "savings_eur": 38650.27
+      }
+    },
+    {
       "name": "illustrative_example",
       "tag": "ILLUSTRATIVE",
       "description": "Guide Section 14 Appendix A worked example (500 t, benchmark 1.40, factor 0.975, CSCF 1.00, verified SEE 1.90, default base 2.30 with 10% markup, price 82.32).",

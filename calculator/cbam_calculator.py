@@ -308,11 +308,14 @@ def resolve_inputs_from_config(
     config: Mapping[str, Any],
     *,
     year: int = 2026,
+    origin: str | None = None,
     tonnes_shipped: float | None = None,
     verified_see: float | None = None,
     default_value_base: float | None = None,
     benchmark: float | None = None,
+    benchmark_actual: float | None = None,
     default_benchmark: float | None = None,
+    benchmark_default: float | None = None,
     free_allocation_factor: float | None = None,
     cscf: float | None = None,
     default_markup: float | None = None,
@@ -346,19 +349,37 @@ def resolve_inputs_from_config(
     price_val = certificate_price if certificate_price is not None else price_cfg.get("value")
     price_quarter = str(price_cfg.get("quarter", "2026-Q3"))
 
-    bench_cfg = config.get("benchmark_tco2e_per_t", {})
-    bench_val = benchmark if benchmark is not None else bench_cfg.get("value")
+    actual_b = benchmark_actual if benchmark_actual is not None else benchmark
+    if actual_b is not None:
+        bench_val = actual_b
+    else:
+        bench_val = config.get("benchmark_actual", {}).get("value")
+        if bench_val is None:
+            bench_val = config.get("benchmark_tco2e_per_t", {}).get("value")
 
-    def_bench_cfg = config.get("default_benchmark_tco2e_per_t", {})
-    def_bench_val = default_benchmark if default_benchmark is not None else def_bench_cfg.get("value")
+    default_b = benchmark_default if benchmark_default is not None else default_benchmark
+    if default_b is not None:
+        def_bench_val = default_b
+    else:
+        def_bench_val = config.get("benchmark_default", {}).get("value")
+        if def_bench_val is None:
+            def_bench_val = config.get("default_benchmark_tco2e_per_t", {}).get("value")
 
-    def_base_cfg = config.get("default_value_base_tco2e_per_t", {})
-    def_base_val = default_value_base if default_value_base is not None else def_base_cfg.get("value")
+    def_base_val = default_value_base
+    if def_base_val is None and origin is not None:
+        def_base_val = config.get("default_value_base_by_origin", {}).get(origin, {}).get("value")
+    if def_base_val is None:
+        def_base_cfg = config.get("default_value_base_tco2e_per_t", {})
+        def_base_val = def_base_cfg.get("value")
+
+    ver_val = verified_see
+    if ver_val is None:
+        ver_val = config.get("example_plant_verified_see", {}).get("value")
 
     missing: list[str] = []
     if tonnes_shipped is None:
         missing.append("tonnes_shipped")
-    if verified_see is None:
+    if ver_val is None:
         missing.append("verified_see")
     if def_base_val is None:
         missing.append("default_value_base_tco2e_per_t")
@@ -379,7 +400,7 @@ def resolve_inputs_from_config(
     return CBAMInputs(
         year=year,
         tonnes_shipped=float(tonnes_shipped),  # type: ignore[arg-type]
-        verified_see=float(verified_see),  # type: ignore[arg-type]
+        verified_see=float(ver_val),  # type: ignore[arg-type]
         default_value_base=float(def_base_val),  # type: ignore[arg-type]
         benchmark=float(bench_val),  # type: ignore[arg-type]
         free_allocation_factor=float(faf_val),  # type: ignore[arg-type]
@@ -399,11 +420,13 @@ def calculate_cbam_Comparison(
     verified_see: float | None = None,
     default_value_base: float | None = None,
     benchmark: float | None = None,
+    benchmark_actual: float | None = None,
     free_allocation_factor: float | None = None,
     cscf: float | None = None,
     default_markup: float | None = None,
     certificate_price: float | None = None,
     default_benchmark: float | None = None,
+    benchmark_default: float | None = None,
     price_quarter: str = "2026-Q3",
     tag: str | None = None,
 ) -> CBAMCalculationResult:
@@ -411,11 +434,13 @@ def calculate_cbam_Comparison(
 
     Computes net liability after the free-allocation adjustment (SEFA).
     Note: Default-value benchmarks may differ from actual route benchmarks under
-    Implementing Regulation (EU) 2025/2620 / 2025/2621 [VERIFY]. If `default_benchmark`
-    is None, `benchmark` is used for both verified and default calculations.
+    Implementing Regulation (EU) 2025/2620 / 2025/2621.
     """
     if not isinstance(year, int) or isinstance(year, bool) or year < 2026:
         raise CBAMValidationError(f"Parameter 'year' must be an integer >= 2026 (got {year}).")
+
+    actual_b = benchmark_actual if benchmark_actual is not None else benchmark
+    default_b = benchmark_default if benchmark_default is not None else default_benchmark
 
     missing: list[str] = []
     if tonnes_shipped is None:
@@ -424,7 +449,7 @@ def calculate_cbam_Comparison(
         missing.append("verified_see")
     if default_value_base is None:
         missing.append("default_value_base")
-    if benchmark is None:
+    if actual_b is None:
         missing.append("benchmark")
     if free_allocation_factor is None:
         missing.append("free_allocation_factor")
@@ -440,10 +465,10 @@ def calculate_cbam_Comparison(
     tonnes_d = _validate_non_negative(tonnes_shipped, "tonnes_shipped")
     ver_see_d = _validate_non_negative(verified_see, "verified_see")
     def_base_d = _validate_non_negative(default_value_base, "default_value_base")
-    bench_ver_d = _validate_non_negative(benchmark, "benchmark")
+    bench_ver_d = _validate_non_negative(actual_b, "benchmark")
     bench_def_d = (
-        _validate_non_negative(default_benchmark, "default_benchmark")
-        if default_benchmark is not None
+        _validate_non_negative(default_b, "default_benchmark")
+        if default_b is not None
         else bench_ver_d
     )
     faf_d = _validate_non_negative(free_allocation_factor, "free_allocation_factor")
@@ -589,16 +614,16 @@ def explain_cbam_calculation(result: CBAMCalculationResult) -> list[dict[str, An
     return [asdict(step) for step in result.steps]
 
 
-def get_illustrative_example_inputs() -> CBAMInputs:
-    """Return the Guide Section 14 Appendix A worked example inputs, explicitly tagged ILLUSTRATIVE."""
+calculate_cbam_comparison = calculate_cbam_Comparison
+
+
+def get_illustrative_example_inputs(origin: str = "India") -> CBAMInputs:
+    """Return the Pig iron (CN 7201) example inputs, with status EXAMPLE."""
     config = load_cbam_config()
     return resolve_inputs_from_config(
         config,
         year=2026,
+        origin=origin,
         tonnes_shipped=500.0,
-        verified_see=1.90,
-        default_value_base=2.30,
-        benchmark=1.40,
-        cscf=1.00,
-        tag="ILLUSTRATIVE",
+        tag="EXAMPLE",
     )

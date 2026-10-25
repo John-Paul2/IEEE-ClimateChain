@@ -1,0 +1,25 @@
+[PASS] test_ScenarioC_OverturnedPathWithMerkleProof() (gas: 1776072)
+[PASS] test_ScenarioD_OperatorCannotWithdrawDuringChallenge() (gas: 1551306)
+[FAIL: Error != expected error: DuplicateMerkleRoot(0xfef6845c31a5bde0f7b6cc96792c8ec76aab269de617cf1e8c25593267b309cc) != DeviceNotActive(0x9335428e3a1df5a14eb6d2a0755b02be4c0dc5d0e2f51beb539995e0d95af91a)] test_ScenarioE_RevokedDeviceCannotAnchor() (gas: 532438)
+[PASS] test_ScenarioF_VerifierFailsToRevealPenalized() (gas: 1557152)
+[PASS] test_VerifierQuorum_RevertPaths() (gas: 1064214)
+Suite result: FAILED. 14 passed; 2 failed; 0 skipped; finished in 114.67ms (139.11ms CPU time)
+
+Ran 7 tests for test/FuzzAndInvariants.t.sol:FuzzAndInvariantsTest
+[PASS] invariant_batchFinalizedAtMostOnce() (runs: 64, calls: 2048, reverts: 0)
+[PASS] invariant_ethHeldEqualsRecordedBalances() (runs: 64, calls: 2048, reverts: 0)
+[PASS] invariant_onlyRegisteredNonRevokedCanAnchor() (runs: 64, calls: 2048, reverts: 0)
+[PASS] invariant_sequenceNumbersOnlyIncrease() (runs: 64, calls: 2048, reverts: 0)
+[PASS] invariant_slashedNeverExceedsBond() (runs: 64, calls: 2048, reverts: 0)
+[PASS] testFuzz_BondSlashAndRewardConservation(uint96,uint16,uint8) (runs: 256, ╬╝: 325926, ~: 322575)
+[PASS] testFuzz_SequenceRangesContiguousAndNonOverlapping(uint16,uint16,uint16,uint64) (runs: 256, ╬╝: 553170, ~: 553033)
+Suite result: ok. 7 passed; 0 failed; 0 skipped; finished in 344.96ms (1.61s CPU time)
+
+Ran 3 test suites in 346.68ms (551.49ms CPU time): 25 tests passed, 2 failed, 0 skipped (27 total tests)
+
+Failing tests:
+Encountered 2 failing tests in test/UnitAndScenario.t.sol:UnitAndScenarioTest
+[FAIL: Error != expected error: DuplicateMerkleRoot(0xfef6845c31a5bde0f7b6cc96792c8ec76aab269de617cf1e8c25593267b309cc) != InvalidSequenceRange(8, 7, 14, 8)] test_BatchAnchor_RevertPaths() (gas: 835467)
+[FAIL: Error != expected error: DuplicateMerkleRoot(0xfef6845c31a5bde0f7b6cc96792c8ec76aab269de617cf1e8c25593267b309cc) != DeviceNotActive(0x9335428e3a1df5a14eb6d2a0755b02be4c0dc5d0e2f51beb539995e0d95af91a)] test_ScenarioE_RevokedDeviceCannotAnchor() (gas: 532438)
+
+Encountered a total of 2 failing tests, 25 tests succeeded

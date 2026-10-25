@@ -53,9 +53,9 @@ Below the verifier, use the **CBAM Cost Calculator** (`[ILLUSTRATIVE]` consignme
 
 ## 3. Live Arbitrum Sepolia Contracts (`Chain ID: 421614`)
 
-Click the **Live Testnet** pill in the top bar (or verify directly on Arbiscan Sepolia):
+Click the **Live Testnet** pill in the top bar (or view directly on Arbiscan Sepolia):
 
-| Contract | Arbitrum Sepolia Address | Verified Explorer Link |
+| Contract | Arbitrum Sepolia Address | Explorer Link |
 |---|---|---|
 | `Attestation.sol` | `0x872D5EF7C6a457d1B8eD68221350236151c763B0` | [Arbiscan](https://sepolia.arbiscan.io/address/0x872D5EF7C6a457d1B8eD68221350236151c763B0) |
 | `BatchAnchor.sol` | `0x8Bf14de651FA70FeB3538852c2160d082255638B` | [Arbiscan](https://sepolia.arbiscan.io/address/0x8Bf14de651FA70FeB3538852c2160d082255638B) |

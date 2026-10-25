@@ -1,0 +1,15 @@
+    return callback(fn(*args, **kwargs))
+
+backend/tests/test_scenario.py::test_scenario_full_story_and_reset_repeatability
+  C:\Users\LENOVO\Documents\Hackathons\IEEE Climate Change\.venv\Lib\site-packages\eth_utils\functional.py:49: UserWarning: The log with transaction hash: HexBytes('0x4eb761a406036d6151dfdfc9133d74df5b30645a355089bcff1f38059214e365') and logIndex: 0 encountered the following error during processing: MismatchedABI(The event signature did not match the provided ABI). It has been discarded.
+    return callback(fn(*args, **kwargs))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED calculator/tests/test_cbam_calculator.py::test_cbam_config_structure_and_honesty_rules
+FAILED calculator/tests/test_cbam_calculator.py::test_shared_valid_vectors[pig_iron_india_500t]
+FAILED calculator/tests/test_cbam_calculator.py::test_shared_valid_vectors[pig_iron_turkiye_500t]
+FAILED calculator/tests/test_cbam_calculator.py::test_illustrative_example_exact_numbers
+FAILED calculator/tests/test_cbam_calculator.py::test_resolve_from_raw_config_raises_needs_source_for_unverified_fields
+FAILED calculator/tests/test_cbam_calculator.py::test_cli_example_output - As...
+6 failed, 66 passed, 45 warnings in 105.91s (0:01:45)

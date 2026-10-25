@@ -31,18 +31,25 @@ export interface SourcedParameter<T = number | null> {
   country?: string | null;
 }
 
+export type OriginCountry = "India" | "Türkiye";
+
 export interface CBAMConfig {
   schema_version: string;
   description: string;
+  product?: string;
   price_eur_per_tco2e: SourcedParameter<number | null> & { quarter: string };
   free_allocation_factor_by_year: Record<string, SourcedParameter<number | null> | string>;
   cscf_by_year: Record<string, SourcedParameter<number | null> | string>;
   benchmark_tco2e_per_t: SourcedParameter<number | null> & { route: string | null };
   default_benchmark_tco2e_per_t: SourcedParameter<number | null> & { route: string | null };
+  benchmark_actual?: SourcedParameter<number | null>;
+  benchmark_default?: SourcedParameter<number | null>;
   default_value_base_tco2e_per_t: SourcedParameter<number | null> & {
     cn_code: string | null;
     country: string | null;
   };
+  default_value_base_by_origin?: Record<string, SourcedParameter<number | null>>;
+  example_plant_verified_see?: SourcedParameter<number | null>;
   default_markup_by_year: Record<string, SourcedParameter<number | null> | string>;
 }
 
@@ -65,18 +72,24 @@ export interface CBAMInputs {
   cscf: number;
   default_markup: number;
   certificate_price: number;
+  benchmark_actual?: number | null;
+  benchmark_default?: number | null;
   default_benchmark?: number | null;
+  origin?: OriginCountry | string | null;
   price_quarter?: string;
   tag?: string | null;
 }
 
 export interface CBAMPartialInputs {
   year?: number;
+  origin?: OriginCountry | string | null;
   tonnes_shipped?: number | null;
   verified_see?: number | null;
   default_value_base?: number | null;
   benchmark?: number | null;
+  benchmark_actual?: number | null;
   default_benchmark?: number | null;
+  benchmark_default?: number | null;
   free_allocation_factor?: number | null;
   cscf?: number | null;
   default_markup?: number | null;
@@ -400,26 +413,47 @@ export function resolveInputsFromConfig(
 
   const priceQuarter = overrides.price_quarter ?? config.price_eur_per_tco2e.quarter ?? "2026-Q3";
 
+  const actualB =
+    overrides.benchmark_actual !== undefined && overrides.benchmark_actual !== null
+      ? overrides.benchmark_actual
+      : overrides.benchmark;
+
   const benchVal =
-    overrides.benchmark !== undefined && overrides.benchmark !== null
-      ? overrides.benchmark
-      : config.benchmark_tco2e_per_t.value;
+    actualB !== undefined && actualB !== null
+      ? actualB
+      : (config.benchmark_actual?.value ?? config.benchmark_tco2e_per_t.value);
+
+  const defaultB =
+    overrides.benchmark_default !== undefined && overrides.benchmark_default !== null
+      ? overrides.benchmark_default
+      : overrides.default_benchmark;
 
   const defBenchVal =
-    overrides.default_benchmark !== undefined && overrides.default_benchmark !== null
-      ? overrides.default_benchmark
-      : config.default_benchmark_tco2e_per_t.value;
+    defaultB !== undefined && defaultB !== null
+      ? defaultB
+      : (config.benchmark_default?.value ?? config.default_benchmark_tco2e_per_t?.value ?? benchVal);
 
-  const defBaseVal =
-    overrides.default_value_base !== undefined && overrides.default_value_base !== null
-      ? overrides.default_value_base
-      : config.default_value_base_tco2e_per_t.value;
+  let defBaseVal = overrides.default_value_base;
+  if ((defBaseVal === undefined || defBaseVal === null) && overrides.origin) {
+    const originParam = config.default_value_base_by_origin?.[overrides.origin];
+    if (originParam && originParam.value !== null && originParam.value !== undefined) {
+      defBaseVal = originParam.value;
+    }
+  }
+  if (defBaseVal === undefined || defBaseVal === null) {
+    defBaseVal = config.default_value_base_tco2e_per_t.value;
+  }
+
+  const verSeeVal =
+    overrides.verified_see !== undefined && overrides.verified_see !== null
+      ? overrides.verified_see
+      : config.example_plant_verified_see?.value;
 
   const missing: string[] = [];
   if (overrides.tonnes_shipped === null || overrides.tonnes_shipped === undefined) {
     missing.push("tonnes_shipped");
   }
-  if (overrides.verified_see === null || overrides.verified_see === undefined) {
+  if (verSeeVal === null || verSeeVal === undefined) {
     missing.push("verified_see");
   }
   if (defBaseVal === null || defBaseVal === undefined) {
@@ -447,15 +481,18 @@ export function resolveInputsFromConfig(
 
   return {
     year,
+    origin: overrides.origin ?? null,
     tonnes_shipped: Number(overrides.tonnes_shipped),
-    verified_see: Number(overrides.verified_see),
+    verified_see: Number(verSeeVal),
     default_value_base: Number(defBaseVal),
     benchmark: Number(benchVal),
+    benchmark_actual: Number(benchVal),
+    default_benchmark: defBenchVal !== null && defBenchVal !== undefined ? Number(defBenchVal) : null,
+    benchmark_default: defBenchVal !== null && defBenchVal !== undefined ? Number(defBenchVal) : null,
     free_allocation_factor: Number(fafVal),
     cscf: Number(cscfVal),
     default_markup: Number(markupVal),
     certificate_price: Number(priceVal),
-    default_benchmark: defBenchVal !== null && defBenchVal !== undefined ? Number(defBenchVal) : null,
     price_quarter: priceQuarter,
     tag: overrides.tag ?? null,
   };
@@ -475,6 +512,15 @@ export function calculateCbamComparison(params: CBAMPartialInputs): CBAMCalculat
     throw new CBAMValidationError(`Parameter 'year' must be an integer >= 2026 (got ${year}).`);
   }
 
+  const actualB =
+    params.benchmark_actual !== undefined && params.benchmark_actual !== null
+      ? params.benchmark_actual
+      : params.benchmark;
+  const defaultB =
+    params.benchmark_default !== undefined && params.benchmark_default !== null
+      ? params.benchmark_default
+      : params.default_benchmark;
+
   const missing: string[] = [];
   if (params.tonnes_shipped === null || params.tonnes_shipped === undefined) {
     missing.push("tonnes_shipped");
@@ -485,7 +531,7 @@ export function calculateCbamComparison(params: CBAMPartialInputs): CBAMCalculat
   if (params.default_value_base === null || params.default_value_base === undefined) {
     missing.push("default_value_base");
   }
-  if (params.benchmark === null || params.benchmark === undefined) {
+  if (actualB === null || actualB === undefined) {
     missing.push("benchmark");
   }
   if (params.free_allocation_factor === null || params.free_allocation_factor === undefined) {
@@ -507,10 +553,10 @@ export function calculateCbamComparison(params: CBAMPartialInputs): CBAMCalculat
   const tonnes = validateNonNegative(params.tonnes_shipped, "tonnes_shipped");
   const verSee = validateNonNegative(params.verified_see, "verified_see");
   const defBase = validateNonNegative(params.default_value_base, "default_value_base");
-  const benchVer = validateNonNegative(params.benchmark, "benchmark");
+  const benchVer = validateNonNegative(actualB, "benchmark");
   const benchDef =
-    params.default_benchmark !== null && params.default_benchmark !== undefined
-      ? validateNonNegative(params.default_benchmark, "default_benchmark")
+    defaultB !== null && defaultB !== undefined
+      ? validateNonNegative(defaultB, "default_benchmark")
       : benchVer;
   const faf = validateNonNegative(params.free_allocation_factor, "free_allocation_factor");
   if (faf > 1) {
@@ -639,17 +685,14 @@ export function explainCbamCalculation(result: CBAMCalculationResult): FormulaSt
 }
 
 /**
- * Return the Guide Section 14 Appendix A worked example inputs, explicitly tagged ILLUSTRATIVE.
+ * Return the Pig iron (CN 7201) example inputs, with status EXAMPLE.
  */
-export function getIllustrativeExampleInputs(): CBAMInputs {
+export function getIllustrativeExampleInputs(origin: OriginCountry = "India"): CBAMInputs {
   const config = loadCbamConfig();
   return resolveInputsFromConfig(config, {
     year: 2026,
+    origin,
     tonnes_shipped: 500.0,
-    verified_see: 1.9,
-    default_value_base: 2.3,
-    benchmark: 1.4,
-    cscf: 1.0,
-    tag: "ILLUSTRATIVE",
+    tag: "EXAMPLE",
   });
 }
