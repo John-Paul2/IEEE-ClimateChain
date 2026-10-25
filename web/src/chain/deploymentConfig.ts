@@ -1,4 +1,3 @@
-import anvilDeployment from "../../../deployments/anvil.json" with { type: "json" };
 import testnetDeployment from "../../../deployments/testnet.json" with { type: "json" };
 import realRunSnapshot from "../../public/snapshots/real-run.json" with { type: "json" };
 
@@ -187,36 +186,22 @@ export function getDeploymentConfig(): DeploymentConfig {
       chainName: realRunSnapshot.chain.name || `Chain ${realRunSnapshot.chain.chain_id}`,
       chainId: Number(realRunSnapshot.chain.chain_id),
       explorerBaseUrl,
-      contracts: (testnetDeployment.contracts || realRunSnapshot.chain.contracts) as DeploymentContracts,
-      admin: testnetDeployment.admin || (anvilDeployment as unknown as { admin?: string }).admin,
-      arbiters:
-        testnetDeployment.arbiters ||
-        (anvilDeployment as unknown as { arbiters?: string[] }).arbiters,
-      verifiers:
-        testnetDeployment.verifiers ||
-        (anvilDeployment as unknown as { verifiers?: string[] }).verifiers,
+      contracts: (testnetDeployment.contracts || realRunSnapshot.chain.contracts) as unknown as DeploymentContracts,
+      admin: testnetDeployment.admin,
+      arbiters: testnetDeployment.arbiters as HexString[],
+      verifiers: testnetDeployment.verifiers as HexString[],
       testnet: arbitrumSepoliaDeployment,
     };
   }
 
-  const anvil = anvilDeployment as unknown as {
-    chainId: number;
-    contracts: DeploymentContracts;
-    chainName?: string;
-    explorerBaseUrl?: string | null;
-    admin?: string;
-    arbiters?: string[];
-    verifiers?: string[];
-  };
-
   return {
-    chainName: anvil.chainName || `Chain ${anvil.chainId}`,
-    chainId: Number(anvil.chainId),
+    chainName: testnetDeployment.chainName || `Chain ${testnetDeployment.chainId}`,
+    chainId: Number(testnetDeployment.chainId),
     explorerBaseUrl,
-    contracts: (testnetDeployment.contracts || anvil.contracts) as DeploymentContracts,
-    admin: testnetDeployment.admin || anvil.admin,
-    arbiters: testnetDeployment.arbiters || anvil.arbiters,
-    verifiers: testnetDeployment.verifiers || anvil.verifiers,
+    contracts: testnetDeployment.contracts as unknown as DeploymentContracts,
+    admin: testnetDeployment.admin,
+    arbiters: testnetDeployment.arbiters as HexString[],
+    verifiers: testnetDeployment.verifiers as HexString[],
     testnet: arbitrumSepoliaDeployment,
   };
 }
